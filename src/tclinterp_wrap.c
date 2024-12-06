@@ -1941,6 +1941,24 @@ SWIG_AsVal_int SWIG_TCL_DECL_ARGS_2(Tcl_Obj * obj, int *val)
   return res;
 }
 
+
+SWIGINTERNINLINE Tcl_Obj* 
+SWIG_From_long  (long value)
+{
+  if (((long) INT_MIN <= value) && (value <= (long) INT_MAX)) {
+    return Tcl_NewIntObj((int)(value));
+  } else {
+    return Tcl_NewLongObj(value);
+  }
+}
+
+
+SWIGINTERNINLINE Tcl_Obj *
+SWIG_From_int  (int value)
+{    
+  return SWIG_From_long  (value);
+}
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -2111,6 +2129,35 @@ fail:
 }
 
 
+SWIGINTERN int
+_wrap_r8vec_ascends_strictly(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]) {
+  int arg1 ;
+  double *arg2 = (double *) (double *)0 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  int result;
+  
+  if (SWIG_GetArgs(interp, objc, objv,"oo:tclinterp::r8vec_ascends_strictly n x ",(void *)0,(void *)0) == TCL_ERROR) SWIG_fail;
+  ecode1 = SWIG_AsVal_int SWIG_TCL_CALL_ARGS_2(objv[1], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "r8vec_ascends_strictly" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = (int)(val1);
+  res2 = SWIG_ConvertPtr(objv[2], &argp2,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "r8vec_ascends_strictly" "', argument " "2"" of type '" "double []""'"); 
+  } 
+  arg2 = (double *)(argp2);
+  result = (int)r8vec_ascends_strictly(arg1,arg2);
+  Tcl_SetObjResult(interp,SWIG_From_int((int)(result)));
+  return TCL_OK;
+fail:
+  return TCL_ERROR;
+}
+
+
 
 static swig_command_info swig_commands[] = {
     { SWIG_prefix "new_doubleArray", (swig_wrapper_func) _wrap_new_doubleArray, NULL},
@@ -2118,6 +2165,7 @@ static swig_command_info swig_commands[] = {
     { SWIG_prefix "doubleArray_getitem", (swig_wrapper_func) _wrap_doubleArray_getitem, NULL},
     { SWIG_prefix "doubleArray_setitem", (swig_wrapper_func) _wrap_doubleArray_setitem, NULL},
     { SWIG_prefix "interp_linear", (swig_wrapper_func) _wrap_interp_linear, NULL},
+    { SWIG_prefix "r8vec_ascends_strictly", (swig_wrapper_func) _wrap_r8vec_ascends_strictly, NULL},
     {0, 0, 0}
 };
 

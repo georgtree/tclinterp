@@ -17,11 +17,15 @@ proc ::tclinterp::createArray {list} {
     set a [::tclinterp::new_doubleArray $length]
     for {set i 0} {$i<$length} {incr i} {
         set iElem [@ $list $i]
-        if {[string is double -strict $iElem]} {
+        try {
             ::tclinterp::doubleArray_setitem $a $i $iElem
-        } else {
-            error "Element of list must be of type double"
-        }       
+        } on error {errmsg erropts} {
+            if {[dict get $erropts -errorcode]=="SWIG TypeError"} {
+                error "List must contains only double elements, but get '$iElem'"
+            } else {
+                error "Array creation failed with message '$errmsg' and opts '$erropts'"
+            }
+        }    
     }
     return $a
 }
@@ -48,8 +52,16 @@ proc ::tclinterp::interpLin1d {args} {
         error "Length of interpolation points list xi must be more than zero"
     }
     set xArray [::tclinterp::createArray $x]
+    if {[::tclinterp::r8vec_ascends_strictly $xLen $xArray]==0} {
+        error "Independent variable array x not strictly increasing"
+    }
     set yArray [::tclinterp::createArray $y]
     set xiArray [::tclinterp::createArray $xi]
     set yiArray [::tclinterp::interp_linear 1 $xLen $xArray $yArray $xiLen $xiArray]
-    return [::tclinterp::array2list $yiArray $xiLen]
+    set yiList [::tclinterp::array2list $yiArray $xiLen]
+    ::tclinterp::delete_doubleArray $xArray
+    ::tclinterp::delete_doubleArray $yArray
+    ::tclinterp::delete_doubleArray $xiArray
+    ::tclinterp::delete_doubleArray $yiArray
+    return $yiList
 }
