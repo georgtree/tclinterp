@@ -1,0 +1,55 @@
+package require argparse
+package provide tclinterp 0.1
+load ./build/tclinterp.so
+
+namespace eval ::tclinterp {
+
+    namespace import ::tcl::mathop::*
+    namespace export interpLin1d
+    interp alias {} dget {} dict get
+    interp alias {} @ {} lindex
+    interp alias {} = {} expr
+    interp alias {} dexist {} dict exists
+}
+
+proc ::tclinterp::createArray {list} {
+    set length [llength $list]
+    set a [::tclinterp::new_doubleArray $length]
+    for {set i 0} {$i<$length} {incr i} {
+        set iElem [@ $list $i]
+        if {[string is double -strict $iElem]} {
+            ::tclinterp::doubleArray_setitem $a $i $iElem
+        } else {
+            error "Element of list must be of type double"
+        }       
+    }
+    return $a
+}
+
+proc ::tclinterp::array2list {array length} {
+    for {set i 0} {$i<$length} {incr i} {
+        lappend list [::tclinterp::doubleArray_getitem $array $i]
+    }
+    return $list
+}
+
+proc ::tclinterp::interpLin1d {args} {
+    set arguments [argparse {
+        {-x= -required}
+        {-y= -required}
+        {-xi -required}
+    }]
+    set xLen [llength $x]
+    set yLen [llength $y]
+    set xiLen [llength $xi]
+    if {$xLen!=$yLen} {
+        error "Length of x '$xLen' must be equal to y '$yLen'"
+    } elseif {$xiLen==0} {
+        error "Length of interpolation points list xi must be more than zero"
+    }
+    set xArray [::tclinterp::createArray $x]
+    set yArray [::tclinterp::createArray $y]
+    set xiArray [::tclinterp::createArray $xi]
+    set yiArray [::tclinterp::interp_linear 1 $xLen $xArray $yArray $xiLen $xiArray]
+    return [::tclinterp::array2list $yiArray $xiLen]
+}
