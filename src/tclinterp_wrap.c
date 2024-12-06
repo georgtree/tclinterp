@@ -2158,6 +2158,128 @@ fail:
 }
 
 
+SWIGINTERN int
+_wrap_interp_nearest(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]) {
+  int arg1 ;
+  int arg2 ;
+  double *arg3 = (double *) (double *)0 ;
+  double *arg4 = (double *) (double *)0 ;
+  int arg5 ;
+  double *arg6 = (double *) (double *)0 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  int val5 ;
+  int ecode5 = 0 ;
+  void *argp6 = 0 ;
+  int res6 = 0 ;
+  double *result = 0 ;
+  
+  if (SWIG_GetArgs(interp, objc, objv,"oooooo:tclinterp::interp_nearest m data_num t_data p_data interp_num t_interp ",(void *)0,(void *)0,(void *)0,(void *)0,(void *)0,(void *)0) == TCL_ERROR) SWIG_fail;
+  ecode1 = SWIG_AsVal_int SWIG_TCL_CALL_ARGS_2(objv[1], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "interp_nearest" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = (int)(val1);
+  ecode2 = SWIG_AsVal_int SWIG_TCL_CALL_ARGS_2(objv[2], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "interp_nearest" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = (int)(val2);
+  res3 = SWIG_ConvertPtr(objv[3], &argp3,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "interp_nearest" "', argument " "3"" of type '" "double []""'"); 
+  } 
+  arg3 = (double *)(argp3);
+  res4 = SWIG_ConvertPtr(objv[4], &argp4,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "interp_nearest" "', argument " "4"" of type '" "double []""'"); 
+  } 
+  arg4 = (double *)(argp4);
+  ecode5 = SWIG_AsVal_int SWIG_TCL_CALL_ARGS_2(objv[5], &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "interp_nearest" "', argument " "5"" of type '" "int""'");
+  } 
+  arg5 = (int)(val5);
+  res6 = SWIG_ConvertPtr(objv[6], &argp6,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res6)) {
+    SWIG_exception_fail(SWIG_ArgError(res6), "in method '" "interp_nearest" "', argument " "6"" of type '" "double []""'"); 
+  } 
+  arg6 = (double *)(argp6);
+  result = (double *)interp_nearest(arg1,arg2,arg3,arg4,arg5,arg6);
+  Tcl_SetObjResult(interp, SWIG_NewInstanceObj( SWIG_as_voidptr(result), SWIGTYPE_p_double,0));
+  return TCL_OK;
+fail:
+  return TCL_ERROR;
+}
+
+
+SWIGINTERN int
+_wrap_interp_lagrange(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]) {
+  int arg1 ;
+  int arg2 ;
+  double *arg3 = (double *) (double *)0 ;
+  double *arg4 = (double *) (double *)0 ;
+  int arg5 ;
+  double *arg6 = (double *) (double *)0 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  int val5 ;
+  int ecode5 = 0 ;
+  void *argp6 = 0 ;
+  int res6 = 0 ;
+  double *result = 0 ;
+  
+  if (SWIG_GetArgs(interp, objc, objv,"oooooo:tclinterp::interp_lagrange m data_num t_data p_data interp_num t_interp ",(void *)0,(void *)0,(void *)0,(void *)0,(void *)0,(void *)0) == TCL_ERROR) SWIG_fail;
+  ecode1 = SWIG_AsVal_int SWIG_TCL_CALL_ARGS_2(objv[1], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "interp_lagrange" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = (int)(val1);
+  ecode2 = SWIG_AsVal_int SWIG_TCL_CALL_ARGS_2(objv[2], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "interp_lagrange" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = (int)(val2);
+  res3 = SWIG_ConvertPtr(objv[3], &argp3,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "interp_lagrange" "', argument " "3"" of type '" "double []""'"); 
+  } 
+  arg3 = (double *)(argp3);
+  res4 = SWIG_ConvertPtr(objv[4], &argp4,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "interp_lagrange" "', argument " "4"" of type '" "double []""'"); 
+  } 
+  arg4 = (double *)(argp4);
+  ecode5 = SWIG_AsVal_int SWIG_TCL_CALL_ARGS_2(objv[5], &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "interp_lagrange" "', argument " "5"" of type '" "int""'");
+  } 
+  arg5 = (int)(val5);
+  res6 = SWIG_ConvertPtr(objv[6], &argp6,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res6)) {
+    SWIG_exception_fail(SWIG_ArgError(res6), "in method '" "interp_lagrange" "', argument " "6"" of type '" "double []""'"); 
+  } 
+  arg6 = (double *)(argp6);
+  result = (double *)interp_lagrange(arg1,arg2,arg3,arg4,arg5,arg6);
+  Tcl_SetObjResult(interp, SWIG_NewInstanceObj( SWIG_as_voidptr(result), SWIGTYPE_p_double,0));
+  return TCL_OK;
+fail:
+  return TCL_ERROR;
+}
+
+
 
 static swig_command_info swig_commands[] = {
     { SWIG_prefix "new_doubleArray", (swig_wrapper_func) _wrap_new_doubleArray, NULL},
@@ -2166,6 +2288,8 @@ static swig_command_info swig_commands[] = {
     { SWIG_prefix "doubleArray_setitem", (swig_wrapper_func) _wrap_doubleArray_setitem, NULL},
     { SWIG_prefix "interp_linear", (swig_wrapper_func) _wrap_interp_linear, NULL},
     { SWIG_prefix "r8vec_ascends_strictly", (swig_wrapper_func) _wrap_r8vec_ascends_strictly, NULL},
+    { SWIG_prefix "interp_nearest", (swig_wrapper_func) _wrap_interp_nearest, NULL},
+    { SWIG_prefix "interp_lagrange", (swig_wrapper_func) _wrap_interp_lagrange, NULL},
     {0, 0, 0}
 };
 

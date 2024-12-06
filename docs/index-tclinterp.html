@@ -1,0 +1,210 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"/>
+<title>Tcl wrapper for C interpolation procedures</title>
+<link rel='stylesheet' type='text/css' href='assets/ruff-min.css' />
+<script type='text/javascript' src='assets/ruff-min.js'></script>
+</head>
+<body>
+<div class='ruff-layout'>
+<header class='ruff-layout-header ruff-hd'>
+<a style='text-decoration:none;' href='index.html'>Tcl wrapper for C interpolation procedures (v0.1)</a>
+
+
+            <div id="ruffButtonBar">
+            <button id="ruffNavMove" onclick="ruffMoveNavPane()"></button>
+            <button id="ruffToggleTheme" onclick="ruffNextTheme()"></button>
+            </div>
+        </header><main class='ruff-layout-main ruff-bd'><h1 class='ruff'><a name='::tclinterp'></a>::tclinterp<span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h1>
+<div style='clear:both;'></div>
+<h2 class='ruff'><a name='::tclinterp-Commands'></a>Commands<span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h2>
+<div style='clear:both;'></div>
+<h3 class='ruffproc'><a name='::tclinterp::array2list'>array2list</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
+<div style='clear:both;'></div>
+<p class='ruff'>Convert doubleArray to the list</p>
+<div class='ruff_synopsis'><span class='ruff_cmd'>array2list</span> <span class='ruff_arg'>array length</span></div>
+<h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
+<tr><td><code><b><font color=#923B23>array</font></b></code></td><td>Array object.</td></tr>
+<tr><td><code>length</code></td><td>Number of elements in array.</td></tr>
+</table>
+<h5 class='ruff'>Return value</h5><p class='ruff'>list</p>
+<div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_array2list' href="javascript:toggleSource('tclinterp_array2list')">Show source</a></p>
+<div id='tclinterp_array2list' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::array2list {<b><font color=#923B23>array</font></b> length} {
+
+    <i><font color=#4b5d50># Convert doubleArray to the list</font></i>
+    <i><font color=#4b5d50>#  array - array object</font></i>
+    <i><font color=#4b5d50>#  length - number of elements in array</font></i>
+    <i><font color=#4b5d50># Returns: list</font></i>
+    <b><font color=#923B23>for</font></b> {<b><font color=#923B23>set</font></b> i 0} {<font color=#4A181B>$i</font>&lt;<font color=#4A181B>$length</font>} {<b><font color=#923B23>incr</font></b> i} {
+        <b><font color=#923B23>lappend</font></b> list [::tclinterp::doubleArray_getitem <font color=#4A181B>$array</font> <font color=#4A181B>$i</font>]
+    }
+    <b><font color=#ca14ca>return</font></b> <font color=#4A181B>$list</font>
+}</pre></div>
+</div><h3 class='ruffproc'><a name='::tclinterp::createArray'>createArray</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
+<div style='clear:both;'></div>
+<p class='ruff'>Create doubleArray from the list</p>
+<div class='ruff_synopsis'><span class='ruff_cmd'>createArray</span> <span class='ruff_arg'>list</span></div>
+<h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
+<tr><td><code><b><font color=#923B23>list</font></b></code></td><td>List of values.</td></tr>
+</table>
+<h5 class='ruff'>Return value</h5><p class='ruff'>array object</p>
+<div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_createArray' href="javascript:toggleSource('tclinterp_createArray')">Show source</a></p>
+<div id='tclinterp_createArray' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::createArray {<b><font color=#923B23>list</font></b>} {
+
+    <i><font color=#4b5d50># Create doubleArray from the list</font></i>
+    <i><font color=#4b5d50>#  list - list of values</font></i>
+    <i><font color=#4b5d50># Returns: array object</font></i>
+    <b><font color=#923B23>set</font></b> length [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$list</font>]
+    <b><font color=#923B23>set</font></b> a [::tclinterp::new_doubleArray <font color=#4A181B>$length</font>]
+    <b><font color=#923B23>for</font></b> {<b><font color=#923B23>set</font></b> i 0} {<font color=#4A181B>$i</font>&lt;<font color=#4A181B>$length</font>} {<b><font color=#923B23>incr</font></b> i} {
+        <b><font color=#923B23>set</font></b> iElem [@ <font color=#4A181B>$list</font> <font color=#4A181B>$i</font>]
+        <b><font color=#923B23>try</font></b> {
+            ::tclinterp::doubleArray_setitem <font color=#4A181B>$a</font> <font color=#4A181B>$i</font> <font color=#4A181B>$iElem</font>
+        } on error {errmsg erropts} {
+            <b><font color=#923B23>if</font></b> {[dget <font color=#4A181B>$erropts</font> <font color=#463e11>-errorcode</font>]==<font color=#035103>&quot;SWIG TypeError&quot;</font>} {
+                <b><font color=#923B23>error</font></b> <font color=#035103>&quot;List must contains only double elements, but get '<font color=#4A181B>$</font>iElem'&quot;</font>
+            } <b><font color=#923B23>else</font></b> {
+                <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Array creation failed with message '<font color=#4A181B>$</font>errmsg' and opts '<font color=#4A181B>$</font>erropts'&quot;</font>
+            }
+        }
+    }
+    <b><font color=#ca14ca>return</font></b> <font color=#4A181B>$a</font>
+}</pre></div>
+</div><h3 class='ruffproc'><a name='::tclinterp::interpLagr1d'>interpLagr1d</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
+<div style='clear:both;'></div>
+<p class='ruff'>Does Lagrange polynomial one-dimensional interpolation.</p>
+<div class='ruff_synopsis'><span class='ruff_cmd'>interpLagr1d</span> <span class='ruff_arg'>?args?</span></div>
+<h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
+<tr><td><code><font color=#463e11>-x</font></code></td><td>List of independent variable (x) values.</td></tr>
+<tr><td><code><font color=#463e11>-xi</font></code></td><td>List of independent variable interpolation (xi) values.</td></tr>
+<tr><td><code><font color=#463e11>-y</font></code></td><td>List of dependent variable (y) values.</td></tr>
+</table>
+<h5 class='ruff'>Return value</h5><p class='ruff'>list of interpolated dependent variable values, yi, at xi</p>
+<div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_interpLagr1d' href="javascript:toggleSource('tclinterp_interpLagr1d')">Show source</a></p>
+<div id='tclinterp_interpLagr1d' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::interpLagr1d {args} {
+
+    <i><font color=#4b5d50># Does Lagrange polynomial one-dimensional interpolation.</font></i>
+    <i><font color=#4b5d50>#  -x - list of independent variable (x) values</font></i>
+    <i><font color=#4b5d50>#  -y - list of dependent variable (y) values</font></i>
+    <i><font color=#4b5d50>#  -xi - list of independent variable interpolation (xi) values</font></i>
+    <i><font color=#4b5d50># Returns: list of interpolated dependent variable values, yi, at xi</font></i>
+    <b><font color=#923B23>set</font></b> arguments [argparse {
+        {<font color=#463e11>-x</font>= <font color=#463e11>-required</font>}
+        {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
+        {<font color=#463e11>-xi</font> <font color=#463e11>-required</font>}
+    }]
+    <b><font color=#923B23>set</font></b> xLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$x</font>]
+    <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
+    <b><font color=#923B23>set</font></b> xiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$xi</font>]
+    <b><font color=#923B23>if</font></b> {<font color=#4A181B>$xLen</font>!=<font color=#4A181B>$yLen</font>} {
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of x '<font color=#4A181B>$</font>xLen' must be equal to y '<font color=#4A181B>$</font>yLen'&quot;</font>
+    } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xiLen</font>==0} {
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of interpolation points list xi must be more than zero&quot;</font>
+    }
+    <b><font color=#923B23>set</font></b> xArray [::tclinterp::createArray <font color=#4A181B>$x</font>]
+    <b><font color=#923B23>set</font></b> yArray [::tclinterp::createArray <font color=#4A181B>$y</font>]
+    <b><font color=#923B23>set</font></b> xiArray [::tclinterp::createArray <font color=#4A181B>$xi</font>]
+    <b><font color=#923B23>set</font></b> yiArray [::tclinterp::interp_lagrange 1 <font color=#4A181B>$xLen</font> <font color=#4A181B>$xArray</font> <font color=#4A181B>$yArray</font> <font color=#4A181B>$xiLen</font> <font color=#4A181B>$xiArray</font>]
+    <b><font color=#923B23>set</font></b> yiList [::tclinterp::array2list <font color=#4A181B>$yiArray</font> <font color=#4A181B>$xiLen</font>]
+    ::tclinterp::delete_doubleArray <font color=#4A181B>$xArray</font>
+    ::tclinterp::delete_doubleArray <font color=#4A181B>$yArray</font>
+    ::tclinterp::delete_doubleArray <font color=#4A181B>$xiArray</font>
+    ::tclinterp::delete_doubleArray <font color=#4A181B>$yiArray</font>
+    <b><font color=#ca14ca>return</font></b> <font color=#4A181B>$yiList</font>
+}</pre></div>
+</div><h3 class='ruffproc'><a name='::tclinterp::interpLin1d'>interpLin1d</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
+<div style='clear:both;'></div>
+<p class='ruff'>Does linear one-dimensional interpolation.</p>
+<div class='ruff_synopsis'><span class='ruff_cmd'>interpLin1d</span> <span class='ruff_arg'>?args?</span></div>
+<h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
+<tr><td><code><font color=#463e11>-x</font></code></td><td>List of independent variable (x) values, must be strictly increasing.</td></tr>
+<tr><td><code><font color=#463e11>-xi</font></code></td><td>List of independent variable interpolation (xi) values.</td></tr>
+<tr><td><code><font color=#463e11>-y</font></code></td><td>List of dependent variable (y) values.</td></tr>
+</table>
+<h5 class='ruff'>Return value</h5><p class='ruff'>list of interpolated dependent variable values, yi, at xi</p>
+<div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_interpLin1d' href="javascript:toggleSource('tclinterp_interpLin1d')">Show source</a></p>
+<div id='tclinterp_interpLin1d' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::interpLin1d {args} {
+
+    <i><font color=#4b5d50># Does linear one-dimensional interpolation.</font></i>
+    <i><font color=#4b5d50>#  -x - list of independent variable (x) values, must be strictly increasing</font></i>
+    <i><font color=#4b5d50>#  -y - list of dependent variable (y) values</font></i>
+    <i><font color=#4b5d50>#  -xi - list of independent variable interpolation (xi) values</font></i>
+    <i><font color=#4b5d50># Returns: list of interpolated dependent variable values, yi, at xi</font></i>
+    <b><font color=#923B23>set</font></b> arguments [argparse {
+        {<font color=#463e11>-x</font>= <font color=#463e11>-required</font>}
+        {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
+        {<font color=#463e11>-xi</font> <font color=#463e11>-required</font>}
+    }]
+    <b><font color=#923B23>set</font></b> xLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$x</font>]
+    <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
+    <b><font color=#923B23>set</font></b> xiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$xi</font>]
+    <b><font color=#923B23>if</font></b> {<font color=#4A181B>$xLen</font>!=<font color=#4A181B>$yLen</font>} {
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of x '<font color=#4A181B>$</font>xLen' must be equal to y '<font color=#4A181B>$</font>yLen'&quot;</font>
+    } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xiLen</font>==0} {
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of interpolation points list xi must be more than zero&quot;</font>
+    }
+    <b><font color=#923B23>set</font></b> xArray [::tclinterp::createArray <font color=#4A181B>$x</font>]
+    <b><font color=#923B23>if</font></b> {[::tclinterp::r8vec_ascends_strictly <font color=#4A181B>$xLen</font> <font color=#4A181B>$xArray</font>]==0} {
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Independent variable array x not strictly increasing&quot;</font>
+    }
+    <b><font color=#923B23>set</font></b> yArray [::tclinterp::createArray <font color=#4A181B>$y</font>]
+    <b><font color=#923B23>set</font></b> xiArray [::tclinterp::createArray <font color=#4A181B>$xi</font>]
+    <b><font color=#923B23>set</font></b> yiArray [::tclinterp::interp_linear 1 <font color=#4A181B>$xLen</font> <font color=#4A181B>$xArray</font> <font color=#4A181B>$yArray</font> <font color=#4A181B>$xiLen</font> <font color=#4A181B>$xiArray</font>]
+    <b><font color=#923B23>set</font></b> yiList [::tclinterp::array2list <font color=#4A181B>$yiArray</font> <font color=#4A181B>$xiLen</font>]
+    ::tclinterp::delete_doubleArray <font color=#4A181B>$xArray</font>
+    ::tclinterp::delete_doubleArray <font color=#4A181B>$yArray</font>
+    ::tclinterp::delete_doubleArray <font color=#4A181B>$xiArray</font>
+    ::tclinterp::delete_doubleArray <font color=#4A181B>$yiArray</font>
+    <b><font color=#ca14ca>return</font></b> <font color=#4A181B>$yiList</font>
+}</pre></div>
+</div><h3 class='ruffproc'><a name='::tclinterp::interpNear1d'>interpNear1d</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
+<div style='clear:both;'></div>
+<p class='ruff'>Does nearest one-dimensional interpolation.</p>
+<div class='ruff_synopsis'><span class='ruff_cmd'>interpNear1d</span> <span class='ruff_arg'>?args?</span></div>
+<h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
+<tr><td><code><font color=#463e11>-x</font></code></td><td>List of independent variable (x) values.</td></tr>
+<tr><td><code><font color=#463e11>-xi</font></code></td><td>List of independent variable interpolation (xi) values.</td></tr>
+<tr><td><code><font color=#463e11>-y</font></code></td><td>List of dependent variable (y) values.</td></tr>
+</table>
+<h5 class='ruff'>Return value</h5><p class='ruff'>list of interpolated dependent variable values, yi, at xi</p>
+<div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_interpNear1d' href="javascript:toggleSource('tclinterp_interpNear1d')">Show source</a></p>
+<div id='tclinterp_interpNear1d' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::interpNear1d {args} {
+
+    <i><font color=#4b5d50># Does nearest one-dimensional interpolation.</font></i>
+    <i><font color=#4b5d50>#  -x - list of independent variable (x) values</font></i>
+    <i><font color=#4b5d50>#  -y - list of dependent variable (y) values</font></i>
+    <i><font color=#4b5d50>#  -xi - list of independent variable interpolation (xi) values</font></i>
+    <i><font color=#4b5d50># Returns: list of interpolated dependent variable values, yi, at xi</font></i>
+    <b><font color=#923B23>set</font></b> arguments [argparse {
+        {<font color=#463e11>-x</font>= <font color=#463e11>-required</font>}
+        {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
+        {<font color=#463e11>-xi</font> <font color=#463e11>-required</font>}
+    }]
+    <b><font color=#923B23>set</font></b> xLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$x</font>]
+    <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
+    <b><font color=#923B23>set</font></b> xiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$xi</font>]
+    <b><font color=#923B23>if</font></b> {<font color=#4A181B>$xLen</font>!=<font color=#4A181B>$yLen</font>} {
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of x '<font color=#4A181B>$</font>xLen' must be equal to y '<font color=#4A181B>$</font>yLen'&quot;</font>
+    } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xiLen</font>==0} {
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of interpolation points list xi must be more than zero&quot;</font>
+    }
+    <b><font color=#923B23>set</font></b> xArray [::tclinterp::createArray <font color=#4A181B>$x</font>]
+    <b><font color=#923B23>set</font></b> yArray [::tclinterp::createArray <font color=#4A181B>$y</font>]
+    <b><font color=#923B23>set</font></b> xiArray [::tclinterp::createArray <font color=#4A181B>$xi</font>]
+    <b><font color=#923B23>set</font></b> yiArray [::tclinterp::interp_nearest 1 <font color=#4A181B>$xLen</font> <font color=#4A181B>$xArray</font> <font color=#4A181B>$yArray</font> <font color=#4A181B>$xiLen</font> <font color=#4A181B>$xiArray</font>]
+    <b><font color=#923B23>set</font></b> yiList [::tclinterp::array2list <font color=#4A181B>$yiArray</font> <font color=#4A181B>$xiLen</font>]
+    ::tclinterp::delete_doubleArray <font color=#4A181B>$xArray</font>
+    ::tclinterp::delete_doubleArray <font color=#4A181B>$yArray</font>
+    ::tclinterp::delete_doubleArray <font color=#4A181B>$xiArray</font>
+    ::tclinterp::delete_doubleArray <font color=#4A181B>$yiArray</font>
+    <b><font color=#ca14ca>return</font></b> <font color=#4A181B>$yiList</font>
+}</pre></div>
+</div></main><nav class='ruff-nav'><ul ><li class='ruff-toc1'><a style='padding-top:2px;' href='index.html'>Start page</a></li>
+<li class='ruff-toc1'><a href='index-docindex.html' accesskey='i'>Index</a></li>
+<hr>
+<li class='ruff-toc1'><a class='ruff-highlight' href='index-tclinterp.html'>tclinterp</a></li>
+<hr><li class='ruff-toc2'><a href='#::tclinterp-Commands'>Commands</a></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::array2list'>array2list</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;array2list&lt;/span&gt; &lt;span class='ruff_arg'&gt;<b><font color=#923B23>array</font></b> length&lt;/span&gt;</pre>Convert doubleArray to the list
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::createArray'>createArray</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;createArray&lt;/span&gt; &lt;span class='ruff_arg'&gt;<b><font color=#923B23>list</font></b>&lt;/span&gt;</pre>Create doubleArray from the list
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::interpLagr1d'>interpLagr1d</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;interpLagr1d&lt;/span&gt; &lt;span class='ruff_arg'&gt;?args?&lt;/span&gt;</pre>Does Lagrange polynomial one-dimensional interpolation.
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::interpLin1d'>interpLin1d</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;interpLin1d&lt;/span&gt; &lt;span class='ruff_arg'&gt;?args?&lt;/span&gt;</pre>Does linear one-dimensional interpolation.
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::interpNear1d'>interpNear1d</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;interpNear1d&lt;/span&gt; &lt;span class='ruff_arg'&gt;?args?&lt;/span&gt;</pre>Does nearest one-dimensional interpolation.
+</span></li></ul></nav><footer class='ruff-layout-footer ruff-ft'><div style='float: right;'>Document generated by <a href='https://ruff.magicsplat.com'>Ruff!</a></div><div>&copy; George Yashin</div></footer>
+</div></body></html>
