@@ -5349,7 +5349,7 @@ printf "%s\n" "$ac_cv_c_bigendian" >&6; }
 #-----------------------------------------------------------------------
 
 
-    vars="interp.c tclinterp_wrap.c"
+    vars="interp.c tclinterp_wrap.c spline.c"
     for i in $vars; do
 	case $i in
 	    \$*)
@@ -5384,7 +5384,7 @@ printf "%s\n" "$ac_cv_c_bigendian" >&6; }
 
 
 
-    vars="generic/interp.h"
+    vars="generic/interp.h generic/spline.h"
     for i in $vars; do
 	# check for existence, be strict because it is installed
 	if test ! -f "${srcdir}/$i" ; then

@@ -16,7 +16,7 @@ For building you need:
 \fISWIG of version 4\&.3\fP [URL: https://www\&.swig\&.org/download\&.html]
 .TP
 \(bu
-\fITcl9\fP [URL: https://www\&.tcl\&.tk/software/tcltk/9\&.0\&.html]
+\fITcl9\fP [URL: https://www\&.tcl\&.tk/software/tcltk/9\&.0\&.html] or \fITcl8\&.6\&.15\fP [URL: https://www\&.tcl\&.tk/software/tcltk/8\&.6\&.html]
 .TP
 \(bu
 \fIgcc compiler\fP [URL: https://gcc\&.gnu\&.org/]
@@ -45,6 +45,9 @@ sudo make install
 .fi
 .RE
 .PP
+If you have different versions of Tcl on the same machine, you can set the path to this version with -with-tcl=path
+flag to configure script\&.
+.PP
 For Windows build it is strongly recommended to use \fIMSYS64 UCRT64 environment\fP [URL: https://www\&.msys2\&.org/], the above
 steps are identical if you run it from UCRT64 shell\&. After installing the package, you can move tclinterp package
 folder (usually located in C:\\\\msys64\\\\ucrt64\\\\lib\\\\) to path listed in auto_path variable of your local Tcl
@@ -54,7 +57,7 @@ installation\&.
 I've tested it on:
 .TP
 \(bu
-Kubuntu 24\&.04 with Tcl9
+Kubuntu 24\&.04 with Tcl 9 and Tcl 8\&.6\&.15
 .TP
 \(bu
 Windows 11 in MSYS64 UCRT64 environment with Tcl9

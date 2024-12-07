@@ -71,8 +71,8 @@ TEA_SETUP_COMPILER
 # and PKG_TCL_SOURCES.
 #-----------------------------------------------------------------------
 
-TEA_ADD_SOURCES([interp.c tclinterp_wrap.c])
-TEA_ADD_HEADERS([generic/interp.h])
+TEA_ADD_SOURCES([interp.c tclinterp_wrap.c spline.c])
+TEA_ADD_HEADERS([generic/interp.h generic/spline.h])
 TEA_ADD_INCLUDES([])
 TEA_ADD_LIBS([])
 TEA_ADD_CFLAGS([])

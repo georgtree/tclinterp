@@ -214,6 +214,64 @@ test interpLagr1dProcTest-5 {test procedure of Lagrange polynomial 1d interpolat
                    0.321154 0.421274 0.0384615 0.55012 0.567308 0.55012 0.0384615 0.421274 0.321154 0.209736 0.0384615\
                    0.0078125 -0.0480769 -0.0460337 0.0384615 0.232813 0.567308] -cleanup {
     unset x y xi
+                   }
+
+### Least squares polynomial interpolation tests
+
+test interpLeast1dProcTest-1 {test procedure of least squares polynomial interpolation} -setup {
+    set x [list 1 2 3 4 5]
+    set y [list 1 4 9 16 25]
+    set nterms 2
+    set xi [list 1.5 2.5 3.5 4.5]
+} -body {
+    interpLeast1d -x $x -y $y -xi $xi -nterms $nterms
+} -result [list 2.0 8.0 14.0 20.0] -cleanup {
+    unset x y xi
+}
+
+test interpLeast1dProcTest-2 {test procedure of least squares polynomial interpolation} -setup {
+    set x [list 1 2 3 4 5]
+    set y [list 1 4 9 16 25]
+    set xi [list 1.5 2.5 3.5 4.5]
+} -body {
+    interpLeast1d -x $x -y $y -xi $xi -coeffs
+} -result "yi {2.25 6.25 12.25 20.25} coeffs {b {3.0 3.0 42.0} c {0.0 2.0 0.0} d {11.0 6.0 1.0}}" -cleanup {
+    unset x y xi
+}
+
+test interpLeast1dProcTest-3 {test procedure of least squares polynomial interpolation} -setup {
+    set x [list 1 2 3 4 5]
+    set y [list 1 4 9 16 25]
+    set w [list 1 2 2 2 1]
+    set xi [list 1.5 2.5 3.5 4.5]
+} -body {
+    interpLeast1d -x $x -y $y -xi $xi -w $w -coeffs
+} -result "yi {2.25 6.25 12.25 20.25} coeffs {b {3.0 3.0 54.0} c {0.0 1.5 0.0} d {10.5 6.0 1.0}}" -cleanup {
+    unset x y xi
+}
+
+test interpLeast1dProcTest-4 {test procedure of least squares polynomial interpolation} -match mtchLst -setup {
+    set x [list -1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1]
+    set y [list -4 -4.29 -4.56 -4.81 -5.04 -5.25 -5.44 -5.61 -5.76 -5.89 -6 -6.09 -6.16 -6.21 -6.24 -6.25 -6.24 -6.21\
+                   -6.16 -6.09 -6]
+    set xi $x
+} -body {
+    interpLeast1d -x $x -y $y -xi $xi -nterms 1
+} -result [list -5.63333 -5.63333 -5.63333 -5.63333 -5.63333 -5.63333 -5.63333 -5.63333 -5.63333 -5.63333 -5.63333\
+                   -5.63333 -5.63333 -5.63333 -5.63333 -5.63333 -5.63333 -5.63333 -5.63333 -5.63333 -5.63333] -cleanup {
+    unset x y xi
+}
+
+test interpLeast1dProcTest-5 {test procedure of least squares polynomial interpolation} -match mtchLst -setup {
+    set x [list -1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1]
+    set y [list -4 -4.29 -4.56 -4.81 -5.04 -5.25 -5.44 -5.61 -5.76 -5.89 -6 -6.09 -6.16 -6.21 -6.24 -6.25 -6.24 -6.21\
+                   -6.16 -6.09 -6]
+    set xi $x
+} -body {
+    interpLeast1d -x $x -y $y -xi $xi -nterms 3
+} -result [list -4 -4.29 -4.56 -4.81 -5.04 -5.25 -5.44 -5.61 -5.76 -5.89 -6 -6.09 -6.16 -6.21 -6.24 -6.25 -6.24 -6.21\
+                   -6.16 -6.09 -6] -cleanup {
+    unset x y xi
 }
 
 cleanupTests

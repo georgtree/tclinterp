@@ -21,7 +21,7 @@
 <p class='ruff'>For building you need:</p>
 <ul class='ruff'>
 <li><a href="https://www.swig.org/download.html" >SWIG of version 4.3</a></li>
-<li><a href="https://www.tcl.tk/software/tcltk/9.0.html" >Tcl9</a></li>
+<li><a href="https://www.tcl.tk/software/tcltk/9.0.html" >Tcl9</a> or <a href="https://www.tcl.tk/software/tcltk/8.6.html" >Tcl8.6.15</a></li>
 <li><a href="https://gcc.gnu.org/" >gcc compiler</a></li>
 <li><a href="https://www.gnu.org/software/make/" >make tool</a></li>
 <li><a href="https://www.gnu.org/software/autoconf/" >autoconf tool</a></li>
@@ -38,12 +38,13 @@ make
 sudo make install
 </pre>
 
-</figure><p class='ruff'>For Windows build it is strongly recommended to use <a href="https://www.msys2.org/" >MSYS64 UCRT64 environment</a>, the above steps are identical if you run it from UCRT64 shell. After installing the package, you can move tclinterp package folder (usually located in <code>C:\msys64\ucrt64\lib\</code>) to path listed in <code>auto_path</code> variable of your local Tcl installation.</p>
+</figure><p class='ruff'>If you have different versions of Tcl on the same machine, you can set the path to this version with <code><font color=#463e11>-with-tcl</font>=path</code> flag to configure script.</p>
+<p class='ruff'>For Windows build it is strongly recommended to use <a href="https://www.msys2.org/" >MSYS64 UCRT64 environment</a>, the above steps are identical if you run it from UCRT64 shell. After installing the package, you can move tclinterp package folder (usually located in <code>C:\msys64\ucrt64\lib\</code>) to path listed in <code>auto_path</code> variable of your local Tcl installation.</p>
 <h1 class='ruff'><a name='Supported platforms'></a>Supported platforms<span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h1>
 <div style='clear:both;'></div>
 <p class='ruff'>I've tested it on:</p>
 <ul class='ruff'>
-<li>Kubuntu 24.04 with Tcl9</li>
+<li>Kubuntu 24.04 with Tcl 9 and Tcl 8.6.15</li>
 <li>Windows 11 in MSYS64 UCRT64 environment with Tcl9</li>
 </ul>
 <h1 class='ruff'><a name='Documentation'></a>Documentation<span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h1>
