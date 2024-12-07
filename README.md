@@ -18,22 +18,16 @@ To install this package just unzip code to folder and append `auto_path` variabl
 For compile you need:
 - [SWIG of version 4.3](https://www.swig.org/download.html)
 - [gcc compiler](https://gcc.gnu.org/)
-- Tcl9 stubs object file libtclstub.a - usually located at `/usr/local/lib/`, but location could differ on your
-  system
 
 For run you need:
 - [Tcl9](https://www.tcl.tk/software/tcltk/9.0.html)
 - [argparse](https://wiki.tcl-lang.org/page/argparse)
 - [Tcllib](https://www.tcl.tk/software/tcllib/)
 
-To compile, run `swig_gen.sh` to create SWIG wrapper file, and the run `make`. If you have stubs object file in
-non-standard location or with different name, add it to `Makefile`:
+To compile, run `swig_gen.sh` to create SWIG wrapper file, then run `./configure` and `make`
 
-```make
-$(CC) -shared  $(BUILD)/tclinterp.o $(BUILD)/tclinterp_wrap.o /usr/local/lib/libtclstub.a -o $(BUILD)/tclinterp.so
-```
 
-Then the shared file will be located at `/build` folder, the remaining part is to add `tclinterp` to `auto_path`.
+Add `tclinterp` to `auto_path`.
 
 # Supported platforms
 

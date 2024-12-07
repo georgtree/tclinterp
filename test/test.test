@@ -3,7 +3,7 @@ namespace import ::tcltest::*
 
 set script_path [file dirname [file normalize [info script]]]
 lappend auto_path "$script_path/../"
-package require tclinterp
+package require tclinterp 0.1
 namespace import ::tclinterp::*
 
 set epsilon 1e-6

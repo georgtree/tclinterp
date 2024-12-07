@@ -1,4 +1,8 @@
-build
 *.o
 *.a
 *.so
+*_wrap.c
+Makefile
+config.status
+config.log
+pkgIndex.tcl

@@ -1,7 +1,7 @@
 package require argparse
 package provide tclinterp 0.1
 set script_path [file dirname [file normalize [info script]]]
-load [file join $script_path build tclinterp.so]
+
 
 namespace eval ::tclinterp {
 
