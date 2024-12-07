@@ -7,7 +7,13 @@ Introduction - Tcl wrapper for C interpolation procedures
 .SH CONTENT
 .PP
 This package provides tcl wrapper for interpolation procedures\&.
-The source of procedures is \fIInterpolation Routines\fP [URL: https://people\&.math\&.sc\&.edu/Burkardt/c_src/interp/interp\&.html]\&.
+The sources of procedures are:
+.TP
+\(bu
+\fILinear interpolation routines\fP [URL: https://people\&.math\&.sc\&.edu/Burkardt/c_src/interp/interp\&.html]
+.TP
+\(bu
+\fISpline interpolation routines\fP [URL: https://people\&.math\&.sc\&.edu/Burkardt/c_src/spline/spline\&.html]
 .SH "INSTALLATION AND DEPENDENCIES"
 .PP
 For building you need:

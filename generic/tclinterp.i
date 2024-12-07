@@ -4,7 +4,9 @@
     #include "spline.h"
 %}
 %include carrays.i
+%include cpointer.i
 %array_functions(double, doubleArray);
+%pointer_functions(double, doublep);
 extern double *interp_linear (int m, int data_num, double t_data[], double p_data[], int interp_num,
                               double t_interp[]);
 extern int r8vec_ascends_strictly (int n, double x[]);
@@ -15,3 +17,4 @@ extern double *interp_lagrange (int m, int data_num, double t_data[], double p_d
 extern void least_set (int point_num, double x[], double f[], double w[], int nterms, double b[], double c[],
                        double d[]);
 extern double least_val (int nterms, double b[], double c[], double d[], double x);
+extern void least_val2 (int nterms, double b[], double c[], double d[], double x, double *px, double *pxp);

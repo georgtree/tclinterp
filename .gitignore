@@ -6,3 +6,4 @@ Makefile
 config.status
 config.log
 pkgIndex.tcl
+configure~

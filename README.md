@@ -12,7 +12,9 @@
 # Content
 
 This package provides tcl wrapper for interpolation procedures.
-The source of procedures is [Interpolation Routines](https://people.math.sc.edu/Burkardt/c_src/interp/interp.html).
+The sources of procedures are:
+- [Linear interpolation routines](https://people.math.sc.edu/Burkardt/c_src/interp/interp.html)
+- [Spline interpolation routines](https://people.math.sc.edu/Burkardt/c_src/spline/spline.html)
 
 # Installation and dependencies
 

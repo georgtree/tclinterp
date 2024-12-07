@@ -6,7 +6,7 @@ set script_path [file dirname [file normalize [info script]]]
 namespace eval ::tclinterp {
 
     namespace import ::tcl::mathop::*
-    namespace export interpLin1d interpNear1d interpLagr1d interpLeast1d
+    namespace export interpLin1d interpNear1d interpLagr1d interpLeast1d interpLeast1dDer
     interp alias {} dget {} dict get
     interp alias {} @ {} lindex
     interp alias {} = {} expr
@@ -36,7 +36,7 @@ proc ::tclinterp::createArray {list} {
 }
 
 proc ::tclinterp::array2list {array length} {
-    # Convert doubleArray to the list
+    # Converts doubleArray to the list
     #  array - array object
     #  length - number of elements in array
     # Returns: list
@@ -47,12 +47,19 @@ proc ::tclinterp::array2list {array length} {
 }
 
 proc ::tclinterp::deleteArrays {args} {
-    # Convert doubleArray to the list
-    #  array - array object
-    #  length - number of elements in array
-    # Returns: list
+    # Deletes doubleArray objects
+    #  args - list of arrays objects
     foreach arg $args {
         ::tclinterp::delete_doubleArray $arg
+    }
+    return
+}
+
+proc ::tclinterp::deleteDoubleps {args} {
+    # Deletes doublep objects
+    #  args - list of doublep objects
+    foreach arg $args {
+        ::tclinterp::delete_doublep $arg
     }
     return
 }
@@ -190,24 +197,93 @@ proc ::tclinterp::interpLeast1d {args} {
     set b [::tclinterp::new_doubleArray $nterms]
     set c [::tclinterp::new_doubleArray $nterms]
     set d [::tclinterp::new_doubleArray $nterms]
-    set yiArray [::tclinterp::new_doubleArray $xiLen]
     # create polynomial coefficients for given data
     ::tclinterp::least_set $xLen $xArray $yArray $wArray $nterms $b $c $d
     # calculate polynomial value for each xi value
     for {set i 0} {$i<$xiLen} {incr i} {
         set iElem [::tclinterp::least_val $nterms $b $c $d [@ $xi $i]]
-        ::tclinterp::doubleArray_setitem $yiArray $i $iElem
+        lappend yiList $iElem
     }
-    set yiList [::tclinterp::array2list $yiArray $xiLen]
     if {[info exists coeffs]} {
         set bList [::tclinterp::array2list $b $nterms]
         set cList [::tclinterp::array2list $c $nterms]
         set dList [::tclinterp::array2list $d $nterms]
-        ::tclinterp::deleteArrays $b $c $d $xArray $yArray $xiArray $yiArray
+        ::tclinterp::deleteArrays $b $c $d $xArray $yArray $xiArray
         return [dcreate yi $yiList coeffs [dcreate b $bList c $cList d $dList]]
     } else {
-        ::tclinterp::deleteArrays $b $c $d $xArray $yArray $xiArray $yiArray
+        ::tclinterp::deleteArrays $b $c $d $xArray $yArray $xiArray
         return $yiList
+    }
+    return
+}
+
+proc ::tclinterp::interpLeast1dDer {args} {
+    # Does least squares polynomial one-dimensional interpolation with calculation of its derivative.
+    #  -x - list of independent variable (x) values
+    #  -y - list of dependent variable (y) values
+    #  -xi - list of independent variable interpolation (xi) values
+    #  -w - list of weights, optional
+    #  -nterms - number of terms of interpolation polynom, default is 3
+    #  -coeffs - select the alternative output option
+    # Returns: dict of interpolated dependent variable values and its derivatives under `yi` and `yiDer` keys. If
+    # `-coeffs` switch is in args, the output is dictionary that contains `yi` values under `yi` key, `yi` derivatives
+    # under `yiDer` key, and the values of interpolation polynom coefficients under the keys `b`, `c` and `d`.
+    set arguments [argparse {
+        {-x= -required}
+        {-y= -required}
+        {-xi= -required}
+        -w=
+        {-nterms= -default 3}
+        -coeffs
+    }]
+    set xLen [llength $x]
+    set yLen [llength $y]
+    if {[info exists w]} {
+        set wLen [llength $w]
+    } else {
+        set wLen [llength $x]
+        set w [lrepeat $wLen 1]
+    }
+    set xiLen [llength $xi]
+    if {$xLen!=$yLen} {
+        error "Length of x '$xLen' must be equal to y '$yLen'"
+    } elseif {$xLen!=$wLen} {
+        error "Length of x '$xLen' must be equal to w '$wLen'"
+    } elseif {$xiLen==0} {
+        error "Length of interpolation points list xi must be more than zero"
+    } elseif {[string is integer -strict $nterms]==0} {
+        error "Number of terms must be of integer type"
+    } elseif {$nterms<=0} {
+        error "Number of terms must be more than zero"
+    }
+    set xArray [::tclinterp::createArray $x]
+    set yArray [::tclinterp::createArray $y]
+    set wArray [::tclinterp::createArray $w]
+    set xiArray [::tclinterp::createArray $xi]
+    set b [::tclinterp::new_doubleArray $nterms]
+    set c [::tclinterp::new_doubleArray $nterms]
+    set d [::tclinterp::new_doubleArray $nterms]
+    set yiPnt [::tclinterp::new_doublep]
+    set yiDerPnt [::tclinterp::new_doublep]
+    # create polynomial coefficients for given data
+    ::tclinterp::least_set $xLen $xArray $yArray $wArray $nterms $b $c $d
+    # calculate polynomial value and derivative for each xi value
+    for {set i 0} {$i<$xiLen} {incr i} {
+        ::tclinterp::least_val2 $nterms $b $c $d [@ $xi $i] $yiPnt $yiDerPnt
+        lappend yiList [::tclinterp::doublep_value $yiPnt]
+        lappend yiDerList [::tclinterp::doublep_value $yiDerPnt]
+    }
+    if {[info exists coeffs]} {
+        set bList [::tclinterp::array2list $b $nterms]
+        set cList [::tclinterp::array2list $c $nterms]
+        set dList [::tclinterp::array2list $d $nterms]
+        ::tclinterp::deleteArrays $b $c $d $xArray $yArray $xiArray
+        ::tclinterp::deleteDoubleps $yiPnt $yiDerPnt
+        return [dcreate yi $yiList yiDer $yiDerList coeffs [dcreate b $bList c $cList d $dList]]
+    } else {
+        ::tclinterp::deleteArrays $b $c $d $xArray $yArray $xiArray
+        ::tclinterp::deleteDoubleps $yiPnt $yiDerPnt
+        return [dcreate yi $yiList yiDer $yiDerList]
     }
     return
 }
