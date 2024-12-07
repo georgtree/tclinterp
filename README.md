@@ -15,10 +15,12 @@ The source of procedures is [Interpolation Routines](https://people.math.sc.edu/
 
 For building you need:
 - [SWIG of version 4.3](https://www.swig.org/download.html)
-- [gcc compiler](https://gcc.gnu.org/)
-
-For run you need:
 - [Tcl9](https://www.tcl.tk/software/tcltk/9.0.html)
+- [gcc compiler](https://gcc.gnu.org/)
+- [make tool](https://www.gnu.org/software/make/)
+- [autoconf tool](https://www.gnu.org/software/autoconf/)
+
+For run you also need:
 - [argparse](https://wiki.tcl-lang.org/page/argparse)
 - [Tcllib](https://www.tcl.tk/software/tcllib/)
 
@@ -29,9 +31,16 @@ make
 sudo make install
 ```
 
+For Windows build it is strongly recommended to use [MSYS64 UCRT64 environment](https://www.msys2.org/), the above
+steps are identical if you run it from UCRT64 shell. After installing the package, you can move tclinterp package
+folder (usually located in `C:\msys64\ucrt64\lib\`) to path listed in `auto_path` variable of your local Tcl
+installation.
+
 # Supported platforms
 
-For now the only system I've tested it is Kubuntu 24.04 with Tcl9
+I've tested it on:
+- Kubuntu 24.04 with Tcl9
+- Windows 11 in MSYS64 UCRT64 environment with Tcl9
 
 # Documentation
 
