@@ -7,7 +7,7 @@ package require ruff
 package require fileutil
 package require hl_tcl
 set dir [file dirname [file normalize [info script]]]
-set sourceDir "${dir}/../src"
+set sourceDir "${dir}/../"
 source startPage.ruff
 source [file join $sourceDir tclinterp.tcl]
 
@@ -37,6 +37,10 @@ if {[llength $argv] == 0 || "html" in $argv} {
     ruff::document $namespaces \
         -format html \
         -outfile index.html \
+            {*}$common
+    ruff::document $namespaces \
+        -format nroff \
+        -outfile index.n \
         {*}$common
 }
 

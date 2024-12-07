@@ -1,0 +1,304 @@
+'\"
+'\" '\" Copyright (c) George Yashin
+'\"
+.TH "tclinterp" 3tcl 0\&.1 "tcl_tools" "Tcl wrapper for C interpolation procedures"
+.SH NAME
+tclinterp - Commands in namespace tclinterp
+.SH SYNOPSIS
+\fBarray2list\fP \fIarray length\fP
+.br
+\fBcreateArray\fP \fIlist\fP
+.br
+\fBinterpLagr1d\fP \fI?args?\fP
+.br
+\fBinterpLin1d\fP \fI?args?\fP
+.br
+\fBinterpNear1d\fP \fI?args?\fP
+.br
+.SH ::TCLINTERP
+.SH COMMANDS
+.PP
+.RS -4n
+\fBarray2list\fR (::tclinterp)
+.RE
+.PP
+Convert doubleArray to the list
+.RS 4n\fBarray2list\fP \fIarray length\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+array
+Array object\&.
+.TP
+length
+Number of elements in array\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+list
+.PP
+\fBSource\fR
+.PP
+.RS 4n
+.nf
+proc ::tclinterp::array2list {array length} {
+
+    # Convert doubleArray to the list
+    #  array - array object
+    #  length - number of elements in array
+    # Returns: list
+    for {set i 0} {$i<$length} {incr i} {
+        lappend list [::tclinterp::doubleArray_getitem $array $i]
+    }
+    return $list
+}
+.fi
+.RE
+.PP
+.RS -4n
+\fBcreateArray\fR (::tclinterp)
+.RE
+.PP
+Create doubleArray from the list
+.RS 4n\fBcreateArray\fP \fIlist\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+list
+List of values\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+array object
+.PP
+\fBSource\fR
+.PP
+.RS 4n
+.nf
+proc ::tclinterp::createArray {list} {
+
+    # Create doubleArray from the list
+    #  list - list of values
+    # Returns: array object
+    set length [llength $list]
+    set a [::tclinterp::new_doubleArray $length]
+    for {set i 0} {$i<$length} {incr i} {
+        set iElem [@ $list $i]
+        try {
+            ::tclinterp::doubleArray_setitem $a $i $iElem
+        } on error {errmsg erropts} {
+            if {[dget $erropts -errorcode]=="SWIG TypeError"} {
+                error "List must contains only double elements, but get '$iElem'"
+            } else {
+                error "Array creation failed with message '$errmsg' and opts '$erropts'"
+            }
+        }
+    }
+    return $a
+}
+.fi
+.RE
+.PP
+.RS -4n
+\fBinterpLagr1d\fR (::tclinterp)
+.RE
+.PP
+Does Lagrange polynomial one-dimensional interpolation\&.
+.RS 4n\fBinterpLagr1d\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-x
+List of independent variable (x) values\&.
+.TP
+-xi
+List of independent variable interpolation (xi) values\&.
+.TP
+-y
+List of dependent variable (y) values\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+list of interpolated dependent variable values, yi, at xi
+.PP
+\fBSource\fR
+.PP
+.RS 4n
+.nf
+proc ::tclinterp::interpLagr1d {args} {
+
+    # Does Lagrange polynomial one-dimensional interpolation\&.
+    #  -x - list of independent variable (x) values
+    #  -y - list of dependent variable (y) values
+    #  -xi - list of independent variable interpolation (xi) values
+    # Returns: list of interpolated dependent variable values, yi, at xi
+    set arguments [argparse {
+        {-x= -required}
+        {-y= -required}
+        {-xi -required}
+    }]
+    set xLen [llength $x]
+    set yLen [llength $y]
+    set xiLen [llength $xi]
+    if {$xLen!=$yLen} {
+        error "Length of x '$xLen' must be equal to y '$yLen'"
+    } elseif {$xiLen==0} {
+        error "Length of interpolation points list xi must be more than zero"
+    }
+    set xArray [::tclinterp::createArray $x]
+    set yArray [::tclinterp::createArray $y]
+    set xiArray [::tclinterp::createArray $xi]
+    set yiArray [::tclinterp::interp_lagrange 1 $xLen $xArray $yArray $xiLen $xiArray]
+    set yiList [::tclinterp::array2list $yiArray $xiLen]
+    ::tclinterp::delete_doubleArray $xArray
+    ::tclinterp::delete_doubleArray $yArray
+    ::tclinterp::delete_doubleArray $xiArray
+    ::tclinterp::delete_doubleArray $yiArray
+    return $yiList
+}
+.fi
+.RE
+.PP
+.RS -4n
+\fBinterpLin1d\fR (::tclinterp)
+.RE
+.PP
+Does linear one-dimensional interpolation\&.
+.RS 4n\fBinterpLin1d\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-x
+List of independent variable (x) values, must be strictly increasing\&.
+.TP
+-xi
+List of independent variable interpolation (xi) values\&.
+.TP
+-y
+List of dependent variable (y) values\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+list of interpolated dependent variable values, yi, at xi
+.PP
+\fBSource\fR
+.PP
+.RS 4n
+.nf
+proc ::tclinterp::interpLin1d {args} {
+
+    # Does linear one-dimensional interpolation\&.
+    #  -x - list of independent variable (x) values, must be strictly increasing
+    #  -y - list of dependent variable (y) values
+    #  -xi - list of independent variable interpolation (xi) values
+    # Returns: list of interpolated dependent variable values, yi, at xi
+    set arguments [argparse {
+        {-x= -required}
+        {-y= -required}
+        {-xi -required}
+    }]
+    set xLen [llength $x]
+    set yLen [llength $y]
+    set xiLen [llength $xi]
+    if {$xLen!=$yLen} {
+        error "Length of x '$xLen' must be equal to y '$yLen'"
+    } elseif {$xiLen==0} {
+        error "Length of interpolation points list xi must be more than zero"
+    }
+    set xArray [::tclinterp::createArray $x]
+    if {[::tclinterp::r8vec_ascends_strictly $xLen $xArray]==0} {
+        error "Independent variable array x not strictly increasing"
+    }
+    set yArray [::tclinterp::createArray $y]
+    set xiArray [::tclinterp::createArray $xi]
+    set yiArray [::tclinterp::interp_linear 1 $xLen $xArray $yArray $xiLen $xiArray]
+    set yiList [::tclinterp::array2list $yiArray $xiLen]
+    ::tclinterp::delete_doubleArray $xArray
+    ::tclinterp::delete_doubleArray $yArray
+    ::tclinterp::delete_doubleArray $xiArray
+    ::tclinterp::delete_doubleArray $yiArray
+    return $yiList
+}
+.fi
+.RE
+.PP
+.RS -4n
+\fBinterpNear1d\fR (::tclinterp)
+.RE
+.PP
+Does nearest one-dimensional interpolation\&.
+.RS 4n\fBinterpNear1d\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-x
+List of independent variable (x) values\&.
+.TP
+-xi
+List of independent variable interpolation (xi) values\&.
+.TP
+-y
+List of dependent variable (y) values\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+list of interpolated dependent variable values, yi, at xi
+.PP
+\fBSource\fR
+.PP
+.RS 4n
+.nf
+proc ::tclinterp::interpNear1d {args} {
+
+    # Does nearest one-dimensional interpolation\&.
+    #  -x - list of independent variable (x) values
+    #  -y - list of dependent variable (y) values
+    #  -xi - list of independent variable interpolation (xi) values
+    # Returns: list of interpolated dependent variable values, yi, at xi
+    set arguments [argparse {
+        {-x= -required}
+        {-y= -required}
+        {-xi -required}
+    }]
+    set xLen [llength $x]
+    set yLen [llength $y]
+    set xiLen [llength $xi]
+    if {$xLen!=$yLen} {
+        error "Length of x '$xLen' must be equal to y '$yLen'"
+    } elseif {$xiLen==0} {
+        error "Length of interpolation points list xi must be more than zero"
+    }
+    set xArray [::tclinterp::createArray $x]
+    set yArray [::tclinterp::createArray $y]
+    set xiArray [::tclinterp::createArray $xi]
+    set yiArray [::tclinterp::interp_nearest 1 $xLen $xArray $yArray $xiLen $xiArray]
+    set yiList [::tclinterp::array2list $yiArray $xiLen]
+    ::tclinterp::delete_doubleArray $xArray
+    ::tclinterp::delete_doubleArray $yArray
+    ::tclinterp::delete_doubleArray $xiArray
+    ::tclinterp::delete_doubleArray $yiArray
+    return $yiList
+}
+.fi
+.RE
+

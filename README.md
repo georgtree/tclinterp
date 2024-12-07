@@ -13,9 +13,7 @@ The source of procedures is [Interpolation Routines](https://people.math.sc.edu/
 
 # Installation and dependencies
 
-To install this package just unzip code to folder and append `auto_path` variable with location.
-
-For compile you need:
+For building you need:
 - [SWIG of version 4.3](https://www.swig.org/download.html)
 - [gcc compiler](https://gcc.gnu.org/)
 
@@ -24,10 +22,12 @@ For run you need:
 - [argparse](https://wiki.tcl-lang.org/page/argparse)
 - [Tcllib](https://www.tcl.tk/software/tcllib/)
 
-To compile, run `swig_gen.sh` to create SWIG wrapper file, then run `./configure` and `make`
-
-
-Add `tclinterp` to `auto_path`.
+To compile, run `swig_gen.sh` to create SWIG wrapper file, then run 
+```bash
+./configure
+make
+sudo make install
+```
 
 # Supported platforms
 
