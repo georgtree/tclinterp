@@ -1,0 +1,355 @@
+'\"
+'\" '\" Copyright (c) George Yashin
+'\"
+.TH "tclinterp" 3tcl 0\&.1 "tcl_tools" "Tcl wrapper for C interpolation procedures"
+.SH NAME
+tclinterp - Commands in namespace tclinterp
+.SH SYNOPSIS
+\fBarray2list\fP \fIarray length\fP
+.br
+\fBarrays2lists\fP \fIvarNames arrays lengths\fP
+.br
+\fBdeleteArrays\fP \fI?args?\fP
+.br
+\fBdeleteDoubleps\fP \fI?args?\fP
+.br
+\fBinterpLagr1d\fP \fI?args?\fP
+.br
+\fBinterpLeast1d\fP \fI?args?\fP
+.br
+\fBinterpLeast1dDer\fP \fI?args?\fP
+.br
+\fBinterpLin1d\fP \fI?args?\fP
+.br
+\fBinterpNear1d\fP \fI?args?\fP
+.br
+\fBlist2array\fP \fIlist\fP
+.br
+\fBlists2arrays\fP \fIvarNames lists\fP
+.br
+\fBnewArrays\fP \fIvarNames lengths\fP
+.br
+\fBnewDoubleps\fP \fIvarNames\fP
+.br
+.SH ::TCLINTERP
+.SH COMMANDS
+.PP
+.RS -4n
+\fBarray2list\fR (::tclinterp)
+.RE
+.PP
+Create list from doubleArray object
+.RS 4n\fBarray2list\fP \fIarray length\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+array
+DoubleArray object\&.
+.TP
+length
+Number of elements in doubleArray\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+list
+.PP
+.RS -4n
+\fBarrays2lists\fR (::tclinterp)
+.RE
+.PP
+Create lists from doubleArray objects, and set these lists to variables
+.RS 4n\fBarrays2lists\fP \fIvarNames arrays lengths\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+varNames
+List of variables names\&.
+.TP
+arrays
+List of doubleArray\&.
+.TP
+lengths
+List of doubleArray lengths\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+variables with lists are set in caller's scope
+.PP
+.RS -4n
+\fBdeleteArrays\fR (::tclinterp)
+.RE
+.PP
+Deletes doubleArray objects
+.RS 4n\fBdeleteArrays\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+args
+List of arrays objects\&.
+.RE
+.PP
+.RS -4n
+\fBdeleteDoubleps\fR (::tclinterp)
+.RE
+.PP
+Deletes doublep objects
+.RS 4n\fBdeleteDoubleps\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+args
+List of doublep objects\&.
+.RE
+.PP
+.RS -4n
+\fBinterpLagr1d\fR (::tclinterp)
+.RE
+.PP
+Does Lagrange polynomial one-dimensional interpolation\&.
+.RS 4n\fBinterpLagr1d\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-x
+List of independent variable (x) values\&.
+.TP
+-xi
+List of independent variable interpolation (xi) values\&.
+.TP
+-y
+List of dependent variable (y) values\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+list of interpolated dependent variable values, yi, at xi
+.PP
+.RS -4n
+\fBinterpLeast1d\fR (::tclinterp)
+.RE
+.PP
+Does least squares polynomial one-dimensional interpolation\&.
+.RS 4n\fBinterpLeast1d\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-coeffs
+Select the alternative output option\&.
+.TP
+-nterms
+Number of terms of interpolation polynom, default is 3\&.
+.TP
+-w
+List of weights, optional\&.
+.TP
+-x
+List of independent variable (x) values\&.
+.TP
+-xi
+List of independent variable interpolation (xi) values\&.
+.TP
+-y
+List of dependent variable (y) values\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+list of interpolated dependent variable values, yi, at xi\&. If -coeffs switch is in args, the output
+is dictionary that contains yi values under yi key, and the values of interpolation polynom coefficients under
+the keys b, c and d\&.
+.PP
+.RS -4n
+\fBinterpLeast1dDer\fR (::tclinterp)
+.RE
+.PP
+Does least squares polynomial one-dimensional interpolation with calculation of its derivative\&.
+.RS 4n\fBinterpLeast1dDer\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-coeffs
+Select the alternative output option\&.
+.TP
+-nterms
+Number of terms of interpolation polynom, default is 3\&.
+.TP
+-w
+List of weights, optional\&.
+.TP
+-x
+List of independent variable (x) values\&.
+.TP
+-xi
+List of independent variable interpolation (xi) values\&.
+.TP
+-y
+List of dependent variable (y) values\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+dict of interpolated dependent variable values and its derivatives under yi and yiDer keys\&. If
+-coeffs switch is in args, the output is dictionary that contains yi values under yi key, yi derivatives
+under yiDer key, and the values of interpolation polynom coefficients under the keys b, c and d\&.
+.PP
+.RS -4n
+\fBinterpLin1d\fR (::tclinterp)
+.RE
+.PP
+Does linear one-dimensional interpolation\&.
+.RS 4n\fBinterpLin1d\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-x
+List of independent variable (x) values, must be strictly increasing\&.
+.TP
+-xi
+List of independent variable interpolation (xi) values\&.
+.TP
+-y
+List of dependent variable (y) values\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+list of interpolated dependent variable values, yi, at xi
+.PP
+.RS -4n
+\fBinterpNear1d\fR (::tclinterp)
+.RE
+.PP
+Does nearest one-dimensional interpolation\&.
+.RS 4n\fBinterpNear1d\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-x
+List of independent variable (x) values\&.
+.TP
+-xi
+List of independent variable interpolation (xi) values\&.
+.TP
+-y
+List of dependent variable (y) values\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+list of interpolated dependent variable values, yi, at xi
+.PP
+.RS -4n
+\fBlist2array\fR (::tclinterp)
+.RE
+.PP
+Create and initialize doubleArray object from the list
+.RS 4n\fBlist2array\fP \fIlist\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+list
+List of values\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+array object
+.PP
+.RS -4n
+\fBlists2arrays\fR (::tclinterp)
+.RE
+.PP
+Create and initialize doubleArray objects from lists, and set these objects to variables
+.RS 4n\fBlists2arrays\fP \fIvarNames lists\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+varNames
+List of variables names\&.
+.TP
+lists
+List of lists\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+variables with doubleArray objects are set in caller's scope
+.PP
+.RS -4n
+\fBnewArrays\fR (::tclinterp)
+.RE
+.PP
+Creates doubleArray objects, and set these objects to variables
+.RS 4n\fBnewArrays\fP \fIvarNames lengths\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+varNames
+List of variables names\&.
+.TP
+lengths
+List of doubleArray's lengths\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+variables with doubleArray objects are set in caller's scope
+.PP
+.RS -4n
+\fBnewDoubleps\fR (::tclinterp)
+.RE
+.PP
+Creates doubleps objects, and set these objects to variables
+.RS 4n\fBnewDoubleps\fP \fIvarNames\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+varNames
+List of variables names\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+variables with doubleps objects are set in caller's scope
+

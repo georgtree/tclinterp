@@ -15,13 +15,28 @@ set packageVersion 0.1
 
 set title "Tcl wrapper for C interpolation procedures"
 
-set common [list \
+set commonHtml [list \
                 -title $title \
                 -sortnamespaces false \
                 -preamble $startPage \
                 -pagesplit namespace \
                 -recurse false \
                 -includesource true \
+                -pagesplit namespace \
+                -autopunctuate true \
+                -compact false \
+                -includeprivate true \
+                -product tcl_tools \
+                -diagrammer "ditaa --border-width 1" \
+                -version $packageVersion \
+                -copyright "George Yashin" {*}$::argv
+           ]
+set commonNroff [list \
+                -title $title \
+                -sortnamespaces false \
+                -preamble $startPage \
+                -pagesplit namespace \
+                -recurse false \
                 -pagesplit namespace \
                 -autopunctuate true \
                 -compact false \
@@ -37,11 +52,11 @@ if {[llength $argv] == 0 || "html" in $argv} {
     ruff::document $namespaces \
         -format html \
         -outfile index.html \
-            {*}$common
+            {*}$commonHtml
     ruff::document $namespaces \
         -format nroff \
-        -outfile index.n \
-        {*}$common
+        -outfile tclinterp.n \
+        {*}$commonNroff
 }
 
 
