@@ -42,7 +42,7 @@ test interpLin1dProcTest-2 {test procedure of linear 1d interpolation with diffe
 } -body {
     catch {interpLin1d -x $x -y $y -xi $xi} errorStr
     return $errorStr
-} -result "Length of x '6' must be equal to y '5'" -cleanup {
+} -result "Length of y '5' must be equal to x '6'" -cleanup {
     unset x y xi errorStr
 }
 
@@ -115,7 +115,7 @@ test interpNear1dProcTest-2 {test procedure of nearest 1d interpolation with dif
 } -body {
     catch {interpNear1d -x $x -y $y -xi $xi} errorStr
     return $errorStr
-} -result "Length of x '6' must be equal to y '5'" -cleanup {
+} -result "Length of y '5' must be equal to x '6'" -cleanup {
     unset x y xi errorStr
 }
 
@@ -176,7 +176,7 @@ test interpLagr1dProcTest-2 {test procedure of Lagrange polynomial 1d interpolat
 } -body {
     catch {interpLagr1d -x $x -y $y -xi $xi} errorStr
     return $errorStr
-} -result "Length of x '6' must be equal to y '5'" -cleanup {
+} -result "Length of y '5' must be equal to x '6'" -cleanup {
     unset x y xi errorStr
 }
 
@@ -274,6 +274,66 @@ test interpLeast1dProcTest-5 {test procedure of least squares polynomial interpo
     unset x y xi
 }
 
+test interpLeast1dProcTest-6 {test procedure of least squares polynomial interpolation with different lengths of lists}\
+        -setup {
+    set x [list 1 2 3 4 5 6]
+    set y [list 1 4 9 16 25]
+    set xi [list 1.5 2.5 3.5 4.5]
+} -body {
+    catch {interpLeast1d -x $x -y $y -xi $xi -nterms 3} errorStr
+    return $errorStr
+} -result "Length of y '5' must be equal to x '6'" -cleanup {
+    unset x y xi errorStr
+}
+
+test interpLeast1dProcTest-7 {test procedure of least squares polynomial interpolation with zero length of xi} -setup {
+    set x [list 1 2 3 4 5]
+    set y [list 1 4 9 16 25]
+    set xi {}
+} -body {
+    catch {interpLeast1d -x $x -y $y -xi $xi -nterms 3} errorStr
+    return $errorStr
+} -result "Length of interpolation points list xi must be more than zero" -cleanup {
+    unset x y xi errorStr
+}
+
+test interpLeast1dProcTest-8 {test procedure of least squares polynomial interpolation with non-integer -nterms}\
+        -setup {
+    set x [list 1 2 3 4 5]
+    set y [list 1 4 9 16 25]
+    set xi [list 1.5 2.5 3.5 4.5]
+} -body {
+    catch {interpLeast1d -x $x -y $y -xi $xi -nterms 1.0} errorStr
+    return $errorStr
+} -result "Number of terms -nterms '1.0' must be of integer type" -cleanup {
+    unset x y xi errorStr
+}
+
+test interpLeast1dProcTest-9 {test procedure of least squares polynomial interpolation with different lengths of lists}\
+        -setup {
+    set x [list 1 2 3 4 5 6]
+    set y [list 1 4 9 16 25 36]
+    set xi [list 1.5 2.5 3.5 4.5]
+    set w [list 1 1 1]        
+} -body {
+    catch {interpLeast1d -x $x -y $y -xi $xi -w $w -nterms 3} errorStr
+    return $errorStr
+} -result "Length of w '3' must be equal to x '6'" -cleanup {
+    unset x y xi errorStr
+}
+
+test interpLeast1dProcTest-10 {test procedure of least squares polynomial interpolation with zero -nterms}\
+        -setup {
+    set x [list 1 2 3 4 5]
+    set y [list 1 4 9 16 25]
+    set xi [list 1.5 2.5 3.5 4.5]
+} -body {
+    catch {interpLeast1d -x $x -y $y -xi $xi -nterms 0} errorStr
+    return $errorStr
+} -result "Number of terms -nterms must be more than zero" -cleanup {
+    unset x y xi errorStr
+}
+
 ### Least squares polynomial interpolation with derivative tests
 
 test interpLeast1dDerProcTest-1 {test procedure of least squares polynomial interpolation with derivative} -setup {
@@ -320,6 +380,66 @@ test interpLeast1dDerProcTest-4 {test procedure of least squares polynomial inte
 } -result [list -3 -2.8 -2.6 -2.4 -2.2 -2 -1.8 -1.6 -1.4 -1.2 -1 -0.8 -0.6 -0.4 -0.2 1.66533e-15 0.2 0.4 0.6 0.8 1]\
         -cleanup {
     unset x y xi
+}
+
+test interpLeast1dDerProcTest-5 {test procedure of least squares polynomial interpolation with different lengths of lists}\
+        -setup {
+    set x [list 1 2 3 4 5 6]
+    set y [list 1 4 9 16 25]
+    set xi [list 1.5 2.5 3.5 4.5]
+} -body {
+    catch {interpLeast1dDer -x $x -y $y -xi $xi -nterms 3} errorStr
+    return $errorStr
+} -result "Length of y '5' must be equal to x '6'" -cleanup {
+    unset x y xi errorStr
+}
+
+test interpLeast1dDerProcTest-6 {test procedure of least squares polynomial interpolation with zero length of xi} -setup {
+    set x [list 1 2 3 4 5]
+    set y [list 1 4 9 16 25]
+    set xi {}
+} -body {
+    catch {interpLeast1dDer -x $x -y $y -xi $xi -nterms 3} errorStr
+    return $errorStr
+} -result "Length of interpolation points list xi must be more than zero" -cleanup {
+    unset x y xi errorStr
+}
+
+test interpLeast1dDerProcTest-7 {test procedure of least squares polynomial interpolation with non-integer -nterms}\
+        -setup {
+    set x [list 1 2 3 4 5]
+    set y [list 1 4 9 16 25]
+    set xi [list 1.5 2.5 3.5 4.5]
+} -body {
+    catch {interpLeast1dDer -x $x -y $y -xi $xi -nterms 1.0} errorStr
+    return $errorStr
+} -result "Number of terms -nterms '1.0' must be of integer type" -cleanup {
+    unset x y xi errorStr
+}
+
+test interpLeast1dDerProcTest-8 {test procedure of least squares polynomial interpolation with different lengths of lists}\
+        -setup {
+    set x [list 1 2 3 4 5 6]
+    set y [list 1 4 9 16 25 36]
+    set xi [list 1.5 2.5 3.5 4.5]
+    set w [list 1 1 1]        
+} -body {
+    catch {interpLeast1dDer -x $x -y $y -xi $xi -w $w -nterms 3} errorStr
+    return $errorStr
+} -result "Length of w '3' must be equal to x '6'" -cleanup {
+    unset x y xi errorStr
+}
+
+test interpLeast1dDerProcTest-9 {test procedure of least squares polynomial interpolation with zero -nterms}\
+        -setup {
+    set x [list 1 2 3 4 5]
+    set y [list 1 4 9 16 25]
+    set xi [list 1.5 2.5 3.5 4.5]
+} -body {
+    catch {interpLeast1dDer -x $x -y $y -xi $xi -nterms 0} errorStr
+    return $errorStr
+} -result "Number of terms -nterms must be more than zero" -cleanup {
+    unset x y xi errorStr
 }
 
 cleanupTests

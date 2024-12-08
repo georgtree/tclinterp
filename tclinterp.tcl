@@ -79,7 +79,7 @@ proc ::tclinterp::interpLin1d {args} {
     set yLen [llength $y]
     set xiLen [llength $xi]
     if {$xLen!=$yLen} {
-        error "Length of x '$xLen' must be equal to y '$yLen'"
+        error "Length of y '$yLen' must be equal to x '$xLen'"
     } elseif {$xiLen==0} {
         error "Length of interpolation points list xi must be more than zero"
     }
@@ -110,7 +110,7 @@ proc ::tclinterp::interpNear1d {args} {
     set yLen [llength $y]
     set xiLen [llength $xi]
     if {$xLen!=$yLen} {
-        error "Length of x '$xLen' must be equal to y '$yLen'"
+        error "Length of y '$yLen' must be equal to x '$xLen'"
     } elseif {$xiLen==0} {
         error "Length of interpolation points list xi must be more than zero"
     }
@@ -138,7 +138,7 @@ proc ::tclinterp::interpLagr1d {args} {
     set yLen [llength $y]
     set xiLen [llength $xi]
     if {$xLen!=$yLen} {
-        error "Length of x '$xLen' must be equal to y '$yLen'"
+        error "Length of y '$yLen' must be equal to x '$xLen'"
     } elseif {$xiLen==0} {
         error "Length of interpolation points list xi must be more than zero"
     }
@@ -180,15 +180,15 @@ proc ::tclinterp::interpLeast1d {args} {
     }
     set xiLen [llength $xi]
     if {$xLen!=$yLen} {
-        error "Length of x '$xLen' must be equal to y '$yLen'"
+        error "Length of y '$yLen' must be equal to x '$xLen'"
     } elseif {$xLen!=$wLen} {
-        error "Length of x '$xLen' must be equal to w '$wLen'"
+        error "Length of w '$wLen' must be equal to x '$xLen'"
     } elseif {$xiLen==0} {
         error "Length of interpolation points list xi must be more than zero"
     } elseif {[string is integer -strict $nterms]==0} {
-        error "Number of terms must be of integer type"
+        error "Number of terms -nterms '$nterms' must be of integer type"
     } elseif {$nterms<=0} {
-        error "Number of terms must be more than zero"
+        error "Number of terms -nterms must be more than zero"
     }
     set xArray [::tclinterp::createArray $x]
     set yArray [::tclinterp::createArray $y]
@@ -246,15 +246,15 @@ proc ::tclinterp::interpLeast1dDer {args} {
     }
     set xiLen [llength $xi]
     if {$xLen!=$yLen} {
-        error "Length of x '$xLen' must be equal to y '$yLen'"
+        error "Length of y '$yLen' must be equal to x '$xLen'"
     } elseif {$xLen!=$wLen} {
-        error "Length of x '$xLen' must be equal to w '$wLen'"
+        error "Length of w '$wLen' must be equal to x '$xLen'"
     } elseif {$xiLen==0} {
         error "Length of interpolation points list xi must be more than zero"
     } elseif {[string is integer -strict $nterms]==0} {
-        error "Number of terms must be of integer type"
+        error "Number of terms -nterms '$nterms' must be of integer type"
     } elseif {$nterms<=0} {
-        error "Number of terms must be more than zero"
+        error "Number of terms -nterms must be more than zero"
     }
     set xArray [::tclinterp::createArray $x]
     set yArray [::tclinterp::createArray $y]
