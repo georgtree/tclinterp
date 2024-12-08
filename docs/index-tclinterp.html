@@ -19,54 +19,52 @@
 <div style='clear:both;'></div>
 <h3 class='ruffproc'><a name='::tclinterp::array2list'>array2list</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
 <div style='clear:both;'></div>
-<p class='ruff'>Converts doubleArray to the list</p>
+<p class='ruff'>Create list from doubleArray object</p>
 <div class='ruff_synopsis'><span class='ruff_cmd'>array2list</span> <span class='ruff_arg'>array length</span></div>
 <h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
-<tr><td><code><b><font color=#923B23>array</font></b></code></td><td>Array object.</td></tr>
-<tr><td><code>length</code></td><td>Number of elements in array.</td></tr>
+<tr><td><code><b><font color=#923B23>array</font></b></code></td><td>DoubleArray object.</td></tr>
+<tr><td><code>length</code></td><td>Number of elements in doubleArray.</td></tr>
 </table>
 <h5 class='ruff'>Return value</h5><p class='ruff'>list</p>
 <div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_array2list' href="javascript:toggleSource('tclinterp_array2list')">Show source</a></p>
 <div id='tclinterp_array2list' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::array2list {<b><font color=#923B23>array</font></b> length} {
 
-    <i><font color=#4b5d50># Converts doubleArray to the list</font></i>
-    <i><font color=#4b5d50>#  array - array object</font></i>
-    <i><font color=#4b5d50>#  length - number of elements in array</font></i>
+    <i><font color=#4b5d50># Create list from doubleArray object</font></i>
+    <i><font color=#4b5d50>#  array - doubleArray object</font></i>
+    <i><font color=#4b5d50>#  length - number of elements in doubleArray</font></i>
     <i><font color=#4b5d50># Returns: list</font></i>
     <b><font color=#923B23>for</font></b> {<b><font color=#923B23>set</font></b> i 0} {<font color=#4A181B>$i</font>&lt;<font color=#4A181B>$length</font>} {<b><font color=#923B23>incr</font></b> i} {
         <b><font color=#923B23>lappend</font></b> list [::tclinterp::doubleArray_getitem <font color=#4A181B>$array</font> <font color=#4A181B>$i</font>]
     }
     <b><font color=#ca14ca>return</font></b> <font color=#4A181B>$list</font>
 }</pre></div>
-</div><h3 class='ruffproc'><a name='::tclinterp::createArray'>createArray</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
+</div><h3 class='ruffproc'><a name='::tclinterp::arrays2lists'>arrays2lists</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
 <div style='clear:both;'></div>
-<p class='ruff'>Create doubleArray from the list</p>
-<div class='ruff_synopsis'><span class='ruff_cmd'>createArray</span> <span class='ruff_arg'>list</span></div>
+<p class='ruff'>Create lists from doubleArray objects, and set these lists to variables</p>
+<div class='ruff_synopsis'><span class='ruff_cmd'>arrays2lists</span> <span class='ruff_arg'>varNames arrays lengths</span></div>
 <h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
-<tr><td><code><b><font color=#923B23>list</font></b></code></td><td>List of values.</td></tr>
+<tr><td><code>varNames</code></td><td>List of variables names.</td></tr>
+<tr><td><code>arrays</code></td><td>List of doubleArray.</td></tr>
+<tr><td><code>lengths</code></td><td>List of doubleArray lengths.</td></tr>
 </table>
-<h5 class='ruff'>Return value</h5><p class='ruff'>array object</p>
-<div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_createArray' href="javascript:toggleSource('tclinterp_createArray')">Show source</a></p>
-<div id='tclinterp_createArray' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::createArray {<b><font color=#923B23>list</font></b>} {
+<h5 class='ruff'>Return value</h5><p class='ruff'>variables with lists are set in caller's scope</p>
+<div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_arrays2lists' href="javascript:toggleSource('tclinterp_arrays2lists')">Show source</a></p>
+<div id='tclinterp_arrays2lists' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::arrays2lists {varNames arrays lengths} {
 
-    <i><font color=#4b5d50># Create doubleArray from the list</font></i>
-    <i><font color=#4b5d50>#  list - list of values</font></i>
-    <i><font color=#4b5d50># Returns: array object</font></i>
-    <b><font color=#923B23>set</font></b> length [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$list</font>]
-    <b><font color=#923B23>set</font></b> a [::tclinterp::new_doubleArray <font color=#4A181B>$length</font>]
-    <b><font color=#923B23>for</font></b> {<b><font color=#923B23>set</font></b> i 0} {<font color=#4A181B>$i</font>&lt;<font color=#4A181B>$length</font>} {<b><font color=#923B23>incr</font></b> i} {
-        <b><font color=#923B23>set</font></b> iElem [@ <font color=#4A181B>$list</font> <font color=#4A181B>$i</font>]
-        <b><font color=#923B23>try</font></b> {
-            ::tclinterp::doubleArray_setitem <font color=#4A181B>$a</font> <font color=#4A181B>$i</font> <font color=#4A181B>$iElem</font>
-        } on error {errmsg erropts} {
-            <b><font color=#923B23>if</font></b> {[dget <font color=#4A181B>$erropts</font> <font color=#463e11>-errorcode</font>]==<font color=#035103>&quot;SWIG TypeError&quot;</font>} {
-                <b><font color=#923B23>error</font></b> <font color=#035103>&quot;List must contains only double elements, but get '<font color=#4A181B>$</font>iElem'&quot;</font>
-            } <b><font color=#923B23>else</font></b> {
-                <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Array creation failed with message '<font color=#4A181B>$</font>errmsg' and opts '<font color=#4A181B>$</font>erropts'&quot;</font>
-            }
-        }
+    <i><font color=#4b5d50># Create lists from doubleArray objects, and set these lists to variables</font></i>
+    <i><font color=#4b5d50>#  varNames - list of variables names</font></i>
+    <i><font color=#4b5d50>#  arrays - list of doubleArray</font></i>
+    <i><font color=#4b5d50>#  lengths - list of doubleArray lengths</font></i>
+    <i><font color=#4b5d50># Returns: variables with lists are set in caller's scope</font></i>
+    <b><font color=#923B23>if</font></b> {[<b><font color=#923B23>llength</font></b> <font color=#4A181B>$varNames</font>]!=[<b><font color=#923B23>llength</font></b> <font color=#4A181B>$arrays</font>]} {
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of varName list '<font color=#4A181B>[</font>llength <font color=#4A181B>$</font>varNames<font color=#4A181B>]</font>' must be equal to length of array list '<font color=#4A181B>[</font>llength <font color=#4A181B>$</font>arrays<font color=#4A181B>]</font>'&quot;</font>
+    } <b><font color=#923B23>elseif</font></b> {[<b><font color=#923B23>llength</font></b> <font color=#4A181B>$varNames</font>]!=[<b><font color=#923B23>llength</font></b> <font color=#4A181B>$lengths</font>]} {
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of varName list '<font color=#4A181B>[</font>llength <font color=#4A181B>$</font>varNames<font color=#4A181B>]</font>' must be equal to length of lengths list '<font color=#4A181B>[</font>llength <font color=#4A181B>$</font>lengths<font color=#4A181B>]</font>'&quot;</font>
     }
-    <b><font color=#ca14ca>return</font></b> <font color=#4A181B>$a</font>
+    <b><font color=#923B23>foreach</font></b> varName <font color=#4A181B>$varNames</font> array <font color=#4A181B>$arrays</font> length <font color=#4A181B>$lengths</font> {
+        <b><font color=#923B23>uplevel</font></b> 1 [<b><font color=#923B23>list</font></b> set <font color=#4A181B>$varName</font> [::tclinterp::array2list <font color=#4A181B>$array</font> <font color=#4A181B>$length</font>]]
+    }
+    <b><font color=#ca14ca>return</font></b>
 }</pre></div>
 </div><h3 class='ruffproc'><a name='::tclinterp::deleteArrays'>deleteArrays</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
 <div style='clear:both;'></div>
@@ -129,13 +127,11 @@
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>set</font></b> xiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$xi</font>]
     <b><font color=#923B23>if</font></b> {<font color=#4A181B>$xLen</font>!=<font color=#4A181B>$yLen</font>} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of x '<font color=#4A181B>$</font>xLen' must be equal to y '<font color=#4A181B>$</font>yLen'&quot;</font>
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of y '<font color=#4A181B>$</font>yLen' must be equal to x '<font color=#4A181B>$</font>xLen'&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xiLen</font>==0} {
         <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of interpolation points list xi must be more than zero&quot;</font>
     }
-    <b><font color=#923B23>set</font></b> xArray [::tclinterp::createArray <font color=#4A181B>$x</font>]
-    <b><font color=#923B23>set</font></b> yArray [::tclinterp::createArray <font color=#4A181B>$y</font>]
-    <b><font color=#923B23>set</font></b> xiArray [::tclinterp::createArray <font color=#4A181B>$xi</font>]
+    ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> xArray yArray xiArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$x</font> <font color=#4A181B>$y</font> <font color=#4A181B>$xi</font>]
     <b><font color=#923B23>set</font></b> yiArray [::tclinterp::interp_lagrange 1 <font color=#4A181B>$xLen</font> <font color=#4A181B>$xArray</font> <font color=#4A181B>$yArray</font> <font color=#4A181B>$xiLen</font> <font color=#4A181B>$xiArray</font>]
     <b><font color=#923B23>set</font></b> yiList [::tclinterp::array2list <font color=#4A181B>$yiArray</font> <font color=#4A181B>$xiLen</font>]
     ::tclinterp::deleteArrays <font color=#4A181B>$xArray</font> <font color=#4A181B>$yArray</font> <font color=#4A181B>$xiArray</font> <font color=#4A181B>$yiArray</font>
@@ -185,23 +181,18 @@
     }
     <b><font color=#923B23>set</font></b> xiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$xi</font>]
     <b><font color=#923B23>if</font></b> {<font color=#4A181B>$xLen</font>!=<font color=#4A181B>$yLen</font>} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of x '<font color=#4A181B>$</font>xLen' must be equal to y '<font color=#4A181B>$</font>yLen'&quot;</font>
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of y '<font color=#4A181B>$</font>yLen' must be equal to x '<font color=#4A181B>$</font>xLen'&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xLen</font>!=<font color=#4A181B>$wLen</font>} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of x '<font color=#4A181B>$</font>xLen' must be equal to w '<font color=#4A181B>$</font>wLen'&quot;</font>
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of w '<font color=#4A181B>$</font>wLen' must be equal to x '<font color=#4A181B>$</font>xLen'&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xiLen</font>==0} {
         <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of interpolation points list xi must be more than zero&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {[<b><font color=#923B23>string</font></b> is integer <font color=#463e11>-strict</font> <font color=#4A181B>$nterms</font>]==0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Number of terms must be of integer type&quot;</font>
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Number of terms -nterms '<font color=#4A181B>$</font>nterms' must be of integer type&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$nterms</font>&lt;=0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Number of terms must be more than zero&quot;</font>
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Number of terms -nterms must be more than zero&quot;</font>
     }
-    <b><font color=#923B23>set</font></b> xArray [::tclinterp::createArray <font color=#4A181B>$x</font>]
-    <b><font color=#923B23>set</font></b> yArray [::tclinterp::createArray <font color=#4A181B>$y</font>]
-    <b><font color=#923B23>set</font></b> wArray [::tclinterp::createArray <font color=#4A181B>$w</font>]
-    <b><font color=#923B23>set</font></b> xiArray [::tclinterp::createArray <font color=#4A181B>$xi</font>]
-    <b><font color=#923B23>set</font></b> b [::tclinterp::new_doubleArray <font color=#4A181B>$nterms</font>]
-    <b><font color=#923B23>set</font></b> c [::tclinterp::new_doubleArray <font color=#4A181B>$nterms</font>]
-    <b><font color=#923B23>set</font></b> d [::tclinterp::new_doubleArray <font color=#4A181B>$nterms</font>]
+    ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> xArray yArray wArray xiArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$x</font> <font color=#4A181B>$y</font> <font color=#4A181B>$w</font> <font color=#4A181B>$xi</font>]
+    ::tclinterp::newArrays [<b><font color=#923B23>list</font></b> b c d] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$nterms</font> <font color=#4A181B>$nterms</font> <font color=#4A181B>$nterms</font>]
     <i><font color=#4b5d50># create polynomial coefficients for given data</font></i>
     ::tclinterp::least_set <font color=#4A181B>$xLen</font> <font color=#4A181B>$xArray</font> <font color=#4A181B>$yArray</font> <font color=#4A181B>$wArray</font> <font color=#4A181B>$nterms</font> <font color=#4A181B>$b</font> <font color=#4A181B>$c</font> <font color=#4A181B>$d</font>
     <i><font color=#4b5d50># calculate polynomial value for each xi value</font></i>
@@ -210,9 +201,7 @@
         <b><font color=#923B23>lappend</font></b> yiList <font color=#4A181B>$iElem</font>
     }
     <b><font color=#923B23>if</font></b> {[<b><font color=#923B23>info</font></b> exists coeffs]} {
-        <b><font color=#923B23>set</font></b> bList [::tclinterp::array2list <font color=#4A181B>$b</font> <font color=#4A181B>$nterms</font>]
-        <b><font color=#923B23>set</font></b> cList [::tclinterp::array2list <font color=#4A181B>$c</font> <font color=#4A181B>$nterms</font>]
-        <b><font color=#923B23>set</font></b> dList [::tclinterp::array2list <font color=#4A181B>$d</font> <font color=#4A181B>$nterms</font>]
+        ::tclinterp::arrays2lists [<b><font color=#923B23>list</font></b> bList cList dList] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$b</font> <font color=#4A181B>$c</font> <font color=#4A181B>$d</font>] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$nterms</font> <font color=#4A181B>$nterms</font> <font color=#4A181B>$nterms</font>]
         ::tclinterp::deleteArrays <font color=#4A181B>$b</font> <font color=#4A181B>$c</font> <font color=#4A181B>$d</font> <font color=#4A181B>$xArray</font> <font color=#4A181B>$yArray</font> <font color=#4A181B>$xiArray</font>
         <b><font color=#ca14ca>return</font></b> [dcreate yi <font color=#4A181B>$yiList</font> coeffs [dcreate b <font color=#4A181B>$bList</font> c <font color=#4A181B>$cList</font> d <font color=#4A181B>$dList</font>]]
     } <b><font color=#923B23>else</font></b> {
@@ -265,25 +254,19 @@
     }
     <b><font color=#923B23>set</font></b> xiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$xi</font>]
     <b><font color=#923B23>if</font></b> {<font color=#4A181B>$xLen</font>!=<font color=#4A181B>$yLen</font>} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of x '<font color=#4A181B>$</font>xLen' must be equal to y '<font color=#4A181B>$</font>yLen'&quot;</font>
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of y '<font color=#4A181B>$</font>yLen' must be equal to x '<font color=#4A181B>$</font>xLen'&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xLen</font>!=<font color=#4A181B>$wLen</font>} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of x '<font color=#4A181B>$</font>xLen' must be equal to w '<font color=#4A181B>$</font>wLen'&quot;</font>
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of w '<font color=#4A181B>$</font>wLen' must be equal to x '<font color=#4A181B>$</font>xLen'&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xiLen</font>==0} {
         <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of interpolation points list xi must be more than zero&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {[<b><font color=#923B23>string</font></b> is integer <font color=#463e11>-strict</font> <font color=#4A181B>$nterms</font>]==0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Number of terms must be of integer type&quot;</font>
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Number of terms -nterms '<font color=#4A181B>$</font>nterms' must be of integer type&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$nterms</font>&lt;=0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Number of terms must be more than zero&quot;</font>
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Number of terms -nterms must be more than zero&quot;</font>
     }
-    <b><font color=#923B23>set</font></b> xArray [::tclinterp::createArray <font color=#4A181B>$x</font>]
-    <b><font color=#923B23>set</font></b> yArray [::tclinterp::createArray <font color=#4A181B>$y</font>]
-    <b><font color=#923B23>set</font></b> wArray [::tclinterp::createArray <font color=#4A181B>$w</font>]
-    <b><font color=#923B23>set</font></b> xiArray [::tclinterp::createArray <font color=#4A181B>$xi</font>]
-    <b><font color=#923B23>set</font></b> b [::tclinterp::new_doubleArray <font color=#4A181B>$nterms</font>]
-    <b><font color=#923B23>set</font></b> c [::tclinterp::new_doubleArray <font color=#4A181B>$nterms</font>]
-    <b><font color=#923B23>set</font></b> d [::tclinterp::new_doubleArray <font color=#4A181B>$nterms</font>]
-    <b><font color=#923B23>set</font></b> yiPnt [::tclinterp::new_doublep]
-    <b><font color=#923B23>set</font></b> yiDerPnt [::tclinterp::new_doublep]
+    ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> xArray yArray wArray xiArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$x</font> <font color=#4A181B>$y</font> <font color=#4A181B>$w</font> <font color=#4A181B>$xi</font>]
+    ::tclinterp::newArrays [<b><font color=#923B23>list</font></b> b c d] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$nterms</font> <font color=#4A181B>$nterms</font> <font color=#4A181B>$nterms</font>]
+    ::tclinterp::newDoubleps [<b><font color=#923B23>list</font></b> yiPnt yiDerPnt]
     <i><font color=#4b5d50># create polynomial coefficients for given data</font></i>
     ::tclinterp::least_set <font color=#4A181B>$xLen</font> <font color=#4A181B>$xArray</font> <font color=#4A181B>$yArray</font> <font color=#4A181B>$wArray</font> <font color=#4A181B>$nterms</font> <font color=#4A181B>$b</font> <font color=#4A181B>$c</font> <font color=#4A181B>$d</font>
     <i><font color=#4b5d50># calculate polynomial value and derivative for each xi value</font></i>
@@ -293,9 +276,7 @@
         <b><font color=#923B23>lappend</font></b> yiDerList [::tclinterp::doublep_value <font color=#4A181B>$yiDerPnt</font>]
     }
     <b><font color=#923B23>if</font></b> {[<b><font color=#923B23>info</font></b> exists coeffs]} {
-        <b><font color=#923B23>set</font></b> bList [::tclinterp::array2list <font color=#4A181B>$b</font> <font color=#4A181B>$nterms</font>]
-        <b><font color=#923B23>set</font></b> cList [::tclinterp::array2list <font color=#4A181B>$c</font> <font color=#4A181B>$nterms</font>]
-        <b><font color=#923B23>set</font></b> dList [::tclinterp::array2list <font color=#4A181B>$d</font> <font color=#4A181B>$nterms</font>]
+        ::tclinterp::arrays2lists [<b><font color=#923B23>list</font></b> bList cList dList] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$b</font> <font color=#4A181B>$c</font> <font color=#4A181B>$d</font>] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$nterms</font> <font color=#4A181B>$nterms</font> <font color=#4A181B>$nterms</font>]
         ::tclinterp::deleteArrays <font color=#4A181B>$b</font> <font color=#4A181B>$c</font> <font color=#4A181B>$d</font> <font color=#4A181B>$xArray</font> <font color=#4A181B>$yArray</font> <font color=#4A181B>$xiArray</font>
         ::tclinterp::deleteDoubleps <font color=#4A181B>$yiPnt</font> <font color=#4A181B>$yiDerPnt</font>
         <b><font color=#ca14ca>return</font></b> [dcreate yi <font color=#4A181B>$yiList</font> yiDer <font color=#4A181B>$yiDerList</font> coeffs [dcreate b <font color=#4A181B>$bList</font> c <font color=#4A181B>$cList</font> d <font color=#4A181B>$dList</font>]]
@@ -333,16 +314,14 @@
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>set</font></b> xiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$xi</font>]
     <b><font color=#923B23>if</font></b> {<font color=#4A181B>$xLen</font>!=<font color=#4A181B>$yLen</font>} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of x '<font color=#4A181B>$</font>xLen' must be equal to y '<font color=#4A181B>$</font>yLen'&quot;</font>
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of y '<font color=#4A181B>$</font>yLen' must be equal to x '<font color=#4A181B>$</font>xLen'&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xiLen</font>==0} {
         <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of interpolation points list xi must be more than zero&quot;</font>
     }
-    <b><font color=#923B23>set</font></b> xArray [::tclinterp::createArray <font color=#4A181B>$x</font>]
+    ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> xArray yArray xiArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$x</font> <font color=#4A181B>$y</font> <font color=#4A181B>$xi</font>]
     <b><font color=#923B23>if</font></b> {[::tclinterp::r8vec_ascends_strictly <font color=#4A181B>$xLen</font> <font color=#4A181B>$xArray</font>]==0} {
         <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Independent variable array x not strictly increasing&quot;</font>
     }
-    <b><font color=#923B23>set</font></b> yArray [::tclinterp::createArray <font color=#4A181B>$y</font>]
-    <b><font color=#923B23>set</font></b> xiArray [::tclinterp::createArray <font color=#4A181B>$xi</font>]
     <b><font color=#923B23>set</font></b> yiArray [::tclinterp::interp_linear 1 <font color=#4A181B>$xLen</font> <font color=#4A181B>$xArray</font> <font color=#4A181B>$yArray</font> <font color=#4A181B>$xiLen</font> <font color=#4A181B>$xiArray</font>]
     <b><font color=#923B23>set</font></b> yiList [::tclinterp::array2list <font color=#4A181B>$yiArray</font> <font color=#4A181B>$xiLen</font>]
     ::tclinterp::deleteArrays <font color=#4A181B>$xArray</font> <font color=#4A181B>$yArray</font> <font color=#4A181B>$xiArray</font> <font color=#4A181B>$yiArray</font>
@@ -375,24 +354,119 @@
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>set</font></b> xiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$xi</font>]
     <b><font color=#923B23>if</font></b> {<font color=#4A181B>$xLen</font>!=<font color=#4A181B>$yLen</font>} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of x '<font color=#4A181B>$</font>xLen' must be equal to y '<font color=#4A181B>$</font>yLen'&quot;</font>
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of y '<font color=#4A181B>$</font>yLen' must be equal to x '<font color=#4A181B>$</font>xLen'&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xiLen</font>==0} {
         <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of interpolation points list xi must be more than zero&quot;</font>
     }
-    <b><font color=#923B23>set</font></b> xArray [::tclinterp::createArray <font color=#4A181B>$x</font>]
-    <b><font color=#923B23>set</font></b> yArray [::tclinterp::createArray <font color=#4A181B>$y</font>]
-    <b><font color=#923B23>set</font></b> xiArray [::tclinterp::createArray <font color=#4A181B>$xi</font>]
+    ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> xArray yArray xiArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$x</font> <font color=#4A181B>$y</font> <font color=#4A181B>$xi</font>]
     <b><font color=#923B23>set</font></b> yiArray [::tclinterp::interp_nearest 1 <font color=#4A181B>$xLen</font> <font color=#4A181B>$xArray</font> <font color=#4A181B>$yArray</font> <font color=#4A181B>$xiLen</font> <font color=#4A181B>$xiArray</font>]
     <b><font color=#923B23>set</font></b> yiList [::tclinterp::array2list <font color=#4A181B>$yiArray</font> <font color=#4A181B>$xiLen</font>]
     ::tclinterp::deleteArrays <font color=#4A181B>$xArray</font> <font color=#4A181B>$yArray</font> <font color=#4A181B>$xiArray</font> <font color=#4A181B>$yiArray</font>
     <b><font color=#ca14ca>return</font></b> <font color=#4A181B>$yiList</font>
 }</pre></div>
+</div><h3 class='ruffproc'><a name='::tclinterp::list2array'>list2array</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
+<div style='clear:both;'></div>
+<p class='ruff'>Create and initialize doubleArray object from the list</p>
+<div class='ruff_synopsis'><span class='ruff_cmd'>list2array</span> <span class='ruff_arg'>list</span></div>
+<h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
+<tr><td><code><b><font color=#923B23>list</font></b></code></td><td>List of values.</td></tr>
+</table>
+<h5 class='ruff'>Return value</h5><p class='ruff'>array object</p>
+<div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_list2array' href="javascript:toggleSource('tclinterp_list2array')">Show source</a></p>
+<div id='tclinterp_list2array' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::list2array {<b><font color=#923B23>list</font></b>} {
+
+    <i><font color=#4b5d50># Create and initialize doubleArray object from the list</font></i>
+    <i><font color=#4b5d50>#  list - list of values</font></i>
+    <i><font color=#4b5d50># Returns: array object</font></i>
+    <b><font color=#923B23>set</font></b> length [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$list</font>]
+    <b><font color=#923B23>set</font></b> a [::tclinterp::new_doubleArray <font color=#4A181B>$length</font>]
+    <b><font color=#923B23>for</font></b> {<b><font color=#923B23>set</font></b> i 0} {<font color=#4A181B>$i</font>&lt;<font color=#4A181B>$length</font>} {<b><font color=#923B23>incr</font></b> i} {
+        <b><font color=#923B23>set</font></b> iElem [@ <font color=#4A181B>$list</font> <font color=#4A181B>$i</font>]
+        <b><font color=#923B23>try</font></b> {
+            ::tclinterp::doubleArray_setitem <font color=#4A181B>$a</font> <font color=#4A181B>$i</font> <font color=#4A181B>$iElem</font>
+        } on error {errmsg erropts} {
+            <b><font color=#923B23>if</font></b> {[dget <font color=#4A181B>$erropts</font> <font color=#463e11>-errorcode</font>]==<font color=#035103>&quot;SWIG TypeError&quot;</font>} {
+                <b><font color=#923B23>error</font></b> <font color=#035103>&quot;List must contains only double elements, but get '<font color=#4A181B>$</font>iElem'&quot;</font>
+            } <b><font color=#923B23>else</font></b> {
+                <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Array creation failed with message '<font color=#4A181B>$</font>errmsg' and opts '<font color=#4A181B>$</font>erropts'&quot;</font>
+            }
+        }
+    }
+    <b><font color=#ca14ca>return</font></b> <font color=#4A181B>$a</font>
+}</pre></div>
+</div><h3 class='ruffproc'><a name='::tclinterp::lists2arrays'>lists2arrays</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
+<div style='clear:both;'></div>
+<p class='ruff'>Create and initialize doubleArray objects from lists, and set these objects to variables</p>
+<div class='ruff_synopsis'><span class='ruff_cmd'>lists2arrays</span> <span class='ruff_arg'>varNames lists</span></div>
+<h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
+<tr><td><code>varNames</code></td><td>List of variables names.</td></tr>
+<tr><td><code>lists</code></td><td>List of lists.</td></tr>
+</table>
+<h5 class='ruff'>Return value</h5><p class='ruff'>variables with doubleArray objects are set in caller's scope</p>
+<div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_lists2arrays' href="javascript:toggleSource('tclinterp_lists2arrays')">Show source</a></p>
+<div id='tclinterp_lists2arrays' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::lists2arrays {varNames lists} {
+
+    <i><font color=#4b5d50># Create and initialize doubleArray objects from lists, and set these objects to variables</font></i>
+    <i><font color=#4b5d50>#  varNames - list of variables names</font></i>
+    <i><font color=#4b5d50>#  lists - list of lists</font></i>
+    <i><font color=#4b5d50># Returns: variables with doubleArray objects are set in caller's scope</font></i>
+    <b><font color=#923B23>if</font></b> {[<b><font color=#923B23>llength</font></b> <font color=#4A181B>$varNames</font>]!=[<b><font color=#923B23>llength</font></b> <font color=#4A181B>$lists</font>]} {
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of varName list '<font color=#4A181B>[</font>llength <font color=#4A181B>$</font>varNames<font color=#4A181B>]</font>' must be equal to length of lists list '<font color=#4A181B>[</font>llength <font color=#4A181B>$</font>lists<font color=#4A181B>]</font>'&quot;</font>
+    }
+    <b><font color=#923B23>foreach</font></b> varName <font color=#4A181B>$varNames</font> list <font color=#4A181B>$lists</font> {
+        <b><font color=#923B23>uplevel</font></b> 1 [<b><font color=#923B23>list</font></b> set <font color=#4A181B>$varName</font> [::tclinterp::list2array <font color=#4A181B>$list</font>]]
+    }
+    <b><font color=#ca14ca>return</font></b>
+}</pre></div>
+</div><h3 class='ruffproc'><a name='::tclinterp::newArrays'>newArrays</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
+<div style='clear:both;'></div>
+<p class='ruff'>Creates doubleArray objects, and set these objects to variables</p>
+<div class='ruff_synopsis'><span class='ruff_cmd'>newArrays</span> <span class='ruff_arg'>varNames lengths</span></div>
+<h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
+<tr><td><code>varNames</code></td><td>List of variables names.</td></tr>
+<tr><td><code>lengths</code></td><td>List of doubleArray's lengths.</td></tr>
+</table>
+<h5 class='ruff'>Return value</h5><p class='ruff'>variables with doubleArray objects are set in caller's scope</p>
+<div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_newArrays' href="javascript:toggleSource('tclinterp_newArrays')">Show source</a></p>
+<div id='tclinterp_newArrays' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::newArrays {varNames lengths} {
+
+    <i><font color=#4b5d50># Creates doubleArray objects, and set these objects to variables</font></i>
+    <i><font color=#4b5d50>#  varNames - list of variables names</font></i>
+    <i><font color=#4b5d50>#  lengths - list of doubleArray's lengths</font></i>
+    <i><font color=#4b5d50># Returns: variables with doubleArray objects are set in caller's scope</font></i>
+    <b><font color=#923B23>if</font></b> {[<b><font color=#923B23>llength</font></b> <font color=#4A181B>$varNames</font>]!=[<b><font color=#923B23>llength</font></b> <font color=#4A181B>$lengths</font>]} {
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of varName list '<font color=#4A181B>[</font>llength <font color=#4A181B>$</font>varNames<font color=#4A181B>]</font>' must be equal to length of lengths list '<font color=#4A181B>[</font>llength <font color=#4A181B>$</font>lengths<font color=#4A181B>]</font>'&quot;</font>
+    }
+    <b><font color=#923B23>foreach</font></b> varName <font color=#4A181B>$varNames</font> length <font color=#4A181B>$lengths</font> {
+        <b><font color=#923B23>uplevel</font></b> 1 [<b><font color=#923B23>list</font></b> set <font color=#4A181B>$varName</font> [::tclinterp::new_doubleArray <font color=#4A181B>$length</font>]]
+    }
+    <b><font color=#ca14ca>return</font></b>
+}</pre></div>
+</div><h3 class='ruffproc'><a name='::tclinterp::newDoubleps'>newDoubleps</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
+<div style='clear:both;'></div>
+<p class='ruff'>Creates doubleps objects, and set these objects to variables</p>
+<div class='ruff_synopsis'><span class='ruff_cmd'>newDoubleps</span> <span class='ruff_arg'>varNames</span></div>
+<h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
+<tr><td><code>varNames</code></td><td>List of variables names.</td></tr>
+</table>
+<h5 class='ruff'>Return value</h5><p class='ruff'>variables with doubleps objects are set in caller's scope</p>
+<div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_newDoubleps' href="javascript:toggleSource('tclinterp_newDoubleps')">Show source</a></p>
+<div id='tclinterp_newDoubleps' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::newDoubleps {varNames} {
+
+    <i><font color=#4b5d50># Creates doubleps objects, and set these objects to variables</font></i>
+    <i><font color=#4b5d50>#  varNames - list of variables names</font></i>
+    <i><font color=#4b5d50># Returns: variables with doubleps objects are set in caller's scope</font></i>
+    <b><font color=#923B23>foreach</font></b> varName <font color=#4A181B>$varNames</font> {
+        <b><font color=#923B23>uplevel</font></b> 1 [<b><font color=#923B23>list</font></b> set <font color=#4A181B>$varName</font> [::tclinterp::new_doublep]]
+    }
+    <b><font color=#ca14ca>return</font></b>
+}</pre></div>
 </div></main><nav class='ruff-nav'><ul ><li class='ruff-toc1'><a style='padding-top:2px;' href='index.html'>Start page</a></li>
 <li class='ruff-toc1'><a href='index-docindex.html' accesskey='i'>Index</a></li>
 <hr>
 <li class='ruff-toc1'><a class='ruff-highlight' href='index-tclinterp.html'>tclinterp</a></li>
-<hr><li class='ruff-toc2'><a href='#::tclinterp-Commands'>Commands</a></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::array2list'>array2list</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;array2list&lt;/span&gt; &lt;span class='ruff_arg'&gt;<b><font color=#923B23>array</font></b> length&lt;/span&gt;</pre>Converts doubleArray to the list
-</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::createArray'>createArray</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;createArray&lt;/span&gt; &lt;span class='ruff_arg'&gt;<b><font color=#923B23>list</font></b>&lt;/span&gt;</pre>Create doubleArray from the list
+<hr><li class='ruff-toc2'><a href='#::tclinterp-Commands'>Commands</a></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::array2list'>array2list</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;array2list&lt;/span&gt; &lt;span class='ruff_arg'&gt;<b><font color=#923B23>array</font></b> length&lt;/span&gt;</pre>Create list from doubleArray object
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::arrays2lists'>arrays2lists</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;arrays2lists&lt;/span&gt; &lt;span class='ruff_arg'&gt;varNames arrays lengths&lt;/span&gt;</pre>Create lists from doubleArray objects, and set these lists to variables
 </span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::deleteArrays'>deleteArrays</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;deleteArrays&lt;/span&gt; &lt;span class='ruff_arg'&gt;?args?&lt;/span&gt;</pre>Deletes doubleArray objects
 </span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::deleteDoubleps'>deleteDoubleps</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;deleteDoubleps&lt;/span&gt; &lt;span class='ruff_arg'&gt;?args?&lt;/span&gt;</pre>Deletes doublep objects
 </span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::interpLagr1d'>interpLagr1d</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;interpLagr1d&lt;/span&gt; &lt;span class='ruff_arg'&gt;?args?&lt;/span&gt;</pre>Does Lagrange polynomial one-dimensional interpolation.
@@ -400,5 +474,9 @@
 </span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::interpLeast1dDer'>interpLeast1dDer</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;interpLeast1dDer&lt;/span&gt; &lt;span class='ruff_arg'&gt;?args?&lt;/span&gt;</pre>Does least squares polynomial one-dimensional interpolation with calculation of its derivative.
 </span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::interpLin1d'>interpLin1d</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;interpLin1d&lt;/span&gt; &lt;span class='ruff_arg'&gt;?args?&lt;/span&gt;</pre>Does linear one-dimensional interpolation.
 </span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::interpNear1d'>interpNear1d</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;interpNear1d&lt;/span&gt; &lt;span class='ruff_arg'&gt;?args?&lt;/span&gt;</pre>Does nearest one-dimensional interpolation.
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::list2array'>list2array</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;list2array&lt;/span&gt; &lt;span class='ruff_arg'&gt;<b><font color=#923B23>list</font></b>&lt;/span&gt;</pre>Create and initialize doubleArray object from the list
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::lists2arrays'>lists2arrays</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;lists2arrays&lt;/span&gt; &lt;span class='ruff_arg'&gt;varNames lists&lt;/span&gt;</pre>Create and initialize doubleArray objects from lists, and set these objects to variables
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::newArrays'>newArrays</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;newArrays&lt;/span&gt; &lt;span class='ruff_arg'&gt;varNames lengths&lt;/span&gt;</pre>Creates doubleArray objects, and set these objects to variables
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::newDoubleps'>newDoubleps</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;newDoubleps&lt;/span&gt; &lt;span class='ruff_arg'&gt;varNames&lt;/span&gt;</pre>Creates doubleps objects, and set these objects to variables
 </span></li></ul></nav><footer class='ruff-layout-footer ruff-ft'><div style='float: right;'>Document generated by <a href='https://ruff.magicsplat.com'>Ruff!</a></div><div>&copy; George Yashin</div></footer>
 </div></body></html>

@@ -7,7 +7,7 @@ tclinterp - Commands in namespace tclinterp
 .SH SYNOPSIS
 \fBarray2list\fP \fIarray length\fP
 .br
-\fBcreateArray\fP \fIlist\fP
+\fBarrays2lists\fP \fIvarNames arrays lengths\fP
 .br
 \fBdeleteArrays\fP \fI?args?\fP
 .br
@@ -23,6 +23,14 @@ tclinterp - Commands in namespace tclinterp
 .br
 \fBinterpNear1d\fP \fI?args?\fP
 .br
+\fBlist2array\fP \fIlist\fP
+.br
+\fBlists2arrays\fP \fIvarNames lists\fP
+.br
+\fBnewArrays\fP \fIvarNames lengths\fP
+.br
+\fBnewDoubleps\fP \fIvarNames\fP
+.br
 .SH ::TCLINTERP
 .SH COMMANDS
 .PP
@@ -30,7 +38,7 @@ tclinterp - Commands in namespace tclinterp
 \fBarray2list\fR (::tclinterp)
 .RE
 .PP
-Converts doubleArray to the list
+Create list from doubleArray object
 .RS 4n\fBarray2list\fP \fIarray length\fP
 .br
 .RE
@@ -39,10 +47,10 @@ Converts doubleArray to the list
 .RS 4n
 .TP
 array
-Array object\&.
+DoubleArray object\&.
 .TP
 length
-Number of elements in array\&.
+Number of elements in doubleArray\&.
 .RE
 .PP
 \fBReturn value\fR
@@ -55,9 +63,9 @@ list
 .nf
 proc ::tclinterp::array2list {array length} {
 
-    # Converts doubleArray to the list
-    #  array - array object
-    #  length - number of elements in array
+    # Create list from doubleArray object
+    #  array - doubleArray object
+    #  length - number of elements in doubleArray
     # Returns: list
     for {set i 0} {$i<$length} {incr i} {
         lappend list [::tclinterp::doubleArray_getitem $array $i]
@@ -68,49 +76,51 @@ proc ::tclinterp::array2list {array length} {
 .RE
 .PP
 .RS -4n
-\fBcreateArray\fR (::tclinterp)
+\fBarrays2lists\fR (::tclinterp)
 .RE
 .PP
-Create doubleArray from the list
-.RS 4n\fBcreateArray\fP \fIlist\fP
+Create lists from doubleArray objects, and set these lists to variables
+.RS 4n\fBarrays2lists\fP \fIvarNames arrays lengths\fP
 .br
 .RE
 .PP
 \fBParameters\fR
 .RS 4n
 .TP
-list
-List of values\&.
+varNames
+List of variables names\&.
+.TP
+arrays
+List of doubleArray\&.
+.TP
+lengths
+List of doubleArray lengths\&.
 .RE
 .PP
 \fBReturn value\fR
 .PP
-array object
+variables with lists are set in caller's scope
 .PP
 \fBSource\fR
 .PP
 .RS 4n
 .nf
-proc ::tclinterp::createArray {list} {
+proc ::tclinterp::arrays2lists {varNames arrays lengths} {
 
-    # Create doubleArray from the list
-    #  list - list of values
-    # Returns: array object
-    set length [llength $list]
-    set a [::tclinterp::new_doubleArray $length]
-    for {set i 0} {$i<$length} {incr i} {
-        set iElem [@ $list $i]
-        try {
-            ::tclinterp::doubleArray_setitem $a $i $iElem
-        } on error {errmsg erropts} {
-            if {[dget $erropts -errorcode]=="SWIG TypeError"} {
-                error "List must contains only double elements, but get '$iElem'"
-            } else {
-                error "Array creation failed with message '$errmsg' and opts '$erropts'"
-            }
-        }
+    # Create lists from doubleArray objects, and set these lists to variables
+    #  varNames - list of variables names
+    #  arrays - list of doubleArray
+    #  lengths - list of doubleArray lengths
+    # Returns: variables with lists are set in caller's scope
+    if {[llength $varNames]!=[llength $arrays]} {
+        error "Length of varName list '[llength $varNames]' must be equal to length of array list '[llength $arrays]'"
+    } elseif {[llength $varNames]!=[llength $lengths]} {
+        error "Length of varName list '[llength $varNames]' must be equal to length of lengths list '[llength $lengths]'"
     }
-    return $a
+    foreach varName $varNames array $arrays length $lengths {
+        uplevel 1 [list set $varName [::tclinterp::array2list $array $length]]
+    }
+    return
 }
 .fi
 .RE
@@ -225,13 +235,11 @@ proc ::tclinterp::interpLagr1d {args} {
     set yLen [llength $y]
     set xiLen [llength $xi]
     if {$xLen!=$yLen} {
-        error "Length of x '$xLen' must be equal to y '$yLen'"
+        error "Length of y '$yLen' must be equal to x '$xLen'"
     } elseif {$xiLen==0} {
         error "Length of interpolation points list xi must be more than zero"
     }
-    set xArray [::tclinterp::createArray $x]
-    set yArray [::tclinterp::createArray $y]
-    set xiArray [::tclinterp::createArray $xi]
+    ::tclinterp::lists2arrays [list xArray yArray xiArray] [list $x $y $xi]
     set yiArray [::tclinterp::interp_lagrange 1 $xLen $xArray $yArray $xiLen $xiArray]
     set yiList [::tclinterp::array2list $yiArray $xiLen]
     ::tclinterp::deleteArrays $xArray $yArray $xiArray $yiArray
@@ -311,23 +319,18 @@ proc ::tclinterp::interpLeast1d {args} {
     }
     set xiLen [llength $xi]
     if {$xLen!=$yLen} {
-        error "Length of x '$xLen' must be equal to y '$yLen'"
+        error "Length of y '$yLen' must be equal to x '$xLen'"
     } elseif {$xLen!=$wLen} {
-        error "Length of x '$xLen' must be equal to w '$wLen'"
+        error "Length of w '$wLen' must be equal to x '$xLen'"
     } elseif {$xiLen==0} {
         error "Length of interpolation points list xi must be more than zero"
     } elseif {[string is integer -strict $nterms]==0} {
-        error "Number of terms must be of integer type"
+        error "Number of terms -nterms '$nterms' must be of integer type"
     } elseif {$nterms<=0} {
-        error "Number of terms must be more than zero"
+        error "Number of terms -nterms must be more than zero"
     }
-    set xArray [::tclinterp::createArray $x]
-    set yArray [::tclinterp::createArray $y]
-    set wArray [::tclinterp::createArray $w]
-    set xiArray [::tclinterp::createArray $xi]
-    set b [::tclinterp::new_doubleArray $nterms]
-    set c [::tclinterp::new_doubleArray $nterms]
-    set d [::tclinterp::new_doubleArray $nterms]
+    ::tclinterp::lists2arrays [list xArray yArray wArray xiArray] [list $x $y $w $xi]
+    ::tclinterp::newArrays [list b c d] [list $nterms $nterms $nterms]
     # create polynomial coefficients for given data
     ::tclinterp::least_set $xLen $xArray $yArray $wArray $nterms $b $c $d
     # calculate polynomial value for each xi value
@@ -336,9 +339,7 @@ proc ::tclinterp::interpLeast1d {args} {
         lappend yiList $iElem
     }
     if {[info exists coeffs]} {
-        set bList [::tclinterp::array2list $b $nterms]
-        set cList [::tclinterp::array2list $c $nterms]
-        set dList [::tclinterp::array2list $d $nterms]
+        ::tclinterp::arrays2lists [list bList cList dList] [list $b $c $d] [list $nterms $nterms $nterms]
         ::tclinterp::deleteArrays $b $c $d $xArray $yArray $xiArray
         return [dcreate yi $yiList coeffs [dcreate b $bList c $cList d $dList]]
     } else {
@@ -421,25 +422,19 @@ proc ::tclinterp::interpLeast1dDer {args} {
     }
     set xiLen [llength $xi]
     if {$xLen!=$yLen} {
-        error "Length of x '$xLen' must be equal to y '$yLen'"
+        error "Length of y '$yLen' must be equal to x '$xLen'"
     } elseif {$xLen!=$wLen} {
-        error "Length of x '$xLen' must be equal to w '$wLen'"
+        error "Length of w '$wLen' must be equal to x '$xLen'"
     } elseif {$xiLen==0} {
         error "Length of interpolation points list xi must be more than zero"
     } elseif {[string is integer -strict $nterms]==0} {
-        error "Number of terms must be of integer type"
+        error "Number of terms -nterms '$nterms' must be of integer type"
     } elseif {$nterms<=0} {
-        error "Number of terms must be more than zero"
+        error "Number of terms -nterms must be more than zero"
     }
-    set xArray [::tclinterp::createArray $x]
-    set yArray [::tclinterp::createArray $y]
-    set wArray [::tclinterp::createArray $w]
-    set xiArray [::tclinterp::createArray $xi]
-    set b [::tclinterp::new_doubleArray $nterms]
-    set c [::tclinterp::new_doubleArray $nterms]
-    set d [::tclinterp::new_doubleArray $nterms]
-    set yiPnt [::tclinterp::new_doublep]
-    set yiDerPnt [::tclinterp::new_doublep]
+    ::tclinterp::lists2arrays [list xArray yArray wArray xiArray] [list $x $y $w $xi]
+    ::tclinterp::newArrays [list b c d] [list $nterms $nterms $nterms]
+    ::tclinterp::newDoubleps [list yiPnt yiDerPnt]
     # create polynomial coefficients for given data
     ::tclinterp::least_set $xLen $xArray $yArray $wArray $nterms $b $c $d
     # calculate polynomial value and derivative for each xi value
@@ -449,9 +444,7 @@ proc ::tclinterp::interpLeast1dDer {args} {
         lappend yiDerList [::tclinterp::doublep_value $yiDerPnt]
     }
     if {[info exists coeffs]} {
-        set bList [::tclinterp::array2list $b $nterms]
-        set cList [::tclinterp::array2list $c $nterms]
-        set dList [::tclinterp::array2list $d $nterms]
+        ::tclinterp::arrays2lists [list bList cList dList] [list $b $c $d] [list $nterms $nterms $nterms]
         ::tclinterp::deleteArrays $b $c $d $xArray $yArray $xiArray
         ::tclinterp::deleteDoubleps $yiPnt $yiDerPnt
         return [dcreate yi $yiList yiDer $yiDerList coeffs [dcreate b $bList c $cList d $dList]]
@@ -511,16 +504,14 @@ proc ::tclinterp::interpLin1d {args} {
     set yLen [llength $y]
     set xiLen [llength $xi]
     if {$xLen!=$yLen} {
-        error "Length of x '$xLen' must be equal to y '$yLen'"
+        error "Length of y '$yLen' must be equal to x '$xLen'"
     } elseif {$xiLen==0} {
         error "Length of interpolation points list xi must be more than zero"
     }
-    set xArray [::tclinterp::createArray $x]
+    ::tclinterp::lists2arrays [list xArray yArray xiArray] [list $x $y $xi]
     if {[::tclinterp::r8vec_ascends_strictly $xLen $xArray]==0} {
         error "Independent variable array x not strictly increasing"
     }
-    set yArray [::tclinterp::createArray $y]
-    set xiArray [::tclinterp::createArray $xi]
     set yiArray [::tclinterp::interp_linear 1 $xLen $xArray $yArray $xiLen $xiArray]
     set yiList [::tclinterp::array2list $yiArray $xiLen]
     ::tclinterp::deleteArrays $xArray $yArray $xiArray $yiArray
@@ -575,17 +566,188 @@ proc ::tclinterp::interpNear1d {args} {
     set yLen [llength $y]
     set xiLen [llength $xi]
     if {$xLen!=$yLen} {
-        error "Length of x '$xLen' must be equal to y '$yLen'"
+        error "Length of y '$yLen' must be equal to x '$xLen'"
     } elseif {$xiLen==0} {
         error "Length of interpolation points list xi must be more than zero"
     }
-    set xArray [::tclinterp::createArray $x]
-    set yArray [::tclinterp::createArray $y]
-    set xiArray [::tclinterp::createArray $xi]
+    ::tclinterp::lists2arrays [list xArray yArray xiArray] [list $x $y $xi]
     set yiArray [::tclinterp::interp_nearest 1 $xLen $xArray $yArray $xiLen $xiArray]
     set yiList [::tclinterp::array2list $yiArray $xiLen]
     ::tclinterp::deleteArrays $xArray $yArray $xiArray $yiArray
     return $yiList
+}
+.fi
+.RE
+.PP
+.RS -4n
+\fBlist2array\fR (::tclinterp)
+.RE
+.PP
+Create and initialize doubleArray object from the list
+.RS 4n\fBlist2array\fP \fIlist\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+list
+List of values\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+array object
+.PP
+\fBSource\fR
+.PP
+.RS 4n
+.nf
+proc ::tclinterp::list2array {list} {
+
+    # Create and initialize doubleArray object from the list
+    #  list - list of values
+    # Returns: array object
+    set length [llength $list]
+    set a [::tclinterp::new_doubleArray $length]
+    for {set i 0} {$i<$length} {incr i} {
+        set iElem [@ $list $i]
+        try {
+            ::tclinterp::doubleArray_setitem $a $i $iElem
+        } on error {errmsg erropts} {
+            if {[dget $erropts -errorcode]=="SWIG TypeError"} {
+                error "List must contains only double elements, but get '$iElem'"
+            } else {
+                error "Array creation failed with message '$errmsg' and opts '$erropts'"
+            }
+        }
+    }
+    return $a
+}
+.fi
+.RE
+.PP
+.RS -4n
+\fBlists2arrays\fR (::tclinterp)
+.RE
+.PP
+Create and initialize doubleArray objects from lists, and set these objects to variables
+.RS 4n\fBlists2arrays\fP \fIvarNames lists\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+varNames
+List of variables names\&.
+.TP
+lists
+List of lists\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+variables with doubleArray objects are set in caller's scope
+.PP
+\fBSource\fR
+.PP
+.RS 4n
+.nf
+proc ::tclinterp::lists2arrays {varNames lists} {
+
+    # Create and initialize doubleArray objects from lists, and set these objects to variables
+    #  varNames - list of variables names
+    #  lists - list of lists
+    # Returns: variables with doubleArray objects are set in caller's scope
+    if {[llength $varNames]!=[llength $lists]} {
+        error "Length of varName list '[llength $varNames]' must be equal to length of lists list '[llength $lists]'"
+    }
+    foreach varName $varNames list $lists {
+        uplevel 1 [list set $varName [::tclinterp::list2array $list]]
+    }
+    return
+}
+.fi
+.RE
+.PP
+.RS -4n
+\fBnewArrays\fR (::tclinterp)
+.RE
+.PP
+Creates doubleArray objects, and set these objects to variables
+.RS 4n\fBnewArrays\fP \fIvarNames lengths\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+varNames
+List of variables names\&.
+.TP
+lengths
+List of doubleArray's lengths\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+variables with doubleArray objects are set in caller's scope
+.PP
+\fBSource\fR
+.PP
+.RS 4n
+.nf
+proc ::tclinterp::newArrays {varNames lengths} {
+
+    # Creates doubleArray objects, and set these objects to variables
+    #  varNames - list of variables names
+    #  lengths - list of doubleArray's lengths
+    # Returns: variables with doubleArray objects are set in caller's scope
+    if {[llength $varNames]!=[llength $lengths]} {
+        error "Length of varName list '[llength $varNames]' must be equal to length of lengths list '[llength $lengths]'"
+    }
+    foreach varName $varNames length $lengths {
+        uplevel 1 [list set $varName [::tclinterp::new_doubleArray $length]]
+    }
+    return
+}
+.fi
+.RE
+.PP
+.RS -4n
+\fBnewDoubleps\fR (::tclinterp)
+.RE
+.PP
+Creates doubleps objects, and set these objects to variables
+.RS 4n\fBnewDoubleps\fP \fIvarNames\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+varNames
+List of variables names\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+variables with doubleps objects are set in caller's scope
+.PP
+\fBSource\fR
+.PP
+.RS 4n
+.nf
+proc ::tclinterp::newDoubleps {varNames} {
+
+    # Creates doubleps objects, and set these objects to variables
+    #  varNames - list of variables names
+    # Returns: variables with doubleps objects are set in caller's scope
+    foreach varName $varNames {
+        uplevel 1 [list set $varName [::tclinterp::new_doublep]]
+    }
+    return
 }
 .fi
 .RE
