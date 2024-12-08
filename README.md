@@ -9,7 +9,7 @@
 
 ![Static Badge](https://img.shields.io/badge/Windows_11-pass-green)
 
-![Static Badge](https://img.shields.io/badge/Tcl_coverage-98.3%25-green)
+![Static Badge](https://img.shields.io/badge/Tcl_coverage-98.6%25-green)
 
 # Content
 

@@ -23,6 +23,45 @@ proc matchList {expected actual} {
 }
 customMatch mtchLst matchList
 
+### Auxilary procedures tests
+
+test lists2arraysProcTest-1 {test of lists2arrays procedure} -setup {
+    set x [list 1 2 3 4 5]
+    set y [list 1 4 9 16 25]
+} -body {
+    catch {::tclinterp::lists2arrays [list xVar yVar] [list $x]} errorStr
+    return $errorStr
+} -result "Length of varName list '2' must be equal to length of lists list '1'" -cleanup {
+    unset x y errorStr
+}
+
+test array2listProcTest-1 {test of arrays2lists procedure} -setup {
+    ::tclinterp::newArrays [list a b v] [list 3 3 3]
+} -body {
+    catch {::tclinterp::arrays2lists [list xVar yVar vVar] [list $a $b] [list 3 3 3]} errorStr
+    return $errorStr
+} -result "Length of varName list '3' must be equal to length of array list '2'" -cleanup {
+    unset errorStr
+    ::tclinterp::deleteArrays $a $b $v
+}
+
+test array2listProcTest-2 {test of arrays2lists procedure} -setup {
+    ::tclinterp::newArrays [list a b v] [list 3 3 3]
+} -body {
+    catch {::tclinterp::arrays2lists [list xVar yVar vVar] [list $a $b $v] [list 3 3]} errorStr
+    return $errorStr
+} -result "Length of varName list '3' must be equal to length of lengths list '2'" -cleanup {
+    unset errorStr
+    ::tclinterp::deleteArrays $a $b $v
+}
+
+test newArraysProcTest-4 {test of newArrays procedure} -body {
+    catch {::tclinterp::newArrays [list a b v] [list 3 3]} errorStr
+    return $errorStr
+} -result "Length of varName list '3' must be equal to length of lengths list '2'" -cleanup {
+    unset errorStr
+}
+
 ### Linear interpolation tests
 
 test interpLin1dProcTest-1 {test procedure of linear 1d interpolation} -setup {
