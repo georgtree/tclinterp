@@ -16,7 +16,7 @@ foreach file $srcList {
 }
 
 # tests run
-exec tclsh [file join ${currentDir} test.test]
+exec tclsh [file join ${currentDir} all_codeCoverage.tcl]
 # revert renaming
 foreach file $srcList {
     file rename [file join ${currentDir} .. "[lindex $file 0]"]\

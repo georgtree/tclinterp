@@ -172,7 +172,7 @@ TEA_PROG_TCLSH
 #--------------------------------------------------------------------
 
 #TEA_EXPORT_CONFIG([sample])
-#AC_SUBST(SAMPLE_VAR)
+AC_SUBST(TCLLIBPATH)
 
 #--------------------------------------------------------------------
 # Specify files to substitute AC variables in. You may alternatively

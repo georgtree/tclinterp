@@ -131,14 +131,12 @@ TCL_SRC_DIR	= @TCL_SRC_DIR@
 
 EXTRA_PATH	= $(top_builddir):$(TCL_BIN_DIR)
 #EXTRA_PATH	= $(top_builddir):$(TCL_BIN_DIR):$(TK_BIN_DIR)
-TCLLIBPATH	= $(top_builddir)
+TCLLIBPATH	= @TCLLIBPATH@
 TCLSH_ENV	= TCL_LIBRARY=`@CYGPATH@ $(TCL_SRC_DIR)/library`
-PKG_ENV		= @LD_LIBRARY_PATH_VAR@="$(EXTRA_PATH):$(@LD_LIBRARY_PATH_VAR@)" \
-		  PATH="$(EXTRA_PATH):$(PATH)" \
-		  TCLLIBPATH="$(TCLLIBPATH)"
+PKG_ENV		= PATH="$(EXTRA_PATH):$(PATH)" TCLLIBPATH="$(TCLLIBPATH)"
 
 TCLSH_PROG	= @TCLSH_PROG@
-TCLSH		= $(TCLSH_ENV) $(PKG_ENV) $(TCLSH_PROG)
+TCLSH		= $(PKG_ENV) $(TCLSH_PROG)
 
 #WISH_ENV	= TK_LIBRARY=`@CYGPATH@ $(TK_SRC_DIR)/library`
 #WISH_PROG	= @WISH_PROG@
@@ -211,10 +209,7 @@ libraries:
 #========================================================================
 
 doc:
-	@echo "If you have documentation to create, place the commands to"
-	@echo "build the docs in the 'doc:' target.  For example:"
-	@echo "        xml2nroff sample.xml > sample.n"
-	@echo "        xml2html sample.xml > sample.html"
+
 
 install: all install-binaries install-libraries install-doc
 
@@ -247,9 +242,7 @@ install-doc: doc
 	done
 
 test: binaries libraries
-	$(TCLSH) `@CYGPATH@ $(srcdir)/tests/all.tcl` $(TESTFLAGS) \
-	    -load "package ifneeded $(PACKAGE_NAME) $(PACKAGE_VERSION) \
-		[list load `@CYGPATH@ $(PKG_LIB_FILE)` [string totitle $(PACKAGE_NAME)]]"
+	$(TCLSH) `@CYGPATH@ $(srcdir)/test/all.tcl` $(TESTFLAGS)
 
 shell: binaries libraries
 	@$(TCLSH) $(SCRIPT)
@@ -334,6 +327,7 @@ sampleUuid.h:	$(srcdir)/manifest.uuid
 
 #COMPRESS	= tar cvf $(PKG_DIR).tar $(PKG_DIR); compress $(PKG_DIR).tar
 COMPRESS	= tar zcvf $(PKG_DIR).tar.gz $(PKG_DIR)
+COMPRESS_ZIP= zip -r $(PKG_DIR).zip $(PKG_DIR)
 DIST_ROOT	= /tmp/dist
 DIST_DIR	= $(DIST_ROOT)/$(PKG_DIR)
 
@@ -341,41 +335,25 @@ DIST_INSTALL_DATA	= CPPROG='cp -p' $(INSTALL) -m 644
 DIST_INSTALL_SCRIPT	= CPPROG='cp -p' $(INSTALL) -m 755
 
 dist-clean:
-	rm -rf $(DIST_DIR) $(DIST_ROOT)/$(PKG_DIR).tar.*
+	rm -rf $(DIST_DIR) $(DIST_ROOT)/$(PKG_DIR).tar.*;\
+	rm -rf $(DIST_DIR) $(DIST_ROOT)/$(PKG_DIR).zip
 
-dist: dist-clean $(srcdir)/manifest.uuid
-	$(INSTALL_DATA_DIR) $(DIST_DIR)
-
-	# TEA files
-	$(DIST_INSTALL_DATA) $(srcdir)/Makefile.in \
-	    $(srcdir)/aclocal.m4 $(srcdir)/configure.ac \
-	    $(DIST_DIR)/
-	$(DIST_INSTALL_SCRIPT) $(srcdir)/configure $(DIST_DIR)/
-
-	$(INSTALL_DATA_DIR) $(DIST_DIR)/tclconfig
-	$(DIST_INSTALL_DATA) $(srcdir)/tclconfig/README.txt \
-	    $(srcdir)/manifest.uuid \
-	    $(srcdir)/tclconfig/tcl.m4 $(srcdir)/tclconfig/install-sh \
-	    $(DIST_DIR)/tclconfig/
-
-	# Extension files
-	$(DIST_INSTALL_DATA) \
-	    $(srcdir)/ChangeLog \
-	    $(srcdir)/README.sha \
-	    $(srcdir)/license.terms \
-	    $(srcdir)/README \
-	    $(srcdir)/pkgIndex.tcl.in \
-	    $(DIST_DIR)/
-
-	list='demos doc generic library macosx tests unix win'; \
-	for p in $$list; do \
-	    if test -d $(srcdir)/$$p ; then \
-		$(INSTALL_DATA_DIR) $(DIST_DIR)/$$p; \
-		$(DIST_INSTALL_DATA) $(srcdir)/$$p/* $(DIST_DIR)/$$p/; \
+dist: dist-clean
+	mkdir -p $(DIST_DIR)
+	cp -p $(srcdir)/README* $(DIST_DIR)/
+	cp -p $(srcdir)/LICENSE* $(DIST_DIR)/
+	cp -p $(srcdir)/pkgIndex.tcl $(DIST_DIR)/
+	cp -p $(srcdir)/$(PKG_LIB_FILE) $(DIST_DIR)/
+	for i in $(srcdir)/*.tcl; do \
+	    if [ -f $$i ]; then \
+		cp -p $$i $(DIST_DIR)/ ; \
 	    fi; \
-	done
+	done;
+	mkdir -p $(DIST_DIR)/test
+	cp -p $(srcdir)/test/all.tcl $(DIST_DIR)/test/
+	cp -p $(srcdir)/test/test.test $(DIST_DIR)/test/
 
-	(cd $(DIST_ROOT); $(COMPRESS);)
+	(cd $(DIST_ROOT); $(COMPRESS); $(COMPRESS_ZIP))
 
 #========================================================================
 # End of user-definable section

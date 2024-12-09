@@ -646,6 +646,7 @@ ac_includes_default="\
 
 ac_header_c_list=
 ac_subst_vars='LTLIBOBJS
+TCLLIBPATH
 TCLSH_PROG
 VC_MANIFEST_EMBED_EXE
 VC_MANIFEST_EMBED_DLL
@@ -8893,7 +8894,7 @@ printf "%s\n" "${TCLSH_PROG}" >&6; }
 #--------------------------------------------------------------------
 
 #TEA_EXPORT_CONFIG([sample])
-#AC_SUBST(SAMPLE_VAR)
+
 
 #--------------------------------------------------------------------
 # Specify files to substitute AC variables in. You may alternatively
