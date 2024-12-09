@@ -43,7 +43,7 @@ double least_val_old ( double x, int ndeg, double b[], double c[], double d[] );
 void parabola_val2 ( int ndim, int ndata, double tdata[], double ydata[], 
   int left, double tval, double yval[] );
 double pchst ( double arg1, double arg2 );
-/* double r8_abs ( double x ); */
+double r8_abs ( double x );
 double r8_max ( double x, double y );
 double r8_min ( double x, double y );
 double r8_uniform_01 ( int *seed );
