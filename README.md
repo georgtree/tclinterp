@@ -41,9 +41,9 @@ If you have different versions of Tcl on the same machine, you can set the path 
 flag to configure script.
 
 For Windows build it is strongly recommended to use [MSYS64 UCRT64 environment](https://www.msys2.org/), the above
-steps are identical if you run it from UCRT64 shell. After installing the package, you can move tclinterp package
-folder (usually located in `C:\msys64\ucrt64\lib\`) to path listed in `auto_path` variable of your local Tcl
-installation.
+steps are identical if you run it from UCRT64 shell. 
+
+There are prebuilt packages that contains .so/.dll files, tcl code and tests for Windows and Linux.
 
 # Supported platforms
 
