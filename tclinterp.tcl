@@ -1,5 +1,5 @@
 package require argparse
-package provide tclinterp 0.1
+package provide tclinterp 0.11
 set script_path [file dirname [file normalize [info script]]]
 
 
