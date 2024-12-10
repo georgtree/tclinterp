@@ -6,7 +6,7 @@ set script_path [file dirname [file normalize [info script]]]
 namespace eval ::tclinterp {
 
     namespace import ::tcl::mathop::*
-    namespace export interpLin1d interpNear1d interpLagr1d interpLeast1d interpLeast1dDer
+    namespace export interpLin1d interpNear1d interpLagr1d interpLeast1d interpLeast1dDer genBezier bezier
     interp alias {} dget {} dict get
     interp alias {} @ {} lindex
     interp alias {} = {} expr
@@ -238,9 +238,9 @@ proc ::tclinterp::interpLeast1d {args} {
     } elseif {$xiLen==0} {
         error "Length of interpolation points list xi must be more than zero"
     } elseif {[string is integer -strict $nterms]==0} {
-        error "Number of terms -nterms '$nterms' must be of integer type"
+        error "Number of terms nterms '$nterms' must be of integer type"
     } elseif {$nterms<=0} {
-        error "Number of terms -nterms must be more than zero"
+        error "Number of terms nterms must be more than zero"
     }
     ::tclinterp::lists2arrays [list xArray yArray wArray xiArray] [list $x $y $w $xi]
     ::tclinterp::newArrays [list b c d] [list $nterms $nterms $nterms]
@@ -297,9 +297,9 @@ proc ::tclinterp::interpLeast1dDer {args} {
     } elseif {$xiLen==0} {
         error "Length of interpolation points list xi must be more than zero"
     } elseif {[string is integer -strict $nterms]==0} {
-        error "Number of terms -nterms '$nterms' must be of integer type"
+        error "Number of terms nterms '$nterms' must be of integer type"
     } elseif {$nterms<=0} {
-        error "Number of terms -nterms must be more than zero"
+        error "Number of terms nterms must be more than zero"
     }
     ::tclinterp::lists2arrays [list xArray yArray wArray xiArray] [list $x $y $w $xi]
     ::tclinterp::newArrays [list b c d] [list $nterms $nterms $nterms]
@@ -323,4 +323,82 @@ proc ::tclinterp::interpLeast1dDer {args} {
         return [dcreate yi $yiList yiDer $yiDerList]
     }
     return
+}
+
+proc ::tclinterp::genBezier {args} {
+    # Finds values of general Bezier function at specified t points.
+    #  -n - order of Bezier function, must be zero or more
+    #  -x - list of x control points values of size n+1
+    #  -y - list of y control points values of size n+1
+    #  -t - list of t points at which we want to evaluate Bezier function, best results are obtained within the interval
+    #   [0,1]
+    # Returns: dict with lists of xi and yi points at specified t points
+    set arguments [argparse {
+        {-n= -required}
+        {-x= -required}
+        {-y= -required}
+        {-t= -required}
+    }]
+    if {[string is integer -strict $n]==0} {
+        error "Order of Bezier curve n '$n' must be of integer type"
+    } elseif {$n<0} {
+        error "Order of Bezier curve n '$n' must be more than or equal to zero"
+    }
+    set xLen [llength $x]
+    set yLen [llength $y]
+    set tLen [llength $t]
+    if {$xLen!=[= {$n+1}]} {
+        error "Length of x '$xLen' must be equal to n+1=[= {$n+1}]"
+    } elseif {$yLen!=[= {$n+1}]} {
+        error "Length of y '$yLen' must be equal to n+1=[= {$n+1}]"
+    } elseif {$tLen==0} {
+        error "Length of points list t must be more than zero"
+    }
+    ::tclinterp::lists2arrays [list xArray yArray] [list $x $y]
+    ::tclinterp::newDoubleps [list xiPnt yiPnt]
+    for {set i 0} {$i<$tLen} {incr i} {
+        ::tclinterp::bc_val $n [@ $t $i] $xArray $yArray $xiPnt $yiPnt
+        lappend xiList [::tclinterp::doublep_value $xiPnt]
+        lappend yiList [::tclinterp::doublep_value $yiPnt]
+    }
+    ::tclinterp::deleteArrays $xArray $yArray
+    ::tclinterp::deleteDoubleps $xiPnt $yiPnt
+    return [dcreate xi $xiList yi $yiList]
+}
+
+proc ::tclinterp::bezier {args} {
+    # Finds values of Bezier function at x points.
+    #  -n - order of Bezier function, must be zero or more
+    #  -a - start of the interval
+    #  -b - end of interval
+    #  -x - list of x values
+    #  -y - list of y control points values of size n+1
+    # Returns: yi values of Bezier function at x points
+    set arguments [argparse {
+        {-n= -required}
+        {-a= -required}
+        {-b= -required}
+        {-x= -required}
+        {-y= -required}
+    }]
+    if {[string is integer -strict $n]==0} {
+        error "Order of Bezier curve n '$n' must be of integer type"
+    } elseif {$n<0} {
+        error "Order of Bezier curve n '$n' must be more than or equal to zero"
+    } elseif {$a==$b} {
+        error "Start a '$a' and end b '$b' interval values must not be equal"
+    }
+    set xLen [llength $x]
+    set yLen [llength $y]
+    if {$yLen!=[= {$n+1}]} {
+        error "Length of y '$yLen' must be equal to n+1=[= {$n+1}]"
+    } elseif {$xLen==0} {
+        error "Length of points list x must be more than zero"
+    }
+    ::tclinterp::lists2arrays [list yArray] [list $y]
+    for {set i 0} {$i<$xLen} {incr i} {
+        lappend yiList [::tclinterp::bez_val $n [@ $x $i] $a $b $yArray]
+    }
+    ::tclinterp::deleteArrays $yArray
+    return $yiList
 }

@@ -9,9 +9,13 @@ tclinterp - Commands in namespace tclinterp
 .br
 \fBarrays2lists\fP \fIvarNames arrays lengths\fP
 .br
+\fBbezier\fP \fI?args?\fP
+.br
 \fBdeleteArrays\fP \fI?args?\fP
 .br
 \fBdeleteDoubleps\fP \fI?args?\fP
+.br
+\fBgenBezier\fP \fI?args?\fP
 .br
 \fBinterpLagr1d\fP \fI?args?\fP
 .br
@@ -84,6 +88,38 @@ List of doubleArray lengths\&.
 variables with lists are set in caller's scope
 .PP
 .RS -4n
+\fBbezier\fR (::tclinterp)
+.RE
+.PP
+Finds values of Bezier function at x points\&.
+.RS 4n\fBbezier\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-a
+Start of the interval\&.
+.TP
+-b
+End of interval\&.
+.TP
+-n
+Order of Bezier function, must be zero or more\&.
+.TP
+-x
+List of x values\&.
+.TP
+-y
+List of y control points values of size n+1\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+yi values of Bezier function at x points
+.PP
+.RS -4n
 \fBdeleteArrays\fR (::tclinterp)
 .RE
 .PP
@@ -114,6 +150,35 @@ Deletes doublep objects
 args
 List of doublep objects\&.
 .RE
+.PP
+.RS -4n
+\fBgenBezier\fR (::tclinterp)
+.RE
+.PP
+Finds values of general Bezier function at specified t points\&.
+.RS 4n\fBgenBezier\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-n
+Order of Bezier function, must be zero or more\&.
+.TP
+-t
+List of t points at which we want to evaluate Bezier function, best results are obtained within the interval \fI0,1\fP
+.TP
+-x
+List of x control points values of size n+1\&.
+.TP
+-y
+List of y control points values of size n+1\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+dict with lists of xi and yi points at specified t points
 .PP
 .RS -4n
 \fBinterpLagr1d\fR (::tclinterp)

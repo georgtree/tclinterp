@@ -342,7 +342,7 @@ test interpLeast1dProcTest-8 {test procedure of least squares polynomial interpo
 } -body {
     catch {interpLeast1d -x $x -y $y -xi $xi -nterms 1.0} errorStr
     return $errorStr
-} -result "Number of terms -nterms '1.0' must be of integer type" -cleanup {
+} -result "Number of terms nterms '1.0' must be of integer type" -cleanup {
     unset x y xi errorStr
 }
 
@@ -367,7 +367,7 @@ test interpLeast1dProcTest-10 {test procedure of least squares polynomial interp
 } -body {
     catch {interpLeast1d -x $x -y $y -xi $xi -nterms 0} errorStr
     return $errorStr
-} -result "Number of terms -nterms must be more than zero" -cleanup {
+} -result "Number of terms nterms must be more than zero" -cleanup {
     unset x y xi errorStr
 }
 
@@ -450,7 +450,7 @@ test interpLeast1dDerProcTest-7 {test procedure of least squares polynomial inte
 } -body {
     catch {interpLeast1dDer -x $x -y $y -xi $xi -nterms 1.0} errorStr
     return $errorStr
-} -result "Number of terms -nterms '1.0' must be of integer type" -cleanup {
+} -result "Number of terms nterms '1.0' must be of integer type" -cleanup {
     unset x y xi errorStr
 }
 
@@ -475,8 +475,180 @@ test interpLeast1dDerProcTest-9 {test procedure of least squares polynomial inte
 } -body {
     catch {interpLeast1dDer -x $x -y $y -xi $xi -nterms 0} errorStr
     return $errorStr
-} -result "Number of terms -nterms must be more than zero" -cleanup {
+} -result "Number of terms nterms must be more than zero" -cleanup {
     unset x y xi errorStr
+}
+
+### General Bezier function values calculation
+
+test genBezierProcTest-1 {test procedure of general Bezier function values calculation} -match mtchLst -setup {
+    set x [list 0.0 0.75 1.0]
+    set y [list 1.0 0.0 1.0]
+    set n 2
+    set t [list 0 0.01 0.02 0.03 0.04 0.05 0.06 0.07 0.08 0.09 0.1 0.11 0.12 0.13 0.14 0.15 0.16 0.17 0.18 0.19 0.2\
+                   0.21 0.22 0.23 0.24 0.25 0.26 0.27 0.28 0.29 0.3 0.31 0.32 0.33 0.34 0.35 0.36 0.37 0.38 0.39 0.4\
+                   0.41 0.42 0.43 0.44 0.45 0.46 0.47 0.48 0.49 0.5 0.51 0.52 0.53 0.54 0.55 0.56 0.57 0.58 0.59 0.6\
+                   0.61 0.62 0.63 0.64 0.65 0.66 0.67 0.68 0.69 0.7 0.71 0.72 0.73 0.74 0.75 0.76 0.77 0.78 0.79 0.8\
+                   0.81 0.82 0.83 0.84 0.85 0.86 0.87 0.88 0.89 0.9 0.91 0.92 0.93 0.94 0.95 0.96 0.97 0.98 0.99 1]
+} -body {
+    set xi [dget [genBezier -n $n -x $x -y $y -t $t] xi]
+} -result [list 0 0.01495 0.0298 0.04455 0.0592 0.07375 0.0882 0.10255 0.1168 0.13095 0.145 0.15895 0.1728 0.18655\
+                   0.2002 0.21375 0.2272 0.24055 0.2538 0.26695 0.28 0.29295 0.3058 0.31855 0.3312 0.34375 0.3562\
+                   0.36855 0.3808 0.39295 0.405 0.41695 0.4288 0.44055 0.4522 0.46375 0.4752 0.48655 0.4978 0.50895\
+                   0.52 0.53095 0.5418 0.55255 0.5632 0.57375 0.5842 0.59455 0.6048 0.61495 0.625 0.63495 0.6448\
+                   0.65455 0.6642 0.67375 0.6832 0.69255 0.7018 0.71095 0.72 0.72895 0.7378 0.74655 0.7552 0.76375\
+                   0.7722 0.78055 0.7888 0.79695 0.805 0.81295 0.8208 0.82855 0.8362 0.84375 0.8512 0.85855 0.8658\
+                   0.87295 0.88 0.88695 0.8938 0.90055 0.9072 0.91375 0.9202 0.92655 0.9328 0.93895 0.945 0.95095\
+                   0.9568 0.96255 0.9682 0.97375 0.9792 0.98455 0.9898 0.99495 1] -cleanup {
+    unset x y t n xi
+}
+
+test genBezierProcTest-2 {test procedure of general Bezier function values calculation} -match mtchLst -setup {
+    set x [list 0.0 0.75 1.0]
+    set y [list 1.0 0.0 1.0]
+    set n 2
+    set t [list 0 0.01 0.02 0.03 0.04 0.05 0.06 0.07 0.08 0.09 0.1 0.11 0.12 0.13 0.14 0.15 0.16 0.17 0.18 0.19 0.2\
+                   0.21 0.22 0.23 0.24 0.25 0.26 0.27 0.28 0.29 0.3 0.31 0.32 0.33 0.34 0.35 0.36 0.37 0.38 0.39 0.4\
+                   0.41 0.42 0.43 0.44 0.45 0.46 0.47 0.48 0.49 0.5 0.51 0.52 0.53 0.54 0.55 0.56 0.57 0.58 0.59 0.6\
+                   0.61 0.62 0.63 0.64 0.65 0.66 0.67 0.68 0.69 0.7 0.71 0.72 0.73 0.74 0.75 0.76 0.77 0.78 0.79 0.8\
+                   0.81 0.82 0.83 0.84 0.85 0.86 0.87 0.88 0.89 0.9 0.91 0.92 0.93 0.94 0.95 0.96 0.97 0.98 0.99 1]
+} -body {
+    set yi [dget [genBezier -n $n -x $x -y $y -t $t] yi]
+} -result [list 1 0.9802 0.9608 0.9418 0.9232 0.905 0.8872 0.8698 0.8528 0.8362 0.82 0.8042 0.7888 0.7738 0.7592 0.745\
+                   0.7312 0.7178 0.7048 0.6922 0.68 0.6682 0.6568 0.6458 0.6352 0.625 0.6152 0.6058 0.5968 0.5882 0.58\
+                   0.5722 0.5648 0.5578 0.5512 0.545 0.5392 0.5338 0.5288 0.5242 0.52 0.5162 0.5128 0.5098 0.5072 0.505\
+                   0.5032 0.5018 0.5008 0.5002 0.5 0.5002 0.5008 0.5018 0.5032 0.505 0.5072 0.5098 0.5128 0.5162 0.52\
+                   0.5242 0.5288 0.5338 0.5392 0.545 0.5512 0.5578 0.5648 0.5722 0.58 0.5882 0.5968 0.6058 0.6152 0.625\
+                   0.6352 0.6458 0.6568 0.6682 0.68 0.6922 0.7048 0.7178 0.7312 0.745 0.7592 0.7738 0.7888 0.8042 0.82\
+                   0.8362 0.8528 0.8698 0.8872 0.905 0.9232 0.9418 0.9608 0.9802 1] -cleanup {
+    unset x y t n yi
+}
+
+test genBezierProcTest-3 {test procedure of general Bezier function values calculation} -setup {
+    set x [list 0.0 0.75 1.0]
+    set y [list 1.0 0.0 1.0]
+    set n 3
+    set t [list 0.0 0.5 1.0]
+} -body {
+    catch {genBezier -n $n -x $x -y $y -t $t} errorStr
+    return $errorStr
+} -result "Length of x '3' must be equal to n+1=4" -cleanup {
+    unset x y n t errorStr
+}
+
+test genBezierProcTest-4 {test procedure of general Bezier function values calculation} -setup {
+    set x [list 0.0 0.75 1.0]
+    set y [list 1.0 0.0]
+    set n 2
+    set t [list 0.0 0.5 1.0]
+} -body {
+    catch {genBezier -n $n -x $x -y $y -t $t} errorStr
+    return $errorStr
+} -result "Length of y '2' must be equal to n+1=3" -cleanup {
+    unset x y n t errorStr
+}
+
+test genBezierProcTest-5 {test procedure of general Bezier function values calculation} -setup {
+    set x [list 0.0 0.75 1.0]
+    set y [list 1.0 0.0 1.0]
+    set n 2
+    set t ""
+} -body {
+    catch {genBezier -n $n -x $x -y $y -t $t} errorStr
+    return $errorStr
+} -result "Length of points list t must be more than zero" -cleanup {
+    unset x y n t errorStr
+}
+
+test genBezierProcTest-6 {test procedure of general Bezier function values calculation} -setup {
+    set x [list 0.0 0.75 1.0]
+    set y [list 1.0 0.0 1.0]
+    set n -1
+    set t ""
+} -body {
+    catch {genBezier -n $n -x $x -y $y -t $t} errorStr
+    return $errorStr
+} -result "Order of Bezier curve n '-1' must be more than or equal to zero" -cleanup {
+    unset x y n t errorStr
+}
+
+test genBezierProcTest-7 {test procedure of general Bezier function values calculation} -setup {
+    set x [list 0.0 0.75 1.0]
+    set y [list 1.0 0.0 1.0]
+    set n 1.5
+    set t ""
+} -body {
+    catch {genBezier -n $n -x $x -y $y -t $t} errorStr
+    return $errorStr
+} -result "Order of Bezier curve n '1.5' must be of integer type" -cleanup {
+    unset x y n t errorStr
+}
+
+### Bezier function values calculation
+
+test bezierProcTest-1 {test procedure of general Bezier function values calculation} -match mtchLst -setup {
+    set x [list 0 0.05 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55 0.6 0.65 0.7 0.75 0.8 0.85 0.9 0.95 1]
+    set y [list 1.0 0.0 1.0]
+    set n 2
+    set a 0.0
+    set b 1.0
+} -body {
+    set yi [bezier -n $n -x $x -y $y -a $a -b $b]
+} -result [list 1 0.905 0.82 0.745 0.68 0.625 0.58 0.545 0.52 0.505 0.5 0.505 0.52 0.545 0.58 0.625 0.68 0.745 0.82\
+                   0.905 1] -cleanup {
+    unset x y n a b yi
+}
+
+test bezierProcTest-2 {test procedure of general Bezier function values calculation} -setup {
+    set x [list 0 0.05 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55 0.6 0.65 0.7 0.75 0.8 0.85 0.9 0.95 1]
+    set y [list 1.0 0.0 1.0 0.0]
+    set n 2
+    set a 0.0
+    set b 1.0
+} -body {
+    catch {bezier -n $n -x $x -y $y -a $a -b $b} errorStr
+    return $errorStr
+} -result "Length of y '4' must be equal to n+1=3" -cleanup {
+    unset x y n a b errorStr
+}
+
+test bezierProcTest-3 {test procedure of general Bezier function values calculation} -setup {
+    set x [list 0 0.05 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55 0.6 0.65 0.7 0.75 0.8 0.85 0.9 0.95 1]
+    set y [list 1.0 0.0 1.0]
+    set n 2
+    set a 1.0
+    set b 1.0
+} -body {
+    catch {bezier -n $n -x $x -y $y -a $a -b $b} errorStr
+    return $errorStr
+} -result "Start a '1.0' and end b '1.0' interval values must not be equal" -cleanup {
+    unset x y n a b errorStr
+}
+
+test bezierProcTest-4 {test procedure of general Bezier function values calculation} -setup {
+    set x [list 0 0.05 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55 0.6 0.65 0.7 0.75 0.8 0.85 0.9 0.95 1]
+    set y [list 1.0 0.0 1.0]
+    set n -1
+    set a 1.0
+    set b 1.0
+} -body {
+    catch {bezier -n $n -x $x -y $y -a $a -b $b} errorStr
+    return $errorStr
+} -result "Order of Bezier curve n '-1' must be more than or equal to zero" -cleanup {
+    unset x y n a b errorStr
+}
+
+test bezierProcTest-5 {test procedure of general Bezier function values calculation} -setup {
+    set x [list 0 0.05 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55 0.6 0.65 0.7 0.75 0.8 0.85 0.9 0.95 1]
+    set y [list 1.0 0.0 1.0]
+    set n 1.5
+    set a 1.0
+    set b 1.0
+} -body {
+    catch {bezier -n $n -x $x -y $y -a $a -b $b} errorStr
+    return $errorStr
+} -result "Order of Bezier curve n '1.5' must be of integer type" -cleanup {
+    unset x y n a b errorStr
 }
 
 cleanupTests
