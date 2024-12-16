@@ -31,7 +31,7 @@ For run you also need:
 - [argparse](https://wiki.tcl-lang.org/page/argparse)
 - [Tcllib](https://www.tcl.tk/software/tcllib/)
 
-To compile, run `swig_gen.sh` to create SWIG wrapper file, then run 
+To build, run 
 ```bash
 ./configure
 make

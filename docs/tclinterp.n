@@ -41,7 +41,7 @@ For run you also need:
 \(bu
 \fITcllib\fP [URL: https://www\&.tcl\&.tk/software/tcllib/]
 .PP
-To compile, run swig_gen\&.sh to create SWIG wrapper file, then run
+To build run
 .PP
 .RS 4n
 .nf
