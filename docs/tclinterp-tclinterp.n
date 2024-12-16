@@ -1,10 +1,14 @@
 '\"
 '\" '\" Copyright (c) George Yashin
 '\"
-.TH "tclinterp" 3tcl 0\&.1 "tcl_tools" "Tcl wrapper for C interpolation procedures"
+.TH "tclinterp" 3tcl 0\&.11 "tcl_tools" "Tcl wrapper for C interpolation procedures"
 .SH NAME
 tclinterp - Commands in namespace tclinterp
 .SH SYNOPSIS
+\fBapproxCubicBetaSpline1d\fP \fI?args?\fP
+.br
+\fBapproxCubicBSpline1d\fP \fI?args?\fP
+.br
 \fBarray2list\fP \fIarray length\fP
 .br
 \fBarrays2lists\fP \fIvarNames arrays lengths\fP
@@ -15,7 +19,13 @@ tclinterp - Commands in namespace tclinterp
 .br
 \fBdeleteDoubleps\fP \fI?args?\fP
 .br
+\fBduplListCheck\fP \fIlist\fP
+.br
 \fBgenBezier\fP \fI?args?\fP
+.br
+\fBinterpCubicSpline1d\fP \fI?args?\fP
+.br
+\fBinterpDivDif1d\fP \fI?args?\fP
 .br
 \fBinterpLagr1d\fP \fI?args?\fP
 .br
@@ -37,6 +47,64 @@ tclinterp - Commands in namespace tclinterp
 .br
 .SH ::TCLINTERP
 .SH COMMANDS
+.PP
+.RS -4n
+\fBapproxCubicBetaSpline1d\fR (::tclinterp)
+.RE
+.PP
+Evaluates a cubic beta spline approximant\&.
+.RS 4n\fBapproxCubicBetaSpline1d\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-beta1
+The skew or bias parameter, beta1 = 1 for no skew or bias\&.
+.TP
+-beta2
+The tension parameter, beta2 = 0 for no tension\&.
+.TP
+-t
+List of independent variable (t) values\&.
+.TP
+-ti
+List of independent variable interpolation (ti) values\&.
+.TP
+-y
+List of dependent variable (y) values\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+list of approximation values yi at ti points\&.
+.PP
+.RS -4n
+\fBapproxCubicBSpline1d\fR (::tclinterp)
+.RE
+.PP
+Evaluates a cubic B spline approximant\&.
+.RS 4n\fBapproxCubicBSpline1d\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-t
+List of independent variable (t) values\&.
+.TP
+-ti
+List of independent variable interpolation (ti) values\&.
+.TP
+-y
+List of dependent variable (y) values\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+list of approximation values yi at ti points\&.
 .PP
 .RS -4n
 \fBarray2list\fR (::tclinterp)
@@ -152,6 +220,26 @@ List of doublep objects\&.
 .RE
 .PP
 .RS -4n
+\fBduplListCheck\fR (::tclinterp)
+.RE
+.PP
+Checks if list contains duplicates\&.
+.RS 4n\fBduplListCheck\fP \fIlist\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+list
+List to check\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+false if there are no duplicates and true if there are\&.
+.PP
+.RS -4n
 \fBgenBezier\fR (::tclinterp)
 .RE
 .PP
@@ -179,6 +267,79 @@ List of y control points values of size n+1\&.
 \fBReturn value\fR
 .PP
 dict with lists of xi and yi points at specified t points
+.PP
+.RS -4n
+\fBinterpCubicSpline1d\fR (::tclinterp)
+.RE
+.PP
+Does piecewise cubic spline interpolation\&.
+.RS 4n\fBinterpCubicSpline1d\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-deriv
+Select the alternative output option\&.
+.TP
+-ibcbeg
+Left boundary condition flag\&. Possible values: \fBquad\fP, the cubic spline should be a quadratic over the first interval; \fBder1\fP, the first derivative at the left endpoint should be YBCBEG; \fBder2\fP, the second derivative at the left endpoint should be YBCBEG; \fBnotaknot\fP, not-a-knot, the third derivative is continuous at T(2)\&.
+.TP
+-ibcend
+Right boundary condition flag\&. Possible values: \fBquad\fP, the cubic spline should be a quadratic over the last interval; \fBder1\fP, the first derivative at the right endpoint should be YBCBEG; \fBder2\fP, the second derivative at the right endpoint should be YBCBEG; \fBnotaknot\fP, not-a-knot, the third derivative is continuous at T(2)\&.
+.TP
+-t
+List of independent variable (t) values\&.
+.TP
+-ti
+List of independent variable interpolation (ti) values\&.
+.TP
+-y
+List of dependent variable (y) values\&.
+.TP
+-ybcbeg
+The values to be used in the boundary conditions if ibcbeg is equal to der1 or der2, default is 0\&.0\&.
+.TP
+-ybcend
+The values to be used in the boundary conditions if ibcend is equal to der1 or der2, default is 0\&.0\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+list of interpolated dependent variable values under\&. If -deriv switch is in args, the output is
+dictionary that contains yi values under yi key, yi derivative under yder1 key, and yi second derivative
+under yder2 key\&.
+.PP
+.RS -4n
+\fBinterpDivDif1d\fR (::tclinterp)
+.RE
+.PP
+Does divided difference one-dimensional interpolation\&.
+.RS 4n\fBinterpDivDif1d\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-coeffs
+Select the alternative output option\&.
+.TP
+-x
+List of independent variable (x) values\&.
+.TP
+-xi
+List of independent variable interpolation (xi) values\&.
+.TP
+-y
+List of dependent variable (y) values\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+list of interpolated dependent variable values, yi, at xi\&. If -coeffs switch is in args, the output
+is dictionary that contains yi values under yi key, and the values of difference table under the key coeffs\&.
 .PP
 .RS -4n
 \fBinterpLagr1d\fR (::tclinterp)

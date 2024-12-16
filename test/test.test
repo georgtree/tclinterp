@@ -651,4 +651,363 @@ test bezierProcTest-5 {test procedure of general Bezier function values calculat
     unset x y n a b errorStr
 }
 
+test bezierProcTest-6 {test procedure of general Bezier function values calculation} -setup {
+    set x [list ]
+    set y [list 1.0 0.0 1.0]
+    set n 2
+    set a 0.0
+    set b 1.0
+} -body {
+    catch {bezier -n $n -x $x -y $y -a $a -b $b} errorStr
+    return $errorStr
+} -result "Length of points list x must be more than zero" -cleanup {
+    unset x y n a b errorStr
+}
+
+### Divided difference polynomial interpolation tests
+
+test interpDivDif1dProcTest-1 {test procedure of divided difference polynomial interpolation} -setup {
+    set x [list 0.0 1.0 2.0 3.0 4.0 5.0 6.0 7.0]
+    set y [list 1.000000 2.718282 7.389056 20.085537 54.598150 148.413159 403.428793 1096.633158]
+    set xi [list 2.5]
+} -body {
+    interpDivDif1d -x $x -y $y -xi $xi
+} -result "12.234320063964844" -cleanup {
+    unset x y xi
+}
+
+test interpDivDif1dProcTest-2 {test procedure of divided difference polynomial interpolation} -setup {
+    set x [list 0.0 1.0 2.0 3.0 4.0 5.0 6.0 7.0]
+    set y [list 1.000000 2.718282 7.389056 20.085537 54.598150 148.413159 403.428793 1096.633158]
+    set xi [list 2.5]
+} -body {
+    interpDivDif1d -x $x -y $y -xi $xi -coeffs
+} -result "yi 12.234320063964844 coeffs {1.0 1.7182819999999999 1.476246 0.8455358333333333 0.36321708333333347\
+                0.12482190833333326 0.0357465236111111 0.008774660515873053}" -cleanup {
+    unset x y xi
+}
+
+test interpDivDif1dProcTest-3 {test procedure of divided difference polynomial interpolation} -setup {
+    set x [list 0.0 1.0 2.0 3.0 7.0 5.0 6.0 7.0]
+    set y [list 1.000000 2.718282 7.389056 20.085537 54.598150 148.413159 403.428793 1096.633158]
+    set xi [list 2.5]
+} -body {
+    catch {interpDivDif1d -x $x -y $y -xi $xi} errorStr
+    return $errorStr
+} -result "x values list must not contain duplicated elements" -cleanup {
+    unset x y xi errorStr
+}
+
+test interpDivDif1dProcTest-4 {test procedure of divided difference polynomial interpolation} -setup {
+    set x [list 0.0 1.0 2.0 3.0 4.0 5.0 6.0 7.0 8.0]
+    set y [list 1.000000 2.718282 7.389056 20.085537 54.598150 148.413159 403.428793 1096.633158]
+    set xi [list 2.5]
+} -body {
+    catch {interpDivDif1d -x $x -y $y -xi $xi} errorStr
+    return $errorStr
+} -result "Length of y '8' must be equal to x '9'" -cleanup {
+    unset x y xi errorStr
+}
+
+test interpDivDif1dProcTest-5 {test procedure of divided difference polynomial interpolation} -setup {
+    set x [list 0.0 1.0 2.0 3.0 4.0 5.0 6.0 7.0 ]
+    set y [list 1.000000 2.718282 7.389056 20.085537 54.598150 148.413159 403.428793 1096.633158]
+    set xi [list ]
+} -body {
+    catch {interpDivDif1d -x $x -y $y -xi $xi} errorStr
+    return $errorStr
+} -result "Length of interpolation points list xi must be more than zero" -cleanup {
+    unset x y xi errorStr
+}
+
+# test interpDivDif1dProcTest-5 {test procedure of divided difference polynomial interpolation} -setup {
+#     set x [list ]
+#     set y [list ]
+#     set xi [list 2.5]
+# } -body {
+#     catch {interpDivDif1d -x $x -y $y -xi $xi} errorStr
+#     return $errorStr
+# } -result "Length of interpolation points list xi must be more than zero" -cleanup {
+#     unset x y xi errorStr
+# }
+
+### Cubic B spline approximation tests
+
+test approxCubicBSpline1dProcTest-1 {test procedure of cubic B spline approximant calculation} -match mtchLst -setup {
+    set t [list 0 1 2 3 4 5 6 7 8 9 10]
+    set y [list 0 0.587785 0.951057 0.951057 0.587785 1.22465e-16 -0.587785 -0.951057 -0.951057 -0.587785 -2.44929e-16]
+    set ti [list 0.5 0.375 0.25 0.125 0 0.25 0.5 0.75 1 1.25 1.5 1.75 2 2.25 2.5 2.75 3 3.25 3.5 3.75 4 4.25 4.5 4.75 5\
+                    5.25 5.5 5.75 6 6.25 6.5 6.75 7 7.25 7.5 7.75 8 8.25 8.5 8.75 9 9.25 9.5 9.75 10 10.125 10.25\
+                    10.375 10.5]
+} -body {
+    approxCubicBSpline1d -t $t -y $y -ti $ti
+} -result [list 0.289215 0.218446 0.146362 0.0734001 0 0.146362 0.289215 0.425053 0.550366 0.661871 0.757175 0.834112\
+                   0.890511 0.924568 0.93592 0.924568 0.890511 0.834112 0.757175 0.661871 0.550366 0.425053 0.289215\
+                   0.146362 1.11022e-16 -0.146362 -0.289215 -0.425053 -0.550366 -0.661871 -0.757175 -0.834112 -0.890511\
+                   -0.924568 -0.93592 -0.924568 -0.890511 -0.834112 -0.757175 -0.661871 -0.550366 -0.425053 -0.289215\
+                   -0.146362 -2.498e-16 0.0734001 0.146362 0.218446 0.289215] -cleanup {
+    unset t y ti
+}
+
+test approxCubicBSpline1dProcTest-2 {test procedure of cubic B spline approximant calculation} -setup {
+    set t [list 0 1 2 3 4 5 6 7 8 9]
+    set y [list 0 0.587785 0.951057 0.951057 0.587785 1.22465e-16 -0.587785 -0.951057 -0.951057 -0.587785 -2.44929e-16]
+    set ti [list 0.5 0.375 0.25 0.125 0 0.25 0.5 0.75 1 1.25 1.5 1.75 2 2.25 2.5 2.75 3 3.25 3.5 3.75 4 4.25 4.5 4.75 5\
+                    5.25 5.5 5.75 6 6.25 6.5 6.75 7 7.25 7.5 7.75 8 8.25 8.5 8.75 9 9.25 9.5 9.75 10 10.125 10.25\
+                    10.375 10.5]
+} -body {
+    catch {approxCubicBSpline1d -t $t -y $y -ti $ti} errorStr
+    return $errorStr
+} -result "Length of y '11' must be equal to t '10'" -cleanup {
+    unset t y ti errorStr
+}
+
+test approxCubicBSpline1dProcTest-3 {test procedure of cubic B spline approximant calculation} -setup {
+    set t [list 0 1 2 3 4 5 6 7 8 9 10]
+    set y [list 0 0.587785 0.951057 0.951057 0.587785 1.22465e-16 -0.587785 -0.951057 -0.951057 -0.587785 -2.44929e-16]
+    set ti [list ]
+} -body {
+    catch {approxCubicBSpline1d -t $t -y $y -ti $ti} errorStr
+    return $errorStr
+} -result "Length of interpolation points list ti must be more than zero" -cleanup {
+    unset t y ti errorStr
+}
+
+### Cubic beta spline approximation tests
+
+test approxCubicBetaSpline1dProcTest-1 {test procedure of cubic beta spline approximant calculation} -match mtchLst -setup {
+    set t [list 0 1 2 3 4 5 6 7 8 9 10]
+    set y [list 0 0.587785 0.951057 0.951057 0.587785 1.22465e-16 -0.587785 -0.951057 -0.951057 -0.587785 -2.44929e-16]
+    set ti [list -0.5 -0.375 -0.25 -0.125 0 0.25 0.5 0.75 1 1.25 1.5 1.75 2 2.25 2.5 2.75 3 3.25 3.5 3.75 4 4.25 4.5\
+                    4.75 5 5.25 5.5 5.75 6 6.25 6.5 6.75 7 7.25 7.5 7.75 8 8.25 8.5 8.75 9 9.25 9.5 9.75 10 10.125\
+                    10.25 10.375 10.5]
+} -body {
+    approxCubicBetaSpline1d -beta1 1 -beta2 0 -t $t -y $y -ti $ti
+} -result [list -0.289215 -0.218446 -0.146362 -0.0734001 0 0.146362 0.289215 0.425053 0.550366 0.661871 0.757175\
+                   0.834112 0.890511 0.924568 0.93592 0.924568 0.890511 0.834112 0.757175 0.661871 0.550366 0.425053\
+                   0.289215 0.146362 1.11022e-16 -0.146362 -0.289215 -0.425053 -0.550366 -0.661871 -0.757175 -0.834112\
+                   -0.890511 -0.924568 -0.93592 -0.924568 -0.890511 -0.834112 -0.757175 -0.661871 -0.550366 -0.425053\
+                   -0.289215 -0.146362 -2.498e-16 0.0734001 0.146362 0.218446 0.289215] -cleanup {
+    unset t y ti
+}
+
+test approxCubicBetaSpline1dProcTest-2 {test procedure of cubic beta spline approximant calculation} -match mtchLst -setup {
+    set t [list 0 1 2 3 4 5 6 7 8 9 10]
+    set y [list 0 0.587785 0.951057 0.951057 0.587785 1.22465e-16 -0.587785 -0.951057 -0.951057 -0.587785 -2.44929e-16]
+    set ti [list -0.5 -0.375 -0.25 -0.125 0 0.25 0.5 0.75 1 1.25 1.5 1.75 2 2.25 2.5 2.75 3 3.25 3.5 3.75 4 4.25 4.5\
+                    4.75 5 5.25 5.5 5.75 6 6.25 6.5 6.75 7 7.25 7.5 7.75 8 8.25 8.5 8.75 9 9.25 9.5 9.75 10 10.125\
+                    10.25 10.375 10.5]
+} -body {
+    approxCubicBetaSpline1d -beta1 1 -beta2 100 -t $t -y $y -ti $ti
+} -result [list 0.493821 0.253349 0.0991202 0.0187861 0 0.0976829 0.293391 0.488348 0.583776 0.646403 0.768109 0.887847\
+                   0.94457 0.948218 0.949435 0.948218 0.94457 0.887847 0.768109 0.646403 0.583776 0.488348 0.293391\
+                   0.0976829 1.21431e-16 -0.0976829 -0.293391 -0.488348 -0.583776 -0.646403 -0.768109 -0.887847\
+                   -0.94457 -0.948218 -0.949435 -0.948218 -0.94457 -0.887847 -0.768109 -0.646403 -0.583776 -0.488348\
+                   -0.293391 -0.0976829 2.44596e-16 -0.0187861 -0.0991202 -0.253349 -0.493821] -cleanup {
+    unset t y ti
+}
+
+test approxCubicBetaSpline1dProcTest-3 {test procedure of cubic beta spline approximant calculation} -match mtchLst -setup {
+    set t [list 0 1 2 3 4 5 6 7 8 9 10]
+    set y [list 0 0.587785 0.951057 0.951057 0.587785 1.22465e-16 -0.587785 -0.951057 -0.951057 -0.587785 -2.44929e-16]
+    set ti [list -0.5 -0.375 -0.25 -0.125 0 0.25 0.5 0.75 1 1.25 1.5 1.75 2 2.25 2.5 2.75 3 3.25 3.5 3.75 4 4.25 4.5\
+                    4.75 5 5.25 5.5 5.75 6 6.25 6.5 6.75 7 7.25 7.5 7.75 8 8.25 8.5 8.75 9 9.25 9.5 9.75 10 10.125\
+                    10.25 10.375 10.5]
+} -body {
+    approxCubicBetaSpline1d -beta1 100 -beta2 0 -t $t -y $y -ti $ti
+} -result [list -1.93953 -1.49508 -1.12416 -0.820073 -0.576146 -0.242029 -0.0683376 -0.00160438 0.0116391 0.345362\
+                   0.518042 0.583355 0.594978 0.800836 0.906547 0.945493 0.951056 0.950418 0.948782 0.946484 0.943863\
+                   0.736973 0.628614 0.585951 0.576146 0.242029 0.0683376 0.00160438 -0.0116391 -0.345362 -0.518042\
+                   -0.583355 -0.594978 -0.800836 -0.906547 -0.945493 -0.951056 -0.950418 -0.948782 -0.946484 -0.943863\
+                   -0.736973 -0.628614 -0.585951 -0.576146 -0.573304 -0.566362 -0.551217 -0.523763] -cleanup {
+    unset t y ti
+}
+
+test approxCubicBetaSpline1dProcTest-4 {test procedure of cubic beta spline approximant calculation} -setup {
+    set t [list 0 1 2 3 4 5 6 7 8 9]
+    set y [list 0 0.587785 0.951057 0.951057 0.587785 1.22465e-16 -0.587785 -0.951057 -0.951057 -0.587785 -2.44929e-16]
+    set ti [list 0.5 0.375 0.25 0.125 0 0.25 0.5 0.75 1 1.25 1.5 1.75 2 2.25 2.5 2.75 3 3.25 3.5 3.75 4 4.25 4.5 4.75 5\
+                    5.25 5.5 5.75 6 6.25 6.5 6.75 7 7.25 7.5 7.75 8 8.25 8.5 8.75 9 9.25 9.5 9.75 10 10.125 10.25\
+                    10.375 10.5]
+} -body {
+    catch {approxCubicBetaSpline1d -beta1 100 -beta2 0 -t $t -y $y -ti $ti} errorStr
+    return $errorStr
+} -result "Length of y '11' must be equal to t '10'" -cleanup {
+    unset t y ti errorStr
+}
+
+test approxCubicBetaSpline1dProcTest-5 {test procedure of cubic beta spline approximant calculation} -setup {
+    set t [list 0 1 2 3 4 5 6 7 8 9 10]
+    set y [list 0 0.587785 0.951057 0.951057 0.587785 1.22465e-16 -0.587785 -0.951057 -0.951057 -0.587785 -2.44929e-16]
+    set ti [list ]
+} -body {
+    catch {approxCubicBetaSpline1d -beta1 100 -beta2 0 -t $t -y $y -ti $ti} errorStr
+    return $errorStr
+} -result "Length of interpolation points list ti must be more than zero" -cleanup {
+    unset t y ti errorStr
+}
+
+test approxCubicBetaSpline1dProcTest-6 {test procedure of cubic beta spline approximant calculation} -setup {
+    set t [list 0 1 2 3 4 5 6 7 8 9 10]
+    set y [list 0 0.587785 0.951057 0.951057 0.587785 1.22465e-16 -0.587785 -0.951057 -0.951057 -0.587785 -2.44929e-16]
+    set ti [list -0.5 -0.375 -0.25 -0.125 0 0.25 0.5 0.75 1 1.25 1.5 1.75 2 2.25 2.5 2.75 3 3.25 3.5 3.75 4 4.25 4.5\
+                    4.75 5 5.25 5.5 5.75 6 6.25 6.5 6.75 7 7.25 7.5 7.75 8 8.25 8.5 8.75 9 9.25 9.5 9.75 10 10.125\
+                    10.25 10.375 10.5]
+} -body {
+    catch {approxCubicBetaSpline1d -beta1 100i -beta2 0 -t $t -y $y -ti $ti} errorStr
+    return $errorStr
+} -result "Beta1 '100i' must be of double type" -cleanup {
+    unset t y ti errorStr
+}
+
+test approxCubicBetaSpline1dProcTest-7 {test procedure of cubic beta spline approximant calculation} -setup {
+    set t [list 0 1 2 3 4 5 6 7 8 9 10]
+    set y [list 0 0.587785 0.951057 0.951057 0.587785 1.22465e-16 -0.587785 -0.951057 -0.951057 -0.587785 -2.44929e-16]
+    set ti [list -0.5 -0.375 -0.25 -0.125 0 0.25 0.5 0.75 1 1.25 1.5 1.75 2 2.25 2.5 2.75 3 3.25 3.5 3.75 4 4.25 4.5\
+                    4.75 5 5.25 5.5 5.75 6 6.25 6.5 6.75 7 7.25 7.5 7.75 8 8.25 8.5 8.75 9 9.25 9.5 9.75 10 10.125\
+                    10.25 10.375 10.5]
+} -body {
+    catch {approxCubicBetaSpline1d -beta1 100 -beta2 a0 -t $t -y $y -ti $ti} errorStr
+    return $errorStr
+} -result "Beta1 'a0' must be of double type" -cleanup {
+    unset t y ti errorStr
+}
+
+### Cubic spline interpolation tests
+
+test interpCubicSpline1dProcTest-1 {test procedure of cubic spline interpolation calculation} -match mtchLst -setup {
+    set t [list -1 -0.8 -0.6 -0.4 -0.2 0 0.2 0.4 0.6 0.8 1]
+    set y [list 0.0384615 0.0588235 0.1 0.2 0.5 1 0.5 0.2 0.1 0.0588235 0.0384615]
+    set ti [list -2 -1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 2]
+} -body {
+    interpCubicSpline1d -t $t -y $y -ti $ti
+} -result [list 0.130689 0.0384615 0.0470256 0.0588235 0.0748403 0.1 0.140039 0.2 0.297358 0.5 0.820528 1 0.820528 0.5\
+                   0.297358 0.2 0.140039 0.1 0.0748403 0.0588235 0.0470256 0.0384615 0.130689] -cleanup {
+    unset t y ti
+}
+
+test interpCubicSpline1dProcTest-2 {test procedure of cubic spline interpolation calculation} -match mtchLst -setup {
+    set t [list -1 -0.8 -0.6 -0.4 -0.2 0 0.2 0.4 0.6 0.8 1]
+    set y [list 0.0384615 0.0588235 0.1 0.2 0.5 1 0.5 0.2 0.1 0.0588235 0.0384615]
+    set ti [list -2 -1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 2]
+} -body {
+    return [dget [interpCubicSpline1d -t $t -y $y -ti $ti -deriv] yder1]
+} -result [list -0.2539269444444438 0.06947027777777785 0.10181000000000001 0.13414972222222216 0.19603423611111112\
+                   0.31700833333333345 0.4918818055555557 0.7154644444444443 1.3658504166666667 2.821133888888889\
+                   3.0447165277777777 0.0 -3.044716527777778 -2.8211338888888893 -1.365850416666667 -0.7154644444444442\
+                   -0.4918818055555556 -0.31700833333333345 -0.1960342361111111 -0.13414972222222216 -0.10181\
+                   -0.06947027777777784 0.25392694444444364] -cleanup {
+    unset t y ti
+}
+
+test interpCubicSpline1dProcTest-3 {test procedure of cubic spline interpolation calculation} -match mtchLst -setup {
+    set t [list -1 -0.8 -0.6 -0.4 -0.2 0 0.2 0.4 0.6 0.8 1]
+    set y [list 0.0384615 0.0588235 0.1 0.2 0.5 1 0.5 0.2 0.1 0.0588235 0.0384615]
+    set ti [list -2 -1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 2]
+} -body {
+    dget [interpCubicSpline1d -t $t -y $y -ti $ti -deriv] yder2
+} -result [list 0.32339722222222167 0.32339722222222167 0.32339722222222167 0.32339722222222167 0.9142930555555564\
+                   1.5051888888888905 1.9922805555555556 2.4793722222222208 10.528347222222223 18.57732222222222\
+                   -14.105669444444445 -46.78866111111111 -14.105669444444445 18.57732222222223 10.528347222222225\
+                   2.4793722222222185 1.9922805555555545 1.5051888888888907 0.9142930555555565 0.32339722222222167\
+                   0.32339722222222167 0.3233972222222216 0.32339722222222134] -cleanup {
+    unset t y ti
+}
+
+test interpCubicSpline1dProcTest-4 {test procedure of cubic spline interpolation calculation} -match mtchLst -setup {
+    set t [list -1 -0.8 -0.6 -0.4 -0.2 0 0.2 0.4 0.6 0.8 1]
+    set y [list 0.0384615 0.0588235 0.1 0.2 0.5 1 0.5 0.2 0.1 0.0588235 0.0384615]
+    set ti [list -2 -1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 2]
+} -body {
+    interpCubicSpline1d -t $t -y $y -ti $ti -ibcbeg der1 -ibcend der1 -ybcbeg 0.0739645 -ybcend -0.0739645
+} -result [list 0.00502451 0.0384615 0.047168 0.0588235 0.0748021 0.1 0.140049 0.2 0.297356 0.5 0.820529 1 0.820529 0.5\
+                   0.297356 0.2 0.140049 0.1 0.0748021 0.0588235 0.047168 0.0384615 0.00502451] -cleanup {
+    unset t y ti
+}
+
+test interpCubicSpline1dProcTest-5 {test procedure of cubic spline interpolation calculation} -match mtchLst -setup {
+    set t [list -1 -0.8 -0.6 -0.4 -0.2 0 0.2 0.4 0.6 0.8 1]
+    set y [list 0.0384615 0.0588235 0.1 0.2 0.5 1 0.5 0.2 0.1 0.0588235 0.0384615]
+    set ti [list -2 -1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 2]
+} -body {
+    dget [interpCubicSpline1d -t $t -y $y -ti $ti -ibcbeg der1 -ibcend der1 -ybcbeg 0.0739645 -ybcend -0.0739645 -deriv]\
+            yder1
+} -result [list 0.07516194019138352 0.0739645 0.10098749282296653 0.13294552870813392 0.19625464653110047\
+                   0.3173308851674642 0.4918226710526317 0.7153784306220095 1.3658665442583733 2.821155392344498\
+                   3.0447111519138756 4.440892098500626e-16 -3.044711151913876 -2.8211553923444974 -1.3658665442583728\
+                   -0.7153784306220095 -0.49182267105263167 -0.3173308851674642 -0.19625464653110047\
+                   -0.13294552870813392 -0.10098749282296651 -0.07396449999999999 -0.07516194019138286] -cleanup {
+    unset t y ti
+}
+
+test interpCubicSpline1dProcTest-6 {test procedure of cubic spline interpolation calculation} -match mtchLst -setup {
+    set t [list -1 -0.8 -0.6 -0.4 -0.2 0 0.2 0.4 0.6 0.8 1]
+    set y [list 0.0384615 0.0588235 0.1 0.2 0.5 1 0.5 0.2 0.1 0.0588235 0.0384615]
+    set ti [list -2 -1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 2]
+} -body {
+    interpCubicSpline1d -t $t -y $y -ti $ti -ibcbeg der2 -ibcend der2 -ybcbeg 0.210514 -ybcend 0.210514
+} -result [list -0.0515433 0.0384615 0.0472321 0.0588235 0.0747849 0.1 0.140053 0.2 0.297354 0.5 0.820529 1 0.820529 0.5\
+                   0.297354 0.2 0.140053 0.1 0.0747849 0.0588235 0.0472321 0.0384615 -0.0515433] -cleanup {
+    unset t y ti
+}
+
+test interpCubicSpline1dProcTest-7 {test procedure of cubic spline interpolation calculation} -match mtchLst -setup {
+    set t [list -1 -0.8 -0.6 -0.4 -0.2 0 0.2 0.4 0.6 0.8 1]
+    set y [list 0.0384615 0.0588235 0.1 0.2 0.5 1 0.5 0.2 0.1 0.0588235 0.0384615]
+    set ti [list -2 -1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 2]
+} -body {
+    dget [interpCubicSpline1d -t $t -y $y -ti $ti -ibcbeg der2 -ibcend der2 -ybcbeg 0.210514 -ybcend 0.210514 -deriv]\
+            yder2
+} -result [list -0.5051406823204383 0.210514 0.28207946823204383 0.3536449364640876 0.9253630953038683\
+                   1.4970812541436485 1.989318150552486 2.4815550469613235 10.529126802486191 18.576698558011053\
+                   -14.105825360497235 -46.78834927900552 -14.105825360497235 18.576698558011053 10.52912680248619\
+                   2.481555046961323 1.9893181505524855 1.4970812541436482 0.9253630953038683 0.35364493646408773\
+                   0.2820794682320439 0.210514 -0.5051406823204387] -cleanup {
+    unset t y ti
+}
+
+test interpCubicSpline1dProcTest-8 {test procedure of cubic spline interpolation calculation} -match mtchLst -setup {
+    set t [list -1 -0.8 -0.6 -0.4 -0.2 0 0.2 0.4 0.6 0.8 1]
+    set y [list 0.0384615 0.0588235 0.1 0.2 0.5 1 0.5 0.2 0.1 0.0588235 0.0384615]
+    set ti [list -2 -1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 2]
+} -body {
+    interpCubicSpline1d -t $t -y $y -ti $ti -ibcbeg notaknot -ibcend notaknot
+} -result [list -1.05598 0.0384615 0.0483708 0.0588235 0.0744799 0.1 0.140135 0.2 0.297333 0.5 0.820533 1 0.820533 0.5\
+                   0.297333 0.2 0.140135 0.1 0.0744799 0.0588235 0.0483708 0.0384615 -1.05598] -cleanup {
+    unset t y ti
+}
+
+test interpCubicSpline1dProcTest-9 {test procedure of cubic spline interpolation calculation} -match mtchLst -setup {
+    set t [list -1 -0.8 -0.6 -0.4 -0.2 0 0.2 0.4 0.6 0.8 1]
+    set y [list 0.0384615 0.0588235 0.1 0.2 0.5 1 0.5 0.2 0.1 0.0588235 0.0384615]
+    set ti [list -2 -1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 2]
+} -body {
+    interpCubicSpline1d -t $t -y $y -ti $ti -ibcbeg der2 -ibcend der2 -ybcbeg 0.0 -ybcend 0.0
+} -result [list -0.39139 0.0384615 0.0476174 0.0588235 0.0746817 0.1 0.140081 0.2 0.297347 0.5 0.820531 1 0.820531 0.5\
+                   0.297347 0.2 0.140081 0.1 0.0746817 0.0588235 0.0476174 0.0384615 -0.39139] -cleanup {
+    unset t y ti
+}
+
+test interpCubicSpline1dProcTest-10 {test procedure of cubic spline interpolation calculation} -setup {
+    set t [list -1 -0.8 -0.6 -0.4 -0.2 0 0.2 0.4 0.6 0.8 1 2]
+    set y [list 0.0384615 0.0588235 0.1 0.2 0.5 1 0.5 0.2 0.1 0.0588235 0.0384615]
+    set ti [list -2 -1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 2]
+} -body {
+    catch {interpCubicSpline1d -t $t -y $y -ti $ti} errorStr
+    return $errorStr
+} -result "Length of y '11' must be equal to t '12'" -cleanup {
+    unset t y ti errorStr
+}
+
+test interpCubicSpline1dProcTest-10 {test procedure of cubic spline interpolation calculation} -setup {
+    set t [list -1 -0.8 -0.6 -0.4 -0.2 0 0.2 0.4 0.6 0.8 1]
+    set y [list 0.0384615 0.0588235 0.1 0.2 0.5 1 0.5 0.2 0.1 0.0588235 0.0384615]
+    set ti [list ]
+} -body {
+    catch {interpCubicSpline1d -t $t -y $y -ti $ti} errorStr
+    return $errorStr
+} -result "Length of interpolation points list ti must be more than zero" -cleanup {
+    unset t y ti errorStr
+}
+
 cleanupTests

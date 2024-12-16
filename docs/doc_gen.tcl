@@ -11,8 +11,7 @@ set sourceDir "${dir}/../"
 source startPage.ruff
 source [file join $sourceDir tclinterp.tcl]
 
-set packageVersion 0.11
-
+set packageVersion [lindex [package versions tclinterp] 0]
 set title "Tcl wrapper for C interpolation procedures"
 
 set commonHtml [list \

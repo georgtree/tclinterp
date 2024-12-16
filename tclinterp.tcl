@@ -1,12 +1,13 @@
 package require argparse
-package provide tclinterp 0.11
+package provide tclinterp 0.12
 set script_path [file dirname [file normalize [info script]]]
 
 
 namespace eval ::tclinterp {
 
     namespace import ::tcl::mathop::*
-    namespace export interpLin1d interpNear1d interpLagr1d interpLeast1d interpLeast1dDer genBezier bezier
+    namespace export interpLin1d interpNear1d interpLagr1d interpLeast1d interpLeast1dDer genBezier bezier\
+            interpDivDif1d approxCubicBSpline1d approxCubicBetaSpline1d interpCubicSpline1d
     interp alias {} dget {} dict get
     interp alias {} @ {} lindex
     interp alias {} = {} expr
@@ -122,6 +123,26 @@ proc ::tclinterp::deleteDoubleps {args} {
     return
 }
 
+proc ::tclinterp::duplListCheck {list} {
+    # Checks if list contains duplicates.
+    #  list - list to check
+    # Returns: false if there are no duplicates and true if there are.
+    set flag false
+    set new {}
+    foreach item $list {
+        if {[lsearch $new $item] < 0} {
+            lappend new $item
+        } else {
+            set flag true
+            break
+        }
+    }
+    return $flag
+}
+
+
+### Linear interpolations
+
 proc ::tclinterp::interpLin1d {args} {
     # Does linear one-dimensional interpolation.
     #  -x - list of independent variable (x) values, must be strictly increasing
@@ -202,6 +223,10 @@ proc ::tclinterp::interpLagr1d {args} {
     ::tclinterp::deleteArrays $xArray $yArray $xiArray $yiArray
     return $yiList
 }
+
+### Spline interpolation
+
+#### Least squares polynomial interpolation
 
 proc ::tclinterp::interpLeast1d {args} {
     # Does least squares polynomial one-dimensional interpolation.
@@ -325,6 +350,8 @@ proc ::tclinterp::interpLeast1dDer {args} {
     return
 }
 
+#### Bezier functions interpolation
+
 proc ::tclinterp::genBezier {args} {
     # Finds values of general Bezier function at specified t points.
     #  -n - order of Bezier function, must be zero or more
@@ -401,4 +428,181 @@ proc ::tclinterp::bezier {args} {
     }
     ::tclinterp::deleteArrays $yArray
     return $yiList
+}
+
+#### Divided difference interpolation
+
+proc ::tclinterp::interpDivDif1d {args} {
+    # Does divided difference one-dimensional interpolation.
+    #  -x - list of independent variable (x) values
+    #  -y - list of dependent variable (y) values
+    #  -xi - list of independent variable interpolation (xi) values
+    #  -coeffs - select the alternative output option
+    # Returns: list of interpolated dependent variable values, `yi`, at `xi`. If `-coeffs` switch is in args, the output
+    # is dictionary that contains `yi` values under `yi` key, and the values of difference table under the key `coeffs`.
+    set arguments [argparse {
+        {-x= -required}
+        {-y= -required}
+        {-xi= -required}
+        -coeffs
+    }]
+    set xLen [llength $x]
+    set yLen [llength $y]
+    set xiLen [llength $xi]
+    if {$xLen!=$yLen} {
+        error "Length of y '$yLen' must be equal to x '$xLen'"
+    } elseif {$xiLen==0} {
+        error "Length of interpolation points list xi must be more than zero"
+    }
+    if {[::tclinterp::duplListCheck $x]=="true"} {
+        error "x values list must not contain duplicated elements"
+    }
+    ::tclinterp::lists2arrays [list xArray yArray] [list $x $y]
+    ::tclinterp::newArrays [list difTab] [list $xLen]
+    # create difference table for given data
+    ::tclinterp::data_to_dif $xLen $xArray $yArray $difTab
+    # calculate polynomial value for each xi value
+    for {set i 0} {$i<$xiLen} {incr i} {
+        set iElem [::tclinterp::dif_val $xLen $xArray $difTab [@ $xi $i]]
+        lappend yiList $iElem
+    }
+    if {[info exists coeffs]} {
+        ::tclinterp::arrays2lists [list difTabList] [list $difTab] [list $xLen]
+        ::tclinterp::deleteArrays $difTab $xArray $yArray
+        return [dcreate yi $yiList coeffs $difTabList]
+    } else {
+        ::tclinterp::deleteArrays $difTab $xArray $yArray
+        return $yiList
+    }
+    return
+}
+
+#### Cubic B spline approximation
+
+proc ::tclinterp::approxCubicBSpline1d {args} {
+    # Evaluates a cubic B spline approximant.
+    #  -t - list of independent variable (t) values
+    #  -y - list of dependent variable (y) values
+    #  -ti - list of independent variable interpolation (ti) values
+    # Returns: list of approximation values yi at ti points.
+    set arguments [argparse {
+        {-t= -required}
+        {-y= -required}
+        {-ti= -required}
+    }]
+    set tLen [llength $t]
+    set yLen [llength $y]
+    set tiLen [llength $ti]
+    if {$tLen!=$yLen} {
+        error "Length of y '$yLen' must be equal to t '$tLen'"
+    } elseif {$tiLen==0} {
+        error "Length of interpolation points list ti must be more than zero"
+    }
+    ::tclinterp::lists2arrays [list tArray yArray] [list $t $y]
+    for {set i 0} {$i<$tiLen} {incr i} {
+        set iElem [::tclinterp::spline_b_val $tLen $tArray $yArray [@ $ti $i]]
+        lappend yiList $iElem
+    }
+    ::tclinterp::deleteArrays $tArray $yArray
+    return $yiList
+}
+
+#### Cubic beta spline approximation
+
+proc ::tclinterp::approxCubicBetaSpline1d {args} {
+    # Evaluates a cubic beta spline approximant.
+    #  -beta1 - the skew or bias parameter, beta1 = 1 for no skew or bias
+    #  -beta2 - the tension parameter, beta2 = 0 for no tension
+    #  -t - list of independent variable (t) values
+    #  -y - list of dependent variable (y) values
+    #  -ti - list of independent variable interpolation (ti) values
+    # Returns: list of approximation values yi at ti points.
+    set arguments [argparse {
+        {-beta1= -required}
+        {-beta2= -required}
+        {-t= -required}
+        {-y= -required}
+        {-ti= -required}
+    }]
+    set tLen [llength $t]
+    set yLen [llength $y]
+    set tiLen [llength $ti]
+    if {$tLen!=$yLen} {
+        error "Length of y '$yLen' must be equal to t '$tLen'"
+    } elseif {$tiLen==0} {
+        error "Length of interpolation points list ti must be more than zero"
+    } elseif {[string is double -strict $beta1]==0} {
+        error "Beta1 '$beta1' must be of double type"
+    } elseif {[string is double -strict $beta2]==0} {
+        error "Beta1 '$beta2' must be of double type"
+    }
+    ::tclinterp::lists2arrays [list tArray yArray] [list $t $y]
+    for {set i 0} {$i<$tiLen} {incr i} {
+        set iElem [::tclinterp::spline_beta_val $beta1 $beta2 $tLen $tArray $yArray [@ $ti $i]]
+        lappend yiList $iElem
+    }
+    ::tclinterp::deleteArrays $tArray $yArray
+    return $yiList
+}
+
+#### Piecewise cubic spline interpolation
+
+proc ::tclinterp::interpCubicSpline1d {args} {
+    # Does piecewise cubic spline interpolation.
+    #  -ibcbeg - left boundary condition flag. Possible values:
+    #   **quad**, the cubic spline should be a quadratic over the first interval;
+    #   **der1**, the first derivative at the left endpoint should be YBCBEG;
+    #   **der2**, the second derivative at the left endpoint should be YBCBEG;
+    #   **notaknot**, not-a-knot, the third derivative is continuous at T(2).
+    #  -ibcend - right boundary condition flag. Possible values:
+    #   **quad**, the cubic spline should be a quadratic over the last interval;
+    #   **der1**, the first derivative at the right endpoint should be YBCBEG;
+    #   **der2**, the second derivative at the right endpoint should be YBCBEG;
+    #   **notaknot**, not-a-knot, the third derivative is continuous at T(2).
+    #  -ybcbeg - the values to be used in the boundary conditions if ibcbeg is equal to der1 or der2, default is 0.0
+    #  -ybcend - the values to be used in the boundary conditions if ibcend is equal to der1 or der2, default is 0.0
+    #  -t - list of independent variable (t) values
+    #  -y - list of dependent variable (y) values
+    #  -ti - list of independent variable interpolation (ti) values
+    #  -deriv - select the alternative output option
+    # Returns: list of interpolated dependent variable values under. If `-deriv` switch is in args, the output is
+    # dictionary that contains `yi` values under `yi` key, `yi` derivative under `yder1` key, and `yi` second derivative
+    # under `yder2` key.
+    set arguments [argparse {
+        {-ibcbeg= -default quad -enum {quad der1 der2 notaknot}}
+        {-ibcend= -default quad -enum {quad der1 der2 notaknot}}
+        {-ybcbeg= -default 0.0}
+        {-ybcend= -default 0.0}
+        {-t= -required}
+        {-y= -required}
+        {-ti= -required}
+        -deriv
+    }]
+    set keyMap [dcreate quad 0 der1 1 der2 2 notaknot 3]
+    set tLen [llength $t]
+    set yLen [llength $y]
+    set tiLen [llength $ti]
+    if {$tLen!=$yLen} {
+        error "Length of y '$yLen' must be equal to t '$tLen'"
+    } elseif {$tiLen==0} {
+        error "Length of interpolation points list ti must be more than zero"
+    }
+    ::tclinterp::lists2arrays [list tArray yArray] [list $t $y]
+    ::tclinterp::newArrays [list yppArray] [list $tLen]
+    ::tclinterp::newDoubleps [list ypPnt yppPnt]
+    set yppArray [::tclinterp::spline_cubic_set $tLen $tArray $yArray [dget $keyMap $ibcbeg] $ybcbeg\
+                          [dget $keyMap $ibcend] $ybcend]
+    for {set i 0} {$i<$tiLen} {incr i} {
+        set iElem [::tclinterp::spline_cubic_val $tLen $tArray $yArray $yppArray [@ $ti $i] $ypPnt $yppPnt]
+        lappend yiList $iElem
+        lappend ypList [::tclinterp::doublep_value $ypPnt]
+        lappend yppList [::tclinterp::doublep_value $yppPnt]
+    }
+    ::tclinterp::deleteArrays $tArray $yArray $yppArray
+    ::tclinterp::deleteDoubleps $ypPnt $yppPnt
+    if {[info exists deriv]} {
+        return [dict create yi $yiList yder1 $ypList yder2 $yppList]
+    } else {
+        return $yiList
+    }
 }
