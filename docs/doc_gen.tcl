@@ -13,7 +13,7 @@ source [file join $sourceDir tclinterp.tcl]
 
 set packageVersion [lindex [package versions tclinterp] 0]
 set title "Tcl wrapper for C interpolation procedures"
-
+puts $packageVersion
 set commonHtml [list \
                 -title $title \
                 -sortnamespaces false \

@@ -1,7 +1,7 @@
 '\"
 '\" '\" Copyright (c) George Yashin
 '\"
-.TH "tcl_tools" 3tcl 0\&.11 "tcl_tools" "Tcl wrapper for C interpolation procedures"
+.TH "tcl_tools" 3tcl 0\&.12 "tcl_tools" "Tcl wrapper for C interpolation procedures"
 .SH NAME
 Introduction - Tcl wrapper for C interpolation procedures
 .SH CONTENT
