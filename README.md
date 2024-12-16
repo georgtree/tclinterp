@@ -13,10 +13,10 @@
 
 # Content
 
-This package provides tcl wrapper for interpolation procedures.
+This package provides tcl wrapper for interpolation and approximation procedures.
 The sources of procedures are:
 - [Linear interpolation routines](https://people.math.sc.edu/Burkardt/c_src/interp/interp.html)
-- [Spline interpolation routines](https://people.math.sc.edu/Burkardt/c_src/spline/spline.html)
+- [Spline interpolation and approximation routines](https://people.math.sc.edu/Burkardt/c_src/spline/spline.html)
 
 # Installation and dependencies
 
