@@ -189,7 +189,7 @@ VALGRINDARGS	= --tool=memcheck --num-callers=8 --leak-resolution=high \
 # for the BINARIES that you specified above have already been done.
 #========================================================================
 
-all: binaries libraries doc
+all: swig-gen binaries libraries doc
 
 #========================================================================
 # The binaries target builds executable programs, Windows .dll's, unix
@@ -229,6 +229,9 @@ install-libraries: libraries
 	    echo "Installing $(srcdir)/$$i" ; \
 	    $(INSTALL_DATA) $(srcdir)/$$i "$(DESTDIR)$(includedir)" ; \
 	done;
+
+swig-gen: tclinterp.i
+	swig -tcl -pkgversion @PACKAGE_VERSION@ -namespace -DUSE_TCL_STUBS ./generic/tclinterp.i
 
 #========================================================================
 # Install documentation.  Unix manpages should go in the $(mandir)
@@ -375,6 +378,7 @@ distclean: clean
 	-rm -f *.tab.c
 	-rm -f $(CONFIG_CLEAN_FILES)
 	-rm -f config.cache config.log config.status
+	-rm -f swig_gen.sh
 
 #========================================================================
 # Install binary object libraries.  On Windows this includes both .dll and

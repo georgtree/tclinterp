@@ -180,7 +180,7 @@ AC_SUBST(TCLLIBPATH)
 # substituting the AC variables in. Include these here.
 #--------------------------------------------------------------------
 
-AC_CONFIG_FILES([Makefile pkgIndex.tcl])
+AC_CONFIG_FILES([Makefile swig_gen.sh pkgIndex.tcl])
 #AC_CONFIG_FILES([sampleConfig.sh])
 
 #--------------------------------------------------------------------
