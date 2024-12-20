@@ -11,7 +11,7 @@ set sourceDir "${dir}/../"
 source startPage.ruff
 source [file join $sourceDir tclinterp.tcl]
 
-set packageVersion [tcl::mathfunc::max {*}[package versions tclinterp]]
+set packageVersion [package versions tclinterp]
 set title "Tcl wrapper for C interpolation procedures"
 puts $packageVersion
 set commonHtml [list \
@@ -45,7 +45,7 @@ set commonNroff [list \
                 -version $packageVersion \
                 -copyright "George Yashin" {*}$::argv
                ]
-set namespaces [list ::tclinterp]
+set namespaces [list ::tclinterp ::tclinterp::approximation ::tclinterp::interpolation]
 
 if {[llength $argv] == 0 || "html" in $argv} {
     ruff::document $namespaces \

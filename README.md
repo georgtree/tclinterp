@@ -25,7 +25,6 @@ For building you need:
 - [Tcl9](https://www.tcl.tk/software/tcltk/9.0.html) or [Tcl8.6.15](https://www.tcl.tk/software/tcltk/8.6.html)
 - [gcc compiler](https://gcc.gnu.org/)
 - [make tool](https://www.gnu.org/software/make/)
-- [autoconf tool](https://www.gnu.org/software/autoconf/)
 
 For run you also need:
 - [argparse](https://wiki.tcl-lang.org/page/argparse)

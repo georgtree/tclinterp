@@ -1,0 +1,137 @@
+'\"
+'\" '\" Copyright (c) George Yashin
+'\"
+.TH "tclinterp::approximation" 3tcl 0\&.13 "tcl_tools" "Tcl wrapper for C interpolation procedures"
+.SH NAME
+tclinterp::approximation - Commands in namespace tclinterp::approximation
+.SH SYNOPSIS
+\fBbezier\fP \fI?args?\fP
+.br
+\fBcubicBetaSpline1d\fP \fI?args?\fP
+.br
+\fBcubicBSpline1d\fP \fI?args?\fP
+.br
+\fBgenBezier\fP \fI?args?\fP
+.br
+.SH ::TCLINTERP::APPROXIMATION
+.SH COMMANDS
+.PP
+.RS -4n
+\fBbezier\fR (::tclinterp::approximation)
+.RE
+.PP
+Finds values of Bezier function at x points\&.
+.RS 4n\fBbezier\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-a
+Start of the interval\&.
+.TP
+-b
+End of interval\&.
+.TP
+-n
+Order of Bezier function, must be zero or more\&.
+.TP
+-x
+List of x values\&.
+.TP
+-y
+List of y control points values of size n+1\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+yi values of Bezier function at x points
+.PP
+.RS -4n
+\fBcubicBetaSpline1d\fR (::tclinterp::approximation)
+.RE
+.PP
+Evaluates a cubic beta spline approximant\&.
+.RS 4n\fBcubicBetaSpline1d\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-beta1
+The skew or bias parameter, beta1 = 1 for no skew or bias\&.
+.TP
+-beta2
+The tension parameter, beta2 = 0 for no tension\&.
+.TP
+-t
+List of independent variable (t) values\&.
+.TP
+-ti
+List of independent variable interpolation (ti) values\&.
+.TP
+-y
+List of dependent variable (y) values\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+list of approximation values yi at ti points\&.
+.PP
+.RS -4n
+\fBcubicBSpline1d\fR (::tclinterp::approximation)
+.RE
+.PP
+Evaluates a cubic B spline approximant\&.
+.RS 4n\fBcubicBSpline1d\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-t
+List of independent variable (t) values\&.
+.TP
+-ti
+List of independent variable interpolation (ti) values\&.
+.TP
+-y
+List of dependent variable (y) values\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+list of approximation values yi at ti points\&.
+.PP
+.RS -4n
+\fBgenBezier\fR (::tclinterp::approximation)
+.RE
+.PP
+Finds values of general Bezier function at specified t points\&.
+.RS 4n\fBgenBezier\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-n
+Order of Bezier function, must be zero or more\&.
+.TP
+-t
+List of t points at which we want to evaluate Bezier function, best results are obtained within the interval \fI0,1\fP
+.TP
+-x
+List of x control points values of size n+1\&.
+.TP
+-y
+List of y control points values of size n+1\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+dict with lists of xi and yi points at specified t points
+

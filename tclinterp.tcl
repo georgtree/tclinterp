@@ -1,18 +1,20 @@
 package require argparse
 package provide tclinterp
 set script_path [file dirname [file normalize [info script]]]
-
+interp alias {} dget {} dict get
+interp alias {} @ {} lindex
+interp alias {} = {} expr
+interp alias {} dexist {} dict exists
+interp alias {} dcreate {} dict create
 
 namespace eval ::tclinterp {
-
     namespace import ::tcl::mathop::*
-    namespace export interpLin1d interpNear1d interpLagr1d interpLeast1d interpLeast1dDer genBezier bezier\
-            interpDivDif1d approxCubicBSpline1d approxCubicBetaSpline1d interpCubicSpline1d
-    interp alias {} dget {} dict get
-    interp alias {} @ {} lindex
-    interp alias {} = {} expr
-    interp alias {} dexist {} dict exists
-    interp alias {} dcreate {} dict create
+    namespace eval interpolation {
+        namespace export lin1d near1d lagr1d least1d least1dDer divDif1d cubicSpline1d
+    }
+    namespace eval approximation {
+        namespace export genBezier bezier cubicBSpline1d cubicBetaSpline1d
+    }
 }
 
 proc ::tclinterp::list2array {list} {
@@ -143,7 +145,7 @@ proc ::tclinterp::duplListCheck {list} {
 
 ### Linear interpolations
 
-proc ::tclinterp::interpLin1d {args} {
+proc ::tclinterp::interpolation::lin1d {args} {
     # Does linear one-dimensional interpolation.
     #  -x - list of independent variable (x) values, must be strictly increasing
     #  -y - list of dependent variable (y) values
@@ -172,7 +174,7 @@ proc ::tclinterp::interpLin1d {args} {
     return $yiList
 }
 
-proc ::tclinterp::interpNear1d {args} {
+proc ::tclinterp::interpolation::near1d {args} {
     # Does nearest one-dimensional interpolation.
     #  -x - list of independent variable (x) values
     #  -y - list of dependent variable (y) values
@@ -198,7 +200,7 @@ proc ::tclinterp::interpNear1d {args} {
     return $yiList
 }
 
-proc ::tclinterp::interpLagr1d {args} {
+proc ::tclinterp::interpolation::lagr1d {args} {
     # Does Lagrange polynomial one-dimensional interpolation.
     #  -x - list of independent variable (x) values
     #  -y - list of dependent variable (y) values
@@ -228,7 +230,7 @@ proc ::tclinterp::interpLagr1d {args} {
 
 #### Least squares polynomial interpolation
 
-proc ::tclinterp::interpLeast1d {args} {
+proc ::tclinterp::interpolation::least1d {args} {
     # Does least squares polynomial one-dimensional interpolation.
     #  -x - list of independent variable (x) values
     #  -y - list of dependent variable (y) values
@@ -287,7 +289,7 @@ proc ::tclinterp::interpLeast1d {args} {
     return
 }
 
-proc ::tclinterp::interpLeast1dDer {args} {
+proc ::tclinterp::interpolation::least1dDer {args} {
     # Does least squares polynomial one-dimensional interpolation with calculation of its derivative.
     #  -x - list of independent variable (x) values
     #  -y - list of dependent variable (y) values
@@ -350,9 +352,9 @@ proc ::tclinterp::interpLeast1dDer {args} {
     return
 }
 
-#### Bezier functions interpolation
+#### Bezier functions approximation
 
-proc ::tclinterp::genBezier {args} {
+proc ::tclinterp::approximation::genBezier {args} {
     # Finds values of general Bezier function at specified t points.
     #  -n - order of Bezier function, must be zero or more
     #  -x - list of x control points values of size n+1
@@ -393,7 +395,7 @@ proc ::tclinterp::genBezier {args} {
     return [dcreate xi $xiList yi $yiList]
 }
 
-proc ::tclinterp::bezier {args} {
+proc ::tclinterp::approximation::bezier {args} {
     # Finds values of Bezier function at x points.
     #  -n - order of Bezier function, must be zero or more
     #  -a - start of the interval
@@ -432,7 +434,7 @@ proc ::tclinterp::bezier {args} {
 
 #### Divided difference interpolation
 
-proc ::tclinterp::interpDivDif1d {args} {
+proc ::tclinterp::interpolation::divDif1d {args} {
     # Does divided difference one-dimensional interpolation.
     #  -x - list of independent variable (x) values
     #  -y - list of dependent variable (y) values
@@ -479,7 +481,7 @@ proc ::tclinterp::interpDivDif1d {args} {
 
 #### Cubic B spline approximation
 
-proc ::tclinterp::approxCubicBSpline1d {args} {
+proc ::tclinterp::approximation::cubicBSpline1d {args} {
     # Evaluates a cubic B spline approximant.
     #  -t - list of independent variable (t) values
     #  -y - list of dependent variable (y) values
@@ -509,7 +511,7 @@ proc ::tclinterp::approxCubicBSpline1d {args} {
 
 #### Cubic beta spline approximation
 
-proc ::tclinterp::approxCubicBetaSpline1d {args} {
+proc ::tclinterp::approximation::cubicBetaSpline1d {args} {
     # Evaluates a cubic beta spline approximant.
     #  -beta1 - the skew or bias parameter, beta1 = 1 for no skew or bias
     #  -beta2 - the tension parameter, beta2 = 0 for no tension
@@ -547,7 +549,7 @@ proc ::tclinterp::approxCubicBetaSpline1d {args} {
 
 #### Piecewise cubic spline interpolation
 
-proc ::tclinterp::interpCubicSpline1d {args} {
+proc ::tclinterp::interpolation::cubicSpline1d {args} {
     # Does piecewise cubic spline interpolation.
     #  -ibcbeg - left boundary condition flag. Possible values:
     #   **quad**, the cubic spline should be a quadratic over the first interval;

@@ -452,6 +452,10 @@ uninstall-binaries:
 	list='$(bin_BINARIES)'; for p in $$list; do \
 	  rm -f "$(DESTDIR)$(bindir)/$$p"; \
 	done
+	rm -f "$(DESTDIR)$(pkglibdir)/pkgIndex.tcl"
+
+uninstall:
+	rm -rf "$(DESTDIR)$(pkglibdir)"
 
 .PHONY: all binaries clean depend distclean doc install libraries test
 .PHONY: gdb gdb-test valgrind valgrindshell
