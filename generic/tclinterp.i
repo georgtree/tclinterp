@@ -34,3 +34,6 @@ extern double spline_beta_val (double beta1, double beta2, int ndata, double tda
 /* piecewise cubic spline interpolation */
 extern double *spline_cubic_set (int n, double t[], double y[], int ibcbeg, double ybcbeg, int ibcend, double ybcend);
 extern double spline_cubic_val (int n, double t[], double y[], double ypp[], double tval, double *ypval, double *yppval);
+/* Hermit polynomial spline interpolation */
+extern double *spline_hermite_set (int ndata, double tdata[], double ydata[], double ypdata[]);
+extern void spline_hermite_val (int ndata, double tdata[], double c[], double tval, double *sval, double *spval);

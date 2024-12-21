@@ -1012,4 +1012,76 @@ test cubicSpline1dProcTest-10 {test procedure of cubic spline interpolation calc
     unset t y ti errorStr
 }
 
+### Hermite spline interpolation tests
+
+test hermiteSpline1dProcTest-1 {test procedure of hermite spline interpolation calculation} -match mtchLst -setup {
+    set t [list 0 0.523599 1.0472 1.5708]
+    set y [list 0 0.5 0.866025 1]
+    set yp [list 1 0.866025 0.5 6.12323e-17]
+    set ti [list 0 0.174533 0.349066 0.523599 0.698132 0.872665 1.0472 1.22173 1.39626 1.5708]
+} -body {
+    hermiteSpline1d -t $t -y $y -yp $yp -ti $ti
+} -result [list 0 0.173611 0.341978 0.5 0.642681 0.765934 0.866025 0.939545 0.984658 1] -cleanup {
+    unset t y yp ti
+}
+
+test hermiteSpline1dProcTest-2 {test procedure of hermite spline interpolation calculation} -match mtchLst -setup {
+    set t [list 0 0.523599 1.0472 1.5708]
+    set y [list 0 0.5 0.866025 1]
+    set yp [list 1 0.866025 0.5 6.12323e-17]
+    set ti [list 0 0.174533 0.349066 0.523599 0.698132 0.872665 1.0472 1.22173 1.39626 1.5708]
+} -body {
+    set yder1 [dget [hermiteSpline1d -t $t -y $y -yp $yp -ti $ti -deriv] yder1]
+} -result [list 1 0.984564 0.939906 0.866025 0.765409 0.643401 0.5 0.341164 0.174497 1.11022e-16] -cleanup {
+    unset t y yp ti yder1
+}
+
+test hermiteSpline1dProcTest-3 {test procedure of hermite spline interpolation calculation} -setup {
+    set t [list 0 0.523599 1.0472]
+    set y [list 0 0.5 0.866025 1]
+    set yp [list 1 0.866025 0.5 6.12323e-17]
+    set ti [list 0 0.174533 0.349066 0.523599 0.698132 0.872665 1.0472 1.22173 1.39626 1.5708]
+} -body {
+    catch {hermiteSpline1d -t $t -y $y -yp $yp -ti $ti} errorStr
+    return $errorStr
+} -result "Length of -y '4' must be equal to length of -t '3'" -cleanup {
+    unset t y yp ti errorStr
+}
+
+test hermiteSpline1dProcTest-4 {test procedure of hermite spline interpolation calculation} -setup {
+    set t [list 0 0.523599 1.0472 1.0472]
+    set y [list 0 0.5 0.866025 1]
+    set yp [list 1 0.866025 6.12323e-17]
+    set ti [list 0 0.174533 0.349066 0.523599 0.698132 0.872665 1.0472 1.22173 1.39626 1.5708]
+} -body {
+    catch {hermiteSpline1d -t $t -y $y -yp $yp -ti $ti} errorStr
+    return $errorStr
+} -result "Length of -yp '3' must be equal to length of -t '4'" -cleanup {
+    unset t y yp ti errorStr
+}
+
+test hermiteSpline1dProcTest-5 {test procedure of hermite spline interpolation calculation} -setup {
+    set t [list 0 0.523599 1.0472 1.0472]
+    set y [list 0 0.5 0.866025 1]
+    set yp [list 1 0.866025 0.5 6.12323e-17]
+    set ti [list ]
+} -body {
+    catch {hermiteSpline1d -t $t -y $y -yp $yp -ti $ti} errorStr
+    return $errorStr
+} -result "Length of interpolation points list -ti must be more than zero" -cleanup {
+    unset t y yp ti errorStr
+}
+
+test hermiteSpline1dProcTest-6 {test procedure of hermite spline interpolation calculation} -setup {
+    set t [list 0 0.523599 1.5708 1.0472]
+    set y [list 0 0.5 0.866025 1]
+    set yp [list 1 0.866025 0.5 6.12323e-17]
+    set ti [list 0 0.174533 0.349066 0.523599 0.698132 0.872665 1.0472 1.22173 1.39626 1.5708]
+} -body {
+    catch {hermiteSpline1d -t $t -y $y -yp $yp -ti $ti} errorStr
+    return $errorStr
+} -result "Independent variable array -t is not strictly increasing" -cleanup {
+    unset t y yp ti errorStr
+}
+
 cleanupTests

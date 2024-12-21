@@ -10,7 +10,7 @@ interp alias {} dcreate {} dict create
 namespace eval ::tclinterp {
     namespace import ::tcl::mathop::*
     namespace eval interpolation {
-        namespace export lin1d near1d lagr1d least1d least1dDer divDif1d cubicSpline1d
+        namespace export lin1d near1d lagr1d least1d least1dDer divDif1d cubicSpline1d hermiteSpline1d
     }
     namespace eval approximation {
         namespace export genBezier bezier cubicBSpline1d cubicBetaSpline1d
@@ -604,6 +604,56 @@ proc ::tclinterp::interpolation::cubicSpline1d {args} {
     ::tclinterp::deleteDoubleps $ypPnt $yppPnt
     if {[info exists deriv]} {
         return [dict create yi $yiList yder1 $ypList yder2 $yppList]
+    } else {
+        return $yiList
+    }
+}
+
+#### Hermite polynomial spline interpolation
+
+proc ::tclinterp::interpolation::hermiteSpline1d {args} {
+    # Does Hermite polynomial spline interpolation.
+    #  -t - list of independent variable (t) values
+    #  -y - list of dependent variable (y) values
+    #  -yp - list of dependent variable (y) derivative values
+    #  -ti - list of independent variable interpolation (ti) values
+    #  -deriv - select the alternative output option
+    # Returns: list of interpolated dependent variable values under. If `-deriv` switch is in args, the output is
+    # dictionary that contains `yi` values under `yi` key, `yi` derivative under `yder1` key.
+    set arguments [argparse {
+        {-t= -required}
+        {-y= -required}
+        {-yp= -required}
+        {-ti= -required}
+        -deriv
+    }]
+    set tLen [llength $t]
+    set yLen [llength $y]
+    set ypLen [llength $yp]
+    set tiLen [llength $ti]
+    if {$tLen!=$yLen} {
+        return -code error "Length of -y '$yLen' must be equal to length of -t '$tLen'"
+    } elseif {$tLen!=$ypLen} {
+        return -code error "Length of -yp '$ypLen' must be equal to length of -t '$tLen'"
+    } elseif {$tiLen==0} {
+        return -code error "Length of interpolation points list -ti must be more than zero"
+    }
+    ::tclinterp::lists2arrays [list tArray yArray ypArray] [list $t $y $yp]
+    if {[::tclinterp::r8vec_ascends_strictly $tLen $tArray]==0} {
+        error "Independent variable array -t is not strictly increasing"
+    }
+    ::tclinterp::newArrays [list cArray] [list [= {$tLen*4}]]
+    ::tclinterp::newDoubleps [list yiPnt yipPnt]
+    set cArray [::tclinterp::spline_hermite_set $tLen $tArray $yArray $ypArray]
+    for {set i 0} {$i<$tiLen} {incr i} {
+        ::tclinterp::spline_hermite_val $tLen $tArray $cArray [@ $ti $i] $yiPnt $yipPnt
+        lappend yiList [::tclinterp::doublep_value $yiPnt]
+        lappend yipList [::tclinterp::doublep_value $yipPnt]
+    }
+    ::tclinterp::deleteArrays $tArray $yArray $cArray $ypArray
+    ::tclinterp::deleteDoubleps $yiPnt $yipPnt
+    if {[info exists deriv]} {
+        return [dict create yi $yiList yder1 $yipList]
     } else {
         return $yiList
     }

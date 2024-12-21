@@ -3048,6 +3048,111 @@ fail:
 }
 
 
+SWIGINTERN int
+_wrap_spline_hermite_set(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]) {
+  int arg1 ;
+  double *arg2 = (double *) (double *)0 ;
+  double *arg3 = (double *) (double *)0 ;
+  double *arg4 = (double *) (double *)0 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  double *result = 0 ;
+  
+  if (SWIG_GetArgs(interp, objc, objv,"oooo:tclinterp::spline_hermite_set ndata tdata ydata ypdata ",(void *)0,(void *)0,(void *)0,(void *)0) == TCL_ERROR) SWIG_fail;
+  ecode1 = SWIG_AsVal_int SWIG_TCL_CALL_ARGS_2(objv[1], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "spline_hermite_set" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = (int)(val1);
+  res2 = SWIG_ConvertPtr(objv[2], &argp2,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "spline_hermite_set" "', argument " "2"" of type '" "double []""'"); 
+  } 
+  arg2 = (double *)(argp2);
+  res3 = SWIG_ConvertPtr(objv[3], &argp3,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "spline_hermite_set" "', argument " "3"" of type '" "double []""'"); 
+  } 
+  arg3 = (double *)(argp3);
+  res4 = SWIG_ConvertPtr(objv[4], &argp4,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "spline_hermite_set" "', argument " "4"" of type '" "double []""'"); 
+  } 
+  arg4 = (double *)(argp4);
+  result = (double *)spline_hermite_set(arg1,arg2,arg3,arg4);
+  Tcl_SetObjResult(interp, SWIG_NewInstanceObj( SWIG_as_voidptr(result), SWIGTYPE_p_double,0));
+  return TCL_OK;
+fail:
+  return TCL_ERROR;
+}
+
+
+SWIGINTERN int
+_wrap_spline_hermite_val(ClientData clientData SWIGUNUSED, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[]) {
+  int arg1 ;
+  double *arg2 = (double *) (double *)0 ;
+  double *arg3 = (double *) (double *)0 ;
+  double arg4 ;
+  double *arg5 = (double *) 0 ;
+  double *arg6 = (double *) 0 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  double val4 ;
+  int ecode4 = 0 ;
+  void *argp5 = 0 ;
+  int res5 = 0 ;
+  void *argp6 = 0 ;
+  int res6 = 0 ;
+  
+  if (SWIG_GetArgs(interp, objc, objv,"oooooo:tclinterp::spline_hermite_val ndata tdata c tval sval spval ",(void *)0,(void *)0,(void *)0,(void *)0,(void *)0,(void *)0) == TCL_ERROR) SWIG_fail;
+  ecode1 = SWIG_AsVal_int SWIG_TCL_CALL_ARGS_2(objv[1], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "spline_hermite_val" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = (int)(val1);
+  res2 = SWIG_ConvertPtr(objv[2], &argp2,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "spline_hermite_val" "', argument " "2"" of type '" "double []""'"); 
+  } 
+  arg2 = (double *)(argp2);
+  res3 = SWIG_ConvertPtr(objv[3], &argp3,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "spline_hermite_val" "', argument " "3"" of type '" "double []""'"); 
+  } 
+  arg3 = (double *)(argp3);
+  ecode4 = SWIG_AsVal_double SWIG_TCL_CALL_ARGS_2(objv[4], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "spline_hermite_val" "', argument " "4"" of type '" "double""'");
+  } 
+  arg4 = (double)(val4);
+  res5 = SWIG_ConvertPtr(objv[5], &argp5,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res5)) {
+    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "spline_hermite_val" "', argument " "5"" of type '" "double *""'"); 
+  }
+  arg5 = (double *)(argp5);
+  res6 = SWIG_ConvertPtr(objv[6], &argp6,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res6)) {
+    SWIG_exception_fail(SWIG_ArgError(res6), "in method '" "spline_hermite_val" "', argument " "6"" of type '" "double *""'"); 
+  }
+  arg6 = (double *)(argp6);
+  spline_hermite_val(arg1,arg2,arg3,arg4,arg5,arg6);
+  
+  return TCL_OK;
+fail:
+  return TCL_ERROR;
+}
+
+
 
 static swig_command_info swig_commands[] = {
     { SWIG_prefix "new_doubleArray", (swig_wrapper_func) _wrap_new_doubleArray, NULL},
@@ -3074,6 +3179,8 @@ static swig_command_info swig_commands[] = {
     { SWIG_prefix "spline_beta_val", (swig_wrapper_func) _wrap_spline_beta_val, NULL},
     { SWIG_prefix "spline_cubic_set", (swig_wrapper_func) _wrap_spline_cubic_set, NULL},
     { SWIG_prefix "spline_cubic_val", (swig_wrapper_func) _wrap_spline_cubic_val, NULL},
+    { SWIG_prefix "spline_hermite_set", (swig_wrapper_func) _wrap_spline_hermite_set, NULL},
+    { SWIG_prefix "spline_hermite_val", (swig_wrapper_func) _wrap_spline_hermite_val, NULL},
     {0, 0, 0}
 };
 
