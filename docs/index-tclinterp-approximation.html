@@ -47,18 +47,18 @@
         {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
     }]
     <b><font color=#923B23>if</font></b> {[<b><font color=#923B23>string</font></b> is integer <font color=#463e11>-strict</font> <font color=#4A181B>$n</font>]==0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Order of Bezier curve n '<font color=#4A181B>$</font>n' must be of integer type&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Order of Bezier curve -n '<font color=#4A181B>$</font>n' must be of integer type&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$n</font>&lt;0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Order of Bezier curve n '<font color=#4A181B>$</font>n' must be more than or equal to zero&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Order of Bezier curve -n '<font color=#4A181B>$</font>n' must be more than or equal to zero&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$a</font>==<font color=#4A181B>$b</font>} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Start a '<font color=#4A181B>$</font>a' and end b '<font color=#4A181B>$</font>b' interval values must not be equal&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Start -a '<font color=#4A181B>$</font>a' and end -b '<font color=#4A181B>$</font>b' values of interval must not be equal&quot;</font>
     }
     <b><font color=#923B23>set</font></b> xLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$x</font>]
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>if</font></b> {<font color=#4A181B>$yLen</font>!=[= {<font color=#4A181B>$n</font>+1}]} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of y '<font color=#4A181B>$</font>yLen' must be equal to n+1=<font color=#4A181B>[</font>= <font color=#4A181B>{$</font>n+1<font color=#4A181B>}]</font>&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of -y '<font color=#4A181B>$</font>yLen' must be equal to n+1=<font color=#4A181B>[</font>= <font color=#4A181B>{$</font>n+1<font color=#4A181B>}]</font>&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xLen</font>==0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of points list x must be more than zero&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of points list -x must be more than zero&quot;</font>
     }
     ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> yArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>for</font></b> {<b><font color=#923B23>set</font></b> i 0} {<font color=#4A181B>$i</font>&lt;<font color=#4A181B>$xLen</font>} {<b><font color=#923B23>incr</font></b> i} {
@@ -100,13 +100,13 @@
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>set</font></b> tiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$ti</font>]
     <b><font color=#923B23>if</font></b> {<font color=#4A181B>$tLen</font>!=<font color=#4A181B>$yLen</font>} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of y '<font color=#4A181B>$</font>yLen' must be equal to t '<font color=#4A181B>$</font>tLen'&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of -y '<font color=#4A181B>$</font>yLen' must be equal to length of -t '<font color=#4A181B>$</font>tLen'&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$tiLen</font>==0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of interpolation points list ti must be more than zero&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of interpolation points list -ti must be more than zero&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {[<b><font color=#923B23>string</font></b> is double <font color=#463e11>-strict</font> <font color=#4A181B>$beta1</font>]==0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Beta1 '<font color=#4A181B>$</font>beta1' must be of double type&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;-beta1 '<font color=#4A181B>$</font>beta1' must be of double type&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {[<b><font color=#923B23>string</font></b> is double <font color=#463e11>-strict</font> <font color=#4A181B>$beta2</font>]==0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Beta1 '<font color=#4A181B>$</font>beta2' must be of double type&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;-beta1 '<font color=#4A181B>$</font>beta2' must be of double type&quot;</font>
     }
     ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> tArray yArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$t</font> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>for</font></b> {<b><font color=#923B23>set</font></b> i 0} {<font color=#4A181B>$i</font>&lt;<font color=#4A181B>$tiLen</font>} {<b><font color=#923B23>incr</font></b> i} {
@@ -143,9 +143,9 @@
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>set</font></b> tiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$ti</font>]
     <b><font color=#923B23>if</font></b> {<font color=#4A181B>$tLen</font>!=<font color=#4A181B>$yLen</font>} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of y '<font color=#4A181B>$</font>yLen' must be equal to t '<font color=#4A181B>$</font>tLen'&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of -y '<font color=#4A181B>$</font>yLen' must be equal to length of -t '<font color=#4A181B>$</font>tLen'&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$tiLen</font>==0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of interpolation points list ti must be more than zero&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of interpolation points list -ti must be more than zero&quot;</font>
     }
     ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> tArray yArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$t</font> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>for</font></b> {<b><font color=#923B23>set</font></b> i 0} {<font color=#4A181B>$i</font>&lt;<font color=#4A181B>$tiLen</font>} {<b><font color=#923B23>incr</font></b> i} {
@@ -183,19 +183,19 @@
         {<font color=#463e11>-t</font>= <font color=#463e11>-required</font>}
     }]
     <b><font color=#923B23>if</font></b> {[<b><font color=#923B23>string</font></b> is integer <font color=#463e11>-strict</font> <font color=#4A181B>$n</font>]==0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Order of Bezier curve n '<font color=#4A181B>$</font>n' must be of integer type&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Order of Bezier curve -n '<font color=#4A181B>$</font>n' must be of integer type&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$n</font>&lt;0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Order of Bezier curve n '<font color=#4A181B>$</font>n' must be more than or equal to zero&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Order of Bezier curve -n '<font color=#4A181B>$</font>n' must be more than or equal to zero&quot;</font>
     }
     <b><font color=#923B23>set</font></b> xLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$x</font>]
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>set</font></b> tLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$t</font>]
     <b><font color=#923B23>if</font></b> {<font color=#4A181B>$xLen</font>!=[= {<font color=#4A181B>$n</font>+1}]} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of x '<font color=#4A181B>$</font>xLen' must be equal to n+1=<font color=#4A181B>[</font>= <font color=#4A181B>{$</font>n+1<font color=#4A181B>}]</font>&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of -x '<font color=#4A181B>$</font>xLen' must be equal to n+1=<font color=#4A181B>[</font>= <font color=#4A181B>{$</font>n+1<font color=#4A181B>}]</font>&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$yLen</font>!=[= {<font color=#4A181B>$n</font>+1}]} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of y '<font color=#4A181B>$</font>yLen' must be equal to n+1=<font color=#4A181B>[</font>= <font color=#4A181B>{$</font>n+1<font color=#4A181B>}]</font>&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of -y '<font color=#4A181B>$</font>yLen' must be equal to n+1=<font color=#4A181B>[</font>= <font color=#4A181B>{$</font>n+1<font color=#4A181B>}]</font>&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$tLen</font>==0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of points list t must be more than zero&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of points list -t must be more than zero&quot;</font>
     }
     ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> xArray yArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$x</font> <font color=#4A181B>$y</font>]
     ::tclinterp::newDoubleps [<b><font color=#923B23>list</font></b> xiPnt yiPnt]

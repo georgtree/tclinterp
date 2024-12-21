@@ -70,9 +70,9 @@
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>set</font></b> tiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$ti</font>]
     <b><font color=#923B23>if</font></b> {<font color=#4A181B>$tLen</font>!=<font color=#4A181B>$yLen</font>} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of y '<font color=#4A181B>$</font>yLen' must be equal to t '<font color=#4A181B>$</font>tLen'&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of -y '<font color=#4A181B>$</font>yLen' must be equal to length of -t '<font color=#4A181B>$</font>tLen'&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$tiLen</font>==0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of interpolation points list ti must be more than zero&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of interpolation points list -ti must be more than zero&quot;</font>
     }
     ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> tArray yArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$t</font> <font color=#4A181B>$y</font>]
     ::tclinterp::newArrays [<b><font color=#923B23>list</font></b> yppArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$tLen</font>]
@@ -123,12 +123,12 @@
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>set</font></b> xiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$xi</font>]
     <b><font color=#923B23>if</font></b> {<font color=#4A181B>$xLen</font>!=<font color=#4A181B>$yLen</font>} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of y '<font color=#4A181B>$</font>yLen' must be equal to x '<font color=#4A181B>$</font>xLen'&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of -y '<font color=#4A181B>$</font>yLen' must be equal to length of -x '<font color=#4A181B>$</font>xLen'&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xiLen</font>==0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of interpolation points list xi must be more than zero&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of interpolation points list -xi must be more than zero&quot;</font>
     }
     <b><font color=#923B23>if</font></b> {[::tclinterp::duplListCheck <font color=#4A181B>$x</font>]==<font color=#035103>&quot;true&quot;</font>} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;x values list must not contain duplicated elements&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;List of -x values must not contain duplicated elements&quot;</font>
     }
     ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> xArray yArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$x</font> <font color=#4A181B>$y</font>]
     ::tclinterp::newArrays [<b><font color=#923B23>list</font></b> difTab] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$xLen</font>]
@@ -176,9 +176,9 @@
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>set</font></b> xiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$xi</font>]
     <b><font color=#923B23>if</font></b> {<font color=#4A181B>$xLen</font>!=<font color=#4A181B>$yLen</font>} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of y '<font color=#4A181B>$</font>yLen' must be equal to x '<font color=#4A181B>$</font>xLen'&quot;</font>
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of -y '<font color=#4A181B>$</font>yLen' must be equal to length of -x '<font color=#4A181B>$</font>xLen'&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xiLen</font>==0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of interpolation points list xi must be more than zero&quot;</font>
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of interpolation points list -xi must be more than zero&quot;</font>
     }
     ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> xArray yArray xiArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$x</font> <font color=#4A181B>$y</font> <font color=#4A181B>$xi</font>]
     <b><font color=#923B23>set</font></b> yiArray [::tclinterp::interp_lagrange 1 <font color=#4A181B>$xLen</font> <font color=#4A181B>$xArray</font> <font color=#4A181B>$yArray</font> <font color=#4A181B>$xiLen</font> <font color=#4A181B>$xiArray</font>]
@@ -230,15 +230,15 @@
     }
     <b><font color=#923B23>set</font></b> xiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$xi</font>]
     <b><font color=#923B23>if</font></b> {<font color=#4A181B>$xLen</font>!=<font color=#4A181B>$yLen</font>} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of y '<font color=#4A181B>$</font>yLen' must be equal to x '<font color=#4A181B>$</font>xLen'&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of -y '<font color=#4A181B>$</font>yLen' must be equal to length of -x '<font color=#4A181B>$</font>xLen'&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xLen</font>!=<font color=#4A181B>$wLen</font>} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of w '<font color=#4A181B>$</font>wLen' must be equal to x '<font color=#4A181B>$</font>xLen'&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of -w '<font color=#4A181B>$</font>wLen' must be equal to length of -x '<font color=#4A181B>$</font>xLen'&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xiLen</font>==0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of interpolation points list xi must be more than zero&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of interpolation points list -xi must be more than zero&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {[<b><font color=#923B23>string</font></b> is integer <font color=#463e11>-strict</font> <font color=#4A181B>$nterms</font>]==0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Number of terms nterms '<font color=#4A181B>$</font>nterms' must be of integer type&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Number of terms -nterms '<font color=#4A181B>$</font>nterms' must be of integer type&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$nterms</font>&lt;=0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Number of terms nterms must be more than zero&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Number of terms -nterms must be more than zero&quot;</font>
     }
     ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> xArray yArray wArray xiArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$x</font> <font color=#4A181B>$y</font> <font color=#4A181B>$w</font> <font color=#4A181B>$xi</font>]
     ::tclinterp::newArrays [<b><font color=#923B23>list</font></b> b c d] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$nterms</font> <font color=#4A181B>$nterms</font> <font color=#4A181B>$nterms</font>]
@@ -303,15 +303,15 @@
     }
     <b><font color=#923B23>set</font></b> xiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$xi</font>]
     <b><font color=#923B23>if</font></b> {<font color=#4A181B>$xLen</font>!=<font color=#4A181B>$yLen</font>} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of y '<font color=#4A181B>$</font>yLen' must be equal to x '<font color=#4A181B>$</font>xLen'&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of -y '<font color=#4A181B>$</font>yLen' must be equal to length of -x '<font color=#4A181B>$</font>xLen'&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xLen</font>!=<font color=#4A181B>$wLen</font>} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of w '<font color=#4A181B>$</font>wLen' must be equal to x '<font color=#4A181B>$</font>xLen'&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of -w '<font color=#4A181B>$</font>wLen' must be equal to length of -x '<font color=#4A181B>$</font>xLen'&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xiLen</font>==0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of interpolation points list xi must be more than zero&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of interpolation points list -xi must be more than zero&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {[<b><font color=#923B23>string</font></b> is integer <font color=#463e11>-strict</font> <font color=#4A181B>$nterms</font>]==0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Number of terms nterms '<font color=#4A181B>$</font>nterms' must be of integer type&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Number of terms -nterms '<font color=#4A181B>$</font>nterms' must be of integer type&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$nterms</font>&lt;=0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Number of terms nterms must be more than zero&quot;</font>
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Number of terms -nterms must be more than zero&quot;</font>
     }
     ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> xArray yArray wArray xiArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$x</font> <font color=#4A181B>$y</font> <font color=#4A181B>$w</font> <font color=#4A181B>$xi</font>]
     ::tclinterp::newArrays [<b><font color=#923B23>list</font></b> b c d] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$nterms</font> <font color=#4A181B>$nterms</font> <font color=#4A181B>$nterms</font>]
@@ -363,13 +363,13 @@
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>set</font></b> xiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$xi</font>]
     <b><font color=#923B23>if</font></b> {<font color=#4A181B>$xLen</font>!=<font color=#4A181B>$yLen</font>} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of y '<font color=#4A181B>$</font>yLen' must be equal to x '<font color=#4A181B>$</font>xLen'&quot;</font>
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of -y '<font color=#4A181B>$</font>yLen' must be equal to length of -x '<font color=#4A181B>$</font>xLen'&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xiLen</font>==0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of interpolation points list xi must be more than zero&quot;</font>
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of interpolation points list -xi must be more than zero&quot;</font>
     }
     ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> xArray yArray xiArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$x</font> <font color=#4A181B>$y</font> <font color=#4A181B>$xi</font>]
     <b><font color=#923B23>if</font></b> {[::tclinterp::r8vec_ascends_strictly <font color=#4A181B>$xLen</font> <font color=#4A181B>$xArray</font>]==0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Independent variable array x not strictly increasing&quot;</font>
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Independent variable array -x is not strictly increasing&quot;</font>
     }
     <b><font color=#923B23>set</font></b> yiArray [::tclinterp::interp_linear 1 <font color=#4A181B>$xLen</font> <font color=#4A181B>$xArray</font> <font color=#4A181B>$yArray</font> <font color=#4A181B>$xiLen</font> <font color=#4A181B>$xiArray</font>]
     <b><font color=#923B23>set</font></b> yiList [::tclinterp::array2list <font color=#4A181B>$yiArray</font> <font color=#4A181B>$xiLen</font>]
@@ -403,9 +403,9 @@
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>set</font></b> xiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$xi</font>]
     <b><font color=#923B23>if</font></b> {<font color=#4A181B>$xLen</font>!=<font color=#4A181B>$yLen</font>} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of y '<font color=#4A181B>$</font>yLen' must be equal to x '<font color=#4A181B>$</font>xLen'&quot;</font>
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of -y '<font color=#4A181B>$</font>yLen' must be equal to length of -x '<font color=#4A181B>$</font>xLen'&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xiLen</font>==0} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of interpolation points list xi must be more than zero&quot;</font>
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of interpolation points list -xi must be more than zero&quot;</font>
     }
     ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> xArray yArray xiArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$x</font> <font color=#4A181B>$y</font> <font color=#4A181B>$xi</font>]
     <b><font color=#923B23>set</font></b> yiArray [::tclinterp::interp_nearest 1 <font color=#4A181B>$xLen</font> <font color=#4A181B>$xArray</font> <font color=#4A181B>$yArray</font> <font color=#4A181B>$xiLen</font> <font color=#4A181B>$xiArray</font>]

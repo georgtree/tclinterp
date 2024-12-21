@@ -81,7 +81,7 @@ test lin1dProcTest-2 {test procedure of linear 1d interpolation with different l
 } -body {
     catch {lin1d -x $x -y $y -xi $xi} errorStr
     return $errorStr
-} -result "Length of y '5' must be equal to x '6'" -cleanup {
+} -result "Length of -y '5' must be equal to length of -x '6'" -cleanup {
     unset x y xi errorStr
 }
 
@@ -92,7 +92,7 @@ test lin1dProcTest-3 {test procedure of linear 1d interpolation with zero length
 } -body {
     catch {lin1d -x $x -y $y -xi $xi} errorStr
     return $errorStr
-} -result "Length of interpolation points list xi must be more than zero" -cleanup {
+} -result "Length of interpolation points list -xi must be more than zero" -cleanup {
     unset x y xi errorStr
 }
 
@@ -114,7 +114,7 @@ test lin1dProcTest-5 {test procedure of linear 1d interpolation with non-monoton
 } -body {
     catch {lin1d -x $x -y $y -xi $xi} errorStr
     return $errorStr
-} -result "Independent variable array x not strictly increasing" -cleanup {
+} -result "Independent variable array -x is not strictly increasing" -cleanup {
     unset x y xi errorStr
 }
 
@@ -154,7 +154,7 @@ test near1dProcTest-2 {test procedure of nearest 1d interpolation with different
 } -body {
     catch {near1d -x $x -y $y -xi $xi} errorStr
     return $errorStr
-} -result "Length of y '5' must be equal to x '6'" -cleanup {
+} -result "Length of -y '5' must be equal to length of -x '6'" -cleanup {
     unset x y xi errorStr
 }
 
@@ -165,7 +165,7 @@ test near1dProcTest-3 {test procedure of nearest 1d interpolation with zero leng
 } -body {
     catch {near1d -x $x -y $y -xi $xi} errorStr
     return $errorStr
-} -result "Length of interpolation points list xi must be more than zero" -cleanup {
+} -result "Length of interpolation points list -xi must be more than zero" -cleanup {
     unset x y xi errorStr
 }
 
@@ -215,7 +215,7 @@ test lagr1dProcTest-2 {test procedure of Lagrange polynomial 1d interpolation wi
 } -body {
     catch {lagr1d -x $x -y $y -xi $xi} errorStr
     return $errorStr
-} -result "Length of y '5' must be equal to x '6'" -cleanup {
+} -result "Length of -y '5' must be equal to length of -x '6'" -cleanup {
     unset x y xi errorStr
 }
 
@@ -226,7 +226,7 @@ test lagr1dProcTest-3 {test procedure of Lagrange polynomial 1d interpolation wi
 } -body {
     catch {lagr1d -x $x -y $y -xi $xi} errorStr
     return $errorStr
-} -result "Length of interpolation points list xi must be more than zero" -cleanup {
+} -result "Length of interpolation points list -xi must be more than zero" -cleanup {
     unset x y xi errorStr
 }
 
@@ -321,7 +321,7 @@ test least1dProcTest-6 {test procedure of least squares polynomial interpolation
 } -body {
     catch {least1d -x $x -y $y -xi $xi -nterms 3} errorStr
     return $errorStr
-} -result "Length of y '5' must be equal to x '6'" -cleanup {
+} -result "Length of -y '5' must be equal to length of -x '6'" -cleanup {
     unset x y xi errorStr
 }
 
@@ -332,7 +332,7 @@ test least1dProcTest-7 {test procedure of least squares polynomial interpolation
 } -body {
     catch {least1d -x $x -y $y -xi $xi -nterms 3} errorStr
     return $errorStr
-} -result "Length of interpolation points list xi must be more than zero" -cleanup {
+} -result "Length of interpolation points list -xi must be more than zero" -cleanup {
     unset x y xi errorStr
 }
 
@@ -344,7 +344,7 @@ test least1dProcTest-8 {test procedure of least squares polynomial interpolation
 } -body {
     catch {least1d -x $x -y $y -xi $xi -nterms 1.0} errorStr
     return $errorStr
-} -result "Number of terms nterms '1.0' must be of integer type" -cleanup {
+} -result "Number of terms -nterms '1.0' must be of integer type" -cleanup {
     unset x y xi errorStr
 }
 
@@ -357,7 +357,7 @@ test least1dProcTest-9 {test procedure of least squares polynomial interpolation
 } -body {
     catch {least1d -x $x -y $y -xi $xi -w $w -nterms 3} errorStr
     return $errorStr
-} -result "Length of w '3' must be equal to x '6'" -cleanup {
+} -result "Length of -w '3' must be equal to length of -x '6'" -cleanup {
     unset x y xi errorStr
 }
 
@@ -369,7 +369,7 @@ test least1dProcTest-10 {test procedure of least squares polynomial interpolatio
 } -body {
     catch {least1d -x $x -y $y -xi $xi -nterms 0} errorStr
     return $errorStr
-} -result "Number of terms nterms must be more than zero" -cleanup {
+} -result "Number of terms -nterms must be more than zero" -cleanup {
     unset x y xi errorStr
 }
 
@@ -429,7 +429,7 @@ test least1dDerProcTest-5 {test procedure of least squares polynomial interpolat
 } -body {
     catch {least1dDer -x $x -y $y -xi $xi -nterms 3} errorStr
     return $errorStr
-} -result "Length of y '5' must be equal to x '6'" -cleanup {
+} -result "Length of -y '5' must be equal to length of -x '6'" -cleanup {
     unset x y xi errorStr
 }
 
@@ -440,7 +440,7 @@ test least1dDerProcTest-6 {test procedure of least squares polynomial interpolat
 } -body {
     catch {least1dDer -x $x -y $y -xi $xi -nterms 3} errorStr
     return $errorStr
-} -result "Length of interpolation points list xi must be more than zero" -cleanup {
+} -result "Length of interpolation points list -xi must be more than zero" -cleanup {
     unset x y xi errorStr
 }
 
@@ -452,7 +452,7 @@ test least1dDerProcTest-7 {test procedure of least squares polynomial interpolat
 } -body {
     catch {least1dDer -x $x -y $y -xi $xi -nterms 1.0} errorStr
     return $errorStr
-} -result "Number of terms nterms '1.0' must be of integer type" -cleanup {
+} -result "Number of terms -nterms '1.0' must be of integer type" -cleanup {
     unset x y xi errorStr
 }
 
@@ -465,7 +465,7 @@ test least1dDerProcTest-8 {test procedure of least squares polynomial interpolat
 } -body {
     catch {least1dDer -x $x -y $y -xi $xi -w $w -nterms 3} errorStr
     return $errorStr
-} -result "Length of w '3' must be equal to x '6'" -cleanup {
+} -result "Length of -w '3' must be equal to length of -x '6'" -cleanup {
     unset x y xi errorStr
 }
 
@@ -477,7 +477,7 @@ test least1dDerProcTest-9 {test procedure of least squares polynomial interpolat
 } -body {
     catch {least1dDer -x $x -y $y -xi $xi -nterms 0} errorStr
     return $errorStr
-} -result "Number of terms nterms must be more than zero" -cleanup {
+} -result "Number of terms -nterms must be more than zero" -cleanup {
     unset x y xi errorStr
 }
 
@@ -534,7 +534,7 @@ test genBezierProcTest-3 {test procedure of general Bezier function values calcu
 } -body {
     catch {genBezier -n $n -x $x -y $y -t $t} errorStr
     return $errorStr
-} -result "Length of x '3' must be equal to n+1=4" -cleanup {
+} -result "Length of -x '3' must be equal to n+1=4" -cleanup {
     unset x y n t errorStr
 }
 
@@ -546,7 +546,7 @@ test genBezierProcTest-4 {test procedure of general Bezier function values calcu
 } -body {
     catch {genBezier -n $n -x $x -y $y -t $t} errorStr
     return $errorStr
-} -result "Length of y '2' must be equal to n+1=3" -cleanup {
+} -result "Length of -y '2' must be equal to n+1=3" -cleanup {
     unset x y n t errorStr
 }
 
@@ -558,7 +558,7 @@ test genBezierProcTest-5 {test procedure of general Bezier function values calcu
 } -body {
     catch {genBezier -n $n -x $x -y $y -t $t} errorStr
     return $errorStr
-} -result "Length of points list t must be more than zero" -cleanup {
+} -result "Length of points list -t must be more than zero" -cleanup {
     unset x y n t errorStr
 }
 
@@ -570,7 +570,7 @@ test genBezierProcTest-6 {test procedure of general Bezier function values calcu
 } -body {
     catch {genBezier -n $n -x $x -y $y -t $t} errorStr
     return $errorStr
-} -result "Order of Bezier curve n '-1' must be more than or equal to zero" -cleanup {
+} -result "Order of Bezier curve -n '-1' must be more than or equal to zero" -cleanup {
     unset x y n t errorStr
 }
 
@@ -582,7 +582,7 @@ test genBezierProcTest-7 {test procedure of general Bezier function values calcu
 } -body {
     catch {genBezier -n $n -x $x -y $y -t $t} errorStr
     return $errorStr
-} -result "Order of Bezier curve n '1.5' must be of integer type" -cleanup {
+} -result "Order of Bezier curve -n '1.5' must be of integer type" -cleanup {
     unset x y n t errorStr
 }
 
@@ -610,7 +610,7 @@ test bezierProcTest-2 {test procedure of general Bezier function values calculat
 } -body {
     catch {bezier -n $n -x $x -y $y -a $a -b $b} errorStr
     return $errorStr
-} -result "Length of y '4' must be equal to n+1=3" -cleanup {
+} -result "Length of -y '4' must be equal to n+1=3" -cleanup {
     unset x y n a b errorStr
 }
 
@@ -623,7 +623,7 @@ test bezierProcTest-3 {test procedure of general Bezier function values calculat
 } -body {
     catch {bezier -n $n -x $x -y $y -a $a -b $b} errorStr
     return $errorStr
-} -result "Start a '1.0' and end b '1.0' interval values must not be equal" -cleanup {
+} -result "Start -a '1.0' and end -b '1.0' values of interval must not be equal" -cleanup {
     unset x y n a b errorStr
 }
 
@@ -636,7 +636,7 @@ test bezierProcTest-4 {test procedure of general Bezier function values calculat
 } -body {
     catch {bezier -n $n -x $x -y $y -a $a -b $b} errorStr
     return $errorStr
-} -result "Order of Bezier curve n '-1' must be more than or equal to zero" -cleanup {
+} -result "Order of Bezier curve -n '-1' must be more than or equal to zero" -cleanup {
     unset x y n a b errorStr
 }
 
@@ -649,7 +649,7 @@ test bezierProcTest-5 {test procedure of general Bezier function values calculat
 } -body {
     catch {bezier -n $n -x $x -y $y -a $a -b $b} errorStr
     return $errorStr
-} -result "Order of Bezier curve n '1.5' must be of integer type" -cleanup {
+} -result "Order of Bezier curve -n '1.5' must be of integer type" -cleanup {
     unset x y n a b errorStr
 }
 
@@ -662,7 +662,7 @@ test bezierProcTest-6 {test procedure of general Bezier function values calculat
 } -body {
     catch {bezier -n $n -x $x -y $y -a $a -b $b} errorStr
     return $errorStr
-} -result "Length of points list x must be more than zero" -cleanup {
+} -result "Length of points list -x must be more than zero" -cleanup {
     unset x y n a b errorStr
 }
 
@@ -696,7 +696,7 @@ test divDif1dProcTest-3 {test procedure of divided difference polynomial interpo
 } -body {
     catch {divDif1d -x $x -y $y -xi $xi} errorStr
     return $errorStr
-} -result "x values list must not contain duplicated elements" -cleanup {
+} -result "List of -x values must not contain duplicated elements" -cleanup {
     unset x y xi errorStr
 }
 
@@ -707,7 +707,7 @@ test divDif1dProcTest-4 {test procedure of divided difference polynomial interpo
 } -body {
     catch {divDif1d -x $x -y $y -xi $xi} errorStr
     return $errorStr
-} -result "Length of y '8' must be equal to x '9'" -cleanup {
+} -result "Length of -y '8' must be equal to length of -x '9'" -cleanup {
     unset x y xi errorStr
 }
 
@@ -718,7 +718,7 @@ test divDif1dProcTest-5 {test procedure of divided difference polynomial interpo
 } -body {
     catch {divDif1d -x $x -y $y -xi $xi} errorStr
     return $errorStr
-} -result "Length of interpolation points list xi must be more than zero" -cleanup {
+} -result "Length of interpolation points list -xi must be more than zero" -cleanup {
     unset x y xi errorStr
 }
 
@@ -760,7 +760,7 @@ test cubicBSpline1dProcTest-2 {test procedure of cubic B spline approximant calc
 } -body {
     catch {cubicBSpline1d -t $t -y $y -ti $ti} errorStr
     return $errorStr
-} -result "Length of y '11' must be equal to t '10'" -cleanup {
+} -result "Length of -y '11' must be equal to length of -t '10'" -cleanup {
     unset t y ti errorStr
 }
 
@@ -771,7 +771,7 @@ test cubicBSpline1dProcTest-3 {test procedure of cubic B spline approximant calc
 } -body {
     catch {cubicBSpline1d -t $t -y $y -ti $ti} errorStr
     return $errorStr
-} -result "Length of interpolation points list ti must be more than zero" -cleanup {
+} -result "Length of interpolation points list -ti must be more than zero" -cleanup {
     unset t y ti errorStr
 }
 
@@ -834,7 +834,7 @@ test cubicBetaSpline1dProcTest-4 {test procedure of cubic beta spline approximan
 } -body {
     catch {cubicBetaSpline1d -beta1 100 -beta2 0 -t $t -y $y -ti $ti} errorStr
     return $errorStr
-} -result "Length of y '11' must be equal to t '10'" -cleanup {
+} -result "Length of -y '11' must be equal to length of -t '10'" -cleanup {
     unset t y ti errorStr
 }
 
@@ -845,7 +845,7 @@ test cubicBetaSpline1dProcTest-5 {test procedure of cubic beta spline approximan
 } -body {
     catch {cubicBetaSpline1d -beta1 100 -beta2 0 -t $t -y $y -ti $ti} errorStr
     return $errorStr
-} -result "Length of interpolation points list ti must be more than zero" -cleanup {
+} -result "Length of interpolation points list -ti must be more than zero" -cleanup {
     unset t y ti errorStr
 }
 
@@ -858,7 +858,7 @@ test cubicBetaSpline1dProcTest-6 {test procedure of cubic beta spline approximan
 } -body {
     catch {cubicBetaSpline1d -beta1 100i -beta2 0 -t $t -y $y -ti $ti} errorStr
     return $errorStr
-} -result "Beta1 '100i' must be of double type" -cleanup {
+} -result "-beta1 '100i' must be of double type" -cleanup {
     unset t y ti errorStr
 }
 
@@ -871,7 +871,7 @@ test cubicBetaSpline1dProcTest-7 {test procedure of cubic beta spline approximan
 } -body {
     catch {cubicBetaSpline1d -beta1 100 -beta2 a0 -t $t -y $y -ti $ti} errorStr
     return $errorStr
-} -result "Beta1 'a0' must be of double type" -cleanup {
+} -result "-beta1 'a0' must be of double type" -cleanup {
     unset t y ti errorStr
 }
 
@@ -997,7 +997,7 @@ test cubicSpline1dProcTest-10 {test procedure of cubic spline interpolation calc
 } -body {
     catch {cubicSpline1d -t $t -y $y -ti $ti} errorStr
     return $errorStr
-} -result "Length of y '11' must be equal to t '12'" -cleanup {
+} -result "Length of -y '11' must be equal to length of -t '12'" -cleanup {
     unset t y ti errorStr
 }
 
@@ -1008,7 +1008,7 @@ test cubicSpline1dProcTest-10 {test procedure of cubic spline interpolation calc
 } -body {
     catch {cubicSpline1d -t $t -y $y -ti $ti} errorStr
     return $errorStr
-} -result "Length of interpolation points list ti must be more than zero" -cleanup {
+} -result "Length of interpolation points list -ti must be more than zero" -cleanup {
     unset t y ti errorStr
 }
 

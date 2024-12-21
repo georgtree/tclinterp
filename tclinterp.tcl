@@ -1,6 +1,6 @@
 package require argparse
 package provide tclinterp
-set script_path [file dirname [file normalize [info script]]]
+
 interp alias {} dget {} dict get
 interp alias {} @ {} lindex
 interp alias {} = {} expr
@@ -160,13 +160,13 @@ proc ::tclinterp::interpolation::lin1d {args} {
     set yLen [llength $y]
     set xiLen [llength $xi]
     if {$xLen!=$yLen} {
-        error "Length of y '$yLen' must be equal to x '$xLen'"
+        error "Length of -y '$yLen' must be equal to length of -x '$xLen'"
     } elseif {$xiLen==0} {
-        error "Length of interpolation points list xi must be more than zero"
+        error "Length of interpolation points list -xi must be more than zero"
     }
     ::tclinterp::lists2arrays [list xArray yArray xiArray] [list $x $y $xi]
     if {[::tclinterp::r8vec_ascends_strictly $xLen $xArray]==0} {
-        error "Independent variable array x not strictly increasing"
+        error "Independent variable array -x is not strictly increasing"
     }
     set yiArray [::tclinterp::interp_linear 1 $xLen $xArray $yArray $xiLen $xiArray]
     set yiList [::tclinterp::array2list $yiArray $xiLen]
@@ -189,9 +189,9 @@ proc ::tclinterp::interpolation::near1d {args} {
     set yLen [llength $y]
     set xiLen [llength $xi]
     if {$xLen!=$yLen} {
-        error "Length of y '$yLen' must be equal to x '$xLen'"
+        error "Length of -y '$yLen' must be equal to length of -x '$xLen'"
     } elseif {$xiLen==0} {
-        error "Length of interpolation points list xi must be more than zero"
+        error "Length of interpolation points list -xi must be more than zero"
     }
     ::tclinterp::lists2arrays [list xArray yArray xiArray] [list $x $y $xi]
     set yiArray [::tclinterp::interp_nearest 1 $xLen $xArray $yArray $xiLen $xiArray]
@@ -215,9 +215,9 @@ proc ::tclinterp::interpolation::lagr1d {args} {
     set yLen [llength $y]
     set xiLen [llength $xi]
     if {$xLen!=$yLen} {
-        error "Length of y '$yLen' must be equal to x '$xLen'"
+        error "Length of -y '$yLen' must be equal to length of -x '$xLen'"
     } elseif {$xiLen==0} {
-        error "Length of interpolation points list xi must be more than zero"
+        error "Length of interpolation points list -xi must be more than zero"
     }
     ::tclinterp::lists2arrays [list xArray yArray xiArray] [list $x $y $xi]
     set yiArray [::tclinterp::interp_lagrange 1 $xLen $xArray $yArray $xiLen $xiArray]
@@ -259,15 +259,15 @@ proc ::tclinterp::interpolation::least1d {args} {
     }
     set xiLen [llength $xi]
     if {$xLen!=$yLen} {
-        error "Length of y '$yLen' must be equal to x '$xLen'"
+        return -code error "Length of -y '$yLen' must be equal to length of -x '$xLen'"
     } elseif {$xLen!=$wLen} {
-        error "Length of w '$wLen' must be equal to x '$xLen'"
+        return -code error "Length of -w '$wLen' must be equal to length of -x '$xLen'"
     } elseif {$xiLen==0} {
-        error "Length of interpolation points list xi must be more than zero"
+        return -code error "Length of interpolation points list -xi must be more than zero"
     } elseif {[string is integer -strict $nterms]==0} {
-        error "Number of terms nterms '$nterms' must be of integer type"
+        return -code error "Number of terms -nterms '$nterms' must be of integer type"
     } elseif {$nterms<=0} {
-        error "Number of terms nterms must be more than zero"
+        return -code error "Number of terms -nterms must be more than zero"
     }
     ::tclinterp::lists2arrays [list xArray yArray wArray xiArray] [list $x $y $w $xi]
     ::tclinterp::newArrays [list b c d] [list $nterms $nterms $nterms]
@@ -318,15 +318,15 @@ proc ::tclinterp::interpolation::least1dDer {args} {
     }
     set xiLen [llength $xi]
     if {$xLen!=$yLen} {
-        error "Length of y '$yLen' must be equal to x '$xLen'"
+        return -code error "Length of -y '$yLen' must be equal to length of -x '$xLen'"
     } elseif {$xLen!=$wLen} {
-        error "Length of w '$wLen' must be equal to x '$xLen'"
+        return -code error "Length of -w '$wLen' must be equal to length of -x '$xLen'"
     } elseif {$xiLen==0} {
-        error "Length of interpolation points list xi must be more than zero"
+        return -code error "Length of interpolation points list -xi must be more than zero"
     } elseif {[string is integer -strict $nterms]==0} {
-        error "Number of terms nterms '$nterms' must be of integer type"
+        return -code error "Number of terms -nterms '$nterms' must be of integer type"
     } elseif {$nterms<=0} {
-        error "Number of terms nterms must be more than zero"
+        return -code error "Number of terms -nterms must be more than zero"
     }
     ::tclinterp::lists2arrays [list xArray yArray wArray xiArray] [list $x $y $w $xi]
     ::tclinterp::newArrays [list b c d] [list $nterms $nterms $nterms]
@@ -369,19 +369,19 @@ proc ::tclinterp::approximation::genBezier {args} {
         {-t= -required}
     }]
     if {[string is integer -strict $n]==0} {
-        error "Order of Bezier curve n '$n' must be of integer type"
+        return -code error "Order of Bezier curve -n '$n' must be of integer type"
     } elseif {$n<0} {
-        error "Order of Bezier curve n '$n' must be more than or equal to zero"
+        return -code error "Order of Bezier curve -n '$n' must be more than or equal to zero"
     }
     set xLen [llength $x]
     set yLen [llength $y]
     set tLen [llength $t]
     if {$xLen!=[= {$n+1}]} {
-        error "Length of x '$xLen' must be equal to n+1=[= {$n+1}]"
+        return -code error "Length of -x '$xLen' must be equal to n+1=[= {$n+1}]"
     } elseif {$yLen!=[= {$n+1}]} {
-        error "Length of y '$yLen' must be equal to n+1=[= {$n+1}]"
+        return -code error "Length of -y '$yLen' must be equal to n+1=[= {$n+1}]"
     } elseif {$tLen==0} {
-        error "Length of points list t must be more than zero"
+        return -code error "Length of points list -t must be more than zero"
     }
     ::tclinterp::lists2arrays [list xArray yArray] [list $x $y]
     ::tclinterp::newDoubleps [list xiPnt yiPnt]
@@ -411,18 +411,18 @@ proc ::tclinterp::approximation::bezier {args} {
         {-y= -required}
     }]
     if {[string is integer -strict $n]==0} {
-        error "Order of Bezier curve n '$n' must be of integer type"
+        return -code error "Order of Bezier curve -n '$n' must be of integer type"
     } elseif {$n<0} {
-        error "Order of Bezier curve n '$n' must be more than or equal to zero"
+        return -code error "Order of Bezier curve -n '$n' must be more than or equal to zero"
     } elseif {$a==$b} {
-        error "Start a '$a' and end b '$b' interval values must not be equal"
+        return -code error "Start -a '$a' and end -b '$b' values of interval must not be equal"
     }
     set xLen [llength $x]
     set yLen [llength $y]
     if {$yLen!=[= {$n+1}]} {
-        error "Length of y '$yLen' must be equal to n+1=[= {$n+1}]"
+        return -code error "Length of -y '$yLen' must be equal to n+1=[= {$n+1}]"
     } elseif {$xLen==0} {
-        error "Length of points list x must be more than zero"
+        return -code error "Length of points list -x must be more than zero"
     }
     ::tclinterp::lists2arrays [list yArray] [list $y]
     for {set i 0} {$i<$xLen} {incr i} {
@@ -452,12 +452,12 @@ proc ::tclinterp::interpolation::divDif1d {args} {
     set yLen [llength $y]
     set xiLen [llength $xi]
     if {$xLen!=$yLen} {
-        error "Length of y '$yLen' must be equal to x '$xLen'"
+        return -code error "Length of -y '$yLen' must be equal to length of -x '$xLen'"
     } elseif {$xiLen==0} {
-        error "Length of interpolation points list xi must be more than zero"
+        return -code error "Length of interpolation points list -xi must be more than zero"
     }
     if {[::tclinterp::duplListCheck $x]=="true"} {
-        error "x values list must not contain duplicated elements"
+        return -code error "List of -x values must not contain duplicated elements"
     }
     ::tclinterp::lists2arrays [list xArray yArray] [list $x $y]
     ::tclinterp::newArrays [list difTab] [list $xLen]
@@ -496,9 +496,9 @@ proc ::tclinterp::approximation::cubicBSpline1d {args} {
     set yLen [llength $y]
     set tiLen [llength $ti]
     if {$tLen!=$yLen} {
-        error "Length of y '$yLen' must be equal to t '$tLen'"
+        return -code error "Length of -y '$yLen' must be equal to length of -t '$tLen'"
     } elseif {$tiLen==0} {
-        error "Length of interpolation points list ti must be more than zero"
+        return -code error "Length of interpolation points list -ti must be more than zero"
     }
     ::tclinterp::lists2arrays [list tArray yArray] [list $t $y]
     for {set i 0} {$i<$tiLen} {incr i} {
@@ -530,13 +530,13 @@ proc ::tclinterp::approximation::cubicBetaSpline1d {args} {
     set yLen [llength $y]
     set tiLen [llength $ti]
     if {$tLen!=$yLen} {
-        error "Length of y '$yLen' must be equal to t '$tLen'"
+        return -code error "Length of -y '$yLen' must be equal to length of -t '$tLen'"
     } elseif {$tiLen==0} {
-        error "Length of interpolation points list ti must be more than zero"
+        return -code error "Length of interpolation points list -ti must be more than zero"
     } elseif {[string is double -strict $beta1]==0} {
-        error "Beta1 '$beta1' must be of double type"
+        return -code error "-beta1 '$beta1' must be of double type"
     } elseif {[string is double -strict $beta2]==0} {
-        error "Beta1 '$beta2' must be of double type"
+        return -code error "-beta1 '$beta2' must be of double type"
     }
     ::tclinterp::lists2arrays [list tArray yArray] [list $t $y]
     for {set i 0} {$i<$tiLen} {incr i} {
@@ -585,9 +585,9 @@ proc ::tclinterp::interpolation::cubicSpline1d {args} {
     set yLen [llength $y]
     set tiLen [llength $ti]
     if {$tLen!=$yLen} {
-        error "Length of y '$yLen' must be equal to t '$tLen'"
+        return -code error "Length of -y '$yLen' must be equal to length of -t '$tLen'"
     } elseif {$tiLen==0} {
-        error "Length of interpolation points list ti must be more than zero"
+        return -code error "Length of interpolation points list -ti must be more than zero"
     }
     ::tclinterp::lists2arrays [list tArray yArray] [list $t $y]
     ::tclinterp::newArrays [list yppArray] [list $tLen]
