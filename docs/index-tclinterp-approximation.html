@@ -39,13 +39,13 @@
     <i><font color=#4b5d50>#  -x - list of x values</font></i>
     <i><font color=#4b5d50>#  -y - list of y control points values of size n+1</font></i>
     <i><font color=#4b5d50># Returns: yi values of Bezier function at x points</font></i>
-    <b><font color=#923B23>set</font></b> arguments [argparse {
+    argparse {
         {<font color=#463e11>-n</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-a</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-b</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-x</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
-    }]
+    }
     <b><font color=#923B23>if</font></b> {[<b><font color=#923B23>string</font></b> is integer <font color=#463e11>-strict</font> <font color=#4A181B>$n</font>]==0} {
         <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Order of Bezier curve -n '<font color=#4A181B>$</font>n' must be of integer type&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$n</font>&lt;0} {
@@ -74,8 +74,8 @@
 <h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
 <tr><td><code><font color=#463e11>-beta1</font></code></td><td>The skew or bias parameter, beta1 = 1 for no skew or bias.</td></tr>
 <tr><td><code><font color=#463e11>-beta2</font></code></td><td>The tension parameter, beta2 = 0 for no tension.</td></tr>
-<tr><td><code><font color=#463e11>-t</font></code></td><td>List of independent variable (t) values.</td></tr>
-<tr><td><code><font color=#463e11>-ti</font></code></td><td>List of independent variable interpolation (ti) values.</td></tr>
+<tr><td><code><font color=#463e11>-t</font></code></td><td>List of independent variable (t) values, -x is an alias.</td></tr>
+<tr><td><code><font color=#463e11>-ti</font></code></td><td>List of independent variable interpolation (ti) values, -xi is an alias.</td></tr>
 <tr><td><code><font color=#463e11>-y</font></code></td><td>List of dependent variable (y) values.</td></tr>
 </table>
 <h5 class='ruff'>Return value</h5><p class='ruff'>list of approximation values yi at ti points.</p>
@@ -85,17 +85,17 @@
     <i><font color=#4b5d50># Evaluates a cubic beta spline approximant.</font></i>
     <i><font color=#4b5d50>#  -beta1 - the skew or bias parameter, beta1 = 1 for no skew or bias</font></i>
     <i><font color=#4b5d50>#  -beta2 - the tension parameter, beta2 = 0 for no tension</font></i>
-    <i><font color=#4b5d50>#  -t - list of independent variable (t) values</font></i>
+    <i><font color=#4b5d50>#  -t - list of independent variable (t) values, -x is an alias</font></i>
     <i><font color=#4b5d50>#  -y - list of dependent variable (y) values</font></i>
-    <i><font color=#4b5d50>#  -ti - list of independent variable interpolation (ti) values</font></i>
+    <i><font color=#4b5d50>#  -ti - list of independent variable interpolation (ti) values, -xi is an alias</font></i>
     <i><font color=#4b5d50># Returns: list of approximation values yi at ti points.</font></i>
-    <b><font color=#923B23>set</font></b> arguments [argparse {
+    argparse {
         {<font color=#463e11>-beta1</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-beta2</font>= <font color=#463e11>-required</font>}
-        {<font color=#463e11>-t</font>= <font color=#463e11>-required</font>}
+        {<font color=#463e11>-t</font>= <font color=#463e11>-required</font> <font color=#463e11>-alias</font> x}
         {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
-        {<font color=#463e11>-ti</font>= <font color=#463e11>-required</font>}
-    }]
+        {<font color=#463e11>-ti</font>= <font color=#463e11>-required</font> <font color=#463e11>-alias</font> xi}
+    }
     <b><font color=#923B23>set</font></b> tLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$t</font>]
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>set</font></b> tiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$ti</font>]
@@ -121,8 +121,8 @@
 <p class='ruff'>Evaluates a cubic B spline approximant.</p>
 <div class='ruff_synopsis'><span class='ruff_cmd'>cubicBSpline1d</span> <span class='ruff_arg'>?args?</span></div>
 <h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
-<tr><td><code><font color=#463e11>-t</font></code></td><td>List of independent variable (t) values.</td></tr>
-<tr><td><code><font color=#463e11>-ti</font></code></td><td>List of independent variable interpolation (ti) values.</td></tr>
+<tr><td><code><font color=#463e11>-t</font></code></td><td>List of independent variable (t) values, -x is an alias.</td></tr>
+<tr><td><code><font color=#463e11>-ti</font></code></td><td>List of independent variable interpolation (ti) values, -xi is an alias.</td></tr>
 <tr><td><code><font color=#463e11>-y</font></code></td><td>List of dependent variable (y) values.</td></tr>
 </table>
 <h5 class='ruff'>Return value</h5><p class='ruff'>list of approximation values yi at ti points.</p>
@@ -130,15 +130,15 @@
 <div id='tclinterp_approximation_cubicBSpline1d' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::approximation::cubicBSpline1d {args} {
 
     <i><font color=#4b5d50># Evaluates a cubic B spline approximant.</font></i>
-    <i><font color=#4b5d50>#  -t - list of independent variable (t) values</font></i>
+    <i><font color=#4b5d50>#  -t - list of independent variable (t) values, -x is an alias</font></i>
     <i><font color=#4b5d50>#  -y - list of dependent variable (y) values</font></i>
-    <i><font color=#4b5d50>#  -ti - list of independent variable interpolation (ti) values</font></i>
+    <i><font color=#4b5d50>#  -ti - list of independent variable interpolation (ti) values, -xi is an alias</font></i>
     <i><font color=#4b5d50># Returns: list of approximation values yi at ti points.</font></i>
-    <b><font color=#923B23>set</font></b> arguments [argparse {
-        {<font color=#463e11>-t</font>= <font color=#463e11>-required</font>}
+    argparse {
+        {<font color=#463e11>-t</font>= <font color=#463e11>-required</font> <font color=#463e11>-alias</font> x}
         {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
-        {<font color=#463e11>-ti</font>= <font color=#463e11>-required</font>}
-    }]
+        {<font color=#463e11>-ti</font>= <font color=#463e11>-required</font> <font color=#463e11>-alias</font> xi}
+    }
     <b><font color=#923B23>set</font></b> tLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$t</font>]
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>set</font></b> tiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$ti</font>]
@@ -176,12 +176,12 @@
     <i><font color=#4b5d50>#  -t - list of t points at which we want to evaluate Bezier function, best results are obtained within the interval</font></i>
     <i><font color=#4b5d50>#   [0,1]</font></i>
     <i><font color=#4b5d50># Returns: dict with lists of xi and yi points at specified t points</font></i>
-    <b><font color=#923B23>set</font></b> arguments [argparse {
+    argparse {
         {<font color=#463e11>-n</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-x</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-t</font>= <font color=#463e11>-required</font>}
-    }]
+    }
     <b><font color=#923B23>if</font></b> {[<b><font color=#923B23>string</font></b> is integer <font color=#463e11>-strict</font> <font color=#4A181B>$n</font>]==0} {
         <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Order of Bezier curve -n '<font color=#4A181B>$</font>n' must be of integer type&quot;</font>
     } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$n</font>&lt;0} {

@@ -67,10 +67,10 @@ The skew or bias parameter, beta1 = 1 for no skew or bias\&.
 The tension parameter, beta2 = 0 for no tension\&.
 .TP
 -t
-List of independent variable (t) values\&.
+List of independent variable (t) values, -x is an alias\&.
 .TP
 -ti
-List of independent variable interpolation (ti) values\&.
+List of independent variable interpolation (ti) values, -xi is an alias\&.
 .TP
 -y
 List of dependent variable (y) values\&.
@@ -93,10 +93,10 @@ Evaluates a cubic B spline approximant\&.
 .RS 4n
 .TP
 -t
-List of independent variable (t) values\&.
+List of independent variable (t) values, -x is an alias\&.
 .TP
 -ti
-List of independent variable interpolation (ti) values\&.
+List of independent variable interpolation (ti) values, -xi is an alias\&.
 .TP
 -y
 List of dependent variable (y) values\&.

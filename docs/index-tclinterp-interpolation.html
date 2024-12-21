@@ -23,10 +23,10 @@
 <div class='ruff_synopsis'><span class='ruff_cmd'>cubicSpline1d</span> <span class='ruff_arg'>?args?</span></div>
 <h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
 <tr><td><code><font color=#463e11>-deriv</font></code></td><td>Select the alternative output option.</td></tr>
-<tr><td><code><font color=#463e11>-ibcbeg</font></code></td><td>Left boundary condition flag. Possible values: <strong>quad</strong>, the cubic spline should be a quadratic over the first interval; <strong>der1</strong>, the first derivative at the left endpoint should be YBCBEG; <strong>der2</strong>, the second derivative at the left endpoint should be YBCBEG; <strong>notaknot</strong>, not-a-knot, the third derivative is continuous at T(2).</td></tr>
-<tr><td><code><font color=#463e11>-ibcend</font></code></td><td>Right boundary condition flag. Possible values: <strong>quad</strong>, the cubic spline should be a quadratic over the last interval; <strong>der1</strong>, the first derivative at the right endpoint should be YBCBEG; <strong>der2</strong>, the second derivative at the right endpoint should be YBCBEG; <strong>notaknot</strong>, not-a-knot, the third derivative is continuous at T(2).</td></tr>
-<tr><td><code><font color=#463e11>-t</font></code></td><td>List of independent variable (t) values.</td></tr>
-<tr><td><code><font color=#463e11>-ti</font></code></td><td>List of independent variable interpolation (ti) values.</td></tr>
+<tr><td><code><font color=#463e11>-ibcbeg</font></code></td><td>Left boundary condition flag, -begflag is an alias. Possible values: <strong>quad</strong>, the cubic spline should be a quadratic over the first interval; <strong>der1</strong>, the first derivative at the left endpoint should be YBCBEG; <strong>der2</strong>, the second derivative at the left endpoint should be YBCBEG; <strong>notaknot</strong>, not-a-knot, the third derivative is continuous at T(2).</td></tr>
+<tr><td><code><font color=#463e11>-ibcend</font></code></td><td>Right boundary condition flag, -endflag is an alias. Possible values: <strong>quad</strong>, the cubic spline should be a quadratic over the last interval; <strong>der1</strong>, the first derivative at the right endpoint should be YBCBEG; <strong>der2</strong>, the second derivative at the right endpoint should be YBCBEG; <strong>notaknot</strong>, not-a-knot, the third derivative is continuous at T(2).</td></tr>
+<tr><td><code><font color=#463e11>-t</font></code></td><td>List of independent variable (t) values, -x is an alias.</td></tr>
+<tr><td><code><font color=#463e11>-ti</font></code></td><td>List of independent variable interpolation (ti) values, -xi is an alias.</td></tr>
 <tr><td><code><font color=#463e11>-y</font></code></td><td>List of dependent variable (y) values.</td></tr>
 <tr><td><code><font color=#463e11>-ybcbeg</font></code></td><td>The values to be used in the boundary conditions if ibcbeg is equal to der1 or der2, default is 0.0.</td></tr>
 <tr><td><code><font color=#463e11>-ybcend</font></code></td><td>The values to be used in the boundary conditions if ibcend is equal to der1 or der2, default is 0.0.</td></tr>
@@ -36,35 +36,35 @@
 <div id='tclinterp_interpolation_cubicSpline1d' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::interpolation::cubicSpline1d {args} {
 
     <i><font color=#4b5d50># Does piecewise cubic spline interpolation.</font></i>
-    <i><font color=#4b5d50>#  -ibcbeg - left boundary condition flag. Possible values:</font></i>
+    <i><font color=#4b5d50>#  -ibcbeg - left boundary condition flag, -begflag is an alias. Possible values:</font></i>
     <i><font color=#4b5d50>#   **quad**, the cubic spline should be a quadratic over the first interval;</font></i>
     <i><font color=#4b5d50>#   **der1**, the first derivative at the left endpoint should be YBCBEG;</font></i>
     <i><font color=#4b5d50>#   **der2**, the second derivative at the left endpoint should be YBCBEG;</font></i>
     <i><font color=#4b5d50>#   **notaknot**, not-a-knot, the third derivative is continuous at T(2).</font></i>
-    <i><font color=#4b5d50>#  -ibcend - right boundary condition flag. Possible values:</font></i>
+    <i><font color=#4b5d50>#  -ibcend - right boundary condition flag, -endflag is an alias. Possible values:</font></i>
     <i><font color=#4b5d50>#   **quad**, the cubic spline should be a quadratic over the last interval;</font></i>
     <i><font color=#4b5d50>#   **der1**, the first derivative at the right endpoint should be YBCBEG;</font></i>
     <i><font color=#4b5d50>#   **der2**, the second derivative at the right endpoint should be YBCBEG;</font></i>
     <i><font color=#4b5d50>#   **notaknot**, not-a-knot, the third derivative is continuous at T(2).</font></i>
     <i><font color=#4b5d50>#  -ybcbeg - the values to be used in the boundary conditions if ibcbeg is equal to der1 or der2, default is 0.0</font></i>
     <i><font color=#4b5d50>#  -ybcend - the values to be used in the boundary conditions if ibcend is equal to der1 or der2, default is 0.0</font></i>
-    <i><font color=#4b5d50>#  -t - list of independent variable (t) values</font></i>
+    <i><font color=#4b5d50>#  -t - list of independent variable (t) values, -x is an alias</font></i>
     <i><font color=#4b5d50>#  -y - list of dependent variable (y) values</font></i>
-    <i><font color=#4b5d50>#  -ti - list of independent variable interpolation (ti) values</font></i>
+    <i><font color=#4b5d50>#  -ti - list of independent variable interpolation (ti) values, -xi is an alias</font></i>
     <i><font color=#4b5d50>#  -deriv - select the alternative output option</font></i>
     <i><font color=#4b5d50># Returns: list of interpolated dependent variable values under. If `-deriv` switch is in args, the output is</font></i>
     <i><font color=#4b5d50># dictionary that contains `yi` values under `yi` key, `yi` derivative under `yder1` key, and `yi` second derivative</font></i>
     <i><font color=#4b5d50># under `yder2` key.</font></i>
-    <b><font color=#923B23>set</font></b> arguments [argparse {
-        {<font color=#463e11>-ibcbeg</font>= <font color=#463e11>-default</font> quad <font color=#463e11>-enum</font> {quad der1 der2 notaknot}}
-        {<font color=#463e11>-ibcend</font>= <font color=#463e11>-default</font> quad <font color=#463e11>-enum</font> {quad der1 der2 notaknot}}
+    argparse {
+        {<font color=#463e11>-ibcbeg</font>= <font color=#463e11>-default</font> quad <font color=#463e11>-enum</font> {quad der1 der2 notaknot} <font color=#463e11>-alias</font> begflag}
+        {<font color=#463e11>-ibcend</font>= <font color=#463e11>-default</font> quad <font color=#463e11>-enum</font> {quad der1 der2 notaknot} <font color=#463e11>-alias</font> endflag}
         {<font color=#463e11>-ybcbeg</font>= <font color=#463e11>-default</font> 0.0}
         {<font color=#463e11>-ybcend</font>= <font color=#463e11>-default</font> 0.0}
-        {<font color=#463e11>-t</font>= <font color=#463e11>-required</font>}
+        {<font color=#463e11>-t</font>= <font color=#463e11>-required</font> <font color=#463e11>-alias</font> x}
         {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
-        {<font color=#463e11>-ti</font>= <font color=#463e11>-required</font>}
+        {<font color=#463e11>-ti</font>= <font color=#463e11>-required</font> <font color=#463e11>-alias</font> xi}
         <font color=#463e11>-deriv</font>
-    }]
+    }
     <b><font color=#923B23>set</font></b> keyMap [dcreate quad 0 der1 1 der2 2 notaknot 3]
     <b><font color=#923B23>set</font></b> tLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$t</font>]
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
@@ -113,12 +113,12 @@
     <i><font color=#4b5d50>#  -coeffs - select the alternative output option</font></i>
     <i><font color=#4b5d50># Returns: list of interpolated dependent variable values, `yi`, at `xi`. If `-coeffs` switch is in args, the output</font></i>
     <i><font color=#4b5d50># is dictionary that contains `yi` values under `yi` key, and the values of difference table under the key `coeffs`.</font></i>
-    <b><font color=#923B23>set</font></b> arguments [argparse {
+    argparse {
         {<font color=#463e11>-x</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-xi</font>= <font color=#463e11>-required</font>}
         <font color=#463e11>-coeffs</font>
-    }]
+    }
     <b><font color=#923B23>set</font></b> xLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$x</font>]
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>set</font></b> xiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$xi</font>]
@@ -155,8 +155,8 @@
 <div class='ruff_synopsis'><span class='ruff_cmd'>hermiteSpline1d</span> <span class='ruff_arg'>?args?</span></div>
 <h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
 <tr><td><code><font color=#463e11>-deriv</font></code></td><td>Select the alternative output option.</td></tr>
-<tr><td><code><font color=#463e11>-t</font></code></td><td>List of independent variable (t) values.</td></tr>
-<tr><td><code><font color=#463e11>-ti</font></code></td><td>List of independent variable interpolation (ti) values.</td></tr>
+<tr><td><code><font color=#463e11>-t</font></code></td><td>List of independent variable (t) values, must be strictly increasing, -x is an alias.</td></tr>
+<tr><td><code><font color=#463e11>-ti</font></code></td><td>List of independent variable interpolation (ti) values, -xi is an alias.</td></tr>
 <tr><td><code><font color=#463e11>-y</font></code></td><td>List of dependent variable (y) values.</td></tr>
 <tr><td><code><font color=#463e11>-yp</font></code></td><td>List of dependent variable (y) derivative values.</td></tr>
 </table>
@@ -165,20 +165,20 @@
 <div id='tclinterp_interpolation_hermiteSpline1d' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::interpolation::hermiteSpline1d {args} {
 
     <i><font color=#4b5d50># Does Hermite polynomial spline interpolation.</font></i>
-    <i><font color=#4b5d50>#  -t - list of independent variable (t) values</font></i>
+    <i><font color=#4b5d50>#  -t - list of independent variable (t) values, must be strictly increasing, -x is an alias</font></i>
     <i><font color=#4b5d50>#  -y - list of dependent variable (y) values</font></i>
     <i><font color=#4b5d50>#  -yp - list of dependent variable (y) derivative values</font></i>
-    <i><font color=#4b5d50>#  -ti - list of independent variable interpolation (ti) values</font></i>
+    <i><font color=#4b5d50>#  -ti - list of independent variable interpolation (ti) values, -xi is an alias</font></i>
     <i><font color=#4b5d50>#  -deriv - select the alternative output option</font></i>
     <i><font color=#4b5d50># Returns: list of interpolated dependent variable values. If `-deriv` switch is in args, the output is</font></i>
     <i><font color=#4b5d50># dictionary that contains `yi` values under `yi` key, `yi` derivative under `yder1` key.</font></i>
-    <b><font color=#923B23>set</font></b> arguments [argparse {
-        {<font color=#463e11>-t</font>= <font color=#463e11>-required</font>}
+    argparse {
+        {<font color=#463e11>-t</font>= <font color=#463e11>-required</font> <font color=#463e11>-alias</font> x}
         {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-yp</font>= <font color=#463e11>-required</font>}
-        {<font color=#463e11>-ti</font>= <font color=#463e11>-required</font>}
+        {<font color=#463e11>-ti</font>= <font color=#463e11>-required</font> <font color=#463e11>-alias</font> xi}
         <font color=#463e11>-deriv</font>
-    }]
+    }
     <b><font color=#923B23>set</font></b> tLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$t</font>]
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>set</font></b> ypLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$yp</font>]
@@ -228,11 +228,11 @@
     <i><font color=#4b5d50>#  -y - list of dependent variable (y) values</font></i>
     <i><font color=#4b5d50>#  -xi - list of independent variable interpolation (xi) values</font></i>
     <i><font color=#4b5d50># Returns: list of interpolated dependent variable values, `yi`, at `xi`</font></i>
-    <b><font color=#923B23>set</font></b> arguments [argparse {
+    argparse {
         {<font color=#463e11>-x</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-xi</font>= <font color=#463e11>-required</font>}
-    }]
+    }
     <b><font color=#923B23>set</font></b> xLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$x</font>]
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>set</font></b> xiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$xi</font>]
@@ -273,14 +273,14 @@
     <i><font color=#4b5d50># Returns: list of interpolated dependent variable values, `yi`, at `xi`. If `-coeffs` switch is in args, the output</font></i>
     <i><font color=#4b5d50># is dictionary that contains `yi` values under `yi` key, and the values of interpolation polynom coefficients under</font></i>
     <i><font color=#4b5d50># the keys `b`, `c` and `d`.</font></i>
-    <b><font color=#923B23>set</font></b> arguments [argparse {
+    argparse {
         {<font color=#463e11>-x</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-xi</font>= <font color=#463e11>-required</font>}
         <font color=#463e11>-w</font>=
         {<font color=#463e11>-nterms</font>= <font color=#463e11>-default</font> 3}
         <font color=#463e11>-coeffs</font>
-    }]
+    }
     <b><font color=#923B23>set</font></b> xLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$x</font>]
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>if</font></b> {[<b><font color=#923B23>info</font></b> exists w]} {
@@ -346,14 +346,14 @@
     <i><font color=#4b5d50># Returns: dict of interpolated dependent variable values and its derivatives under `yi` and `yiDer` keys. If</font></i>
     <i><font color=#4b5d50># `-coeffs` switch is in args, the output is dictionary that contains `yi` values under `yi` key, `yi` derivatives</font></i>
     <i><font color=#4b5d50># under `yiDer` key, and the values of interpolation polynom coefficients under the keys `b`, `c` and `d`.</font></i>
-    <b><font color=#923B23>set</font></b> arguments [argparse {
+    argparse {
         {<font color=#463e11>-x</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-xi</font>= <font color=#463e11>-required</font>}
         <font color=#463e11>-w</font>=
         {<font color=#463e11>-nterms</font>= <font color=#463e11>-default</font> 3}
         <font color=#463e11>-coeffs</font>
-    }]
+    }
     <b><font color=#923B23>set</font></b> xLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$x</font>]
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>if</font></b> {[<b><font color=#923B23>info</font></b> exists w]} {
@@ -415,11 +415,11 @@
     <i><font color=#4b5d50>#  -y - list of dependent variable (y) values</font></i>
     <i><font color=#4b5d50>#  -xi - list of independent variable interpolation (xi) values</font></i>
     <i><font color=#4b5d50># Returns: list of interpolated dependent variable values, `yi`, at `xi`</font></i>
-    <b><font color=#923B23>set</font></b> arguments [argparse {
+    argparse {
         {<font color=#463e11>-x</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-xi</font>= <font color=#463e11>-required</font>}
-    }]
+    }
     <b><font color=#923B23>set</font></b> xLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$x</font>]
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>set</font></b> xiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$xi</font>]
@@ -455,11 +455,11 @@
     <i><font color=#4b5d50>#  -y - list of dependent variable (y) values</font></i>
     <i><font color=#4b5d50>#  -xi - list of independent variable interpolation (xi) values</font></i>
     <i><font color=#4b5d50># Returns: list of interpolated dependent variable values, `yi`, at `xi`</font></i>
-    <b><font color=#923B23>set</font></b> arguments [argparse {
+    argparse {
         {<font color=#463e11>-x</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
         {<font color=#463e11>-xi</font>= <font color=#463e11>-required</font>}
-    }]
+    }
     <b><font color=#923B23>set</font></b> xLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$x</font>]
     <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
     <b><font color=#923B23>set</font></b> xiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$xi</font>]
@@ -479,24 +479,24 @@
 <p class='ruff'>Does piecewise cubic Hermite interpolation (PCHIP).</p>
 <div class='ruff_synopsis'><span class='ruff_cmd'>pchip1d</span> <span class='ruff_arg'>?args?</span></div>
 <h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
-<tr><td><code><font color=#463e11>-f</font></code></td><td>List of dependent variable (f) values.</td></tr>
-<tr><td><code><font color=#463e11>-x</font></code></td><td>List of independent variable (x) values.</td></tr>
-<tr><td><code><font color=#463e11>-xe</font></code></td><td>List of independent variable interpolation (xe) values.</td></tr>
+<tr><td><code><font color=#463e11>-f</font></code></td><td>List of dependent variable (f) values, -y is an alias.</td></tr>
+<tr><td><code><font color=#463e11>-x</font></code></td><td>List of independent variable (x) values, must be strictly increasing.</td></tr>
+<tr><td><code><font color=#463e11>-xe</font></code></td><td>List of independent variable interpolation (xe) values, -xi is an alias.</td></tr>
 </table>
 <h5 class='ruff'>Return value</h5><p class='ruff'>list of interpolated dependent variable values.</p>
 <div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_interpolation_pchip1d' href="javascript:toggleSource('tclinterp_interpolation_pchip1d')">Show source</a></p>
 <div id='tclinterp_interpolation_pchip1d' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::interpolation::pchip1d {args} {
 
     <i><font color=#4b5d50># Does piecewise cubic Hermite interpolation (PCHIP).</font></i>
-    <i><font color=#4b5d50>#  -x - list of independent variable (x) values</font></i>
-    <i><font color=#4b5d50>#  -f - list of dependent variable (f) values</font></i>
-    <i><font color=#4b5d50>#  -xe - list of independent variable interpolation (xe) values</font></i>
+    <i><font color=#4b5d50>#  -x - list of independent variable (x) values, must be strictly increasing</font></i>
+    <i><font color=#4b5d50>#  -f - list of dependent variable (f) values, -y is an alias</font></i>
+    <i><font color=#4b5d50>#  -xe - list of independent variable interpolation (xe) values, -xi is an alias</font></i>
     <i><font color=#4b5d50># Returns: list of interpolated dependent variable values.</font></i>
-    <b><font color=#923B23>set</font></b> arguments [argparse {
+    argparse {
         {<font color=#463e11>-x</font>= <font color=#463e11>-required</font>}
-        {<font color=#463e11>-f</font>= <font color=#463e11>-required</font>}
-        {<font color=#463e11>-xe</font>= <font color=#463e11>-required</font>}
-    }]
+        {<font color=#463e11>-f</font>= <font color=#463e11>-required</font> <font color=#463e11>-alias</font> y}
+        {<font color=#463e11>-xe</font>= <font color=#463e11>-required</font> <font color=#463e11>-alias</font> xi}
+    }
     <b><font color=#923B23>set</font></b> xLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$x</font>]
     <b><font color=#923B23>set</font></b> fLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$f</font>]
     <b><font color=#923B23>set</font></b> xeLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$xe</font>]

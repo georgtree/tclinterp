@@ -42,16 +42,16 @@ Does piecewise cubic spline interpolation\&.
 Select the alternative output option\&.
 .TP
 -ibcbeg
-Left boundary condition flag\&. Possible values: \fBquad\fP, the cubic spline should be a quadratic over the first interval; \fBder1\fP, the first derivative at the left endpoint should be YBCBEG; \fBder2\fP, the second derivative at the left endpoint should be YBCBEG; \fBnotaknot\fP, not-a-knot, the third derivative is continuous at T(2)\&.
+Left boundary condition flag, -begflag is an alias\&. Possible values: \fBquad\fP, the cubic spline should be a quadratic over the first interval; \fBder1\fP, the first derivative at the left endpoint should be YBCBEG; \fBder2\fP, the second derivative at the left endpoint should be YBCBEG; \fBnotaknot\fP, not-a-knot, the third derivative is continuous at T(2)\&.
 .TP
 -ibcend
-Right boundary condition flag\&. Possible values: \fBquad\fP, the cubic spline should be a quadratic over the last interval; \fBder1\fP, the first derivative at the right endpoint should be YBCBEG; \fBder2\fP, the second derivative at the right endpoint should be YBCBEG; \fBnotaknot\fP, not-a-knot, the third derivative is continuous at T(2)\&.
+Right boundary condition flag, -endflag is an alias\&. Possible values: \fBquad\fP, the cubic spline should be a quadratic over the last interval; \fBder1\fP, the first derivative at the right endpoint should be YBCBEG; \fBder2\fP, the second derivative at the right endpoint should be YBCBEG; \fBnotaknot\fP, not-a-knot, the third derivative is continuous at T(2)\&.
 .TP
 -t
-List of independent variable (t) values\&.
+List of independent variable (t) values, -x is an alias\&.
 .TP
 -ti
-List of independent variable interpolation (ti) values\&.
+List of independent variable interpolation (ti) values, -xi is an alias\&.
 .TP
 -y
 List of dependent variable (y) values\&.
@@ -115,10 +115,10 @@ Does Hermite polynomial spline interpolation\&.
 Select the alternative output option\&.
 .TP
 -t
-List of independent variable (t) values\&.
+List of independent variable (t) values, must be strictly increasing, -x is an alias\&.
 .TP
 -ti
-List of independent variable interpolation (ti) values\&.
+List of independent variable interpolation (ti) values, -xi is an alias\&.
 .TP
 -y
 List of dependent variable (y) values\&.
@@ -297,13 +297,13 @@ Does piecewise cubic Hermite interpolation (PCHIP)\&.
 .RS 4n
 .TP
 -f
-List of dependent variable (f) values\&.
+List of dependent variable (f) values, -y is an alias\&.
 .TP
 -x
-List of independent variable (x) values\&.
+List of independent variable (x) values, must be strictly increasing\&.
 .TP
 -xe
-List of independent variable interpolation (xe) values\&.
+List of independent variable interpolation (xe) values, -xi is an alias\&.
 .RE
 .PP
 \fBReturn value\fR
