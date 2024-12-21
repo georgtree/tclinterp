@@ -9,6 +9,8 @@ tclinterp::interpolation - Commands in namespace tclinterp::interpolation
 .br
 \fBdivDif1d\fP \fI?args?\fP
 .br
+\fBhermiteSpline1d\fP \fI?args?\fP
+.br
 \fBlagr1d\fP \fI?args?\fP
 .br
 \fBleast1d\fP \fI?args?\fP
@@ -18,6 +20,8 @@ tclinterp::interpolation - Commands in namespace tclinterp::interpolation
 \fBlin1d\fP \fI?args?\fP
 .br
 \fBnear1d\fP \fI?args?\fP
+.br
+\fBpchip1d\fP \fI?args?\fP
 .br
 .SH ::TCLINTERP::INTERPOLATION
 .SH COMMANDS
@@ -94,6 +98,39 @@ List of dependent variable (y) values\&.
 .PP
 list of interpolated dependent variable values, yi, at xi\&. If -coeffs switch is in args, the output
 is dictionary that contains yi values under yi key, and the values of difference table under the key coeffs\&.
+.PP
+.RS -4n
+\fBhermiteSpline1d\fR (::tclinterp::interpolation)
+.RE
+.PP
+Does Hermite polynomial spline interpolation\&.
+.RS 4n\fBhermiteSpline1d\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-deriv
+Select the alternative output option\&.
+.TP
+-t
+List of independent variable (t) values\&.
+.TP
+-ti
+List of independent variable interpolation (ti) values\&.
+.TP
+-y
+List of dependent variable (y) values\&.
+.TP
+-yp
+List of dependent variable (y) derivative values\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+list of interpolated dependent variable values\&. If -deriv switch is in args, the output is
+dictionary that contains yi values under yi key, yi derivative under yder1 key\&.
 .PP
 .RS -4n
 \fBlagr1d\fR (::tclinterp::interpolation)
@@ -246,4 +283,30 @@ List of dependent variable (y) values\&.
 \fBReturn value\fR
 .PP
 list of interpolated dependent variable values, yi, at xi
+.PP
+.RS -4n
+\fBpchip1d\fR (::tclinterp::interpolation)
+.RE
+.PP
+Does piecewise cubic Hermite interpolation (PCHIP)\&.
+.RS 4n\fBpchip1d\fP \fI?args?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-f
+List of dependent variable (f) values\&.
+.TP
+-x
+List of independent variable (x) values\&.
+.TP
+-xe
+List of independent variable interpolation (xe) values\&.
+.RE
+.PP
+\fBReturn value\fR
+.PP
+list of interpolated dependent variable values\&.
 

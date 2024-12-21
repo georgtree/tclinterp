@@ -149,6 +149,67 @@
     }
     <b><font color=#ca14ca>return</font></b>
 }</pre></div>
+</div><h3 class='ruffproc'><a name='::tclinterp::interpolation::hermiteSpline1d'>hermiteSpline1d</a><span class='ns_scope'> [<a href="index-tclinterp-interpolation.html#::tclinterp::interpolation" title="::tclinterp::interpolation" class='ruff_cmd'>::tclinterp::interpolation</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
+<div style='clear:both;'></div>
+<p class='ruff'>Does Hermite polynomial spline interpolation.</p>
+<div class='ruff_synopsis'><span class='ruff_cmd'>hermiteSpline1d</span> <span class='ruff_arg'>?args?</span></div>
+<h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
+<tr><td><code><font color=#463e11>-deriv</font></code></td><td>Select the alternative output option.</td></tr>
+<tr><td><code><font color=#463e11>-t</font></code></td><td>List of independent variable (t) values.</td></tr>
+<tr><td><code><font color=#463e11>-ti</font></code></td><td>List of independent variable interpolation (ti) values.</td></tr>
+<tr><td><code><font color=#463e11>-y</font></code></td><td>List of dependent variable (y) values.</td></tr>
+<tr><td><code><font color=#463e11>-yp</font></code></td><td>List of dependent variable (y) derivative values.</td></tr>
+</table>
+<h5 class='ruff'>Return value</h5><p class='ruff'>list of interpolated dependent variable values. If <code><font color=#463e11>-deriv</font></code> switch is in args, the output is dictionary that contains <code>yi</code> values under <code>yi</code> key, <code>yi</code> derivative under <code>yder1</code> key.</p>
+<div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_interpolation_hermiteSpline1d' href="javascript:toggleSource('tclinterp_interpolation_hermiteSpline1d')">Show source</a></p>
+<div id='tclinterp_interpolation_hermiteSpline1d' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::interpolation::hermiteSpline1d {args} {
+
+    <i><font color=#4b5d50># Does Hermite polynomial spline interpolation.</font></i>
+    <i><font color=#4b5d50>#  -t - list of independent variable (t) values</font></i>
+    <i><font color=#4b5d50>#  -y - list of dependent variable (y) values</font></i>
+    <i><font color=#4b5d50>#  -yp - list of dependent variable (y) derivative values</font></i>
+    <i><font color=#4b5d50>#  -ti - list of independent variable interpolation (ti) values</font></i>
+    <i><font color=#4b5d50>#  -deriv - select the alternative output option</font></i>
+    <i><font color=#4b5d50># Returns: list of interpolated dependent variable values. If `-deriv` switch is in args, the output is</font></i>
+    <i><font color=#4b5d50># dictionary that contains `yi` values under `yi` key, `yi` derivative under `yder1` key.</font></i>
+    <b><font color=#923B23>set</font></b> arguments [argparse {
+        {<font color=#463e11>-t</font>= <font color=#463e11>-required</font>}
+        {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
+        {<font color=#463e11>-yp</font>= <font color=#463e11>-required</font>}
+        {<font color=#463e11>-ti</font>= <font color=#463e11>-required</font>}
+        <font color=#463e11>-deriv</font>
+    }]
+    <b><font color=#923B23>set</font></b> tLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$t</font>]
+    <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
+    <b><font color=#923B23>set</font></b> ypLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$yp</font>]
+    <b><font color=#923B23>set</font></b> tiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$ti</font>]
+    <b><font color=#923B23>if</font></b> {<font color=#4A181B>$tLen</font>!=<font color=#4A181B>$yLen</font>} {
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of -y '<font color=#4A181B>$</font>yLen' must be equal to length of -t '<font color=#4A181B>$</font>tLen'&quot;</font>
+    } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$tLen</font>!=<font color=#4A181B>$ypLen</font>} {
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of -yp '<font color=#4A181B>$</font>ypLen' must be equal to length of -t '<font color=#4A181B>$</font>tLen'&quot;</font>
+    } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$tiLen</font>==0} {
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of interpolation points list -ti must be more than zero&quot;</font>
+    }
+    ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> tArray yArray ypArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$t</font> <font color=#4A181B>$y</font> <font color=#4A181B>$yp</font>]
+    <b><font color=#923B23>if</font></b> {[::tclinterp::r8vec_ascends_strictly <font color=#4A181B>$tLen</font> <font color=#4A181B>$tArray</font>]==0} {
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Independent variable array -t is not strictly increasing&quot;</font>
+    }
+    ::tclinterp::newArrays [<b><font color=#923B23>list</font></b> cArray] [<b><font color=#923B23>list</font></b> [= {<font color=#4A181B>$tLen</font>*4}]]
+    ::tclinterp::newDoubleps [<b><font color=#923B23>list</font></b> yiPnt yipPnt]
+    <b><font color=#923B23>set</font></b> cArray [::tclinterp::spline_hermite_set <font color=#4A181B>$tLen</font> <font color=#4A181B>$tArray</font> <font color=#4A181B>$yArray</font> <font color=#4A181B>$ypArray</font>]
+    <b><font color=#923B23>for</font></b> {<b><font color=#923B23>set</font></b> i 0} {<font color=#4A181B>$i</font>&lt;<font color=#4A181B>$tiLen</font>} {<b><font color=#923B23>incr</font></b> i} {
+        ::tclinterp::spline_hermite_val <font color=#4A181B>$tLen</font> <font color=#4A181B>$tArray</font> <font color=#4A181B>$cArray</font> [@ <font color=#4A181B>$ti</font> <font color=#4A181B>$i</font>] <font color=#4A181B>$yiPnt</font> <font color=#4A181B>$yipPnt</font>
+        <b><font color=#923B23>lappend</font></b> yiList [::tclinterp::doublep_value <font color=#4A181B>$yiPnt</font>]
+        <b><font color=#923B23>lappend</font></b> yipList [::tclinterp::doublep_value <font color=#4A181B>$yipPnt</font>]
+    }
+    ::tclinterp::deleteArrays <font color=#4A181B>$tArray</font> <font color=#4A181B>$yArray</font> <font color=#4A181B>$cArray</font> <font color=#4A181B>$ypArray</font>
+    ::tclinterp::deleteDoubleps <font color=#4A181B>$yiPnt</font> <font color=#4A181B>$yipPnt</font>
+    <b><font color=#923B23>if</font></b> {[<b><font color=#923B23>info</font></b> exists deriv]} {
+        <b><font color=#ca14ca>return</font></b> [<b><font color=#923B23>dict</font></b> create yi <font color=#4A181B>$yiList</font> yder1 <font color=#4A181B>$yipList</font>]
+    } <b><font color=#923B23>else</font></b> {
+        <b><font color=#ca14ca>return</font></b> <font color=#4A181B>$yiList</font>
+    }
+}</pre></div>
 </div><h3 class='ruffproc'><a name='::tclinterp::interpolation::lagr1d'>lagr1d</a><span class='ns_scope'> [<a href="index-tclinterp-interpolation.html#::tclinterp::interpolation" title="::tclinterp::interpolation" class='ruff_cmd'>::tclinterp::interpolation</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
 <div style='clear:both;'></div>
 <p class='ruff'>Does Lagrange polynomial one-dimensional interpolation.</p>
@@ -413,6 +474,48 @@
     ::tclinterp::deleteArrays <font color=#4A181B>$xArray</font> <font color=#4A181B>$yArray</font> <font color=#4A181B>$xiArray</font> <font color=#4A181B>$yiArray</font>
     <b><font color=#ca14ca>return</font></b> <font color=#4A181B>$yiList</font>
 }</pre></div>
+</div><h3 class='ruffproc'><a name='::tclinterp::interpolation::pchip1d'>pchip1d</a><span class='ns_scope'> [<a href="index-tclinterp-interpolation.html#::tclinterp::interpolation" title="::tclinterp::interpolation" class='ruff_cmd'>::tclinterp::interpolation</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
+<div style='clear:both;'></div>
+<p class='ruff'>Does piecewise cubic Hermite interpolation (PCHIP).</p>
+<div class='ruff_synopsis'><span class='ruff_cmd'>pchip1d</span> <span class='ruff_arg'>?args?</span></div>
+<h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
+<tr><td><code><font color=#463e11>-f</font></code></td><td>List of dependent variable (f) values.</td></tr>
+<tr><td><code><font color=#463e11>-x</font></code></td><td>List of independent variable (x) values.</td></tr>
+<tr><td><code><font color=#463e11>-xe</font></code></td><td>List of independent variable interpolation (xe) values.</td></tr>
+</table>
+<h5 class='ruff'>Return value</h5><p class='ruff'>list of interpolated dependent variable values.</p>
+<div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_interpolation_pchip1d' href="javascript:toggleSource('tclinterp_interpolation_pchip1d')">Show source</a></p>
+<div id='tclinterp_interpolation_pchip1d' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::interpolation::pchip1d {args} {
+
+    <i><font color=#4b5d50># Does piecewise cubic Hermite interpolation (PCHIP).</font></i>
+    <i><font color=#4b5d50>#  -x - list of independent variable (x) values</font></i>
+    <i><font color=#4b5d50>#  -f - list of dependent variable (f) values</font></i>
+    <i><font color=#4b5d50>#  -xe - list of independent variable interpolation (xe) values</font></i>
+    <i><font color=#4b5d50># Returns: list of interpolated dependent variable values.</font></i>
+    <b><font color=#923B23>set</font></b> arguments [argparse {
+        {<font color=#463e11>-x</font>= <font color=#463e11>-required</font>}
+        {<font color=#463e11>-f</font>= <font color=#463e11>-required</font>}
+        {<font color=#463e11>-xe</font>= <font color=#463e11>-required</font>}
+    }]
+    <b><font color=#923B23>set</font></b> xLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$x</font>]
+    <b><font color=#923B23>set</font></b> fLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$f</font>]
+    <b><font color=#923B23>set</font></b> xeLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$xe</font>]
+    <b><font color=#923B23>if</font></b> {<font color=#4A181B>$xLen</font>!=<font color=#4A181B>$fLen</font>} {
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of -f '<font color=#4A181B>$</font>fLen' must be equal to length of -x '<font color=#4A181B>$</font>xLen'&quot;</font>
+    } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xeLen</font>==0} {
+        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of interpolation points list -xe must be more than zero&quot;</font>
+    }
+    ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> xArray fArray xeArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$x</font> <font color=#4A181B>$f</font> <font color=#4A181B>$xe</font>]
+    <b><font color=#923B23>if</font></b> {[::tclinterp::r8vec_ascends_strictly <font color=#4A181B>$xLen</font> <font color=#4A181B>$xArray</font>]==0} {
+        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Independent variable array -x is not strictly increasing&quot;</font>
+    }
+    ::tclinterp::newArrays [<b><font color=#923B23>list</font></b> dArray feArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$xLen</font> <font color=#4A181B>$xeLen</font>]
+    ::tclinterp::spline_pchip_set <font color=#4A181B>$xLen</font> <font color=#4A181B>$xArray</font> <font color=#4A181B>$fArray</font> <font color=#4A181B>$dArray</font>
+    ::tclinterp::spline_pchip_val <font color=#4A181B>$xLen</font> <font color=#4A181B>$xArray</font> <font color=#4A181B>$fArray</font> <font color=#4A181B>$dArray</font> <font color=#4A181B>$xeLen</font> <font color=#4A181B>$xeArray</font> <font color=#4A181B>$feArray</font>
+    <b><font color=#923B23>set</font></b> feList [::tclinterp::array2list <font color=#4A181B>$feArray</font> <font color=#4A181B>$xeLen</font>]
+    ::tclinterp::deleteArrays <font color=#4A181B>$xArray</font> <font color=#4A181B>$fArray</font> <font color=#4A181B>$dArray</font> <font color=#4A181B>$xeArray</font> <font color=#4A181B>$feArray</font>
+    <b><font color=#ca14ca>return</font></b> <font color=#4A181B>$feList</font>
+}</pre></div>
 </div></main><nav class='ruff-nav'><ul ><li class='ruff-toc1'><a style='padding-top:2px;' href='index.html'>Start page</a></li>
 <li class='ruff-toc1'><a href='index-docindex.html' accesskey='i'>Index</a></li>
 <hr>
@@ -421,10 +524,12 @@
 <li class='ruff-toc1'><a class='ruff-highlight' href='index-tclinterp-interpolation.html'>tclinterp::interpolation</a></li>
 <hr><li class='ruff-toc2'><a href='#::tclinterp::interpolation-Commands'>Commands</a></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-interpolation.html#::tclinterp::interpolation::cubicSpline1d'>cubicSpline1d</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;cubicSpline1d&lt;/span&gt; &lt;span class='ruff_arg'&gt;?args?&lt;/span&gt;</pre>Does piecewise cubic spline interpolation.
 </span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-interpolation.html#::tclinterp::interpolation::divDif1d'>divDif1d</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;divDif1d&lt;/span&gt; &lt;span class='ruff_arg'&gt;?args?&lt;/span&gt;</pre>Does divided difference one-dimensional interpolation.
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-interpolation.html#::tclinterp::interpolation::hermiteSpline1d'>hermiteSpline1d</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;hermiteSpline1d&lt;/span&gt; &lt;span class='ruff_arg'&gt;?args?&lt;/span&gt;</pre>Does Hermite polynomial spline interpolation.
 </span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-interpolation.html#::tclinterp::interpolation::lagr1d'>lagr1d</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;lagr1d&lt;/span&gt; &lt;span class='ruff_arg'&gt;?args?&lt;/span&gt;</pre>Does Lagrange polynomial one-dimensional interpolation.
 </span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-interpolation.html#::tclinterp::interpolation::least1d'>least1d</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;least1d&lt;/span&gt; &lt;span class='ruff_arg'&gt;?args?&lt;/span&gt;</pre>Does least squares polynomial one-dimensional interpolation.
 </span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-interpolation.html#::tclinterp::interpolation::least1dDer'>least1dDer</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;least1dDer&lt;/span&gt; &lt;span class='ruff_arg'&gt;?args?&lt;/span&gt;</pre>Does least squares polynomial one-dimensional interpolation with calculation of its derivative.
 </span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-interpolation.html#::tclinterp::interpolation::lin1d'>lin1d</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;lin1d&lt;/span&gt; &lt;span class='ruff_arg'&gt;?args?&lt;/span&gt;</pre>Does linear one-dimensional interpolation.
 </span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-interpolation.html#::tclinterp::interpolation::near1d'>near1d</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;near1d&lt;/span&gt; &lt;span class='ruff_arg'&gt;?args?&lt;/span&gt;</pre>Does nearest one-dimensional interpolation.
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-interpolation.html#::tclinterp::interpolation::pchip1d'>pchip1d</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;pchip1d&lt;/span&gt; &lt;span class='ruff_arg'&gt;?args?&lt;/span&gt;</pre>Does piecewise cubic Hermite interpolation (PCHIP).
 </span></li></ul></nav><footer class='ruff-layout-footer ruff-ft'><div style='float: right;'>Document generated by <a href='https://ruff.magicsplat.com'>Ruff!</a></div><div>&copy; George Yashin</div></footer>
 </div></body></html>

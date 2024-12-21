@@ -10,7 +10,7 @@ interp alias {} dcreate {} dict create
 namespace eval ::tclinterp {
     namespace import ::tcl::mathop::*
     namespace eval interpolation {
-        namespace export lin1d near1d lagr1d least1d least1dDer divDif1d cubicSpline1d hermiteSpline1d
+        namespace export lin1d near1d lagr1d least1d least1dDer divDif1d cubicSpline1d hermiteSpline1d pchip1d
     }
     namespace eval approximation {
         namespace export genBezier bezier cubicBSpline1d cubicBetaSpline1d
@@ -618,7 +618,7 @@ proc ::tclinterp::interpolation::hermiteSpline1d {args} {
     #  -yp - list of dependent variable (y) derivative values
     #  -ti - list of independent variable interpolation (ti) values
     #  -deriv - select the alternative output option
-    # Returns: list of interpolated dependent variable values under. If `-deriv` switch is in args, the output is
+    # Returns: list of interpolated dependent variable values. If `-deriv` switch is in args, the output is
     # dictionary that contains `yi` values under `yi` key, `yi` derivative under `yder1` key.
     set arguments [argparse {
         {-t= -required}
@@ -657,4 +657,37 @@ proc ::tclinterp::interpolation::hermiteSpline1d {args} {
     } else {
         return $yiList
     }
+}
+
+#### piecewise cubic Hermite interpolation (PCHIP)
+
+proc ::tclinterp::interpolation::pchip1d {args} {
+    # Does piecewise cubic Hermite interpolation (PCHIP).
+    #  -x - list of independent variable (x) values
+    #  -f - list of dependent variable (f) values
+    #  -xe - list of independent variable interpolation (xe) values
+    # Returns: list of interpolated dependent variable values.
+    set arguments [argparse {
+        {-x= -required}
+        {-f= -required}
+        {-xe= -required}
+    }]
+    set xLen [llength $x]
+    set fLen [llength $f]
+    set xeLen [llength $xe]
+    if {$xLen!=$fLen} {
+        return -code error "Length of -f '$fLen' must be equal to length of -x '$xLen'"
+    } elseif {$xeLen==0} {
+        return -code error "Length of interpolation points list -xe must be more than zero"
+    }
+    ::tclinterp::lists2arrays [list xArray fArray xeArray] [list $x $f $xe]
+    if {[::tclinterp::r8vec_ascends_strictly $xLen $xArray]==0} {
+        error "Independent variable array -x is not strictly increasing"
+    }
+    ::tclinterp::newArrays [list dArray feArray] [list $xLen $xeLen]
+    ::tclinterp::spline_pchip_set $xLen $xArray $fArray $dArray
+    ::tclinterp::spline_pchip_val $xLen $xArray $fArray $dArray $xeLen $xeArray $feArray
+    set feList [::tclinterp::array2list $feArray $xeLen]
+    ::tclinterp::deleteArrays $xArray $fArray $dArray $xeArray $feArray
+    return $feList
 }

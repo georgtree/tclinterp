@@ -37,3 +37,6 @@ extern double spline_cubic_val (int n, double t[], double y[], double ypp[], dou
 /* Hermit polynomial spline interpolation */
 extern double *spline_hermite_set (int ndata, double tdata[], double ydata[], double ypdata[]);
 extern void spline_hermite_val (int ndata, double tdata[], double c[], double tval, double *sval, double *spval);
+/* piecewise cubic Hermite interpolation (PCHIP)*/
+extern void spline_pchip_set (int n, double x[], double f[], double d[]);
+extern void spline_pchip_val (int n, double x[], double f[], double d[], int ne, double xe[], double fe[]);
