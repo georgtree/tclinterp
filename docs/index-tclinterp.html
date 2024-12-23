@@ -22,21 +22,21 @@
 <p class='ruff'>Create list from doubleArray object</p>
 <div class='ruff_synopsis'><span class='ruff_cmd'>array2list</span> <span class='ruff_arg'>array length</span></div>
 <h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
-<tr><td><code><b><font color=#923B23>array</font></b></code></td><td>DoubleArray object.</td></tr>
+<tr><td><code>array</code></td><td>DoubleArray object.</td></tr>
 <tr><td><code>length</code></td><td>Number of elements in doubleArray.</td></tr>
 </table>
 <h5 class='ruff'>Return value</h5><p class='ruff'>list</p>
 <div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_array2list' href="javascript:toggleSource('tclinterp_array2list')">Show source</a></p>
-<div id='tclinterp_array2list' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::array2list {<b><font color=#923B23>array</font></b> length} {
+<div id='tclinterp_array2list' class='ruff_dyn_src'><pre>proc ::tclinterp::array2list {array length} {
 
-    <i><font color=#4b5d50># Create list from doubleArray object</font></i>
-    <i><font color=#4b5d50>#  array - doubleArray object</font></i>
-    <i><font color=#4b5d50>#  length - number of elements in doubleArray</font></i>
-    <i><font color=#4b5d50># Returns: list</font></i>
-    <b><font color=#923B23>for</font></b> {<b><font color=#923B23>set</font></b> i 0} {<font color=#4A181B>$i</font>&lt;<font color=#4A181B>$length</font>} {<b><font color=#923B23>incr</font></b> i} {
-        <b><font color=#923B23>lappend</font></b> list [::tclinterp::doubleArray_getitem <font color=#4A181B>$array</font> <font color=#4A181B>$i</font>]
+    # Create list from doubleArray object
+    #  array - doubleArray object
+    #  length - number of elements in doubleArray
+    # Returns: list
+    for {set i 0} {$i&lt;$length} {incr i} {
+        lappend list [::tclinterp::doubleArray_getitem $array $i]
     }
-    <b><font color=#ca14ca>return</font></b> <font color=#4A181B>$list</font>
+    return $list
 }</pre></div>
 </div><h3 class='ruffproc'><a name='::tclinterp::arrays2lists'>arrays2lists</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
 <div style='clear:both;'></div>
@@ -49,22 +49,22 @@
 </table>
 <h5 class='ruff'>Return value</h5><p class='ruff'>variables with lists are set in caller's scope</p>
 <div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_arrays2lists' href="javascript:toggleSource('tclinterp_arrays2lists')">Show source</a></p>
-<div id='tclinterp_arrays2lists' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::arrays2lists {varNames arrays lengths} {
+<div id='tclinterp_arrays2lists' class='ruff_dyn_src'><pre>proc ::tclinterp::arrays2lists {varNames arrays lengths} {
 
-    <i><font color=#4b5d50># Create lists from doubleArray objects, and set these lists to variables</font></i>
-    <i><font color=#4b5d50>#  varNames - list of variables names</font></i>
-    <i><font color=#4b5d50>#  arrays - list of doubleArray</font></i>
-    <i><font color=#4b5d50>#  lengths - list of doubleArray lengths</font></i>
-    <i><font color=#4b5d50># Returns: variables with lists are set in caller's scope</font></i>
-    <b><font color=#923B23>if</font></b> {[<b><font color=#923B23>llength</font></b> <font color=#4A181B>$varNames</font>]!=[<b><font color=#923B23>llength</font></b> <font color=#4A181B>$arrays</font>]} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of varName list '<font color=#4A181B>[</font>llength <font color=#4A181B>$</font>varNames<font color=#4A181B>]</font>' must be equal to length of array list '<font color=#4A181B>[</font>llength <font color=#4A181B>$</font>arrays<font color=#4A181B>]</font>'&quot;</font>
-    } <b><font color=#923B23>elseif</font></b> {[<b><font color=#923B23>llength</font></b> <font color=#4A181B>$varNames</font>]!=[<b><font color=#923B23>llength</font></b> <font color=#4A181B>$lengths</font>]} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of varName list '<font color=#4A181B>[</font>llength <font color=#4A181B>$</font>varNames<font color=#4A181B>]</font>' must be equal to length of lengths list '<font color=#4A181B>[</font>llength <font color=#4A181B>$</font>lengths<font color=#4A181B>]</font>'&quot;</font>
+    # Create lists from doubleArray objects, and set these lists to variables
+    #  varNames - list of variables names
+    #  arrays - list of doubleArray
+    #  lengths - list of doubleArray lengths
+    # Returns: variables with lists are set in caller's scope
+    if {[llength $varNames]!=[llength $arrays]} {
+        error &quot;Length of varName list '[llength $varNames]' must be equal to length of array list '[llength $arrays]'&quot;
+    } elseif {[llength $varNames]!=[llength $lengths]} {
+        error &quot;Length of varName list '[llength $varNames]' must be equal to length of lengths list '[llength $lengths]'&quot;
     }
-    <b><font color=#923B23>foreach</font></b> varName <font color=#4A181B>$varNames</font> array <font color=#4A181B>$arrays</font> length <font color=#4A181B>$lengths</font> {
-        <b><font color=#923B23>uplevel</font></b> 1 [<b><font color=#923B23>list</font></b> set <font color=#4A181B>$varName</font> [::tclinterp::array2list <font color=#4A181B>$array</font> <font color=#4A181B>$length</font>]]
+    foreach varName $varNames array $arrays length $lengths {
+        uplevel 1 [list set $varName [::tclinterp::array2list $array $length]]
     }
-    <b><font color=#ca14ca>return</font></b>
+    return
 }</pre></div>
 </div><h3 class='ruffproc'><a name='::tclinterp::deleteArrays'>deleteArrays</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
 <div style='clear:both;'></div>
@@ -74,14 +74,14 @@
 <tr><td><code>args</code></td><td>List of arrays objects.</td></tr>
 </table>
 <div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_deleteArrays' href="javascript:toggleSource('tclinterp_deleteArrays')">Show source</a></p>
-<div id='tclinterp_deleteArrays' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::deleteArrays {args} {
+<div id='tclinterp_deleteArrays' class='ruff_dyn_src'><pre>proc ::tclinterp::deleteArrays {args} {
 
-    <i><font color=#4b5d50># Deletes doubleArray objects</font></i>
-    <i><font color=#4b5d50>#  args - list of arrays objects</font></i>
-    <b><font color=#923B23>foreach</font></b> arg <font color=#4A181B>$args</font> {
-        ::tclinterp::delete_doubleArray <font color=#4A181B>$arg</font>
+    # Deletes doubleArray objects
+    #  args - list of arrays objects
+    foreach arg $args {
+        ::tclinterp::delete_doubleArray $arg
     }
-    <b><font color=#ca14ca>return</font></b>
+    return
 }</pre></div>
 </div><h3 class='ruffproc'><a name='::tclinterp::deleteDoubleps'>deleteDoubleps</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
 <div style='clear:both;'></div>
@@ -91,70 +91,70 @@
 <tr><td><code>args</code></td><td>List of doublep objects.</td></tr>
 </table>
 <div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_deleteDoubleps' href="javascript:toggleSource('tclinterp_deleteDoubleps')">Show source</a></p>
-<div id='tclinterp_deleteDoubleps' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::deleteDoubleps {args} {
+<div id='tclinterp_deleteDoubleps' class='ruff_dyn_src'><pre>proc ::tclinterp::deleteDoubleps {args} {
 
-    <i><font color=#4b5d50># Deletes doublep objects</font></i>
-    <i><font color=#4b5d50>#  args - list of doublep objects</font></i>
-    <b><font color=#923B23>foreach</font></b> arg <font color=#4A181B>$args</font> {
-        ::tclinterp::delete_doublep <font color=#4A181B>$arg</font>
+    # Deletes doublep objects
+    #  args - list of doublep objects
+    foreach arg $args {
+        ::tclinterp::delete_doublep $arg
     }
-    <b><font color=#ca14ca>return</font></b>
+    return
 }</pre></div>
 </div><h3 class='ruffproc'><a name='::tclinterp::duplListCheck'>duplListCheck</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
 <div style='clear:both;'></div>
 <p class='ruff'>Checks if list contains duplicates.</p>
 <div class='ruff_synopsis'><span class='ruff_cmd'>duplListCheck</span> <span class='ruff_arg'>list</span></div>
 <h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
-<tr><td><code><b><font color=#923B23>list</font></b></code></td><td>List to check.</td></tr>
+<tr><td><code>list</code></td><td>List to check.</td></tr>
 </table>
 <h5 class='ruff'>Return value</h5><p class='ruff'>false if there are no duplicates and true if there are.</p>
 <div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_duplListCheck' href="javascript:toggleSource('tclinterp_duplListCheck')">Show source</a></p>
-<div id='tclinterp_duplListCheck' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::duplListCheck {<b><font color=#923B23>list</font></b>} {
+<div id='tclinterp_duplListCheck' class='ruff_dyn_src'><pre>proc ::tclinterp::duplListCheck {list} {
 
-    <i><font color=#4b5d50># Checks if list contains duplicates.</font></i>
-    <i><font color=#4b5d50>#  list - list to check</font></i>
-    <i><font color=#4b5d50># Returns: false if there are no duplicates and true if there are.</font></i>
-    <b><font color=#923B23>set</font></b> flag false
-    <b><font color=#923B23>set</font></b> new {}
-    <b><font color=#923B23>foreach</font></b> item <font color=#4A181B>$list</font> {
-        <b><font color=#923B23>if</font></b> {[<b><font color=#923B23>lsearch</font></b> <font color=#4A181B>$new</font> <font color=#4A181B>$item</font>] &lt; 0} {
-            <b><font color=#923B23>lappend</font></b> new <font color=#4A181B>$item</font>
-        } <b><font color=#923B23>else</font></b> {
-            <b><font color=#923B23>set</font></b> flag true
-            <b><font color=#ca14ca>break</font></b>
+    # Checks if list contains duplicates.
+    #  list - list to check
+    # Returns: false if there are no duplicates and true if there are.
+    set flag false
+    set new {}
+    foreach item $list {
+        if {[lsearch $new $item] &lt; 0} {
+            lappend new $item
+        } else {
+            set flag true
+            break
         }
     }
-    <b><font color=#ca14ca>return</font></b> <font color=#4A181B>$flag</font>
+    return $flag
 }</pre></div>
 </div><h3 class='ruffproc'><a name='::tclinterp::list2array'>list2array</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
 <div style='clear:both;'></div>
 <p class='ruff'>Create and initialize doubleArray object from the list</p>
 <div class='ruff_synopsis'><span class='ruff_cmd'>list2array</span> <span class='ruff_arg'>list</span></div>
 <h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
-<tr><td><code><b><font color=#923B23>list</font></b></code></td><td>List of values.</td></tr>
+<tr><td><code>list</code></td><td>List of values.</td></tr>
 </table>
 <h5 class='ruff'>Return value</h5><p class='ruff'>array object</p>
 <div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_list2array' href="javascript:toggleSource('tclinterp_list2array')">Show source</a></p>
-<div id='tclinterp_list2array' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::list2array {<b><font color=#923B23>list</font></b>} {
+<div id='tclinterp_list2array' class='ruff_dyn_src'><pre>proc ::tclinterp::list2array {list} {
 
-    <i><font color=#4b5d50># Create and initialize doubleArray object from the list</font></i>
-    <i><font color=#4b5d50>#  list - list of values</font></i>
-    <i><font color=#4b5d50># Returns: array object</font></i>
-    <b><font color=#923B23>set</font></b> length [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$list</font>]
-    <b><font color=#923B23>set</font></b> a [::tclinterp::new_doubleArray <font color=#4A181B>$length</font>]
-    <b><font color=#923B23>for</font></b> {<b><font color=#923B23>set</font></b> i 0} {<font color=#4A181B>$i</font>&lt;<font color=#4A181B>$length</font>} {<b><font color=#923B23>incr</font></b> i} {
-        <b><font color=#923B23>set</font></b> iElem [@ <font color=#4A181B>$list</font> <font color=#4A181B>$i</font>]
-        <b><font color=#923B23>try</font></b> {
-            ::tclinterp::doubleArray_setitem <font color=#4A181B>$a</font> <font color=#4A181B>$i</font> <font color=#4A181B>$iElem</font>
+    # Create and initialize doubleArray object from the list
+    #  list - list of values
+    # Returns: array object
+    set length [llength $list]
+    set a [::tclinterp::new_doubleArray $length]
+    for {set i 0} {$i&lt;$length} {incr i} {
+        set iElem [@ $list $i]
+        try {
+            ::tclinterp::doubleArray_setitem $a $i $iElem
         } on error {errmsg erropts} {
-            <b><font color=#923B23>if</font></b> {[dget <font color=#4A181B>$erropts</font> <font color=#463e11>-errorcode</font>]==<font color=#035103>&quot;SWIG TypeError&quot;</font>} {
-                <b><font color=#923B23>error</font></b> <font color=#035103>&quot;List must contains only double elements, but get '<font color=#4A181B>$</font>iElem'&quot;</font>
-            } <b><font color=#923B23>else</font></b> {
-                <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Array creation failed with message '<font color=#4A181B>$</font>errmsg' and opts '<font color=#4A181B>$</font>erropts'&quot;</font>
+            if {[dget $erropts -errorcode]==&quot;SWIG TypeError&quot;} {
+                error &quot;List must contains only double elements, but get '$iElem'&quot;
+            } else {
+                error &quot;Array creation failed with message '$errmsg' and opts '$erropts'&quot;
             }
         }
     }
-    <b><font color=#ca14ca>return</font></b> <font color=#4A181B>$a</font>
+    return $a
 }</pre></div>
 </div><h3 class='ruffproc'><a name='::tclinterp::lists2arrays'>lists2arrays</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
 <div style='clear:both;'></div>
@@ -166,19 +166,19 @@
 </table>
 <h5 class='ruff'>Return value</h5><p class='ruff'>variables with doubleArray objects are set in caller's scope</p>
 <div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_lists2arrays' href="javascript:toggleSource('tclinterp_lists2arrays')">Show source</a></p>
-<div id='tclinterp_lists2arrays' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::lists2arrays {varNames lists} {
+<div id='tclinterp_lists2arrays' class='ruff_dyn_src'><pre>proc ::tclinterp::lists2arrays {varNames lists} {
 
-    <i><font color=#4b5d50># Create and initialize doubleArray objects from lists, and set these objects to variables</font></i>
-    <i><font color=#4b5d50>#  varNames - list of variables names</font></i>
-    <i><font color=#4b5d50>#  lists - list of lists</font></i>
-    <i><font color=#4b5d50># Returns: variables with doubleArray objects are set in caller's scope</font></i>
-    <b><font color=#923B23>if</font></b> {[<b><font color=#923B23>llength</font></b> <font color=#4A181B>$varNames</font>]!=[<b><font color=#923B23>llength</font></b> <font color=#4A181B>$lists</font>]} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of varName list '<font color=#4A181B>[</font>llength <font color=#4A181B>$</font>varNames<font color=#4A181B>]</font>' must be equal to length of lists list '<font color=#4A181B>[</font>llength <font color=#4A181B>$</font>lists<font color=#4A181B>]</font>'&quot;</font>
+    # Create and initialize doubleArray objects from lists, and set these objects to variables
+    #  varNames - list of variables names
+    #  lists - list of lists
+    # Returns: variables with doubleArray objects are set in caller's scope
+    if {[llength $varNames]!=[llength $lists]} {
+        error &quot;Length of varName list '[llength $varNames]' must be equal to length of lists list '[llength $lists]'&quot;
     }
-    <b><font color=#923B23>foreach</font></b> varName <font color=#4A181B>$varNames</font> list <font color=#4A181B>$lists</font> {
-        <b><font color=#923B23>uplevel</font></b> 1 [<b><font color=#923B23>list</font></b> set <font color=#4A181B>$varName</font> [::tclinterp::list2array <font color=#4A181B>$list</font>]]
+    foreach varName $varNames list $lists {
+        uplevel 1 [list set $varName [::tclinterp::list2array $list]]
     }
-    <b><font color=#ca14ca>return</font></b>
+    return
 }</pre></div>
 </div><h3 class='ruffproc'><a name='::tclinterp::newArrays'>newArrays</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
 <div style='clear:both;'></div>
@@ -190,19 +190,19 @@
 </table>
 <h5 class='ruff'>Return value</h5><p class='ruff'>variables with doubleArray objects are set in caller's scope</p>
 <div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_newArrays' href="javascript:toggleSource('tclinterp_newArrays')">Show source</a></p>
-<div id='tclinterp_newArrays' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::newArrays {varNames lengths} {
+<div id='tclinterp_newArrays' class='ruff_dyn_src'><pre>proc ::tclinterp::newArrays {varNames lengths} {
 
-    <i><font color=#4b5d50># Creates doubleArray objects, and set these objects to variables</font></i>
-    <i><font color=#4b5d50>#  varNames - list of variables names</font></i>
-    <i><font color=#4b5d50>#  lengths - list of doubleArray's lengths</font></i>
-    <i><font color=#4b5d50># Returns: variables with doubleArray objects are set in caller's scope</font></i>
-    <b><font color=#923B23>if</font></b> {[<b><font color=#923B23>llength</font></b> <font color=#4A181B>$varNames</font>]!=[<b><font color=#923B23>llength</font></b> <font color=#4A181B>$lengths</font>]} {
-        <b><font color=#923B23>error</font></b> <font color=#035103>&quot;Length of varName list '<font color=#4A181B>[</font>llength <font color=#4A181B>$</font>varNames<font color=#4A181B>]</font>' must be equal to length of lengths list '<font color=#4A181B>[</font>llength <font color=#4A181B>$</font>lengths<font color=#4A181B>]</font>'&quot;</font>
+    # Creates doubleArray objects, and set these objects to variables
+    #  varNames - list of variables names
+    #  lengths - list of doubleArray's lengths
+    # Returns: variables with doubleArray objects are set in caller's scope
+    if {[llength $varNames]!=[llength $lengths]} {
+        error &quot;Length of varName list '[llength $varNames]' must be equal to length of lengths list '[llength $lengths]'&quot;
     }
-    <b><font color=#923B23>foreach</font></b> varName <font color=#4A181B>$varNames</font> length <font color=#4A181B>$lengths</font> {
-        <b><font color=#923B23>uplevel</font></b> 1 [<b><font color=#923B23>list</font></b> set <font color=#4A181B>$varName</font> [::tclinterp::new_doubleArray <font color=#4A181B>$length</font>]]
+    foreach varName $varNames length $lengths {
+        uplevel 1 [list set $varName [::tclinterp::new_doubleArray $length]]
     }
-    <b><font color=#ca14ca>return</font></b>
+    return
 }</pre></div>
 </div><h3 class='ruffproc'><a name='::tclinterp::newDoubleps'>newDoubleps</a><span class='ns_scope'> [<a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
 <div style='clear:both;'></div>
@@ -213,15 +213,15 @@
 </table>
 <h5 class='ruff'>Return value</h5><p class='ruff'>variables with doubleps objects are set in caller's scope</p>
 <div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_newDoubleps' href="javascript:toggleSource('tclinterp_newDoubleps')">Show source</a></p>
-<div id='tclinterp_newDoubleps' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::newDoubleps {varNames} {
+<div id='tclinterp_newDoubleps' class='ruff_dyn_src'><pre>proc ::tclinterp::newDoubleps {varNames} {
 
-    <i><font color=#4b5d50># Creates doubleps objects, and set these objects to variables</font></i>
-    <i><font color=#4b5d50>#  varNames - list of variables names</font></i>
-    <i><font color=#4b5d50># Returns: variables with doubleps objects are set in caller's scope</font></i>
-    <b><font color=#923B23>foreach</font></b> varName <font color=#4A181B>$varNames</font> {
-        <b><font color=#923B23>uplevel</font></b> 1 [<b><font color=#923B23>list</font></b> set <font color=#4A181B>$varName</font> [::tclinterp::new_doublep]]
+    # Creates doubleps objects, and set these objects to variables
+    #  varNames - list of variables names
+    # Returns: variables with doubleps objects are set in caller's scope
+    foreach varName $varNames {
+        uplevel 1 [list set $varName [::tclinterp::new_doublep]]
     }
-    <b><font color=#ca14ca>return</font></b>
+    return
 }</pre></div>
 </div></main><nav class='ruff-nav'><ul ><li class='ruff-toc1'><a style='padding-top:2px;' href='index.html'>Start page</a></li>
 <li class='ruff-toc1'><a href='index-docindex.html' accesskey='i'>Index</a></li>
@@ -229,14 +229,14 @@
 <li class='ruff-toc1'><a class='ruff-highlight' href='index-tclinterp.html'>tclinterp</a></li>
 <li class='ruff-toc1'><a href='index-tclinterp-approximation.html'>tclinterp::approximation</a></li>
 <li class='ruff-toc1'><a href='index-tclinterp-interpolation.html'>tclinterp::interpolation</a></li>
-<hr><li class='ruff-toc2'><a href='#::tclinterp-Commands'>Commands</a></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::array2list'>array2list</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;array2list&lt;/span&gt; &lt;span class='ruff_arg'&gt;<b><font color=#923B23>array</font></b> length&lt;/span&gt;</pre>Create list from doubleArray object
-</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::arrays2lists'>arrays2lists</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;arrays2lists&lt;/span&gt; &lt;span class='ruff_arg'&gt;varNames arrays lengths&lt;/span&gt;</pre>Create lists from doubleArray objects, and set these lists to variables
-</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::deleteArrays'>deleteArrays</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;deleteArrays&lt;/span&gt; &lt;span class='ruff_arg'&gt;?args?&lt;/span&gt;</pre>Deletes doubleArray objects
-</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::deleteDoubleps'>deleteDoubleps</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;deleteDoubleps&lt;/span&gt; &lt;span class='ruff_arg'&gt;?args?&lt;/span&gt;</pre>Deletes doublep objects
-</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::duplListCheck'>duplListCheck</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;duplListCheck&lt;/span&gt; &lt;span class='ruff_arg'&gt;<b><font color=#923B23>list</font></b>&lt;/span&gt;</pre>Checks if list contains duplicates.
-</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::list2array'>list2array</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;list2array&lt;/span&gt; &lt;span class='ruff_arg'&gt;<b><font color=#923B23>list</font></b>&lt;/span&gt;</pre>Create and initialize doubleArray object from the list
-</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::lists2arrays'>lists2arrays</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;lists2arrays&lt;/span&gt; &lt;span class='ruff_arg'&gt;varNames lists&lt;/span&gt;</pre>Create and initialize doubleArray objects from lists, and set these objects to variables
-</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::newArrays'>newArrays</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;newArrays&lt;/span&gt; &lt;span class='ruff_arg'&gt;varNames lengths&lt;/span&gt;</pre>Creates doubleArray objects, and set these objects to variables
-</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::newDoubleps'>newDoubleps</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;newDoubleps&lt;/span&gt; &lt;span class='ruff_arg'&gt;varNames&lt;/span&gt;</pre>Creates doubleps objects, and set these objects to variables
+<hr><li class='ruff-toc2'><a href='#::tclinterp-Commands'>Commands</a></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::array2list'>array2list</a><span class='ruff-tiptext'><pre><span class='ruff_cmd'>array2list</span> <span class='ruff_arg'>array length</span></pre>Create list from doubleArray object
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::arrays2lists'>arrays2lists</a><span class='ruff-tiptext'><pre><span class='ruff_cmd'>arrays2lists</span> <span class='ruff_arg'>varNames arrays lengths</span></pre>Create lists from doubleArray objects, and set these lists to variables
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::deleteArrays'>deleteArrays</a><span class='ruff-tiptext'><pre><span class='ruff_cmd'>deleteArrays</span> <span class='ruff_arg'>?args?</span></pre>Deletes doubleArray objects
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::deleteDoubleps'>deleteDoubleps</a><span class='ruff-tiptext'><pre><span class='ruff_cmd'>deleteDoubleps</span> <span class='ruff_arg'>?args?</span></pre>Deletes doublep objects
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::duplListCheck'>duplListCheck</a><span class='ruff-tiptext'><pre><span class='ruff_cmd'>duplListCheck</span> <span class='ruff_arg'>list</span></pre>Checks if list contains duplicates.
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::list2array'>list2array</a><span class='ruff-tiptext'><pre><span class='ruff_cmd'>list2array</span> <span class='ruff_arg'>list</span></pre>Create and initialize doubleArray object from the list
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::lists2arrays'>lists2arrays</a><span class='ruff-tiptext'><pre><span class='ruff_cmd'>lists2arrays</span> <span class='ruff_arg'>varNames lists</span></pre>Create and initialize doubleArray objects from lists, and set these objects to variables
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::newArrays'>newArrays</a><span class='ruff-tiptext'><pre><span class='ruff_cmd'>newArrays</span> <span class='ruff_arg'>varNames lengths</span></pre>Creates doubleArray objects, and set these objects to variables
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp.html#::tclinterp::newDoubleps'>newDoubleps</a><span class='ruff-tiptext'><pre><span class='ruff_cmd'>newDoubleps</span> <span class='ruff_arg'>varNames</span></pre>Creates doubleps objects, and set these objects to variables
 </span></li></ul></nav><footer class='ruff-layout-footer ruff-ft'><div style='float: right;'>Document generated by <a href='https://ruff.magicsplat.com'>Ruff!</a></div><div>&copy; George Yashin</div></footer>
 </div></body></html>
