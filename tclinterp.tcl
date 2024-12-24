@@ -151,6 +151,7 @@ proc ::tclinterp::interpolation::lin1d {args} {
     #  -y - list of dependent variable (y) values
     #  -xi - list of independent variable interpolation (xi) values
     # Returns: list of interpolated dependent variable values, `yi`, at `xi`
+    # Synopsis: -x list -y list -xi list
     argparse {
         {-x= -required}
         {-y= -required}
@@ -180,6 +181,7 @@ proc ::tclinterp::interpolation::near1d {args} {
     #  -y - list of dependent variable (y) values
     #  -xi - list of independent variable interpolation (xi) values
     # Returns: list of interpolated dependent variable values, `yi`, at `xi`
+    # Synopsis: -x list -y list -xi list
     argparse {
         {-x= -required}
         {-y= -required}
@@ -206,6 +208,7 @@ proc ::tclinterp::interpolation::lagr1d {args} {
     #  -y - list of dependent variable (y) values
     #  -xi - list of independent variable interpolation (xi) values
     # Returns: list of interpolated dependent variable values, `yi`, at `xi`
+    # Synopsis: -x list -y list -xi list
     argparse {
         {-x= -required}
         {-y= -required}
@@ -241,6 +244,7 @@ proc ::tclinterp::interpolation::least1d {args} {
     # Returns: list of interpolated dependent variable values, `yi`, at `xi`. If `-coeffs` switch is in args, the output
     # is dictionary that contains `yi` values under `yi` key, and the values of interpolation polynom coefficients under
     # the keys `b`, `c` and `d`.
+    # Synopsis: -x list -y list -xi list ?-w list? ?-nterms value? ?-coeffs?
     argparse {
         {-x= -required}
         {-y= -required}
@@ -300,6 +304,7 @@ proc ::tclinterp::interpolation::least1dDer {args} {
     # Returns: dict of interpolated dependent variable values and its derivatives under `yi` and `yiDer` keys. If
     # `-coeffs` switch is in args, the output is dictionary that contains `yi` values under `yi` key, `yi` derivatives
     # under `yiDer` key, and the values of interpolation polynom coefficients under the keys `b`, `c` and `d`.
+    # Synopsis: -x list -y list -xi list ?-w list? ?-nterms value? ?-coeffs?
     argparse {
         {-x= -required}
         {-y= -required}
@@ -362,6 +367,7 @@ proc ::tclinterp::approximation::genBezier {args} {
     #  -t - list of t points at which we want to evaluate Bezier function, best results are obtained within the interval
     #   [0,1]
     # Returns: dict with lists of xi and yi points at specified t points
+    # Synopsis: -n value -x list -y list -t list
     argparse {
         {-n= -required}
         {-x= -required}
@@ -403,6 +409,7 @@ proc ::tclinterp::approximation::bezier {args} {
     #  -x - list of x values
     #  -y - list of y control points values of size n+1
     # Returns: yi values of Bezier function at x points
+    # Synopsis: -n value -a value -b value -x list -y list
     argparse {
         {-n= -required}
         {-a= -required}
@@ -442,6 +449,7 @@ proc ::tclinterp::interpolation::divDif1d {args} {
     #  -coeffs - select the alternative output option
     # Returns: list of interpolated dependent variable values, `yi`, at `xi`. If `-coeffs` switch is in args, the output
     # is dictionary that contains `yi` values under `yi` key, and the values of difference table under the key `coeffs`.
+    # Synopsis: -x list -y list -xi list ?-coeffs?
     argparse {
         {-x= -required}
         {-y= -required}
@@ -487,6 +495,7 @@ proc ::tclinterp::approximation::cubicBSpline1d {args} {
     #  -y - list of dependent variable (y) values
     #  -ti - list of independent variable interpolation (ti) values, -xi is an alias
     # Returns: list of approximation values yi at ti points.
+    # Synopsis: -t|x list -y list -ti|xi list
     argparse {
         {-t= -required -alias x}
         {-y= -required}
@@ -519,6 +528,7 @@ proc ::tclinterp::approximation::cubicBetaSpline1d {args} {
     #  -y - list of dependent variable (y) values
     #  -ti - list of independent variable interpolation (ti) values, -xi is an alias
     # Returns: list of approximation values yi at ti points.
+    # Synopsis: -beta1 value -beta2 value -t|x list -y list -ti|xi list
     argparse {
         {-beta1= -required}
         {-beta2= -required}
@@ -570,6 +580,8 @@ proc ::tclinterp::interpolation::cubicSpline1d {args} {
     # Returns: list of interpolated dependent variable values under. If `-deriv` switch is in args, the output is
     # dictionary that contains `yi` values under `yi` key, `yi` derivative under `yder1` key, and `yi` second derivative
     # under `yder2` key.
+    # Synopsis: -t|x list -y list -ti|xi list ?-ibcbeg|begflag value -ybcbeg value? ?-ibcend|endflag value -ybcend value?
+    #   ?-deriv?
     argparse {
         {-ibcbeg= -default quad -enum {quad der1 der2 notaknot} -alias begflag}
         {-ibcend= -default quad -enum {quad der1 der2 notaknot} -alias endflag}
@@ -620,6 +632,7 @@ proc ::tclinterp::interpolation::hermiteSpline1d {args} {
     #  -deriv - select the alternative output option
     # Returns: list of interpolated dependent variable values. If `-deriv` switch is in args, the output is
     # dictionary that contains `yi` values under `yi` key, `yi` derivative under `yder1` key.
+    # Synopsis: -t|x list -y list -yp list -ti|xi list ?-deriv?
     argparse {
         {-t= -required -alias x}
         {-y= -required}
@@ -667,6 +680,7 @@ proc ::tclinterp::interpolation::pchip1d {args} {
     #  -f - list of dependent variable (f) values, -y is an alias
     #  -xe - list of independent variable interpolation (xe) values, -xi is an alias
     # Returns: list of interpolated dependent variable values.
+    # Synopsis: -x list -f|y list -xe|xi list
     argparse {
         {-x= -required}
         {-f= -required -alias y}

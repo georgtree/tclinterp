@@ -5,13 +5,13 @@
 .SH NAME
 tclinterp::approximation - Commands in namespace tclinterp::approximation
 .SH SYNOPSIS
-\fBbezier\fP \fI?args?\fP
+\fBbezier\fP \fI-n value -a value -b value -x list -y list\fP
 .br
-\fBcubicBetaSpline1d\fP \fI?args?\fP
+\fBcubicBetaSpline1d\fP \fI-beta1 value -beta2 value -t|x list -y list -ti|xi list\fP
 .br
-\fBcubicBSpline1d\fP \fI?args?\fP
+\fBcubicBSpline1d\fP \fI-t|x list -y list -ti|xi list\fP
 .br
-\fBgenBezier\fP \fI?args?\fP
+\fBgenBezier\fP \fI-n value -x list -y list -t list\fP
 .br
 .SH ::TCLINTERP::APPROXIMATION
 .SH COMMANDS
@@ -21,7 +21,7 @@ tclinterp::approximation - Commands in namespace tclinterp::approximation
 .RE
 .PP
 Finds values of Bezier function at x points\&.
-.RS 4n\fBbezier\fP \fI?args?\fP
+.RS 4n\fBbezier\fP \fI-n value -a value -b value -x list -y list\fP
 .br
 .RE
 .PP
@@ -53,7 +53,7 @@ yi values of Bezier function at x points
 .RE
 .PP
 Evaluates a cubic beta spline approximant\&.
-.RS 4n\fBcubicBetaSpline1d\fP \fI?args?\fP
+.RS 4n\fBcubicBetaSpline1d\fP \fI-beta1 value -beta2 value -t|x list -y list -ti|xi list\fP
 .br
 .RE
 .PP
@@ -85,7 +85,7 @@ list of approximation values yi at ti points\&.
 .RE
 .PP
 Evaluates a cubic B spline approximant\&.
-.RS 4n\fBcubicBSpline1d\fP \fI?args?\fP
+.RS 4n\fBcubicBSpline1d\fP \fI-t|x list -y list -ti|xi list\fP
 .br
 .RE
 .PP
@@ -111,7 +111,7 @@ list of approximation values yi at ti points\&.
 .RE
 .PP
 Finds values of general Bezier function at specified t points\&.
-.RS 4n\fBgenBezier\fP \fI?args?\fP
+.RS 4n\fBgenBezier\fP \fI-n value -x list -y list -t list\fP
 .br
 .RE
 .PP
