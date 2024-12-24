@@ -35,4 +35,4 @@ proc processContents {fileContents} {
     return [string map {max-width:60rem max-width:100rem} $fileContents]
 }
 
-fileutil::updateInPlace ./assets/ruff-min.css processContents
+fileutil::updateInPlace [file join $dir assets ruff-min.css] processContents
