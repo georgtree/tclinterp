@@ -1,0 +1,130 @@
+namespace eval Examples {
+    variable _ruff_preamble {
+        This section contains examples of usage of interpolation/approximation procedures of the package.
+        List of availible examples:
+        - [1D Linear and nearest interpolation] - "examples/linear_near_interpolation.tcl" file
+        
+        ## 1D Linear and nearest interpolation
+
+        The two most basic types of interpolation are linear and nearest ones. These types are availible with procedures
+        [::tclinterp::interpolation::lin1d] and [::tclinterp::interpolation::near1d].
+        To demonstrate both type we use shifted sinusoidal function:
+        ```
+        f(x) = sin(10 ⋅ x) + 1.1
+        ```
+        Relative error is calculated here and in all subsequent chapters is defined as:
+        ```
+                  f      - f             
+                   exact    interp       
+        rel.err = ──────────────── ⋅ 100%
+                       f                 
+                        exact            
+        ```
+
+        Import all procedures from [::tclinterp] namespace:
+        ```tcl
+        package require tclinterp
+        package require ticklecharts
+        set ::ticklecharts::theme "dark"
+        namespace import ::tclinterp::*
+        namespace import ::tclinterp::interpolation::*
+        namespace import ::tclinterp::approximation::*
+        ```
+
+        Define procedures for sinusoidal function calculation, error calculation and for generating sequence of x values:
+        ```tcl
+        proc sinFunc {x} {
+            return [= {sin($x*10)+1.1}]
+        }
+        proc relError {ref act} {
+            return [= {($ref-$act)*100/$ref}]
+        }
+        proc genSeq {xmin xmax step func} {
+            for {set i 0} {$i<=[= {($xmax-$xmin)/$step}]} {incr i} {
+                set xval [= {$xmin+$i*$step}]
+                lappend x $xval
+                lappend y [$func $xval]
+            }
+            return [list $x $y]
+        }
+        ```
+
+        Create input data, interpolation points `xi` and exact values at these points:
+        ```tcl
+        set xmin 0
+        set xmax 1
+        set step 0.05
+        set stepInterp 0.01
+        lassign [genSeq $xmin $xmax $step sinFunc] x y
+        lassign [genSeq $xmin $xmax $stepInterp sinFunc] xInterp yExact
+        ```
+        Input data has points with 0.05 step, `xi` values are separated by 0.01 step.
+
+        Zip input data for `ticklecharts` plotting:
+        ```tcl
+        set xydata [lmap xi $x yi $y {list $xi $yi}]
+        ```
+
+        Call interpolation function [::tclinterp::interpolation::lin1d] that returns list of interpolated y values, and
+        zip `xi` and `yInterpLin` points:
+        ```tcl
+        set yInterpLin [lin1d -x $x -y $y -xi $xInterp]
+        set xydataInterpLin [lmap xi $xInterp yi $yInterpLin {list $xi $yi}]
+        ```
+
+        Do the same for [::tclinterp::interpolation::near1d]:
+        ```tcl
+        set yInterpNear [near1d -x $x -y $y -xi $xInterp]
+        set xydataInterpNear [lmap xi $xInterp yi $yInterpNear {list $xi $yi}]
+        ```
+
+        Zip exact values:
+        ```tcl
+        set xydataExact [lmap xi $xInterp yi $yExact {list $xi $yi}]
+        ```
+
+        Calculate errors:
+        ```tcl
+        set interpErrorLin [lmap xi $xInterp yiExact $yExact yiInterpLin $yInterpLin\
+                                    {list $xi [relError $yiExact $yiInterpLin]}]
+        set interpErrorNear [lmap xi $xInterp yiExact $yExact yiInterpNear $yInterpNear\
+                                     {list $xi [relError $yiExact $yiInterpNear]}]
+        ```
+
+        Plot and save results using `ticklecharts`:
+        ```tcl
+        # plot interpolated data and errors
+        set chart [ticklecharts::chart new]
+        $chart Xaxis -name "x" -minorTick {show "True"} -min 0 -max 1 -type "value" -splitLine {show "True"}
+        $chart Yaxis -name "y" -minorTick {show "True"} -min 0 -max 2.5 -type "value" -splitLine {show "True"}
+        $chart SetOptions -title {} -legend {top "0%" left "20%"} -tooltip {} -animation "False"\
+                -backgroundColor "#212121" -toolbox {feature {dataZoom {yAxisIndex "none"}}}
+        $chart Add "lineSeries" -data $xydata -showAllSymbol "nothing" -name "Initial data"
+        $chart Add "lineSeries" -data $xydataInterpLin -showAllSymbol "nothing" -name "Linear interpolation"
+        $chart Add "lineSeries" -data $xydataInterpNear -showAllSymbol "nothing" -name "Nearest interpolation"
+        $chart Add "lineSeries" -data $xydataExact -showAllSymbol "nothing" -name "Exact data"
+
+        set chartError [ticklecharts::chart new]
+        $chartError Xaxis -name "x" -minorTick {show "True"} -min 0 -max 1 -type "value" -splitLine {show "True"}
+        $chartError Yaxis -name "Rel. error, %" -minorTick {show "True"} -type "value" -splitLine {show "True"}
+        $chartError SetOptions -title {} -legend {top "50%" left "30%"} -tooltip {} -animation "False"\
+                -backgroundColor "#212121" -toolbox {feature {dataZoom {yAxisIndex "none"}}}
+        $chartError Add "lineSeries" -data $interpErrorLin -showAllSymbol "nothing" -name "Linear interpolation error"
+        $chartError Add "lineSeries" -data $interpErrorNear -showAllSymbol "nothing" -name "Nearest interpolation error"
+
+        # create multiplot
+        set layout [ticklecharts::Gridlayout new]
+        $layout Add $chart -bottom "55%" -height "40%" -width "80%"
+        $layout Add $chartError -bottom "5%" -height "40%" -width "80%"
+
+        # save to file
+        set fbasename [file rootname [file tail [info script]]]
+        $layout Render -outfile [file normalize [file join html_charts $fbasename.html]] -height 800px
+        ```
+
+        Results are:
+
+        !ticklechart_mark_linear_near_interpolation!
+    }
+
+}

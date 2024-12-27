@@ -22,205 +22,206 @@
 <p class='ruff'>Finds values of Bezier function at x points.</p>
 <div class='ruff_synopsis'><span class='ruff_cmd'>bezier</span> <span class='ruff_arg'>-n value -a value -b value -x list -y list</span></div>
 <h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
-<tr><td><code><font color=#463e11>-a</font></code></td><td>Start of the interval.</td></tr>
-<tr><td><code><font color=#463e11>-b</font></code></td><td>End of interval.</td></tr>
-<tr><td><code><font color=#463e11>-n</font></code></td><td>Order of Bezier function, must be zero or more.</td></tr>
-<tr><td><code><font color=#463e11>-x</font></code></td><td>List of x values.</td></tr>
-<tr><td><code><font color=#463e11>-y</font></code></td><td>List of y control points values of size n+1.</td></tr>
+<tr><td><code><font color=#b9b96e>-a</font></code></td><td>Start of the interval.</td></tr>
+<tr><td><code><font color=#b9b96e>-b</font></code></td><td>End of interval.</td></tr>
+<tr><td><code><font color=#b9b96e>-n</font></code></td><td>Order of Bezier function, must be zero or more.</td></tr>
+<tr><td><code><font color=#b9b96e>-x</font></code></td><td>List of x values.</td></tr>
+<tr><td><code><font color=#b9b96e>-y</font></code></td><td>List of y control points values of size n+1.</td></tr>
 </table>
 <h5 class='ruff'>Return value</h5><p class='ruff'>yi values of Bezier function at x points</p>
 <div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_approximation_bezier' href="javascript:toggleSource('tclinterp_approximation_bezier')">Show source</a></p>
-<div id='tclinterp_approximation_bezier' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::approximation::bezier {args} {
+<div id='tclinterp_approximation_bezier' class='ruff_dyn_src'><pre><b><font color=#fe6efe>proc</font></b> ::tclinterp::approximation::bezier {args} {
 
-    <i><font color=#4b5d50># Finds values of Bezier function at x points.</font></i>
-    <i><font color=#4b5d50>#  -n - order of Bezier function, must be zero or more</font></i>
-    <i><font color=#4b5d50>#  -a - start of the interval</font></i>
-    <i><font color=#4b5d50>#  -b - end of interval</font></i>
-    <i><font color=#4b5d50>#  -x - list of x values</font></i>
-    <i><font color=#4b5d50>#  -y - list of y control points values of size n+1</font></i>
-    <i><font color=#4b5d50># Returns: yi values of Bezier function at x points</font></i>
-    <i><font color=#4b5d50># Synopsis: -n value -a value -b value -x list -y list</font></i>
+    <i><font color=#76a396># Finds values of Bezier function at x points.</font></i>
+    <i><font color=#76a396>#  -n - order of Bezier function, must be zero or more</font></i>
+    <i><font color=#76a396>#  -a - start of the interval</font></i>
+    <i><font color=#76a396>#  -b - end of interval</font></i>
+    <i><font color=#76a396>#  -x - list of x values</font></i>
+    <i><font color=#76a396>#  -y - list of y control points values of size n+1</font></i>
+    <i><font color=#76a396># Returns: yi values of Bezier function at x points</font></i>
+    <i><font color=#76a396># Synopsis: -n value -a value -b value -x list -y list</font></i>
     argparse {
-        {<font color=#463e11>-n</font>= <font color=#463e11>-required</font>}
-        {<font color=#463e11>-a</font>= <font color=#463e11>-required</font>}
-        {<font color=#463e11>-b</font>= <font color=#463e11>-required</font>}
-        {<font color=#463e11>-x</font>= <font color=#463e11>-required</font>}
-        {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
+        {<font color=#b9b96e>-n</font>= <font color=#b9b96e>-required</font>}
+        {<font color=#b9b96e>-a</font>= <font color=#b9b96e>-required</font>}
+        {<font color=#b9b96e>-b</font>= <font color=#b9b96e>-required</font>}
+        {<font color=#b9b96e>-x</font>= <font color=#b9b96e>-required</font>}
+        {<font color=#b9b96e>-y</font>= <font color=#b9b96e>-required</font>}
     }
-    <b><font color=#923B23>if</font></b> {[<b><font color=#923B23>string</font></b> is integer <font color=#463e11>-strict</font> <font color=#4A181B>$n</font>]==0} {
-        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Order of Bezier curve -n '<font color=#4A181B>$</font>n' must be of integer type&quot;</font>
-    } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$n</font>&lt;0} {
-        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Order of Bezier curve -n '<font color=#4A181B>$</font>n' must be more than or equal to zero&quot;</font>
-    } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$a</font>==<font color=#4A181B>$b</font>} {
-        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Start -a '<font color=#4A181B>$</font>a' and end -b '<font color=#4A181B>$</font>b' values of interval must not be equal&quot;</font>
+    <b><font color=#ffa500>if</font></b> {[<b><font color=#ffa500>string</font></b> is integer <font color=#b9b96e>-strict</font> <font color=#f1b479>$n</font>]==0} {
+        <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error <font color=#90ee90>&quot;Order of Bezier curve -n '<font color=#f1b479>$</font>n' must be of integer type&quot;</font>
+    } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$n</font>&lt;0} {
+        <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error <font color=#90ee90>&quot;Order of Bezier curve -n '<font color=#f1b479>$</font>n' must be more than or equal to zero&quot;</font>
+    } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$a</font>==<font color=#f1b479>$b</font>} {
+        <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error <font color=#90ee90>&quot;Start -a '<font color=#f1b479>$</font>a' and end -b '<font color=#f1b479>$</font>b' values of interval must not be equal&quot;</font>
     }
-    <b><font color=#923B23>set</font></b> xLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$x</font>]
-    <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
-    <b><font color=#923B23>if</font></b> {<font color=#4A181B>$yLen</font>!=[= {<font color=#4A181B>$n</font>+1}]} {
-        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of -y '<font color=#4A181B>$</font>yLen' must be equal to n+1=<font color=#4A181B>[</font>= <font color=#4A181B>{$</font>n+1<font color=#4A181B>}]</font>&quot;</font>
-    } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$xLen</font>==0} {
-        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of points list -x must be more than zero&quot;</font>
+    <b><font color=#ffa500>set</font></b> xLen [<b><font color=#ffa500>llength</font></b> <font color=#f1b479>$x</font>]
+    <b><font color=#ffa500>set</font></b> yLen [<b><font color=#ffa500>llength</font></b> <font color=#f1b479>$y</font>]
+    <b><font color=#ffa500>if</font></b> {<font color=#f1b479>$yLen</font>!=[= {<font color=#f1b479>$n</font>+1}]} {
+        <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error <font color=#90ee90>&quot;Length of -y '<font color=#f1b479>$</font>yLen' must be equal to n+1=<font color=#f1b479>[</font>= <font color=#f1b479>{$</font>n+1<font color=#f1b479>}]</font>&quot;</font>
+    } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$xLen</font>==0} {
+        <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error <font color=#90ee90>&quot;Length of points list -x must be more than zero&quot;</font>
     }
-    ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> yArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$y</font>]
-    <b><font color=#923B23>for</font></b> {<b><font color=#923B23>set</font></b> i 0} {<font color=#4A181B>$i</font>&lt;<font color=#4A181B>$xLen</font>} {<b><font color=#923B23>incr</font></b> i} {
-        <b><font color=#923B23>lappend</font></b> yiList [::tclinterp::bez_val <font color=#4A181B>$n</font> [@ <font color=#4A181B>$x</font> <font color=#4A181B>$i</font>] <font color=#4A181B>$a</font> <font color=#4A181B>$b</font> <font color=#4A181B>$yArray</font>]
+    ::tclinterp::lists2arrays [<b><font color=#ffa500>list</font></b> yArray] [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$y</font>]
+    <b><font color=#ffa500>for</font></b> {<b><font color=#ffa500>set</font></b> i 0} {<font color=#f1b479>$i</font>&lt;<font color=#f1b479>$xLen</font>} {<b><font color=#ffa500>incr</font></b> i} {
+        <b><font color=#ffa500>lappend</font></b> yiList [::tclinterp::bez_val <font color=#f1b479>$n</font> [@ <font color=#f1b479>$x</font> <font color=#f1b479>$i</font>] <font color=#f1b479>$a</font> <font color=#f1b479>$b</font> <font color=#f1b479>$yArray</font>]
     }
-    ::tclinterp::deleteArrays <font color=#4A181B>$yArray</font>
-    <b><font color=#ca14ca>return</font></b> <font color=#4A181B>$yiList</font>
+    ::tclinterp::deleteArrays <font color=#f1b479>$yArray</font>
+    <b><font color=#fe6efe>return</font></b> <font color=#f1b479>$yiList</font>
 }</pre></div>
 </div><h3 class='ruffproc'><a name='::tclinterp::approximation::cubicBetaSpline1d'>cubicBetaSpline1d</a><span class='ns_scope'> [<a href="index-tclinterp-approximation.html#::tclinterp::approximation" title="::tclinterp::approximation" class='ruff_cmd'>::tclinterp::approximation</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
 <div style='clear:both;'></div>
 <p class='ruff'>Evaluates a cubic beta spline approximant.</p>
 <div class='ruff_synopsis'><span class='ruff_cmd'>cubicBetaSpline1d</span> <span class='ruff_arg'>-beta1 value -beta2 value -t|x list -y list -ti|xi list</span></div>
 <h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
-<tr><td><code><font color=#463e11>-beta1</font></code></td><td>The skew or bias parameter, beta1 = 1 for no skew or bias.</td></tr>
-<tr><td><code><font color=#463e11>-beta2</font></code></td><td>The tension parameter, beta2 = 0 for no tension.</td></tr>
-<tr><td><code><font color=#463e11>-t</font></code></td><td>List of independent variable (t) values, -x is an alias.</td></tr>
-<tr><td><code><font color=#463e11>-ti</font></code></td><td>List of independent variable interpolation (ti) values, -xi is an alias.</td></tr>
-<tr><td><code><font color=#463e11>-y</font></code></td><td>List of dependent variable (y) values.</td></tr>
+<tr><td><code><font color=#b9b96e>-beta1</font></code></td><td>The skew or bias parameter, beta1 = 1 for no skew or bias.</td></tr>
+<tr><td><code><font color=#b9b96e>-beta2</font></code></td><td>The tension parameter, beta2 = 0 for no tension.</td></tr>
+<tr><td><code><font color=#b9b96e>-t</font></code></td><td>List of independent variable (t) values, -x is an alias.</td></tr>
+<tr><td><code><font color=#b9b96e>-ti</font></code></td><td>List of independent variable interpolation (ti) values, -xi is an alias.</td></tr>
+<tr><td><code><font color=#b9b96e>-y</font></code></td><td>List of dependent variable (y) values.</td></tr>
 </table>
 <h5 class='ruff'>Return value</h5><p class='ruff'>list of approximation values yi at ti points.</p>
 <div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_approximation_cubicBetaSpline1d' href="javascript:toggleSource('tclinterp_approximation_cubicBetaSpline1d')">Show source</a></p>
-<div id='tclinterp_approximation_cubicBetaSpline1d' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::approximation::cubicBetaSpline1d {args} {
+<div id='tclinterp_approximation_cubicBetaSpline1d' class='ruff_dyn_src'><pre><b><font color=#fe6efe>proc</font></b> ::tclinterp::approximation::cubicBetaSpline1d {args} {
 
-    <i><font color=#4b5d50># Evaluates a cubic beta spline approximant.</font></i>
-    <i><font color=#4b5d50>#  -beta1 - the skew or bias parameter, beta1 = 1 for no skew or bias</font></i>
-    <i><font color=#4b5d50>#  -beta2 - the tension parameter, beta2 = 0 for no tension</font></i>
-    <i><font color=#4b5d50>#  -t - list of independent variable (t) values, -x is an alias</font></i>
-    <i><font color=#4b5d50>#  -y - list of dependent variable (y) values</font></i>
-    <i><font color=#4b5d50>#  -ti - list of independent variable interpolation (ti) values, -xi is an alias</font></i>
-    <i><font color=#4b5d50># Returns: list of approximation values yi at ti points.</font></i>
-    <i><font color=#4b5d50># Synopsis: -beta1 value -beta2 value -t|x list -y list -ti|xi list</font></i>
+    <i><font color=#76a396># Evaluates a cubic beta spline approximant.</font></i>
+    <i><font color=#76a396>#  -beta1 - the skew or bias parameter, beta1 = 1 for no skew or bias</font></i>
+    <i><font color=#76a396>#  -beta2 - the tension parameter, beta2 = 0 for no tension</font></i>
+    <i><font color=#76a396>#  -t - list of independent variable (t) values, -x is an alias</font></i>
+    <i><font color=#76a396>#  -y - list of dependent variable (y) values</font></i>
+    <i><font color=#76a396>#  -ti - list of independent variable interpolation (ti) values, -xi is an alias</font></i>
+    <i><font color=#76a396># Returns: list of approximation values yi at ti points.</font></i>
+    <i><font color=#76a396># Synopsis: -beta1 value -beta2 value -t|x list -y list -ti|xi list</font></i>
     argparse {
-        {<font color=#463e11>-beta1</font>= <font color=#463e11>-required</font>}
-        {<font color=#463e11>-beta2</font>= <font color=#463e11>-required</font>}
-        {<font color=#463e11>-t</font>= <font color=#463e11>-required</font> <font color=#463e11>-alias</font> x}
-        {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
-        {<font color=#463e11>-ti</font>= <font color=#463e11>-required</font> <font color=#463e11>-alias</font> xi}
+        {<font color=#b9b96e>-beta1</font>= <font color=#b9b96e>-required</font>}
+        {<font color=#b9b96e>-beta2</font>= <font color=#b9b96e>-required</font>}
+        {<font color=#b9b96e>-t</font>= <font color=#b9b96e>-required</font> <font color=#b9b96e>-alias</font> x}
+        {<font color=#b9b96e>-y</font>= <font color=#b9b96e>-required</font>}
+        {<font color=#b9b96e>-ti</font>= <font color=#b9b96e>-required</font> <font color=#b9b96e>-alias</font> xi}
     }
-    <b><font color=#923B23>set</font></b> tLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$t</font>]
-    <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
-    <b><font color=#923B23>set</font></b> tiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$ti</font>]
-    <b><font color=#923B23>if</font></b> {<font color=#4A181B>$tLen</font>!=<font color=#4A181B>$yLen</font>} {
-        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of -y '<font color=#4A181B>$</font>yLen' must be equal to length of -t '<font color=#4A181B>$</font>tLen'&quot;</font>
-    } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$tiLen</font>==0} {
-        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of interpolation points list -ti must be more than zero&quot;</font>
-    } <b><font color=#923B23>elseif</font></b> {[<b><font color=#923B23>string</font></b> is double <font color=#463e11>-strict</font> <font color=#4A181B>$beta1</font>]==0} {
-        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;-beta1 '<font color=#4A181B>$</font>beta1' must be of double type&quot;</font>
-    } <b><font color=#923B23>elseif</font></b> {[<b><font color=#923B23>string</font></b> is double <font color=#463e11>-strict</font> <font color=#4A181B>$beta2</font>]==0} {
-        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;-beta1 '<font color=#4A181B>$</font>beta2' must be of double type&quot;</font>
+    <b><font color=#ffa500>set</font></b> tLen [<b><font color=#ffa500>llength</font></b> <font color=#f1b479>$t</font>]
+    <b><font color=#ffa500>set</font></b> yLen [<b><font color=#ffa500>llength</font></b> <font color=#f1b479>$y</font>]
+    <b><font color=#ffa500>set</font></b> tiLen [<b><font color=#ffa500>llength</font></b> <font color=#f1b479>$ti</font>]
+    <b><font color=#ffa500>if</font></b> {<font color=#f1b479>$tLen</font>!=<font color=#f1b479>$yLen</font>} {
+        <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error <font color=#90ee90>&quot;Length of -y '<font color=#f1b479>$</font>yLen' must be equal to length of -t '<font color=#f1b479>$</font>tLen'&quot;</font>
+    } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$tiLen</font>==0} {
+        <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error <font color=#90ee90>&quot;Length of interpolation points list -ti must be more than zero&quot;</font>
+    } <b><font color=#ffa500>elseif</font></b> {[<b><font color=#ffa500>string</font></b> is double <font color=#b9b96e>-strict</font> <font color=#f1b479>$beta1</font>]==0} {
+        <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error <font color=#90ee90>&quot;-beta1 '<font color=#f1b479>$</font>beta1' must be of double type&quot;</font>
+    } <b><font color=#ffa500>elseif</font></b> {[<b><font color=#ffa500>string</font></b> is double <font color=#b9b96e>-strict</font> <font color=#f1b479>$beta2</font>]==0} {
+        <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error <font color=#90ee90>&quot;-beta1 '<font color=#f1b479>$</font>beta2' must be of double type&quot;</font>
     }
-    ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> tArray yArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$t</font> <font color=#4A181B>$y</font>]
-    <b><font color=#923B23>for</font></b> {<b><font color=#923B23>set</font></b> i 0} {<font color=#4A181B>$i</font>&lt;<font color=#4A181B>$tiLen</font>} {<b><font color=#923B23>incr</font></b> i} {
-        <b><font color=#923B23>set</font></b> iElem [::tclinterp::spline_beta_val <font color=#4A181B>$beta1</font> <font color=#4A181B>$beta2</font> <font color=#4A181B>$tLen</font> <font color=#4A181B>$tArray</font> <font color=#4A181B>$yArray</font> [@ <font color=#4A181B>$ti</font> <font color=#4A181B>$i</font>]]
-        <b><font color=#923B23>lappend</font></b> yiList <font color=#4A181B>$iElem</font>
+    ::tclinterp::lists2arrays [<b><font color=#ffa500>list</font></b> tArray yArray] [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$t</font> <font color=#f1b479>$y</font>]
+    <b><font color=#ffa500>for</font></b> {<b><font color=#ffa500>set</font></b> i 0} {<font color=#f1b479>$i</font>&lt;<font color=#f1b479>$tiLen</font>} {<b><font color=#ffa500>incr</font></b> i} {
+        <b><font color=#ffa500>set</font></b> iElem [::tclinterp::spline_beta_val <font color=#f1b479>$beta1</font> <font color=#f1b479>$beta2</font> <font color=#f1b479>$tLen</font> <font color=#f1b479>$tArray</font> <font color=#f1b479>$yArray</font> [@ <font color=#f1b479>$ti</font> <font color=#f1b479>$i</font>]]
+        <b><font color=#ffa500>lappend</font></b> yiList <font color=#f1b479>$iElem</font>
     }
-    ::tclinterp::deleteArrays <font color=#4A181B>$tArray</font> <font color=#4A181B>$yArray</font>
-    <b><font color=#ca14ca>return</font></b> <font color=#4A181B>$yiList</font>
+    ::tclinterp::deleteArrays <font color=#f1b479>$tArray</font> <font color=#f1b479>$yArray</font>
+    <b><font color=#fe6efe>return</font></b> <font color=#f1b479>$yiList</font>
 }</pre></div>
 </div><h3 class='ruffproc'><a name='::tclinterp::approximation::cubicBSpline1d'>cubicBSpline1d</a><span class='ns_scope'> [<a href="index-tclinterp-approximation.html#::tclinterp::approximation" title="::tclinterp::approximation" class='ruff_cmd'>::tclinterp::approximation</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
 <div style='clear:both;'></div>
 <p class='ruff'>Evaluates a cubic B spline approximant.</p>
 <div class='ruff_synopsis'><span class='ruff_cmd'>cubicBSpline1d</span> <span class='ruff_arg'>-t|x list -y list -ti|xi list</span></div>
 <h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
-<tr><td><code><font color=#463e11>-t</font></code></td><td>List of independent variable (t) values, -x is an alias.</td></tr>
-<tr><td><code><font color=#463e11>-ti</font></code></td><td>List of independent variable interpolation (ti) values, -xi is an alias.</td></tr>
-<tr><td><code><font color=#463e11>-y</font></code></td><td>List of dependent variable (y) values.</td></tr>
+<tr><td><code><font color=#b9b96e>-t</font></code></td><td>List of independent variable (t) values, -x is an alias.</td></tr>
+<tr><td><code><font color=#b9b96e>-ti</font></code></td><td>List of independent variable interpolation (ti) values, -xi is an alias.</td></tr>
+<tr><td><code><font color=#b9b96e>-y</font></code></td><td>List of dependent variable (y) values.</td></tr>
 </table>
 <h5 class='ruff'>Return value</h5><p class='ruff'>list of approximation values yi at ti points.</p>
 <div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_approximation_cubicBSpline1d' href="javascript:toggleSource('tclinterp_approximation_cubicBSpline1d')">Show source</a></p>
-<div id='tclinterp_approximation_cubicBSpline1d' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::approximation::cubicBSpline1d {args} {
+<div id='tclinterp_approximation_cubicBSpline1d' class='ruff_dyn_src'><pre><b><font color=#fe6efe>proc</font></b> ::tclinterp::approximation::cubicBSpline1d {args} {
 
-    <i><font color=#4b5d50># Evaluates a cubic B spline approximant.</font></i>
-    <i><font color=#4b5d50>#  -t - list of independent variable (t) values, -x is an alias</font></i>
-    <i><font color=#4b5d50>#  -y - list of dependent variable (y) values</font></i>
-    <i><font color=#4b5d50>#  -ti - list of independent variable interpolation (ti) values, -xi is an alias</font></i>
-    <i><font color=#4b5d50># Returns: list of approximation values yi at ti points.</font></i>
-    <i><font color=#4b5d50># Synopsis: -t|x list -y list -ti|xi list</font></i>
+    <i><font color=#76a396># Evaluates a cubic B spline approximant.</font></i>
+    <i><font color=#76a396>#  -t - list of independent variable (t) values, -x is an alias</font></i>
+    <i><font color=#76a396>#  -y - list of dependent variable (y) values</font></i>
+    <i><font color=#76a396>#  -ti - list of independent variable interpolation (ti) values, -xi is an alias</font></i>
+    <i><font color=#76a396># Returns: list of approximation values yi at ti points.</font></i>
+    <i><font color=#76a396># Synopsis: -t|x list -y list -ti|xi list</font></i>
     argparse {
-        {<font color=#463e11>-t</font>= <font color=#463e11>-required</font> <font color=#463e11>-alias</font> x}
-        {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
-        {<font color=#463e11>-ti</font>= <font color=#463e11>-required</font> <font color=#463e11>-alias</font> xi}
+        {<font color=#b9b96e>-t</font>= <font color=#b9b96e>-required</font> <font color=#b9b96e>-alias</font> x}
+        {<font color=#b9b96e>-y</font>= <font color=#b9b96e>-required</font>}
+        {<font color=#b9b96e>-ti</font>= <font color=#b9b96e>-required</font> <font color=#b9b96e>-alias</font> xi}
     }
-    <b><font color=#923B23>set</font></b> tLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$t</font>]
-    <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
-    <b><font color=#923B23>set</font></b> tiLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$ti</font>]
-    <b><font color=#923B23>if</font></b> {<font color=#4A181B>$tLen</font>!=<font color=#4A181B>$yLen</font>} {
-        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of -y '<font color=#4A181B>$</font>yLen' must be equal to length of -t '<font color=#4A181B>$</font>tLen'&quot;</font>
-    } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$tiLen</font>==0} {
-        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of interpolation points list -ti must be more than zero&quot;</font>
+    <b><font color=#ffa500>set</font></b> tLen [<b><font color=#ffa500>llength</font></b> <font color=#f1b479>$t</font>]
+    <b><font color=#ffa500>set</font></b> yLen [<b><font color=#ffa500>llength</font></b> <font color=#f1b479>$y</font>]
+    <b><font color=#ffa500>set</font></b> tiLen [<b><font color=#ffa500>llength</font></b> <font color=#f1b479>$ti</font>]
+    <b><font color=#ffa500>if</font></b> {<font color=#f1b479>$tLen</font>!=<font color=#f1b479>$yLen</font>} {
+        <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error <font color=#90ee90>&quot;Length of -y '<font color=#f1b479>$</font>yLen' must be equal to length of -t '<font color=#f1b479>$</font>tLen'&quot;</font>
+    } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$tiLen</font>==0} {
+        <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error <font color=#90ee90>&quot;Length of interpolation points list -ti must be more than zero&quot;</font>
     }
-    ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> tArray yArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$t</font> <font color=#4A181B>$y</font>]
-    <b><font color=#923B23>for</font></b> {<b><font color=#923B23>set</font></b> i 0} {<font color=#4A181B>$i</font>&lt;<font color=#4A181B>$tiLen</font>} {<b><font color=#923B23>incr</font></b> i} {
-        <b><font color=#923B23>set</font></b> iElem [::tclinterp::spline_b_val <font color=#4A181B>$tLen</font> <font color=#4A181B>$tArray</font> <font color=#4A181B>$yArray</font> [@ <font color=#4A181B>$ti</font> <font color=#4A181B>$i</font>]]
-        <b><font color=#923B23>lappend</font></b> yiList <font color=#4A181B>$iElem</font>
+    ::tclinterp::lists2arrays [<b><font color=#ffa500>list</font></b> tArray yArray] [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$t</font> <font color=#f1b479>$y</font>]
+    <b><font color=#ffa500>for</font></b> {<b><font color=#ffa500>set</font></b> i 0} {<font color=#f1b479>$i</font>&lt;<font color=#f1b479>$tiLen</font>} {<b><font color=#ffa500>incr</font></b> i} {
+        <b><font color=#ffa500>set</font></b> iElem [::tclinterp::spline_b_val <font color=#f1b479>$tLen</font> <font color=#f1b479>$tArray</font> <font color=#f1b479>$yArray</font> [@ <font color=#f1b479>$ti</font> <font color=#f1b479>$i</font>]]
+        <b><font color=#ffa500>lappend</font></b> yiList <font color=#f1b479>$iElem</font>
     }
-    ::tclinterp::deleteArrays <font color=#4A181B>$tArray</font> <font color=#4A181B>$yArray</font>
-    <b><font color=#ca14ca>return</font></b> <font color=#4A181B>$yiList</font>
+    ::tclinterp::deleteArrays <font color=#f1b479>$tArray</font> <font color=#f1b479>$yArray</font>
+    <b><font color=#fe6efe>return</font></b> <font color=#f1b479>$yiList</font>
 }</pre></div>
 </div><h3 class='ruffproc'><a name='::tclinterp::approximation::genBezier'>genBezier</a><span class='ns_scope'> [<a href="index-tclinterp-approximation.html#::tclinterp::approximation" title="::tclinterp::approximation" class='ruff_cmd'>::tclinterp::approximation</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
 <div style='clear:both;'></div>
 <p class='ruff'>Finds values of general Bezier function at specified t points.</p>
 <div class='ruff_synopsis'><span class='ruff_cmd'>genBezier</span> <span class='ruff_arg'>-n value -x list -y list -t list</span></div>
 <h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
-<tr><td><code><font color=#463e11>-n</font></code></td><td>Order of Bezier function, must be zero or more.</td></tr>
-<tr><td><code><font color=#463e11>-t</font></code></td><td>List of t points at which we want to evaluate Bezier function, best results are obtained within the interval [0,1]</td></tr>
-<tr><td><code><font color=#463e11>-x</font></code></td><td>List of x control points values of size n+1.</td></tr>
-<tr><td><code><font color=#463e11>-y</font></code></td><td>List of y control points values of size n+1.</td></tr>
+<tr><td><code><font color=#b9b96e>-n</font></code></td><td>Order of Bezier function, must be zero or more.</td></tr>
+<tr><td><code><font color=#b9b96e>-t</font></code></td><td>List of t points at which we want to evaluate Bezier function, best results are obtained within the interval [0,1]</td></tr>
+<tr><td><code><font color=#b9b96e>-x</font></code></td><td>List of x control points values of size n+1.</td></tr>
+<tr><td><code><font color=#b9b96e>-y</font></code></td><td>List of y control points values of size n+1.</td></tr>
 </table>
 <h5 class='ruff'>Return value</h5><p class='ruff'>dict with lists of xi and yi points at specified t points</p>
 <div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_approximation_genBezier' href="javascript:toggleSource('tclinterp_approximation_genBezier')">Show source</a></p>
-<div id='tclinterp_approximation_genBezier' class='ruff_dyn_src'><pre><b><font color=#ca14ca>proc</font></b> ::tclinterp::approximation::genBezier {args} {
+<div id='tclinterp_approximation_genBezier' class='ruff_dyn_src'><pre><b><font color=#fe6efe>proc</font></b> ::tclinterp::approximation::genBezier {args} {
 
-    <i><font color=#4b5d50># Finds values of general Bezier function at specified t points.</font></i>
-    <i><font color=#4b5d50>#  -n - order of Bezier function, must be zero or more</font></i>
-    <i><font color=#4b5d50>#  -x - list of x control points values of size n+1</font></i>
-    <i><font color=#4b5d50>#  -y - list of y control points values of size n+1</font></i>
-    <i><font color=#4b5d50>#  -t - list of t points at which we want to evaluate Bezier function, best results are obtained within the interval</font></i>
-    <i><font color=#4b5d50>#   [0,1]</font></i>
-    <i><font color=#4b5d50># Returns: dict with lists of xi and yi points at specified t points</font></i>
-    <i><font color=#4b5d50># Synopsis: -n value -x list -y list -t list</font></i>
+    <i><font color=#76a396># Finds values of general Bezier function at specified t points.</font></i>
+    <i><font color=#76a396>#  -n - order of Bezier function, must be zero or more</font></i>
+    <i><font color=#76a396>#  -x - list of x control points values of size n+1</font></i>
+    <i><font color=#76a396>#  -y - list of y control points values of size n+1</font></i>
+    <i><font color=#76a396>#  -t - list of t points at which we want to evaluate Bezier function, best results are obtained within the interval</font></i>
+    <i><font color=#76a396>#   [0,1]</font></i>
+    <i><font color=#76a396># Returns: dict with lists of xi and yi points at specified t points</font></i>
+    <i><font color=#76a396># Synopsis: -n value -x list -y list -t list</font></i>
     argparse {
-        {<font color=#463e11>-n</font>= <font color=#463e11>-required</font>}
-        {<font color=#463e11>-x</font>= <font color=#463e11>-required</font>}
-        {<font color=#463e11>-y</font>= <font color=#463e11>-required</font>}
-        {<font color=#463e11>-t</font>= <font color=#463e11>-required</font>}
+        {<font color=#b9b96e>-n</font>= <font color=#b9b96e>-required</font>}
+        {<font color=#b9b96e>-x</font>= <font color=#b9b96e>-required</font>}
+        {<font color=#b9b96e>-y</font>= <font color=#b9b96e>-required</font>}
+        {<font color=#b9b96e>-t</font>= <font color=#b9b96e>-required</font>}
     }
-    <b><font color=#923B23>if</font></b> {[<b><font color=#923B23>string</font></b> is integer <font color=#463e11>-strict</font> <font color=#4A181B>$n</font>]==0} {
-        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Order of Bezier curve -n '<font color=#4A181B>$</font>n' must be of integer type&quot;</font>
-    } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$n</font>&lt;0} {
-        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Order of Bezier curve -n '<font color=#4A181B>$</font>n' must be more than or equal to zero&quot;</font>
+    <b><font color=#ffa500>if</font></b> {[<b><font color=#ffa500>string</font></b> is integer <font color=#b9b96e>-strict</font> <font color=#f1b479>$n</font>]==0} {
+        <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error <font color=#90ee90>&quot;Order of Bezier curve -n '<font color=#f1b479>$</font>n' must be of integer type&quot;</font>
+    } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$n</font>&lt;0} {
+        <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error <font color=#90ee90>&quot;Order of Bezier curve -n '<font color=#f1b479>$</font>n' must be more than or equal to zero&quot;</font>
     }
-    <b><font color=#923B23>set</font></b> xLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$x</font>]
-    <b><font color=#923B23>set</font></b> yLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$y</font>]
-    <b><font color=#923B23>set</font></b> tLen [<b><font color=#923B23>llength</font></b> <font color=#4A181B>$t</font>]
-    <b><font color=#923B23>if</font></b> {<font color=#4A181B>$xLen</font>!=[= {<font color=#4A181B>$n</font>+1}]} {
-        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of -x '<font color=#4A181B>$</font>xLen' must be equal to n+1=<font color=#4A181B>[</font>= <font color=#4A181B>{$</font>n+1<font color=#4A181B>}]</font>&quot;</font>
-    } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$yLen</font>!=[= {<font color=#4A181B>$n</font>+1}]} {
-        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of -y '<font color=#4A181B>$</font>yLen' must be equal to n+1=<font color=#4A181B>[</font>= <font color=#4A181B>{$</font>n+1<font color=#4A181B>}]</font>&quot;</font>
-    } <b><font color=#923B23>elseif</font></b> {<font color=#4A181B>$tLen</font>==0} {
-        <b><font color=#ca14ca>return</font></b> <font color=#463e11>-code</font> error <font color=#035103>&quot;Length of points list -t must be more than zero&quot;</font>
+    <b><font color=#ffa500>set</font></b> xLen [<b><font color=#ffa500>llength</font></b> <font color=#f1b479>$x</font>]
+    <b><font color=#ffa500>set</font></b> yLen [<b><font color=#ffa500>llength</font></b> <font color=#f1b479>$y</font>]
+    <b><font color=#ffa500>set</font></b> tLen [<b><font color=#ffa500>llength</font></b> <font color=#f1b479>$t</font>]
+    <b><font color=#ffa500>if</font></b> {<font color=#f1b479>$xLen</font>!=[= {<font color=#f1b479>$n</font>+1}]} {
+        <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error <font color=#90ee90>&quot;Length of -x '<font color=#f1b479>$</font>xLen' must be equal to n+1=<font color=#f1b479>[</font>= <font color=#f1b479>{$</font>n+1<font color=#f1b479>}]</font>&quot;</font>
+    } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$yLen</font>!=[= {<font color=#f1b479>$n</font>+1}]} {
+        <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error <font color=#90ee90>&quot;Length of -y '<font color=#f1b479>$</font>yLen' must be equal to n+1=<font color=#f1b479>[</font>= <font color=#f1b479>{$</font>n+1<font color=#f1b479>}]</font>&quot;</font>
+    } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$tLen</font>==0} {
+        <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error <font color=#90ee90>&quot;Length of points list -t must be more than zero&quot;</font>
     }
-    ::tclinterp::lists2arrays [<b><font color=#923B23>list</font></b> xArray yArray] [<b><font color=#923B23>list</font></b> <font color=#4A181B>$x</font> <font color=#4A181B>$y</font>]
-    ::tclinterp::newDoubleps [<b><font color=#923B23>list</font></b> xiPnt yiPnt]
-    <b><font color=#923B23>for</font></b> {<b><font color=#923B23>set</font></b> i 0} {<font color=#4A181B>$i</font>&lt;<font color=#4A181B>$tLen</font>} {<b><font color=#923B23>incr</font></b> i} {
-        ::tclinterp::bc_val <font color=#4A181B>$n</font> [@ <font color=#4A181B>$t</font> <font color=#4A181B>$i</font>] <font color=#4A181B>$xArray</font> <font color=#4A181B>$yArray</font> <font color=#4A181B>$xiPnt</font> <font color=#4A181B>$yiPnt</font>
-        <b><font color=#923B23>lappend</font></b> xiList [::tclinterp::doublep_value <font color=#4A181B>$xiPnt</font>]
-        <b><font color=#923B23>lappend</font></b> yiList [::tclinterp::doublep_value <font color=#4A181B>$yiPnt</font>]
+    ::tclinterp::lists2arrays [<b><font color=#ffa500>list</font></b> xArray yArray] [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$x</font> <font color=#f1b479>$y</font>]
+    ::tclinterp::newDoubleps [<b><font color=#ffa500>list</font></b> xiPnt yiPnt]
+    <b><font color=#ffa500>for</font></b> {<b><font color=#ffa500>set</font></b> i 0} {<font color=#f1b479>$i</font>&lt;<font color=#f1b479>$tLen</font>} {<b><font color=#ffa500>incr</font></b> i} {
+        ::tclinterp::bc_val <font color=#f1b479>$n</font> [@ <font color=#f1b479>$t</font> <font color=#f1b479>$i</font>] <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$xiPnt</font> <font color=#f1b479>$yiPnt</font>
+        <b><font color=#ffa500>lappend</font></b> xiList [::tclinterp::doublep_value <font color=#f1b479>$xiPnt</font>]
+        <b><font color=#ffa500>lappend</font></b> yiList [::tclinterp::doublep_value <font color=#f1b479>$yiPnt</font>]
     }
-    ::tclinterp::deleteArrays <font color=#4A181B>$xArray</font> <font color=#4A181B>$yArray</font>
-    ::tclinterp::deleteDoubleps <font color=#4A181B>$xiPnt</font> <font color=#4A181B>$yiPnt</font>
-    <b><font color=#ca14ca>return</font></b> [<b><font color=#923B23>dcreate</font></b> xi <font color=#4A181B>$xiList</font> yi <font color=#4A181B>$yiList</font>]
+    ::tclinterp::deleteArrays <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font>
+    ::tclinterp::deleteDoubleps <font color=#f1b479>$xiPnt</font> <font color=#f1b479>$yiPnt</font>
+    <b><font color=#fe6efe>return</font></b> [<b><font color=#ffa500>dcreate</font></b> xi <font color=#f1b479>$xiList</font> yi <font color=#f1b479>$yiList</font>]
 }</pre></div>
 </div></main><nav class='ruff-nav'><ul ><li class='ruff-toc1'><a style='padding-top:2px;' href='index.html'>Start page</a></li>
 <li class='ruff-toc1'><a href='index-docindex.html' accesskey='i'>Index</a></li>
 <hr>
+<li class='ruff-toc1'><a href='index-Examples.html'>Examples</a></li>
 <li class='ruff-toc1'><a href='index-tclinterp.html'>tclinterp</a></li>
 <li class='ruff-toc1'><a class='ruff-highlight' href='index-tclinterp-approximation.html'>tclinterp::approximation</a></li>
 <li class='ruff-toc1'><a href='index-tclinterp-interpolation.html'>tclinterp::interpolation</a></li>
-<hr><li class='ruff-toc2'><a href='#::tclinterp::approximation-Commands'>Commands</a></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-approximation.html#::tclinterp::approximation::bezier'>bezier</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;bezier&lt;/span&gt; &lt;span class='ruff_arg'&gt;<font color=#463e11>-n</font> value <font color=#463e11>-a</font> value <font color=#463e11>-b</font> value <font color=#463e11>-x</font> list <font color=#463e11>-y</font> list&lt;/span&gt;</pre>Finds values of Bezier function at x points.
-</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-approximation.html#::tclinterp::approximation::cubicBetaSpline1d'>cubicBetaSpline1d</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;cubicBetaSpline1d&lt;/span&gt; &lt;span class='ruff_arg'&gt;<font color=#463e11>-beta1</font> value <font color=#463e11>-beta2</font> value <font color=#463e11>-t</font>|x list <font color=#463e11>-y</font> list <font color=#463e11>-ti</font>|xi list&lt;/span&gt;</pre>Evaluates a cubic beta spline approximant.
-</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-approximation.html#::tclinterp::approximation::cubicBSpline1d'>cubicBSpline1d</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;cubicBSpline1d&lt;/span&gt; &lt;span class='ruff_arg'&gt;<font color=#463e11>-t</font>|x list <font color=#463e11>-y</font> list <font color=#463e11>-ti</font>|xi list&lt;/span&gt;</pre>Evaluates a cubic B spline approximant.
-</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-approximation.html#::tclinterp::approximation::genBezier'>genBezier</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;genBezier&lt;/span&gt; &lt;span class='ruff_arg'&gt;<font color=#463e11>-n</font> value <font color=#463e11>-x</font> list <font color=#463e11>-y</font> list <font color=#463e11>-t</font> list&lt;/span&gt;</pre>Finds values of general Bezier function at specified t points.
+<hr><li class='ruff-toc2'><a href='#::tclinterp::approximation-Commands'>Commands</a></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-approximation.html#::tclinterp::approximation::bezier'>bezier</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;bezier&lt;/span&gt; &lt;span class='ruff_arg'&gt;<font color=#b9b96e>-n</font> value <font color=#b9b96e>-a</font> value <font color=#b9b96e>-b</font> value <font color=#b9b96e>-x</font> list <font color=#b9b96e>-y</font> list&lt;/span&gt;</pre>Finds values of Bezier function at x points.
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-approximation.html#::tclinterp::approximation::cubicBetaSpline1d'>cubicBetaSpline1d</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;cubicBetaSpline1d&lt;/span&gt; &lt;span class='ruff_arg'&gt;<font color=#b9b96e>-beta1</font> value <font color=#b9b96e>-beta2</font> value <font color=#b9b96e>-t</font>|x list <font color=#b9b96e>-y</font> list <font color=#b9b96e>-ti</font>|xi list&lt;/span&gt;</pre>Evaluates a cubic beta spline approximant.
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-approximation.html#::tclinterp::approximation::cubicBSpline1d'>cubicBSpline1d</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;cubicBSpline1d&lt;/span&gt; &lt;span class='ruff_arg'&gt;<font color=#b9b96e>-t</font>|x list <font color=#b9b96e>-y</font> list <font color=#b9b96e>-ti</font>|xi list&lt;/span&gt;</pre>Evaluates a cubic B spline approximant.
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-approximation.html#::tclinterp::approximation::genBezier'>genBezier</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;genBezier&lt;/span&gt; &lt;span class='ruff_arg'&gt;<font color=#b9b96e>-n</font> value <font color=#b9b96e>-x</font> list <font color=#b9b96e>-y</font> list <font color=#b9b96e>-t</font> list&lt;/span&gt;</pre>Finds values of general Bezier function at specified t points.
 </span></li></ul></nav><footer class='ruff-layout-footer ruff-ft'><div style='float: right;'>Document generated by <a href='https://ruff.magicsplat.com'>Ruff!</a></div><div>&copy; George Yashin</div></footer>
 </div></body></html>

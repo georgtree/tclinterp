@@ -144,6 +144,7 @@ proc ::tclinterp::duplListCheck {list} {
 
 
 ### Linear interpolations
+#### Linear interpolation
 
 proc ::tclinterp::interpolation::lin1d {args} {
     # Does linear one-dimensional interpolation.
@@ -175,6 +176,8 @@ proc ::tclinterp::interpolation::lin1d {args} {
     return $yiList
 }
 
+#### Nearest interpolation
+
 proc ::tclinterp::interpolation::near1d {args} {
     # Does nearest one-dimensional interpolation.
     #  -x - list of independent variable (x) values
@@ -201,6 +204,8 @@ proc ::tclinterp::interpolation::near1d {args} {
     ::tclinterp::deleteArrays $xArray $yArray $xiArray $yiArray
     return $yiList
 }
+
+### Lagrange interpolation
 
 proc ::tclinterp::interpolation::lagr1d {args} {
     # Does Lagrange polynomial one-dimensional interpolation.

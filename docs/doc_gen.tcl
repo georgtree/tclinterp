@@ -6,6 +6,7 @@ package require hl_tcl
 set docDir [file dirname [file normalize [info script]]]
 set sourceDir "${docDir}/../"
 source [file join $docDir startPage.ruff]
+source [file join $docDir examples.ruff]
 source [file join $sourceDir tclinterp.tcl]
 
 set packageVersion [package versions tclinterp]
@@ -19,7 +20,7 @@ set commonNroff [list -title $title -sortnamespaces false -preamble $startPage -
                          -pagesplit namespace -autopunctuate true -compact false -includeprivate true\
                          -product tcl_tools -diagrammer "ditaa --border-width 1" -version $packageVersion\
                          -copyright "George Yashin" {*}$::argv]
-set namespaces [list ::tclinterp ::tclinterp::approximation ::tclinterp::interpolation]
+set namespaces [list ::Examples ::tclinterp ::tclinterp::approximation ::tclinterp::interpolation]
 
 if {[llength $argv] == 0 || "html" in $argv} {
     ruff::document $namespaces -format html -outdir $docDir -outfile index.html {*}$commonHtml
@@ -30,9 +31,28 @@ foreach file [glob ${docDir}/*.html] {
     exec tclsh "${path_to_hl_tcl}/tcl_html.tcl" [file join ${docDir} $file]
 }
 
-proc processContents {fileContents} {
-    # Search: AA, replace: aa
+# change default width
+proc processContentsCss {fileContents} {
     return [string map {max-width:60rem max-width:100rem} $fileContents]
 }
+# change default theme 
+proc processContentsJs {fileContents} {
+    return [string map {init()\{currentTheme=localStorage.ruff_theme init()\{currentTheme=currentTheme="dark"}\
+                    $fileContents]
+}
 
-fileutil::updateInPlace [file join $docDir assets ruff-min.css] processContents
+fileutil::updateInPlace [file join $docDir assets ruff-min.css] processContentsCss
+fileutil::updateInPlace [file join $docDir assets ruff-min.js] processContentsJs
+
+proc processContents {fileContents} {
+    global path chartsMap
+    dict for {mark file} $chartsMap {
+        set fileData [fileutil::cat [file join $path $file]]
+        set fileContents [string map [list $mark $fileData] $fileContents]
+    }
+    return $fileContents
+}
+
+set chartsMap [dcreate !ticklechart_mark_linear_near_interpolation! linear_near_interpolation.html]
+set path [file join $docDir .. examples html_charts]
+fileutil::updateInPlace [file join $docDir index-Examples.html] processContents

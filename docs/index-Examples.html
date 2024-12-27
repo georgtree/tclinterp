@@ -1,0 +1,2801 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"/>
+<title>Tcl wrapper for C interpolation procedures</title>
+<link rel='stylesheet' type='text/css' href='assets/ruff-min.css' />
+<script type='text/javascript' src='assets/ruff-min.js'></script>
+</head>
+<body>
+<div class='ruff-layout'>
+<header class='ruff-layout-header ruff-hd'>
+<a style='text-decoration:none;' href='index.html'>Tcl wrapper for C interpolation procedures (v0.14)</a>
+
+
+            <div id="ruffButtonBar">
+            <button id="ruffNavMove" onclick="ruffMoveNavPane()"></button>
+            <button id="ruffToggleTheme" onclick="ruffNextTheme()"></button>
+            </div>
+        </header><main class='ruff-layout-main ruff-bd'><h1 class='ruff'><a name='Examples'></a>Examples<span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h1>
+<div style='clear:both;'></div>
+<p class='ruff'>This section contains examples of usage of interpolation/approximation procedures of the package. List of availible examples:</p>
+<ul class='ruff'>
+<li><a href="index-Examples.html#::Examples-1D Linear and nearest interpolation" title="1D Linear and nearest interpolation" >1D Linear and nearest interpolation</a> - &quot;examples/linear_near_interpolation.tcl&quot; file</li>
+</ul>
+<h2 class='ruff'><a name='::Examples-1D Linear and nearest interpolation'></a>1D Linear and nearest interpolation<span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h2>
+<div style='clear:both;'></div>
+<p class='ruff'>The two most basic types of interpolation are linear and nearest ones. These types are availible with procedures <a href="index-tclinterp-interpolation.html#::tclinterp::interpolation::lin1d" title="::tclinterp::interpolation::lin1d" class='ruff_cmd'>::tclinterp::interpolation::lin1d</a> and <a href="index-tclinterp-interpolation.html#::tclinterp::interpolation::near1d" title="::tclinterp::interpolation::near1d" class='ruff_cmd'>::tclinterp::interpolation::near1d</a>. To demonstrate both type we use shifted sinusoidal function:</p>
+
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'>f(x) = sin(10 ⋅ x) + 1.1
+</pre>
+
+</figure><p class='ruff'>Relative error is calculated here and in all subsequent chapters is defined as:</p>
+
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'>          f      - f             
+           exact    interp       
+rel.err = ──────────────── ⋅ 100%
+               f                 
+                exact            
+</pre>
+
+</figure><p class='ruff'>Import all procedures from <a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a> namespace:</p>
+
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#ffa500>package</font></b> require tclinterp
+<b><font color=#ffa500>package</font></b> require ticklecharts
+<b><font color=#ffa500>set</font></b> ::ticklecharts::theme <font color=#90ee90>&quot;dark&quot;</font>
+<b><font color=#ffa500>namespace</font></b> import ::tclinterp::*
+<b><font color=#ffa500>namespace</font></b> import ::tclinterp::interpolation::*
+<b><font color=#ffa500>namespace</font></b> import ::tclinterp::approximation::*
+</pre>
+
+</figure><p class='ruff'>Define procedures for sinusoidal function calculation, error calculation and for generating sequence of x values:</p>
+
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#fe6efe>proc</font></b> sinFunc {x} {
+    <b><font color=#fe6efe>return</font></b> [= {sin(<font color=#f1b479>$x</font>*10)+1.1}]
+}
+<b><font color=#fe6efe>proc</font></b> relError {ref act} {
+    <b><font color=#fe6efe>return</font></b> [= {(<font color=#f1b479>$ref</font>-<font color=#f1b479>$act</font>)*100/<font color=#f1b479>$ref</font>}]
+}
+<b><font color=#fe6efe>proc</font></b> genSeq {xmin xmax step func} {
+    <b><font color=#ffa500>for</font></b> {<b><font color=#ffa500>set</font></b> i 0} {<font color=#f1b479>$i</font>&lt;=[= {(<font color=#f1b479>$xmax</font>-<font color=#f1b479>$xmin</font>)/<font color=#f1b479>$step</font>}]} {<b><font color=#ffa500>incr</font></b> i} {
+        <b><font color=#ffa500>set</font></b> xval [= {<font color=#f1b479>$xmin</font>+<font color=#f1b479>$i</font>*<font color=#f1b479>$step</font>}]
+        <b><font color=#ffa500>lappend</font></b> x <font color=#f1b479>$xval</font>
+        <b><font color=#ffa500>lappend</font></b> y [<font color=#f1b479>$func</font> <font color=#f1b479>$xval</font>]
+    }
+    <b><font color=#fe6efe>return</font></b> [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$x</font> <font color=#f1b479>$y</font>]
+}
+</pre>
+
+</figure><p class='ruff'>Create input data, interpolation points <code>xi</code> and exact values at these points:</p>
+
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#ffa500>set</font></b> xmin 0
+<b><font color=#ffa500>set</font></b> xmax 1
+<b><font color=#ffa500>set</font></b> step 0.05
+<b><font color=#ffa500>set</font></b> stepInterp 0.01
+<b><font color=#ffa500>lassign</font></b> [genSeq <font color=#f1b479>$xmin</font> <font color=#f1b479>$xmax</font> <font color=#f1b479>$step</font> sinFunc] x y
+<b><font color=#ffa500>lassign</font></b> [genSeq <font color=#f1b479>$xmin</font> <font color=#f1b479>$xmax</font> <font color=#f1b479>$stepInterp</font> sinFunc] xInterp yExact
+</pre>
+
+</figure><p class='ruff'>Input data has points with 0.05 step, <code>xi</code> values are separated by 0.01 step.</p>
+<p class='ruff'>Zip input data for <code>ticklecharts</code> plotting:</p>
+
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#ffa500>set</font></b> xydata [<b><font color=#ffa500>lmap</font></b> xi <font color=#f1b479>$x</font> yi <font color=#f1b479>$y</font> {<b><font color=#ffa500>list</font></b> <font color=#f1b479>$xi</font> <font color=#f1b479>$yi</font>}]
+</pre>
+
+</figure><p class='ruff'>Call interpolation function <a href="index-tclinterp-interpolation.html#::tclinterp::interpolation::lin1d" title="::tclinterp::interpolation::lin1d" class='ruff_cmd'>::tclinterp::interpolation::lin1d</a> that returns list of interpolated y values, and zip <code>xi</code> and <code>yInterpLin</code> points:</p>
+
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#ffa500>set</font></b> yInterpLin [lin1d <font color=#b9b96e>-x</font> <font color=#f1b479>$x</font> <font color=#b9b96e>-y</font> <font color=#f1b479>$y</font> <font color=#b9b96e>-xi</font> <font color=#f1b479>$xInterp</font>]
+<b><font color=#ffa500>set</font></b> xydataInterpLin [<b><font color=#ffa500>lmap</font></b> xi <font color=#f1b479>$xInterp</font> yi <font color=#f1b479>$yInterpLin</font> {<b><font color=#ffa500>list</font></b> <font color=#f1b479>$xi</font> <font color=#f1b479>$yi</font>}]
+</pre>
+
+</figure><p class='ruff'>Do the same for <a href="index-tclinterp-interpolation.html#::tclinterp::interpolation::near1d" title="::tclinterp::interpolation::near1d" class='ruff_cmd'>::tclinterp::interpolation::near1d</a>:</p>
+
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#ffa500>set</font></b> yInterpNear [near1d <font color=#b9b96e>-x</font> <font color=#f1b479>$x</font> <font color=#b9b96e>-y</font> <font color=#f1b479>$y</font> <font color=#b9b96e>-xi</font> <font color=#f1b479>$xInterp</font>]
+<b><font color=#ffa500>set</font></b> xydataInterpNear [<b><font color=#ffa500>lmap</font></b> xi <font color=#f1b479>$xInterp</font> yi <font color=#f1b479>$yInterpNear</font> {<b><font color=#ffa500>list</font></b> <font color=#f1b479>$xi</font> <font color=#f1b479>$yi</font>}]
+</pre>
+
+</figure><p class='ruff'>Zip exact values:</p>
+
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#ffa500>set</font></b> xydataExact [<b><font color=#ffa500>lmap</font></b> xi <font color=#f1b479>$xInterp</font> yi <font color=#f1b479>$yExact</font> {<b><font color=#ffa500>list</font></b> <font color=#f1b479>$xi</font> <font color=#f1b479>$yi</font>}]
+</pre>
+
+</figure><p class='ruff'>Calculate errors:</p>
+
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#ffa500>set</font></b> interpErrorLin [<b><font color=#ffa500>lmap</font></b> xi <font color=#f1b479>$xInterp</font> yiExact <font color=#f1b479>$yExact</font> yiInterpLin <font color=#f1b479>$yInterpLin</font> {<b><font color=#ffa500>list</font></b> <font color=#f1b479>$xi</font> [relError <font color=#f1b479>$yiExact</font> <font color=#f1b479>$yiInterpLin</font>]}]
+<b><font color=#ffa500>set</font></b> interpErrorNear [<b><font color=#ffa500>lmap</font></b> xi <font color=#f1b479>$xInterp</font> yiExact <font color=#f1b479>$yExact</font> yiInterpNear <font color=#f1b479>$yInterpNear</font> {<b><font color=#ffa500>list</font></b> <font color=#f1b479>$xi</font> [relError <font color=#f1b479>$yiExact</font> <font color=#f1b479>$yiInterpNear</font>]}]
+</pre>
+
+</figure><p class='ruff'>Plot and save results using <code>ticklecharts</code>:</p>
+
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><i><font color=#76a396># plot interpolated data and errors</font></i>
+<b><font color=#ffa500>set</font></b> chart [ticklecharts::chart new]
+<font color=#f1b479>$chart</font> Xaxis <font color=#b9b96e>-name</font> <font color=#90ee90>&quot;x&quot;</font> <font color=#b9b96e>-minorTick</font> {show <font color=#90ee90>&quot;True&quot;</font>} <font color=#b9b96e>-min</font> 0 <font color=#b9b96e>-max</font> 1 <font color=#b9b96e>-type</font> <font color=#90ee90>&quot;value&quot;</font> <font color=#b9b96e>-splitLine</font> {show <font color=#90ee90>&quot;True&quot;</font>}
+<font color=#f1b479>$chart</font> Yaxis <font color=#b9b96e>-name</font> <font color=#90ee90>&quot;y&quot;</font> <font color=#b9b96e>-minorTick</font> {show <font color=#90ee90>&quot;True&quot;</font>} <font color=#b9b96e>-min</font> 0 <font color=#b9b96e>-max</font> 2.5 <font color=#b9b96e>-type</font> <font color=#90ee90>&quot;value&quot;</font> <font color=#b9b96e>-splitLine</font> {show <font color=#90ee90>&quot;True&quot;</font>}
+<font color=#f1b479>$chart</font> SetOptions <font color=#b9b96e>-title</font> {} <font color=#b9b96e>-legend</font> {top <font color=#90ee90>&quot;0%&quot;</font> left <font color=#90ee90>&quot;20%&quot;</font>} <font color=#b9b96e>-tooltip</font> {} <font color=#b9b96e>-animation</font> <font color=#90ee90>&quot;False&quot;</font> <font color=#b9b96e>-backgroundColor</font> <font color=#90ee90>&quot;#212121&quot;</font> <font color=#b9b96e>-toolbox</font> {feature {dataZoom {yAxisIndex <font color=#90ee90>&quot;none&quot;</font>}}}
+<font color=#f1b479>$chart</font> Add <font color=#90ee90>&quot;lineSeries&quot;</font> <font color=#b9b96e>-data</font> <font color=#f1b479>$xydata</font> <font color=#b9b96e>-showAllSymbol</font> <font color=#90ee90>&quot;nothing&quot;</font> <font color=#b9b96e>-name</font> <font color=#90ee90>&quot;Initial data&quot;</font>
+<font color=#f1b479>$chart</font> Add <font color=#90ee90>&quot;lineSeries&quot;</font> <font color=#b9b96e>-data</font> <font color=#f1b479>$xydataInterpLin</font> <font color=#b9b96e>-showAllSymbol</font> <font color=#90ee90>&quot;nothing&quot;</font> <font color=#b9b96e>-name</font> <font color=#90ee90>&quot;Linear interpolation&quot;</font>
+<font color=#f1b479>$chart</font> Add <font color=#90ee90>&quot;lineSeries&quot;</font> <font color=#b9b96e>-data</font> <font color=#f1b479>$xydataInterpNear</font> <font color=#b9b96e>-showAllSymbol</font> <font color=#90ee90>&quot;nothing&quot;</font> <font color=#b9b96e>-name</font> <font color=#90ee90>&quot;Nearest interpolation&quot;</font>
+<font color=#f1b479>$chart</font> Add <font color=#90ee90>&quot;lineSeries&quot;</font> <font color=#b9b96e>-data</font> <font color=#f1b479>$xydataExact</font> <font color=#b9b96e>-showAllSymbol</font> <font color=#90ee90>&quot;nothing&quot;</font> <font color=#b9b96e>-name</font> <font color=#90ee90>&quot;Exact data&quot;</font>
+
+<b><font color=#ffa500>set</font></b> chartError [ticklecharts::chart new]
+<font color=#f1b479>$chartError</font> Xaxis <font color=#b9b96e>-name</font> <font color=#90ee90>&quot;x&quot;</font> <font color=#b9b96e>-minorTick</font> {show <font color=#90ee90>&quot;True&quot;</font>} <font color=#b9b96e>-min</font> 0 <font color=#b9b96e>-max</font> 1 <font color=#b9b96e>-type</font> <font color=#90ee90>&quot;value&quot;</font> <font color=#b9b96e>-splitLine</font> {show <font color=#90ee90>&quot;True&quot;</font>}
+<font color=#f1b479>$chartError</font> Yaxis <font color=#b9b96e>-name</font> <font color=#90ee90>&quot;Rel. error, %&quot;</font> <font color=#b9b96e>-minorTick</font> {show <font color=#90ee90>&quot;True&quot;</font>} <font color=#b9b96e>-type</font> <font color=#90ee90>&quot;value&quot;</font> <font color=#b9b96e>-splitLine</font> {show <font color=#90ee90>&quot;True&quot;</font>}
+<font color=#f1b479>$chartError</font> SetOptions <font color=#b9b96e>-title</font> {} <font color=#b9b96e>-legend</font> {top <font color=#90ee90>&quot;50%&quot;</font> left <font color=#90ee90>&quot;30%&quot;</font>} <font color=#b9b96e>-tooltip</font> {} <font color=#b9b96e>-animation</font> <font color=#90ee90>&quot;False&quot;</font> <font color=#b9b96e>-backgroundColor</font> <font color=#90ee90>&quot;#212121&quot;</font> <font color=#b9b96e>-toolbox</font> {feature {dataZoom {yAxisIndex <font color=#90ee90>&quot;none&quot;</font>}}}
+<font color=#f1b479>$chartError</font> Add <font color=#90ee90>&quot;lineSeries&quot;</font> <font color=#b9b96e>-data</font> <font color=#f1b479>$interpErrorLin</font> <font color=#b9b96e>-showAllSymbol</font> <font color=#90ee90>&quot;nothing&quot;</font> <font color=#b9b96e>-name</font> <font color=#90ee90>&quot;Linear interpolation error&quot;</font>
+<font color=#f1b479>$chartError</font> Add <font color=#90ee90>&quot;lineSeries&quot;</font> <font color=#b9b96e>-data</font> <font color=#f1b479>$interpErrorNear</font> <font color=#b9b96e>-showAllSymbol</font> <font color=#90ee90>&quot;nothing&quot;</font> <font color=#b9b96e>-name</font> <font color=#90ee90>&quot;Nearest interpolation error&quot;</font>
+
+<i><font color=#76a396># create multiplot</font></i>
+<b><font color=#ffa500>set</font></b> layout [ticklecharts::Gridlayout new]
+<font color=#f1b479>$layout</font> Add <font color=#f1b479>$chart</font> <font color=#b9b96e>-bottom</font> <font color=#90ee90>&quot;55%&quot;</font> <font color=#b9b96e>-height</font> <font color=#90ee90>&quot;40%&quot;</font> <font color=#b9b96e>-width</font> <font color=#90ee90>&quot;80%&quot;</font>
+<font color=#f1b479>$layout</font> Add <font color=#f1b479>$chartError</font> <font color=#b9b96e>-bottom</font> <font color=#90ee90>&quot;5%&quot;</font> <font color=#b9b96e>-height</font> <font color=#90ee90>&quot;40%&quot;</font> <font color=#b9b96e>-width</font> <font color=#90ee90>&quot;80%&quot;</font>
+
+<i><font color=#76a396># save to file</font></i>
+<b><font color=#ffa500>set</font></b> fbasename [<b><font color=#ffa500>file</font></b> rootname [<b><font color=#ffa500>file</font></b> tail [<b><font color=#ffa500>info</font></b> script]]]
+<font color=#f1b479>$layout</font> Render <font color=#b9b96e>-outfile</font> [<b><font color=#ffa500>file</font></b> normalize [<b><font color=#ffa500>file</font></b> join html_charts <font color=#f1b479>$fbasename</font>.html]] <font color=#b9b96e>-height</font> 800px
+</pre>
+
+</figure><p class='ruff'>Results are:</p>
+<p class='ruff'><!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>ticklEcharts !!!</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  </head>
+  <body>
+    <div id="id_eb828ba601814fcfab42c4beb2e140fd" class="chart-container" style="width:900px; height:800px;"></div>
+    <script>
+      var chart_eb828ba601814fcfab42c4beb2e140fd = echarts.init(document.getElementById("id_eb828ba601814fcfab42c4beb2e140fd"), null, {renderer: "canvas"});
+      var option_eb828ba601814fcfab42c4beb2e140fd = {
+  "darkMode": true,
+  "backgroundColor": "#212121",
+  "color": [
+    "#4992ff",
+    "#7cffb2",
+    "#fddd60",
+    "#ff6e76",
+    "#58d9f9",
+    "#05c091",
+    "#ff8a45",
+    "#8d48e3",
+    "#dd79ff"
+  ],
+  "animation": false,
+  "animationDuration": 1000,
+  "animationDurationUpdate": 500,
+  "animationEasing": "cubicInOut",
+  "animationEasingUpdate": "cubicInOut",
+  "animationThreshold": 2000,
+  "progressiveThreshold": 3000,
+  "xAxis": [
+    {
+      "show": true,
+      "type": "value",
+      "gridIndex": 0,
+      "position": "bottom",
+      "name": "x",
+      "nameLocation": "end",
+      "nameGap": 15,
+      "nameRotate": 0,
+      "inverse": false,
+      "boundaryGap": true,
+      "min": 0,
+      "max": 1,
+      "scale": false,
+      "silent": false,
+      "triggerEvent": false,
+      "axisLine": {
+        "show": true,
+        "lineStyle": {
+          "color": "#B9B8CE",
+          "width": 1
+        }
+      },
+      "axisTick": {"show": true},
+      "minorTick": {
+        "show": true,
+        "splitNumber": 5,
+        "length": 3
+      },
+      "axisLabel": {"color": "#B9B8CE"},
+      "splitLine": {
+        "show": true,
+        "onZero": true,
+        "symbol": null,
+        "lineStyle": {
+          "color": "#484753",
+          "width": 1
+        }
+      },
+      "zlevel": 0,
+      "z": 0
+    },
+    {
+      "show": true,
+      "type": "value",
+      "gridIndex": 1,
+      "position": "bottom",
+      "name": "x",
+      "nameLocation": "end",
+      "nameGap": 15,
+      "nameRotate": 0,
+      "inverse": false,
+      "boundaryGap": true,
+      "min": 0,
+      "max": 1,
+      "scale": false,
+      "silent": false,
+      "triggerEvent": false,
+      "axisLine": {
+        "show": true,
+        "lineStyle": {
+          "color": "#B9B8CE",
+          "width": 1
+        }
+      },
+      "axisTick": {"show": true},
+      "minorTick": {
+        "show": true,
+        "splitNumber": 5,
+        "length": 3
+      },
+      "axisLabel": {"color": "#B9B8CE"},
+      "splitLine": {
+        "show": true,
+        "onZero": true,
+        "symbol": null,
+        "lineStyle": {
+          "color": "#484753",
+          "width": 1
+        }
+      },
+      "zlevel": 0,
+      "z": 0
+    }
+  ],
+  "yAxis": [
+    {
+      "show": true,
+      "gridIndex": 0,
+      "position": "left",
+      "realtimeSort": true,
+      "sortSeriesIndex": 0,
+      "type": "value",
+      "name": "y",
+      "nameLocation": "end",
+      "nameGap": 15,
+      "nameRotate": 0,
+      "inverse": false,
+      "boundaryGap": false,
+      "min": 0,
+      "max": 2.5,
+      "scale": false,
+      "silent": false,
+      "triggerEvent": false,
+      "axisLine": {
+        "show": true,
+        "lineStyle": {
+          "color": "#B9B8CE",
+          "width": 1
+        }
+      },
+      "axisTick": {"show": true},
+      "minorTick": {
+        "show": true,
+        "splitNumber": 5,
+        "length": 3
+      },
+      "axisLabel": {"color": "#B9B8CE"},
+      "splitLine": {
+        "show": true,
+        "onZero": true,
+        "symbol": null,
+        "lineStyle": {
+          "color": "#484753",
+          "width": 1
+        }
+      },
+      "zlevel": 0,
+      "z": 0
+    },
+    {
+      "show": true,
+      "gridIndex": 1,
+      "position": "left",
+      "realtimeSort": true,
+      "sortSeriesIndex": 0,
+      "type": "value",
+      "name": "Rel. error, %",
+      "nameLocation": "end",
+      "nameGap": 15,
+      "nameRotate": 0,
+      "inverse": false,
+      "boundaryGap": false,
+      "scale": false,
+      "silent": false,
+      "triggerEvent": false,
+      "axisLine": {
+        "show": true,
+        "lineStyle": {
+          "color": "#B9B8CE",
+          "width": 1
+        }
+      },
+      "axisTick": {"show": true},
+      "minorTick": {
+        "show": true,
+        "splitNumber": 5,
+        "length": 3
+      },
+      "axisLabel": {"color": "#B9B8CE"},
+      "splitLine": {
+        "show": true,
+        "onZero": true,
+        "symbol": null,
+        "lineStyle": {
+          "color": "#484753",
+          "width": 1
+        }
+      },
+      "zlevel": 0,
+      "z": 0
+    }
+  ],
+  "title": [
+    {
+      "show": true,
+      "target": "blank",
+      "textStyle": {"color": "#EEF1FA"},
+      "subtarget": "blank",
+      "subtextStyle": {"color": "#B9B8CE"},
+      "textAlign": null,
+      "textVerticalAlign": "auto",
+      "padding": 5,
+      "itemGap": 10,
+      "z": 2,
+      "left": "auto",
+      "top": "auto",
+      "right": "auto",
+      "bottom": "auto",
+      "backgroundColor": "transparent",
+      "borderColor": "transparent",
+      "borderWidth": 1,
+      "borderRadius": 0
+    },
+    {
+      "show": true,
+      "target": "blank",
+      "textStyle": {"color": "#EEF1FA"},
+      "subtarget": "blank",
+      "subtextStyle": {"color": "#B9B8CE"},
+      "textAlign": null,
+      "textVerticalAlign": "auto",
+      "padding": 5,
+      "itemGap": 10,
+      "z": 2,
+      "left": "auto",
+      "top": "auto",
+      "right": "auto",
+      "bottom": "auto",
+      "backgroundColor": "transparent",
+      "borderColor": "transparent",
+      "borderWidth": 1,
+      "borderRadius": 0
+    }
+  ],
+  "legend": [
+    {
+      "type": "plain",
+      "show": true,
+      "z": 2,
+      "left": "20%",
+      "top": "0%",
+      "right": "auto",
+      "bottom": "auto",
+      "width": "auto",
+      "height": "auto",
+      "orient": "horizontal",
+      "align": "auto",
+      "padding": 5,
+      "itemGap": 10,
+      "itemWidth": 25,
+      "itemHeight": 14,
+      "symbolRotate": "inherit",
+      "selectedMode": true,
+      "inactiveColor": "rgb(204, 204, 204)",
+      "inactiveBorderColor": "rgb(204, 204, 204)",
+      "inactiveBorderWidth": "auto",
+      "textStyle": {"color": "#B9B8CE"},
+      "backgroundColor": "transparent",
+      "borderWidth": 0,
+      "borderRadius": 0,
+      "pageButtonItemGap": 5,
+      "pageIconColor": "rgb(47, 69, 84)",
+      "pageIconInactiveColor": "rgb(170, 170, 170)",
+      "pageIconSize": 15,
+      "data": [
+        "Initial data",
+        "Linear interpolation",
+        "Nearest interpolation",
+        "Exact data"
+      ]
+    },
+    {
+      "type": "plain",
+      "show": true,
+      "z": 2,
+      "left": "30%",
+      "top": "50%",
+      "right": "auto",
+      "bottom": "auto",
+      "width": "auto",
+      "height": "auto",
+      "orient": "horizontal",
+      "align": "auto",
+      "padding": 5,
+      "itemGap": 10,
+      "itemWidth": 25,
+      "itemHeight": 14,
+      "symbolRotate": "inherit",
+      "selectedMode": true,
+      "inactiveColor": "rgb(204, 204, 204)",
+      "inactiveBorderColor": "rgb(204, 204, 204)",
+      "inactiveBorderWidth": "auto",
+      "textStyle": {"color": "#B9B8CE"},
+      "backgroundColor": "transparent",
+      "borderWidth": 0,
+      "borderRadius": 0,
+      "pageButtonItemGap": 5,
+      "pageIconColor": "rgb(47, 69, 84)",
+      "pageIconInactiveColor": "rgb(170, 170, 170)",
+      "pageIconSize": 15,
+      "data": [
+        "Linear interpolation error",
+        "Nearest interpolation error"
+      ]
+    }
+  ],
+  "tooltip": [
+    {
+      "show": true,
+      "trigger": "item",
+      "showContent": true,
+      "alwaysShowContent": false,
+      "triggerOn": "mousemove|click",
+      "transitionDuration": 0.4,
+      "padding": 5,
+      "order": "seriesAsc"
+    },
+    {
+      "show": true,
+      "trigger": "item",
+      "showContent": true,
+      "alwaysShowContent": false,
+      "triggerOn": "mousemove|click",
+      "transitionDuration": 0.4,
+      "padding": 5,
+      "order": "seriesAsc"
+    }
+  ],
+  "toolbox": {
+    "show": true,
+    "orient": "horizontal",
+    "itemSize": 15,
+    "itemGap": 10,
+    "showTitle": true,
+    "feature": {"dataZoom": {
+        "show": true,
+        "filterMode": "filter",
+        "yAxisIndex": "none"
+      }},
+    "iconStyle": {"borderColor": "#B9B8CE"},
+    "z": 2,
+    "top": "auto",
+    "right": "auto",
+    "width": "auto",
+    "height": "auto",
+    "24": {
+      "show": true,
+      "orient": "horizontal",
+      "itemSize": 15,
+      "itemGap": 10,
+      "showTitle": true,
+      "feature": {"dataZoom": {
+          "show": true,
+          "filterMode": "filter",
+          "yAxisIndex": "none"
+        }},
+      "iconStyle": {"borderColor": "#B9B8CE"},
+      "z": 2,
+      "top": "auto",
+      "right": "auto",
+      "width": "auto",
+      "height": "auto"
+    }
+  },
+  "series": [
+    {
+      "type": "line",
+      "name": "Initial data",
+      "colorBy": "series",
+      "coordinateSystem": "cartesian2d",
+      "symbol": "circle",
+      "symbolSize": 4,
+      "symbolKeepAspect": true,
+      "showSymbol": true,
+      "legendHoverLink": true,
+      "stack": null,
+      "cursor": "pointer",
+      "connectNulls": false,
+      "clip": true,
+      "triggerLineEvent": false,
+      "step": false,
+      "label": {"color": "#B9B8CE"},
+      "smooth": false,
+      "data": [
+        [
+          0.0,
+          1.1
+        ],
+        [
+          0.05,
+          1.579425538604203
+        ],
+        [
+          0.1,
+          1.9414709848078966
+        ],
+        [
+          0.15000000000000002,
+          2.0974949866040546
+        ],
+        [
+          0.2,
+          2.0092974268256816
+        ],
+        [
+          0.25,
+          1.6984721441039565
+        ],
+        [
+          0.30000000000000004,
+          1.2411200080598668
+        ],
+        [
+          0.35000000000000003,
+          0.7492167723103798
+        ],
+        [
+          0.4,
+          0.3431975046920719
+        ],
+        [
+          0.45,
+          0.12246988233490308
+        ],
+        [
+          0.5,
+          0.14107572533686163
+        ],
+        [
+          0.55,
+          0.39445967442960816
+        ],
+        [
+          0.6000000000000001,
+          0.8205845018010751
+        ],
+        [
+          0.65,
+          1.3151199880878157
+        ],
+        [
+          0.7000000000000001,
+          1.7569865987187898
+        ],
+        [
+          0.75,
+          2.037999976774739
+        ],
+        [
+          0.8,
+          2.089358246623382
+        ],
+        [
+          0.8500000000000001,
+          1.8984871126234903
+        ],
+        [
+          0.9,
+          1.5121184852417566
+        ],
+        [
+          0.9500000000000001,
+          1.0248488795381907
+        ],
+        [
+          1.0,
+          0.5559788891106303
+        ]
+      ],
+      "zlevel": 0,
+      "z": 2,
+      "silent": false,
+      "xAxisIndex": 0,
+      "yAxisIndex": 0
+    },
+    {
+      "type": "line",
+      "name": "Linear interpolation",
+      "colorBy": "series",
+      "coordinateSystem": "cartesian2d",
+      "symbol": "circle",
+      "symbolSize": 4,
+      "symbolKeepAspect": true,
+      "showSymbol": true,
+      "legendHoverLink": true,
+      "stack": null,
+      "cursor": "pointer",
+      "connectNulls": false,
+      "clip": true,
+      "triggerLineEvent": false,
+      "step": false,
+      "label": {"color": "#B9B8CE"},
+      "smooth": false,
+      "data": [
+        [
+          0.0,
+          1.1
+        ],
+        [
+          0.01,
+          1.1958851077208406
+        ],
+        [
+          0.02,
+          1.2917702154416815
+        ],
+        [
+          0.03,
+          1.3876553231625217
+        ],
+        [
+          0.04,
+          1.4835404308833626
+        ],
+        [
+          0.05,
+          1.5794255386042033
+        ],
+        [
+          0.06,
+          1.6518346278449418
+        ],
+        [
+          0.07,
+          1.7242437170856806
+        ],
+        [
+          0.08,
+          1.796652806326419
+        ],
+        [
+          0.09,
+          1.8690618955671578
+        ],
+        [
+          0.1,
+          1.9414709848078966
+        ],
+        [
+          0.11,
+          1.9726757851671284
+        ],
+        [
+          0.12,
+          2.00388058552636
+        ],
+        [
+          0.13,
+          2.0350853858855915
+        ],
+        [
+          0.14,
+          2.066290186244823
+        ],
+        [
+          0.15,
+          2.0974949866040546
+        ],
+        [
+          0.16,
+          2.07985547464838
+        ],
+        [
+          0.17,
+          2.0622159626927057
+        ],
+        [
+          0.18,
+          2.044576450737031
+        ],
+        [
+          0.19,
+          2.0269369387813563
+        ],
+        [
+          0.2,
+          2.0092974268256816
+        ],
+        [
+          0.21,
+          1.9471323702813366
+        ],
+        [
+          0.22,
+          1.8849673137369913
+        ],
+        [
+          0.23,
+          1.8228022571926465
+        ],
+        [
+          0.24,
+          1.7606372006483015
+        ],
+        [
+          0.25,
+          1.6984721441039565
+        ],
+        [
+          0.26,
+          1.6070017168951387
+        ],
+        [
+          0.27,
+          1.5155312896863207
+        ],
+        [
+          0.28,
+          1.4240608624775026
+        ],
+        [
+          0.29,
+          1.3325904352686853
+        ],
+        [
+          0.3,
+          1.2411200080598674
+        ],
+        [
+          0.31,
+          1.1427393609099699
+        ],
+        [
+          0.32,
+          1.0443587137600723
+        ],
+        [
+          0.33,
+          0.9459780666101749
+        ],
+        [
+          0.34,
+          0.8475974194602773
+        ],
+        [
+          0.35000000000000003,
+          0.7492167723103798
+        ],
+        [
+          0.36,
+          0.6680129187867185
+        ],
+        [
+          0.37,
+          0.5868090652630569
+        ],
+        [
+          0.38,
+          0.5056052117393952
+        ],
+        [
+          0.39,
+          0.42440135821573355
+        ],
+        [
+          0.4,
+          0.3431975046920719
+        ],
+        [
+          0.41000000000000003,
+          0.2990519802206381
+        ],
+        [
+          0.42,
+          0.2549064557492045
+        ],
+        [
+          0.43,
+          0.21076093127777068
+        ],
+        [
+          0.44,
+          0.16661540680633688
+        ],
+        [
+          0.45,
+          0.12246988233490308
+        ],
+        [
+          0.46,
+          0.1261910509352948
+        ],
+        [
+          0.47000000000000003,
+          0.12991221953568652
+        ],
+        [
+          0.48,
+          0.1336333881360782
+        ],
+        [
+          0.49,
+          0.13735455673646993
+        ],
+        [
+          0.5,
+          0.14107572533686163
+        ],
+        [
+          0.51,
+          0.19175251515541097
+        ],
+        [
+          0.52,
+          0.24242930497396026
+        ],
+        [
+          0.53,
+          0.29310609479250954
+        ],
+        [
+          0.54,
+          0.3437828846110589
+        ],
+        [
+          0.55,
+          0.39445967442960816
+        ],
+        [
+          0.56,
+          0.4796846399039016
+        ],
+        [
+          0.5700000000000001,
+          0.5649096053781949
+        ],
+        [
+          0.58,
+          0.6501345708524875
+        ],
+        [
+          0.59,
+          0.7353595363267806
+        ],
+        [
+          0.6,
+          0.8205845018010741
+        ],
+        [
+          0.61,
+          0.9194915990584223
+        ],
+        [
+          0.62,
+          1.0183986963157707
+        ],
+        [
+          0.63,
+          1.117305793573119
+        ],
+        [
+          0.64,
+          1.2162128908304675
+        ],
+        [
+          0.65,
+          1.3151199880878157
+        ],
+        [
+          0.66,
+          1.4034933102140106
+        ],
+        [
+          0.67,
+          1.4918666323402057
+        ],
+        [
+          0.68,
+          1.5802399544664003
+        ],
+        [
+          0.6900000000000001,
+          1.668613276592595
+        ],
+        [
+          0.7000000000000001,
+          1.7569865987187898
+        ],
+        [
+          0.71,
+          1.8131892743299793
+        ],
+        [
+          0.72,
+          1.869391949941169
+        ],
+        [
+          0.73,
+          1.925594625552359
+        ],
+        [
+          0.74,
+          1.981797301163549
+        ],
+        [
+          0.75,
+          2.037999976774739
+        ],
+        [
+          0.76,
+          2.0482716307444675
+        ],
+        [
+          0.77,
+          2.058543284714196
+        ],
+        [
+          0.78,
+          2.068814938683925
+        ],
+        [
+          0.79,
+          2.079086592653653
+        ],
+        [
+          0.8,
+          2.089358246623382
+        ],
+        [
+          0.81,
+          2.0511840198234035
+        ],
+        [
+          0.8200000000000001,
+          2.013009793023425
+        ],
+        [
+          0.8300000000000001,
+          1.974835566223447
+        ],
+        [
+          0.84,
+          1.936661339423469
+        ],
+        [
+          0.85,
+          1.8984871126234908
+        ],
+        [
+          0.86,
+          1.821213387147144
+        ],
+        [
+          0.87,
+          1.7439396616707974
+        ],
+        [
+          0.88,
+          1.6666659361944502
+        ],
+        [
+          0.89,
+          1.5893922107181035
+        ],
+        [
+          0.9,
+          1.5121184852417566
+        ],
+        [
+          0.91,
+          1.4146645641010434
+        ],
+        [
+          0.92,
+          1.3172106429603303
+        ],
+        [
+          0.93,
+          1.219756721819617
+        ],
+        [
+          0.9400000000000001,
+          1.122302800678904
+        ],
+        [
+          0.9500000000000001,
+          1.0248488795381907
+        ],
+        [
+          0.96,
+          0.9310748814526795
+        ],
+        [
+          0.97,
+          0.8373008833671672
+        ],
+        [
+          0.98,
+          0.743526885281655
+        ],
+        [
+          0.99,
+          0.6497528871961425
+        ],
+        [
+          1.0,
+          0.5559788891106303
+        ]
+      ],
+      "zlevel": 0,
+      "z": 2,
+      "silent": false,
+      "xAxisIndex": 0,
+      "yAxisIndex": 0
+    },
+    {
+      "type": "line",
+      "name": "Nearest interpolation",
+      "colorBy": "series",
+      "coordinateSystem": "cartesian2d",
+      "symbol": "circle",
+      "symbolSize": 4,
+      "symbolKeepAspect": true,
+      "showSymbol": true,
+      "legendHoverLink": true,
+      "stack": null,
+      "cursor": "pointer",
+      "connectNulls": false,
+      "clip": true,
+      "triggerLineEvent": false,
+      "step": false,
+      "label": {"color": "#B9B8CE"},
+      "smooth": false,
+      "data": [
+        [
+          0.0,
+          1.1
+        ],
+        [
+          0.01,
+          1.1
+        ],
+        [
+          0.02,
+          1.1
+        ],
+        [
+          0.03,
+          1.579425538604203
+        ],
+        [
+          0.04,
+          1.579425538604203
+        ],
+        [
+          0.05,
+          1.579425538604203
+        ],
+        [
+          0.06,
+          1.579425538604203
+        ],
+        [
+          0.07,
+          1.579425538604203
+        ],
+        [
+          0.08,
+          1.9414709848078966
+        ],
+        [
+          0.09,
+          1.9414709848078966
+        ],
+        [
+          0.1,
+          1.9414709848078966
+        ],
+        [
+          0.11,
+          1.9414709848078966
+        ],
+        [
+          0.12,
+          1.9414709848078966
+        ],
+        [
+          0.13,
+          2.0974949866040546
+        ],
+        [
+          0.14,
+          2.0974949866040546
+        ],
+        [
+          0.15,
+          2.0974949866040546
+        ],
+        [
+          0.16,
+          2.0974949866040546
+        ],
+        [
+          0.17,
+          2.0974949866040546
+        ],
+        [
+          0.18,
+          2.0092974268256816
+        ],
+        [
+          0.19,
+          2.0092974268256816
+        ],
+        [
+          0.2,
+          2.0092974268256816
+        ],
+        [
+          0.21,
+          2.0092974268256816
+        ],
+        [
+          0.22,
+          2.0092974268256816
+        ],
+        [
+          0.23,
+          1.6984721441039565
+        ],
+        [
+          0.24,
+          1.6984721441039565
+        ],
+        [
+          0.25,
+          1.6984721441039565
+        ],
+        [
+          0.26,
+          1.6984721441039565
+        ],
+        [
+          0.27,
+          1.6984721441039565
+        ],
+        [
+          0.28,
+          1.2411200080598668
+        ],
+        [
+          0.29,
+          1.2411200080598668
+        ],
+        [
+          0.3,
+          1.2411200080598668
+        ],
+        [
+          0.31,
+          1.2411200080598668
+        ],
+        [
+          0.32,
+          1.2411200080598668
+        ],
+        [
+          0.33,
+          0.7492167723103798
+        ],
+        [
+          0.34,
+          0.7492167723103798
+        ],
+        [
+          0.35000000000000003,
+          0.7492167723103798
+        ],
+        [
+          0.36,
+          0.7492167723103798
+        ],
+        [
+          0.37,
+          0.7492167723103798
+        ],
+        [
+          0.38,
+          0.3431975046920719
+        ],
+        [
+          0.39,
+          0.3431975046920719
+        ],
+        [
+          0.4,
+          0.3431975046920719
+        ],
+        [
+          0.41000000000000003,
+          0.3431975046920719
+        ],
+        [
+          0.42,
+          0.3431975046920719
+        ],
+        [
+          0.43,
+          0.12246988233490308
+        ],
+        [
+          0.44,
+          0.12246988233490308
+        ],
+        [
+          0.45,
+          0.12246988233490308
+        ],
+        [
+          0.46,
+          0.12246988233490308
+        ],
+        [
+          0.47000000000000003,
+          0.12246988233490308
+        ],
+        [
+          0.48,
+          0.14107572533686163
+        ],
+        [
+          0.49,
+          0.14107572533686163
+        ],
+        [
+          0.5,
+          0.14107572533686163
+        ],
+        [
+          0.51,
+          0.14107572533686163
+        ],
+        [
+          0.52,
+          0.14107572533686163
+        ],
+        [
+          0.53,
+          0.39445967442960816
+        ],
+        [
+          0.54,
+          0.39445967442960816
+        ],
+        [
+          0.55,
+          0.39445967442960816
+        ],
+        [
+          0.56,
+          0.39445967442960816
+        ],
+        [
+          0.5700000000000001,
+          0.39445967442960816
+        ],
+        [
+          0.58,
+          0.8205845018010751
+        ],
+        [
+          0.59,
+          0.8205845018010751
+        ],
+        [
+          0.6,
+          0.8205845018010751
+        ],
+        [
+          0.61,
+          0.8205845018010751
+        ],
+        [
+          0.62,
+          0.8205845018010751
+        ],
+        [
+          0.63,
+          1.3151199880878157
+        ],
+        [
+          0.64,
+          1.3151199880878157
+        ],
+        [
+          0.65,
+          1.3151199880878157
+        ],
+        [
+          0.66,
+          1.3151199880878157
+        ],
+        [
+          0.67,
+          1.3151199880878157
+        ],
+        [
+          0.68,
+          1.7569865987187898
+        ],
+        [
+          0.6900000000000001,
+          1.7569865987187898
+        ],
+        [
+          0.7000000000000001,
+          1.7569865987187898
+        ],
+        [
+          0.71,
+          1.7569865987187898
+        ],
+        [
+          0.72,
+          1.7569865987187898
+        ],
+        [
+          0.73,
+          2.037999976774739
+        ],
+        [
+          0.74,
+          2.037999976774739
+        ],
+        [
+          0.75,
+          2.037999976774739
+        ],
+        [
+          0.76,
+          2.037999976774739
+        ],
+        [
+          0.77,
+          2.037999976774739
+        ],
+        [
+          0.78,
+          2.089358246623382
+        ],
+        [
+          0.79,
+          2.089358246623382
+        ],
+        [
+          0.8,
+          2.089358246623382
+        ],
+        [
+          0.81,
+          2.089358246623382
+        ],
+        [
+          0.8200000000000001,
+          2.089358246623382
+        ],
+        [
+          0.8300000000000001,
+          1.8984871126234903
+        ],
+        [
+          0.84,
+          1.8984871126234903
+        ],
+        [
+          0.85,
+          1.8984871126234903
+        ],
+        [
+          0.86,
+          1.8984871126234903
+        ],
+        [
+          0.87,
+          1.8984871126234903
+        ],
+        [
+          0.88,
+          1.5121184852417566
+        ],
+        [
+          0.89,
+          1.5121184852417566
+        ],
+        [
+          0.9,
+          1.5121184852417566
+        ],
+        [
+          0.91,
+          1.5121184852417566
+        ],
+        [
+          0.92,
+          1.5121184852417566
+        ],
+        [
+          0.93,
+          1.0248488795381907
+        ],
+        [
+          0.9400000000000001,
+          1.0248488795381907
+        ],
+        [
+          0.9500000000000001,
+          1.0248488795381907
+        ],
+        [
+          0.96,
+          1.0248488795381907
+        ],
+        [
+          0.97,
+          1.0248488795381907
+        ],
+        [
+          0.98,
+          0.5559788891106303
+        ],
+        [
+          0.99,
+          0.5559788891106303
+        ],
+        [
+          1.0,
+          0.5559788891106303
+        ]
+      ],
+      "zlevel": 0,
+      "z": 2,
+      "silent": false,
+      "xAxisIndex": 0,
+      "yAxisIndex": 0
+    },
+    {
+      "type": "line",
+      "name": "Exact data",
+      "colorBy": "series",
+      "coordinateSystem": "cartesian2d",
+      "symbol": "circle",
+      "symbolSize": 4,
+      "symbolKeepAspect": true,
+      "showSymbol": true,
+      "legendHoverLink": true,
+      "stack": null,
+      "cursor": "pointer",
+      "connectNulls": false,
+      "clip": true,
+      "triggerLineEvent": false,
+      "step": false,
+      "label": {"color": "#B9B8CE"},
+      "smooth": false,
+      "data": [
+        [
+          0.0,
+          1.1
+        ],
+        [
+          0.01,
+          1.1998334166468283
+        ],
+        [
+          0.02,
+          1.2986693307950614
+        ],
+        [
+          0.03,
+          1.3955202066613397
+        ],
+        [
+          0.04,
+          1.4894183423086507
+        ],
+        [
+          0.05,
+          1.579425538604203
+        ],
+        [
+          0.06,
+          1.6646424733950353
+        ],
+        [
+          0.07,
+          1.744217687237691
+        ],
+        [
+          0.08,
+          1.8173560908995228
+        ],
+        [
+          0.09,
+          1.8833269096274834
+        ],
+        [
+          0.1,
+          1.9414709848078966
+        ],
+        [
+          0.11,
+          1.9912073600614355
+        ],
+        [
+          0.12,
+          2.0320390859672264
+        ],
+        [
+          0.13,
+          2.063558185417193
+        ],
+        [
+          0.14,
+          2.0854497299884605
+        ],
+        [
+          0.15,
+          2.0974949866040546
+        ],
+        [
+          0.16,
+          2.099573603041505
+        ],
+        [
+          0.17,
+          2.0916648104524684
+        ],
+        [
+          0.18,
+          2.0738476308781952
+        ],
+        [
+          0.19,
+          2.0463000876874147
+        ],
+        [
+          0.2,
+          2.0092974268256816
+        ],
+        [
+          0.21,
+          1.963209366648874
+        ],
+        [
+          0.22,
+          1.9084964038195902
+        ],
+        [
+          0.23,
+          1.8457052121767201
+        ],
+        [
+          0.24,
+          1.7754631805511512
+        ],
+        [
+          0.25,
+          1.6984721441039565
+        ],
+        [
+          0.26,
+          1.6155013718214644
+        ],
+        [
+          0.27,
+          1.5273798802338299
+        ],
+        [
+          0.28,
+          1.4349881501559048
+        ],
+        [
+          0.29,
+          1.3392493292139824
+        ],
+        [
+          0.3,
+          1.2411200080598672
+        ],
+        [
+          0.31,
+          1.1415806624332905
+        ],
+        [
+          0.32,
+          1.04162585657242
+        ],
+        [
+          0.33,
+          0.9422543058567514
+        ],
+        [
+          0.34,
+          0.8444588979731684
+        ],
+        [
+          0.35000000000000003,
+          0.7492167723103798
+        ],
+        [
+          0.36,
+          0.657479556705148
+        ],
+        [
+          0.37,
+          0.5701638590915067
+        ],
+        [
+          0.38,
+          0.48814210905728117
+        ],
+        [
+          0.39,
+          0.412233840816026
+        ],
+        [
+          0.4,
+          0.3431975046920719
+        ],
+        [
+          0.41000000000000003,
+          0.2817228889355893
+        ],
+        [
+          0.42,
+          0.2284242275864119
+        ],
+        [
+          0.43,
+          0.1838340632505452
+        ],
+        [
+          0.44,
+          0.14839792611048408
+        ],
+        [
+          0.45,
+          0.12246988233490308
+        ],
+        [
+          0.46,
+          0.10630899636653557
+        ],
+        [
+          0.47000000000000003,
+          0.10007674243589926
+        ],
+        [
+          0.48,
+          0.10383539116415941
+        ],
+        [
+          0.49,
+          0.11754738737566761
+        ],
+        [
+          0.5,
+          0.14107572533686163
+        ],
+        [
+          0.51,
+          0.17418531767226764
+        ],
+        [
+          0.52,
+          0.21654534427984695
+        ],
+        [
+          0.53,
+          0.2677325577760993
+        ],
+        [
+          0.54,
+          0.32723551244401294
+        ],
+        [
+          0.55,
+          0.39445967442960816
+        ],
+        [
+          0.56,
+          0.46873336212767924
+        ],
+        [
+          0.5700000000000001,
+          0.5493144574023632
+        ],
+        [
+          0.58,
+          0.6353978205862427
+        ],
+        [
+          0.59,
+          0.7261233351697632
+        ],
+        [
+          0.6,
+          0.8205845018010742
+        ],
+        [
+          0.61,
+          0.9178374957279042
+        ],
+        [
+          0.62,
+          1.0169105971825037
+        ],
+        [
+          0.63,
+          1.1168139004843498
+        ],
+        [
+          0.64,
+          1.2165492048504938
+        ],
+        [
+          0.65,
+          1.3151199880878157
+        ],
+        [
+          0.66,
+          1.4115413635133787
+        ],
+        [
+          0.67,
+          1.5048499206165984
+        ],
+        [
+          0.68,
+          1.594113351138609
+        ],
+        [
+          0.6900000000000001,
+          1.6784397643882003
+        ],
+        [
+          0.7000000000000001,
+          1.7569865987187898
+        ],
+        [
+          0.71,
+          1.828969040125876
+        ],
+        [
+          0.72,
+          1.8936678638491529
+        ],
+        [
+          0.73,
+          1.9504366206285644
+        ],
+        [
+          0.74,
+          1.998708095811627
+        ],
+        [
+          0.75,
+          2.037999976774739
+        ],
+        [
+          0.76,
+          2.0679196720314863
+        ],
+        [
+          0.77,
+          2.0881682338770005
+        ],
+        [
+          0.78,
+          2.098543345374605
+        ],
+        [
+          0.79,
+          2.098941341839772
+        ],
+        [
+          0.8,
+          2.089358246623382
+        ],
+        [
+          0.81,
+          2.069889810845086
+        ],
+        [
+          0.8200000000000001,
+          2.0407305566797724
+        ],
+        [
+          0.8300000000000001,
+          2.0021718337562935
+        ],
+        [
+          0.84,
+          1.9545989080882804
+        ],
+        [
+          0.85,
+          1.8984871126234903
+        ],
+        [
+          0.86,
+          1.8343970978741133
+        ],
+        [
+          0.87,
+          1.7629692300821835
+        ],
+        [
+          0.88,
+          1.6849171928917617
+        ],
+        [
+          0.89,
+          1.6010208564578847
+        ],
+        [
+          0.9,
+          1.5121184852417566
+        ],
+        [
+          0.91,
+          1.4190983623493523
+        ],
+        [
+          0.92,
+          1.322889914100246
+        ],
+        [
+          0.93,
+          1.2244544235070618
+        ],
+        [
+          0.9400000000000001,
+          1.124775425453358
+        ],
+        [
+          0.9500000000000001,
+          1.0248488795381907
+        ],
+        [
+          0.96,
+          0.9256732187770205
+        ],
+        [
+          0.97,
+          0.8282393735890576
+        ],
+        [
+          0.98,
+          0.7335208707480717
+        ],
+        [
+          0.99,
+          0.6424641062246788
+        ],
+        [
+          1.0,
+          0.5559788891106303
+        ]
+      ],
+      "zlevel": 0,
+      "z": 2,
+      "silent": false,
+      "xAxisIndex": 0,
+      "yAxisIndex": 0
+    },
+    {
+      "type": "line",
+      "name": "Linear interpolation error",
+      "colorBy": "series",
+      "coordinateSystem": "cartesian2d",
+      "symbol": "circle",
+      "symbolSize": 4,
+      "symbolKeepAspect": true,
+      "showSymbol": true,
+      "legendHoverLink": true,
+      "stack": null,
+      "cursor": "pointer",
+      "connectNulls": false,
+      "clip": true,
+      "triggerLineEvent": false,
+      "step": false,
+      "label": {"color": "#B9B8CE"},
+      "smooth": false,
+      "data": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.01,
+          0.32907142535020173
+        ],
+        [
+          0.02,
+          0.5312449589578144
+        ],
+        [
+          0.03,
+          0.5635807680373202
+        ],
+        [
+          0.04,
+          0.394644758851101
+        ],
+        [
+          0.05,
+          -1.405856746632452e-14
+        ],
+        [
+          0.06,
+          0.7694051878882997
+        ],
+        [
+          0.07,
+          1.1451535148484362
+        ],
+        [
+          0.08,
+          1.1391980183067105
+        ],
+        [
+          0.09,
+          0.7574369583635971
+        ],
+        [
+          0.1,
+          0.0
+        ],
+        [
+          0.11,
+          0.9306702690037948
+        ],
+        [
+          0.12,
+          1.3857263197013416
+        ],
+        [
+          0.13,
+          1.3797914559819038
+        ],
+        [
+          0.14,
+          0.9187247943753308
+        ],
+        [
+          0.15,
+          0.0
+        ],
+        [
+          0.16,
+          0.9391491855565757
+        ],
+        [
+          0.17,
+          1.407914289737101
+        ],
+        [
+          0.18,
+          1.4114431410165378
+        ],
+        [
+          0.19,
+          0.946251677482029
+        ],
+        [
+          0.2,
+          0.0
+        ],
+        [
+          0.21,
+          0.8189140007507292
+        ],
+        [
+          0.22,
+          1.2328600690841567
+        ],
+        [
+          0.23,
+          1.240878274221436
+        ],
+        [
+          0.24,
+          0.8350485701566189
+        ],
+        [
+          0.25,
+          0.0
+        ],
+        [
+          0.26,
+          0.5261310868923844
+        ],
+        [
+          0.27,
+          0.7757461454641703
+        ],
+        [
+          0.28,
+          0.7614897500871294
+        ],
+        [
+          0.29,
+          0.49721092256998467
+        ],
+        [
+          0.3,
+          -1.7890663552522527e-14
+        ],
+        [
+          0.31,
+          -0.10149948355025556
+        ],
+        [
+          0.32,
+          -0.2623645688524982
+        ],
+        [
+          0.33,
+          -0.39519700045707457
+        ],
+        [
+          0.34,
+          -0.37166065685871147
+        ],
+        [
+          0.35000000000000003,
+          0.0
+        ],
+        [
+          0.36,
+          -1.6020820684306523
+        ],
+        [
+          0.37,
+          -2.919372370965864
+        ],
+        [
+          0.38,
+          -3.5774628654429046
+        ],
+        [
+          0.39,
+          -2.951605665275246
+        ],
+        [
+          0.4,
+          0.0
+        ],
+        [
+          0.41000000000000003,
+          -6.151112304194357
+        ],
+        [
+          0.42,
+          -11.593441047217505
+        ],
+        [
+          0.43,
+          -14.64737685231229
+        ],
+        [
+          0.44,
+          -12.27610194652563
+        ],
+        [
+          0.45,
+          0.0
+        ],
+        [
+          0.46,
+          -18.702137399744853
+        ],
+        [
+          0.47000000000000003,
+          -29.81259818573467
+        ],
+        [
+          0.48,
+          -28.697341665337785
+        ],
+        [
+          0.49,
+          -16.850369713025554
+        ],
+        [
+          0.5,
+          0.0
+        ],
+        [
+          0.51,
+          -10.085349165993595
+        ],
+        [
+          0.52,
+          -11.953136549850186
+        ],
+        [
+          0.53,
+          -9.477195163402493
+        ],
+        [
+          0.54,
+          -5.0567165047152525
+        ],
+        [
+          0.55,
+          0.0
+        ],
+        [
+          0.56,
+          -2.3363555191617245
+        ],
+        [
+          0.5700000000000001,
+          -2.83902012147635
+        ],
+        [
+          0.58,
+          -2.319295060321118
+        ],
+        [
+          0.59,
+          -1.2719879267973162
+        ],
+        [
+          0.6,
+          1.352966114017952e-14
+        ],
+        [
+          0.61,
+          -0.18021745006247156
+        ],
+        [
+          0.62,
+          -0.1463352960810986
+        ],
+        [
+          0.63,
+          -0.044044320056891406
+        ],
+        [
+          0.64,
+          0.027644917171077272
+        ],
+        [
+          0.65,
+          0.0
+        ],
+        [
+          0.66,
+          0.5701606419337357
+        ],
+        [
+          0.67,
+          0.862762997061723
+        ],
+        [
+          0.68,
+          0.8702892214220193
+        ],
+        [
+          0.6900000000000001,
+          0.5854537055243778
+        ],
+        [
+          0.7000000000000001,
+          0.0
+        ],
+        [
+          0.71,
+          0.8627683383208424
+        ],
+        [
+          0.72,
+          1.2819520450983146
+        ],
+        [
+          0.73,
+          1.2736632820296172
+        ],
+        [
+          0.74,
+          0.8460862635977328
+        ],
+        [
+          0.75,
+          0.0
+        ],
+        [
+          0.76,
+          0.9501356146835688
+        ],
+        [
+          0.77,
+          1.4187050967536865
+        ],
+        [
+          0.78,
+          1.416621046031979
+        ],
+        [
+          0.79,
+          0.9459411175690979
+        ],
+        [
+          0.8,
+          0.0
+        ],
+        [
+          0.81,
+          0.9037095078044493
+        ],
+        [
+          0.8200000000000001,
+          1.3583745078746987
+        ],
+        [
+          0.8300000000000001,
+          1.365330740946482
+        ],
+        [
+          0.84,
+          0.9177109733656503
+        ],
+        [
+          0.85,
+          -2.339174213494568e-14
+        ],
+        [
+          0.86,
+          0.7186944823586917
+        ],
+        [
+          0.87,
+          1.0794044550907478
+        ],
+        [
+          0.88,
+          1.0832138679757586
+        ],
+        [
+          0.89,
+          0.7263269365215211
+        ],
+        [
+          0.9,
+          0.0
+        ],
+        [
+          0.91,
+          0.3124376974805788
+        ],
+        [
+          0.92,
+          0.4293079174149072
+        ],
+        [
+          0.93,
+          0.38365672067970386
+        ],
+        [
+          0.9400000000000001,
+          0.21983275225428672
+        ],
+        [
+          0.9500000000000001,
+          0.0
+        ],
+        [
+          0.96,
+          -0.5835388305600504
+        ],
+        [
+          0.97,
+          -1.0940689451701426
+        ],
+        [
+          0.98,
+          -1.3641076801780423
+        ],
+        [
+          0.99,
+          -1.134503998098036
+        ],
+        [
+          1.0,
+          0.0
+        ]
+      ],
+      "zlevel": 0,
+      "z": 2,
+      "silent": false,
+      "xAxisIndex": 1,
+      "yAxisIndex": 1
+    },
+    {
+      "type": "line",
+      "name": "Nearest interpolation error",
+      "colorBy": "series",
+      "coordinateSystem": "cartesian2d",
+      "symbol": "circle",
+      "symbolSize": 4,
+      "symbolKeepAspect": true,
+      "showSymbol": true,
+      "legendHoverLink": true,
+      "stack": null,
+      "cursor": "pointer",
+      "connectNulls": false,
+      "clip": true,
+      "triggerLineEvent": false,
+      "step": false,
+      "label": {"color": "#B9B8CE"},
+      "smooth": false,
+      "data": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.01,
+          8.320606449337978
+        ],
+        [
+          0.02,
+          15.297915033801061
+        ],
+        [
+          0.03,
+          -13.1782636371021
+        ],
+        [
+          0.04,
+          -6.04311050420113
+        ],
+        [
+          0.05,
+          0.0
+        ],
+        [
+          0.06,
+          5.119233478227458
+        ],
+        [
+          0.07,
+          9.447911796747603
+        ],
+        [
+          0.08,
+          -6.82942074642849
+        ],
+        [
+          0.09,
+          -3.087306557517087
+        ],
+        [
+          0.1,
+          0.0
+        ],
+        [
+          0.11,
+          2.4977998902135625
+        ],
+        [
+          0.12,
+          4.457005860998016
+        ],
+        [
+          0.13,
+          -1.6445768976463546
+        ],
+        [
+          0.14,
+          -0.5775855654722898
+        ],
+        [
+          0.15,
+          0.0
+        ],
+        [
+          0.16,
+          0.09900183706059633
+        ],
+        [
+          0.17,
+          -0.27873376854894
+        ],
+        [
+          0.18,
+          3.112581806464688
+        ],
+        [
+          0.19,
+          1.808271479064975
+        ],
+        [
+          0.2,
+          0.0
+        ],
+        [
+          0.21,
+          -2.3475876266563604
+        ],
+        [
+          0.22,
+          -5.281698346633096
+        ],
+        [
+          0.23,
+          7.9770630272602014
+        ],
+        [
+          0.24,
+          4.33639161265482
+        ],
+        [
+          0.25,
+          0.0
+        ],
+        [
+          0.26,
+          -5.135914690616654
+        ],
+        [
+          0.27,
+          -11.201683751650164
+        ],
+        [
+          0.28,
+          13.510086621619497
+        ],
+        [
+          0.29,
+          7.327188374379
+        ],
+        [
+          0.3,
+          3.5781327105045054e-14
+        ],
+        [
+          0.31,
+          -8.719431653161257
+        ],
+        [
+          0.32,
+          -19.152188881322846
+        ],
+        [
+          0.33,
+          20.48677648343044
+        ],
+        [
+          0.34,
+          11.2784797331622
+        ],
+        [
+          0.35000000000000003,
+          0.0
+        ],
+        [
+          0.36,
+          -13.952862057788973
+        ],
+        [
+          0.37,
+          -31.403764087077384
+        ],
+        [
+          0.38,
+          29.693116343749136
+        ],
+        [
+          0.39,
+          16.746887152033697
+        ],
+        [
+          0.4,
+          0.0
+        ],
+        [
+          0.41000000000000003,
+          -21.82095178306142
+        ],
+        [
+          0.42,
+          -50.24566715990831
+        ],
+        [
+          0.43,
+          33.38020159626762
+        ],
+        [
+          0.44,
+          17.471971782326158
+        ],
+        [
+          0.45,
+          0.0
+        ],
+        [
+          0.46,
+          -15.201804664440148
+        ],
+        [
+          0.47000000000000003,
+          -22.375968036076898
+        ],
+        [
+          0.48,
+          -35.86477958543713
+        ],
+        [
+          0.49,
+          -20.016045006598254
+        ],
+        [
+          0.5,
+          0.0
+        ],
+        [
+          0.51,
+          19.008256710650098
+        ],
+        [
+          0.52,
+          34.851646981361114
+        ],
+        [
+          0.53,
+          -47.33347251681242
+        ],
+        [
+          0.54,
+          -20.543052153331516
+        ],
+        [
+          0.55,
+          0.0
+        ],
+        [
+          0.56,
+          15.84561580189795
+        ],
+        [
+          0.5700000000000001,
+          28.19055294940592
+        ],
+        [
+          0.58,
+          -29.14499786039114
+        ],
+        [
+          0.59,
+          -13.008969971916331
+        ],
+        [
+          0.6,
+          -1.0823728912143617e-13
+        ],
+        [
+          0.61,
+          10.595883735355699
+        ],
+        [
+          0.62,
+          19.306131328100825
+        ],
+        [
+          0.63,
+          -17.75641290974824
+        ],
+        [
+          0.64,
+          -8.102490457789223
+        ],
+        [
+          0.65,
+          0.0
+        ],
+        [
+          0.66,
+          6.830928084570372
+        ],
+        [
+          0.67,
+          12.607897301216761
+        ],
+        [
+          0.68,
+          -10.217168525929932
+        ],
+        [
+          0.6900000000000001,
+          -4.6797529465837115
+        ],
+        [
+          0.7000000000000001,
+          0.0
+        ],
+        [
+          0.71,
+          3.9356839742969143
+        ],
+        [
+          0.72,
+          7.217805600425551
+        ],
+        [
+          0.73,
+          -4.489423302458077
+        ],
+        [
+          0.74,
+          -1.9658639020600204
+        ],
+        [
+          0.75,
+          0.0
+        ],
+        [
+          0.76,
+          1.446849974948725
+        ],
+        [
+          0.77,
+          2.4025007319030283
+        ],
+        [
+          0.78,
+          0.4376892558101339
+        ],
+        [
+          0.79,
+          0.45656803386369016
+        ],
+        [
+          0.8,
+          0.0
+        ],
+        [
+          0.81,
+          -0.9405542109677539
+        ],
+        [
+          0.8200000000000001,
+          -2.382856952106692
+        ],
+        [
+          0.8300000000000001,
+          5.178612513905924
+        ],
+        [
+          0.84,
+          2.8707575366278544
+        ],
+        [
+          0.85,
+          0.0
+        ],
+        [
+          0.86,
+          -3.493791765351738
+        ],
+        [
+          0.87,
+          -7.686911389541917
+        ],
+        [
+          0.88,
+          10.2556201799708
+        ],
+        [
+          0.89,
+          5.552855283398158
+        ],
+        [
+          0.9,
+          0.0
+        ],
+        [
+          0.91,
+          -6.554874937520698
+        ],
+        [
+          0.92,
+          -14.304181256851834
+        ],
+        [
+          0.93,
+          16.301590335813746
+        ],
+        [
+          0.9400000000000001,
+          8.884133103716266
+        ],
+        [
+          0.9500000000000001,
+          0.0
+        ],
+        [
+          0.96,
+          -10.713895438413891
+        ],
+        [
+          0.97,
+          -23.738246721736218
+        ],
+        [
+          0.98,
+          24.20408044509729
+        ],
+        [
+          0.99,
+          13.461486217846906
+        ],
+        [
+          1.0,
+          0.0
+        ]
+      ],
+      "zlevel": 0,
+      "z": 2,
+      "silent": false,
+      "xAxisIndex": 1,
+      "yAxisIndex": 1
+    }
+  ],
+  "grid": [
+    {
+      "bottom": "55%",
+      "width": "80%",
+      "height": "40%"
+    },
+    {
+      "bottom": "5%",
+      "width": "80%",
+      "height": "40%"
+    }
+  ]
+};
+      chart_eb828ba601814fcfab42c4beb2e140fd.setOption(option_eb828ba601814fcfab42c4beb2e140fd);
+    </script>
+  </body>
+</html>
+</p>
+</main><nav class='ruff-nav'><ul ><li class='ruff-toc1'><a style='padding-top:2px;' href='index.html'>Start page</a></li>
+<li class='ruff-toc1'><a href='index-docindex.html' accesskey='i'>Index</a></li>
+<hr>
+<li class='ruff-toc1'><a class='ruff-highlight' href='index-Examples.html'>Examples</a></li>
+<li class='ruff-toc1'><a href='index-tclinterp.html'>tclinterp</a></li>
+<li class='ruff-toc1'><a href='index-tclinterp-approximation.html'>tclinterp::approximation</a></li>
+<li class='ruff-toc1'><a href='index-tclinterp-interpolation.html'>tclinterp::interpolation</a></li>
+<hr><li class='ruff-toc2'><a href='#::Examples-1D Linear and nearest interpolation'>1D Linear and nearest interpolation</a></li></ul></nav><footer class='ruff-layout-footer ruff-ft'><div style='float: right;'>Document generated by <a href='https://ruff.magicsplat.com'>Ruff!</a></div><div>&copy; George Yashin</div></footer>
+</div></body></html>
