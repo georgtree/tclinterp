@@ -1,7 +1,7 @@
 '\"
 '\" '\" Copyright (c) George Yashin
 '\"
-.TH "tclinterp::interpolation" 3tcl 0\&.14 "tcl_tools" "Tcl wrapper for C interpolation procedures"
+.TH "tclinterp::interpolation" 3tcl 0\&.15 "tcl_tools" "Tcl wrapper for C interpolation procedures"
 .SH NAME
 tclinterp::interpolation - Commands in namespace tclinterp::interpolation
 .SH SYNOPSIS
@@ -82,7 +82,7 @@ Does divided difference one-dimensional interpolation\&.
 .RS 4n
 .TP
 -coeffs
-Select the alternative output option\&.
+Selects the alternative output option\&.
 .TP
 -x
 List of independent variable (x) values\&.
@@ -171,7 +171,7 @@ Does least squares polynomial one-dimensional interpolation\&.
 .RS 4n
 .TP
 -coeffs
-Select the alternative output option\&.
+Selects the alternative output option\&.
 .TP
 -nterms
 Number of terms of interpolation polynom, default is 3\&.
@@ -208,7 +208,7 @@ Does least squares polynomial one-dimensional interpolation with calculation of 
 .RS 4n
 .TP
 -coeffs
-Select the alternative output option\&.
+Selects the alternative output option\&.
 .TP
 -nterms
 Number of terms of interpolation polynom, default is 3\&.

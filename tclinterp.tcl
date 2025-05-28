@@ -1,5 +1,5 @@
-package require argparse
-package provide tclinterp 0.14
+package require argparse 0.58
+package provide tclinterp 0.15
 
 interp alias {} dget {} dict get
 interp alias {} @ {} lindex
@@ -28,7 +28,7 @@ proc ::tclinterp::list2array {list} {
         try {
             ::tclinterp::doubleArray_setitem $a $i $iElem
         } on error {errmsg erropts} {
-            if {[dget $erropts -errorcode]=="SWIG TypeError"} {
+            if {[dget $erropts -errorcode] eq {SWIG TypeError}} {
                 error "List must contains only double elements, but get '$iElem'"
             } else {
                 error "Array creation failed with message '$errmsg' and opts '$erropts'"
@@ -153,22 +153,23 @@ proc ::tclinterp::interpolation::lin1d {args} {
     #  -xi - list of independent variable interpolation (xi) values
     # Returns: list of interpolated dependent variable values, `yi`, at `xi`
     # Synopsis: -x list -y list -xi list
-    argparse {
-        {-x= -required}
-        {-y= -required}
-        {-xi= -required}
+    argparse -help {Does linear one-dimensional interpolation. Returns: list of interpolated dependent variable values,\
+                            'yi', at 'xi'} {
+        {-x!= -help {List of independent variable (x) values, must be strictly increasing}}
+        {-y!= -help {List of dependent variable (y) values}}
+        {-xi!= -help {list of independent variable interpolation (xi) values}}
     }
     set xLen [llength $x]
     set yLen [llength $y]
     set xiLen [llength $xi]
     if {$xLen!=$yLen} {
-        error "Length of -y '$yLen' must be equal to length of -x '$xLen'"
+        return -code error "Length of -y '$yLen' must be equal to length of -x '$xLen'"
     } elseif {$xiLen==0} {
-        error "Length of interpolation points list -xi must be more than zero"
+        return -code error {Length of interpolation points list -xi must be more than zero}
     }
-    ::tclinterp::lists2arrays [list xArray yArray xiArray] [list $x $y $xi]
-    if {[::tclinterp::r8vec_ascends_strictly $xLen $xArray]==0} {
-        error "Independent variable array -x is not strictly increasing"
+    ::tclinterp::lists2arrays {xArray yArray xiArray} [list $x $y $xi]
+    if {![::tclinterp::r8vec_ascends_strictly $xLen $xArray]} {
+        return -code error {Independent variable array -x is not strictly increasing}
     }
     set yiArray [::tclinterp::interp_linear 1 $xLen $xArray $yArray $xiLen $xiArray]
     set yiList [::tclinterp::array2list $yiArray $xiLen]
@@ -185,20 +186,21 @@ proc ::tclinterp::interpolation::near1d {args} {
     #  -xi - list of independent variable interpolation (xi) values
     # Returns: list of interpolated dependent variable values, `yi`, at `xi`
     # Synopsis: -x list -y list -xi list
-    argparse {
-        {-x= -required}
-        {-y= -required}
-        {-xi= -required}
+    argparse -help {Does nearest one-dimensional interpolation. Returns: list of interpolated dependent variable values,\
+                            'yi', at 'xi'} {
+        {-x= -required -help {List of independent variable (x) values, must be strictly increasing}}
+        {-y= -required -help {List of dependent variable (y) values}}
+        {-xi= -required -help {list of independent variable interpolation (xi) values}}
     }
     set xLen [llength $x]
     set yLen [llength $y]
     set xiLen [llength $xi]
     if {$xLen!=$yLen} {
-        error "Length of -y '$yLen' must be equal to length of -x '$xLen'"
+        return -code error "Length of -y '$yLen' must be equal to length of -x '$xLen'"
     } elseif {$xiLen==0} {
-        error "Length of interpolation points list -xi must be more than zero"
+        return -code error {Length of interpolation points list -xi must be more than zero}
     }
-    ::tclinterp::lists2arrays [list xArray yArray xiArray] [list $x $y $xi]
+    ::tclinterp::lists2arrays {xArray yArray xiArray} [list $x $y $xi]
     set yiArray [::tclinterp::interp_nearest 1 $xLen $xArray $yArray $xiLen $xiArray]
     set yiList [::tclinterp::array2list $yiArray $xiLen]
     ::tclinterp::deleteArrays $xArray $yArray $xiArray $yiArray
@@ -214,20 +216,21 @@ proc ::tclinterp::interpolation::lagr1d {args} {
     #  -xi - list of independent variable interpolation (xi) values
     # Returns: list of interpolated dependent variable values, `yi`, at `xi`
     # Synopsis: -x list -y list -xi list
-    argparse {
-        {-x= -required}
-        {-y= -required}
-        {-xi= -required}
+    argparse -help {Does Lagrange polynomial one-dimensional interpolation. Returns: list of interpolated dependent\
+                            variable values, 'yi', at 'xi'} {
+        {-x= -required -help {List of independent variable (x) values, must be strictly increasing}}
+        {-y= -required -help {List of dependent variable (y) values}}
+        {-xi= -required -help {list of independent variable interpolation (xi) values}}
     }
     set xLen [llength $x]
     set yLen [llength $y]
     set xiLen [llength $xi]
     if {$xLen!=$yLen} {
-        error "Length of -y '$yLen' must be equal to length of -x '$xLen'"
+        return -code error "Length of -y '$yLen' must be equal to length of -x '$xLen'"
     } elseif {$xiLen==0} {
-        error "Length of interpolation points list -xi must be more than zero"
+        return -code error {Length of interpolation points list -xi must be more than zero}
     }
-    ::tclinterp::lists2arrays [list xArray yArray xiArray] [list $x $y $xi]
+    ::tclinterp::lists2arrays {xArray yArray xiArray} [list $x $y $xi]
     set yiArray [::tclinterp::interp_lagrange 1 $xLen $xArray $yArray $xiLen $xiArray]
     set yiList [::tclinterp::array2list $yiArray $xiLen]
     ::tclinterp::deleteArrays $xArray $yArray $xiArray $yiArray
@@ -245,18 +248,23 @@ proc ::tclinterp::interpolation::least1d {args} {
     #  -xi - list of independent variable interpolation (xi) values
     #  -w - list of weights, optional
     #  -nterms - number of terms of interpolation polynom, default is 3
-    #  -coeffs - select the alternative output option
+    #  -coeffs - selects the alternative output option
     # Returns: list of interpolated dependent variable values, `yi`, at `xi`. If `-coeffs` switch is in args, the output
     # is dictionary that contains `yi` values under `yi` key, and the values of interpolation polynom coefficients under
     # the keys `b`, `c` and `d`.
     # Synopsis: -x list -y list -xi list ?-w list? ?-nterms value? ?-coeffs?
-    argparse {
-        {-x= -required}
-        {-y= -required}
-        {-xi= -required}
-        -w=
-        {-nterms= -default 3}
-        -coeffs
+    argparse -help {Does least squares polynomial one-dimensional interpolation. Returns: list of interpolated dependent\
+                            variable values, 'yi', at 'xi'. If '-coeffs' switch is in args, the output is dictionary\
+                            that contains 'yi' values under 'yi' key, and the values of interpolation polynom\
+                            coefficients under the keys 'b', 'c' and 'd'} {
+        {-x= -required -help {List of independent variable (x) values}}
+        {-y= -required -help {List of dependent variable (y) values}}
+        {-xi= -required -help {List of independent variable interpolation (xi) values}}
+        {-w= -help {List of weights}}
+        {-nterms= -default 3 -type integer -validate {$arg>0}\
+                 -errormsg {Number of terms -nterms must be more than zero}\
+                 -help {Number of terms of interpolation polynom}}
+        {-coeffs -help {Selects the alternative output option}}
     }
     set xLen [llength $x]
     set yLen [llength $y]
@@ -272,14 +280,10 @@ proc ::tclinterp::interpolation::least1d {args} {
     } elseif {$xLen!=$wLen} {
         return -code error "Length of -w '$wLen' must be equal to length of -x '$xLen'"
     } elseif {$xiLen==0} {
-        return -code error "Length of interpolation points list -xi must be more than zero"
-    } elseif {[string is integer -strict $nterms]==0} {
-        return -code error "Number of terms -nterms '$nterms' must be of integer type"
-    } elseif {$nterms<=0} {
-        return -code error "Number of terms -nterms must be more than zero"
+        return -code error {Length of interpolation points list -xi must be more than zero}
     }
-    ::tclinterp::lists2arrays [list xArray yArray wArray xiArray] [list $x $y $w $xi]
-    ::tclinterp::newArrays [list b c d] [list $nterms $nterms $nterms]
+    ::tclinterp::lists2arrays {xArray yArray wArray xiArray} [list $x $y $w $xi]
+    ::tclinterp::newArrays {b c d} [list $nterms $nterms $nterms]
     # create polynomial coefficients for given data
     ::tclinterp::least_set $xLen $xArray $yArray $wArray $nterms $b $c $d
     # calculate polynomial value for each xi value
@@ -288,7 +292,7 @@ proc ::tclinterp::interpolation::least1d {args} {
         lappend yiList $iElem
     }
     if {[info exists coeffs]} {
-        ::tclinterp::arrays2lists [list bList cList dList] [list $b $c $d] [list $nterms $nterms $nterms]
+        ::tclinterp::arrays2lists {bList cList dList} [list $b $c $d] [list $nterms $nterms $nterms]
         ::tclinterp::deleteArrays $b $c $d $xArray $yArray $xiArray
         return [dcreate yi $yiList coeffs [dcreate b $bList c $cList d $dList]]
     } else {
@@ -305,18 +309,24 @@ proc ::tclinterp::interpolation::least1dDer {args} {
     #  -xi - list of independent variable interpolation (xi) values
     #  -w - list of weights, optional
     #  -nterms - number of terms of interpolation polynom, default is 3
-    #  -coeffs - select the alternative output option
+    #  -coeffs - selects the alternative output option
     # Returns: dict of interpolated dependent variable values and its derivatives under `yi` and `yiDer` keys. If
     # `-coeffs` switch is in args, the output is dictionary that contains `yi` values under `yi` key, `yi` derivatives
     # under `yiDer` key, and the values of interpolation polynom coefficients under the keys `b`, `c` and `d`.
     # Synopsis: -x list -y list -xi list ?-w list? ?-nterms value? ?-coeffs?
-    argparse {
-        {-x= -required}
-        {-y= -required}
-        {-xi= -required}
-        -w=
-        {-nterms= -default 3}
-        -coeffs
+    argparse -help {Does least squares polynomial one-dimensional interpolation with calculation of its derivative.\
+                            Returns: dict of interpolated dependent variable values and its derivatives under 'yi' and\
+                            'yiDer' keys. If '-coeffs' switch is in args, the output is dictionary that contains 'yi'\
+                            values under 'yi' key, 'yi' derivatives under 'yiDer' key, and the values of interpolation\
+                            polynom coefficients under the keys 'b', 'c' and 'd'} {
+        {-x= -required -help {List of independent variable (x) values}}
+        {-y= -required -help {List of dependent variable (y) values}}
+        {-xi= -required -help {List of independent variable interpolation (xi) values}}
+        {-w= -help {List of weights}}
+        {-nterms= -default 3 -type integer -validate {$arg>0}\
+                 -errormsg {Number of terms -nterms must be more than zero}\
+                 -help {Number of terms of interpolation polynom}}
+        {-coeffs -help {Selects the alternative output option}}
     }
     set xLen [llength $x]
     set yLen [llength $y]
@@ -332,15 +342,11 @@ proc ::tclinterp::interpolation::least1dDer {args} {
     } elseif {$xLen!=$wLen} {
         return -code error "Length of -w '$wLen' must be equal to length of -x '$xLen'"
     } elseif {$xiLen==0} {
-        return -code error "Length of interpolation points list -xi must be more than zero"
-    } elseif {[string is integer -strict $nterms]==0} {
-        return -code error "Number of terms -nterms '$nterms' must be of integer type"
-    } elseif {$nterms<=0} {
-        return -code error "Number of terms -nterms must be more than zero"
+        return -code error {Length of interpolation points list -xi must be more than zero}
     }
-    ::tclinterp::lists2arrays [list xArray yArray wArray xiArray] [list $x $y $w $xi]
-    ::tclinterp::newArrays [list b c d] [list $nterms $nterms $nterms]
-    ::tclinterp::newDoubleps [list yiPnt yiDerPnt]
+    ::tclinterp::lists2arrays {xArray yArray wArray xiArray} [list $x $y $w $xi]
+    ::tclinterp::newArrays {b c d} [list $nterms $nterms $nterms]
+    ::tclinterp::newDoubleps {yiPnt yiDerPnt}
     # create polynomial coefficients for given data
     ::tclinterp::least_set $xLen $xArray $yArray $wArray $nterms $b $c $d
     # calculate polynomial value and derivative for each xi value
@@ -350,7 +356,7 @@ proc ::tclinterp::interpolation::least1dDer {args} {
         lappend yiDerList [::tclinterp::doublep_value $yiDerPnt]
     }
     if {[info exists coeffs]} {
-        ::tclinterp::arrays2lists [list bList cList dList] [list $b $c $d] [list $nterms $nterms $nterms]
+        ::tclinterp::arrays2lists {bList cList dList} [list $b $c $d] [list $nterms $nterms $nterms]
         ::tclinterp::deleteArrays $b $c $d $xArray $yArray $xiArray
         ::tclinterp::deleteDoubleps $yiPnt $yiDerPnt
         return [dcreate yi $yiList yiDer $yiDerList coeffs [dcreate b $bList c $cList d $dList]]
@@ -373,16 +379,14 @@ proc ::tclinterp::approximation::genBezier {args} {
     #   [0,1]
     # Returns: dict with lists of xi and yi points at specified t points
     # Synopsis: -n value -x list -y list -t list
-    argparse {
-        {-n= -required}
-        {-x= -required}
-        {-y= -required}
-        {-t= -required}
-    }
-    if {[string is integer -strict $n]==0} {
-        return -code error "Order of Bezier curve -n '$n' must be of integer type"
-    } elseif {$n<0} {
-        return -code error "Order of Bezier curve -n '$n' must be more than or equal to zero"
+    argparse -help {Finds values of general Bezier function at specified t points. Returns: dict with lists of xi and yi\
+                            points at specified t points} {
+        {-n= -required -help {Order of Bezier function, must be zero or more} -type integer -validate {$arg>0}\
+                 -errormsg {Order of Bezier curve -n '$arg' must be more than or equal to zero}}
+        {-x= -required -help {List of x control points values of size n+1}}
+        {-y= -required -help {List of y control points values of size n+1}}
+        {-t= -required -help {List of t points at which we want to evaluate Bezier function, best results are obtained\
+                                      within the interval [0,1]}}
     }
     set xLen [llength $x]
     set yLen [llength $y]
@@ -392,10 +396,10 @@ proc ::tclinterp::approximation::genBezier {args} {
     } elseif {$yLen!=[= {$n+1}]} {
         return -code error "Length of -y '$yLen' must be equal to n+1=[= {$n+1}]"
     } elseif {$tLen==0} {
-        return -code error "Length of points list -t must be more than zero"
+        return -code error {Length of points list -t must be more than zero}
     }
-    ::tclinterp::lists2arrays [list xArray yArray] [list $x $y]
-    ::tclinterp::newDoubleps [list xiPnt yiPnt]
+    ::tclinterp::lists2arrays {xArray yArray} [list $x $y]
+    ::tclinterp::newDoubleps {xiPnt yiPnt}
     for {set i 0} {$i<$tLen} {incr i} {
         ::tclinterp::bc_val $n [@ $t $i] $xArray $yArray $xiPnt $yiPnt
         lappend xiList [::tclinterp::doublep_value $xiPnt]
@@ -415,18 +419,15 @@ proc ::tclinterp::approximation::bezier {args} {
     #  -y - list of y control points values of size n+1
     # Returns: yi values of Bezier function at x points
     # Synopsis: -n value -a value -b value -x list -y list
-    argparse {
-        {-n= -required}
-        {-a= -required}
-        {-b= -required}
-        {-x= -required}
-        {-y= -required}
+    argparse -help {Finds values of Bezier function at x points. Returns: yi values of Bezier function at x points} {
+        {-n= -required -help {Order of Bezier function, must be zero or more} -type integer -validate {$arg>0}\
+                 -errormsg {Order of Bezier curve -n '$arg' must be more than or equal to zero}}
+        {-a= -required -help {Start of the interval}}
+        {-b= -required -help {End of interval}}
+        {-x= -required -help {List of x values}}
+        {-y= -required -help {List of y control points values of size n+1}}
     }
-    if {[string is integer -strict $n]==0} {
-        return -code error "Order of Bezier curve -n '$n' must be of integer type"
-    } elseif {$n<0} {
-        return -code error "Order of Bezier curve -n '$n' must be more than or equal to zero"
-    } elseif {$a==$b} {
+    if {$a==$b} {
         return -code error "Start -a '$a' and end -b '$b' values of interval must not be equal"
     }
     set xLen [llength $x]
@@ -434,9 +435,9 @@ proc ::tclinterp::approximation::bezier {args} {
     if {$yLen!=[= {$n+1}]} {
         return -code error "Length of -y '$yLen' must be equal to n+1=[= {$n+1}]"
     } elseif {$xLen==0} {
-        return -code error "Length of points list -x must be more than zero"
+        return -code error {Length of points list -x must be more than zero}
     }
-    ::tclinterp::lists2arrays [list yArray] [list $y]
+    ::tclinterp::lists2arrays yArray [list $y]
     for {set i 0} {$i<$xLen} {incr i} {
         lappend yiList [::tclinterp::bez_val $n [@ $x $i] $a $b $yArray]
     }
@@ -451,15 +452,18 @@ proc ::tclinterp::interpolation::divDif1d {args} {
     #  -x - list of independent variable (x) values
     #  -y - list of dependent variable (y) values
     #  -xi - list of independent variable interpolation (xi) values
-    #  -coeffs - select the alternative output option
+    #  -coeffs - selects the alternative output option
     # Returns: list of interpolated dependent variable values, `yi`, at `xi`. If `-coeffs` switch is in args, the output
     # is dictionary that contains `yi` values under `yi` key, and the values of difference table under the key `coeffs`.
     # Synopsis: -x list -y list -xi list ?-coeffs?
-    argparse {
-        {-x= -required}
-        {-y= -required}
-        {-xi= -required}
-        -coeffs
+    argparse -help {Does divided difference one-dimensional interpolation. Returns: list of interpolated dependent\
+                            variable values, 'yi', at 'xi'. If '-coeffs' switch is in args, the output is dictionary\
+                            that contains 'yi' values under 'yi' key, and the values of difference table under the key\
+                            'coeffs'} {
+        {-x= -required -help {List of independent variable (x) values}}
+        {-y= -required -help {List of dependent variable (y) values}}
+        {-xi= -required -help {List of independent variable interpolation (xi) values}}
+        {-coeffs -help {Selects the alternative output option}}
     }
     set xLen [llength $x]
     set yLen [llength $y]
@@ -467,13 +471,13 @@ proc ::tclinterp::interpolation::divDif1d {args} {
     if {$xLen!=$yLen} {
         return -code error "Length of -y '$yLen' must be equal to length of -x '$xLen'"
     } elseif {$xiLen==0} {
-        return -code error "Length of interpolation points list -xi must be more than zero"
+        return -code error {Length of interpolation points list -xi must be more than zero}
     }
-    if {[::tclinterp::duplListCheck $x]=="true"} {
-        return -code error "List of -x values must not contain duplicated elements"
+    if {[::tclinterp::duplListCheck $x]} {
+        return -code error {List of -x values must not contain duplicated elements}
     }
-    ::tclinterp::lists2arrays [list xArray yArray] [list $x $y]
-    ::tclinterp::newArrays [list difTab] [list $xLen]
+    ::tclinterp::lists2arrays {xArray yArray} [list $x $y]
+    ::tclinterp::newArrays difTab $xLen
     # create difference table for given data
     ::tclinterp::data_to_dif $xLen $xArray $yArray $difTab
     # calculate polynomial value for each xi value
@@ -482,7 +486,7 @@ proc ::tclinterp::interpolation::divDif1d {args} {
         lappend yiList $iElem
     }
     if {[info exists coeffs]} {
-        ::tclinterp::arrays2lists [list difTabList] [list $difTab] [list $xLen]
+        ::tclinterp::arrays2lists difTabList $difTab $xLen
         ::tclinterp::deleteArrays $difTab $xArray $yArray
         return [dcreate yi $yiList coeffs $difTabList]
     } else {
@@ -501,10 +505,10 @@ proc ::tclinterp::approximation::cubicBSpline1d {args} {
     #  -ti - list of independent variable interpolation (ti) values, -xi is an alias
     # Returns: list of approximation values yi at ti points.
     # Synopsis: -t|x list -y list -ti|xi list
-    argparse {
-        {-t= -required -alias x}
-        {-y= -required}
-        {-ti= -required -alias xi}
+    argparse -help {Evaluates a cubic B spline approximant. Returns: list of approximation values yi at ti points} {
+        {-t= -required -alias x -help {List of independent variable (t) values}}
+        {-y= -required -help {List of dependent variable (y) values}}
+        {-ti= -required -alias xi -help {List of independent variable interpolation (ti) values}}
     }
     set tLen [llength $t]
     set yLen [llength $y]
@@ -512,9 +516,9 @@ proc ::tclinterp::approximation::cubicBSpline1d {args} {
     if {$tLen!=$yLen} {
         return -code error "Length of -y '$yLen' must be equal to length of -t '$tLen'"
     } elseif {$tiLen==0} {
-        return -code error "Length of interpolation points list -ti must be more than zero"
+        return -code error {Length of interpolation points list -ti must be more than zero}
     }
-    ::tclinterp::lists2arrays [list tArray yArray] [list $t $y]
+    ::tclinterp::lists2arrays {tArray yArray} [list $t $y]
     for {set i 0} {$i<$tiLen} {incr i} {
         set iElem [::tclinterp::spline_b_val $tLen $tArray $yArray [@ $ti $i]]
         lappend yiList $iElem
@@ -534,12 +538,12 @@ proc ::tclinterp::approximation::cubicBetaSpline1d {args} {
     #  -ti - list of independent variable interpolation (ti) values, -xi is an alias
     # Returns: list of approximation values yi at ti points.
     # Synopsis: -beta1 value -beta2 value -t|x list -y list -ti|xi list
-    argparse {
-        {-beta1= -required}
-        {-beta2= -required}
-        {-t= -required -alias x}
-        {-y= -required}
-        {-ti= -required -alias xi}
+    argparse -help {Evaluates a cubic beta spline approximant. Returns: list of approximation values yi at ti points} {
+        {-beta1= -required -type double -help {The skew or bias parameter, beta1 = 1 for no skew or bias}}
+        {-beta2= -required -type double -help {The tension parameter, beta2 = 0 for no tension}}
+        {-t= -required -alias x -help {List of independent variable (t) values}}
+        {-y= -required -help {List of dependent variable (y) values}}
+        {-ti= -required -alias xi -help {List of independent variable interpolation (ti) values}}
     }
     set tLen [llength $t]
     set yLen [llength $y]
@@ -547,13 +551,9 @@ proc ::tclinterp::approximation::cubicBetaSpline1d {args} {
     if {$tLen!=$yLen} {
         return -code error "Length of -y '$yLen' must be equal to length of -t '$tLen'"
     } elseif {$tiLen==0} {
-        return -code error "Length of interpolation points list -ti must be more than zero"
-    } elseif {[string is double -strict $beta1]==0} {
-        return -code error "-beta1 '$beta1' must be of double type"
-    } elseif {[string is double -strict $beta2]==0} {
-        return -code error "-beta1 '$beta2' must be of double type"
+        return -code error {Length of interpolation points list -ti must be more than zero}
     }
-    ::tclinterp::lists2arrays [list tArray yArray] [list $t $y]
+    ::tclinterp::lists2arrays {tArray yArray} [list $t $y]
     for {set i 0} {$i<$tiLen} {incr i} {
         set iElem [::tclinterp::spline_beta_val $beta1 $beta2 $tLen $tArray $yArray [@ $ti $i]]
         lappend yiList $iElem
@@ -587,15 +587,26 @@ proc ::tclinterp::interpolation::cubicSpline1d {args} {
     # under `yder2` key.
     # Synopsis: -t|x list -y list -ti|xi list ?-ibcbeg|begflag value -ybcbeg value? ?-ibcend|endflag value -ybcend value?
     #   ?-deriv?
-    argparse {
-        {-ibcbeg= -default quad -enum {quad der1 der2 notaknot} -alias begflag}
-        {-ibcend= -default quad -enum {quad der1 der2 notaknot} -alias endflag}
-        {-ybcbeg= -default 0.0}
-        {-ybcend= -default 0.0}
-        {-t= -required -alias x}
-        {-y= -required}
-        {-ti= -required -alias xi}
-        -deriv
+    argparse -help {Does piecewise cubic spline interpolation. Returns: list of interpolated dependent variable values\
+                            under. If '-deriv' switch is in args, the output is dictionary that contains 'yi' values\
+                            under 'yi' key, 'yi' derivative under 'yder1' key, and 'yi' second derivative under 'yder2'\
+                            key} {
+        {-ibcbeg= -default quad -enum {quad der1 der2 notaknot} -alias begflag\
+                 -help {Left boundary condition flag. Possible values: quad, the cubic spline should be a quadratic over\
+                                the first interval; der1, the first derivative at the left endpoint should be\
+                                YBCBEG; der2, the second derivative at the left endpoint should be YBCBEG; notaknot,\
+                                not-a-knot, the third derivative is continuous at T(2)}}
+        {-ibcend= -default quad -enum {quad der1 der2 notaknot} -alias endflag\
+                 -help {Right boundary condition flag, -endflag is an alias. Possible values: quad, the cubic spline\
+                                should be a quadratic over the last interval; der1, the first derivative at the right\
+                                endpoint should be YBCBEG; der2, the second derivative at the right endpoint should be\
+                                YBCBEG; notaknot, not-a-knot, the third derivative is continuous at T(2)}}
+        {-ybcbeg= -default 0.0 -help {The values to be used in the boundary conditions if ibcbeg is equal to der1 or der2}}
+        {-ybcend= -default 0.0 -help {The values to be used in the boundary conditions if ibcend is equal to der1 or der2}}
+        {-t= -required -alias x -help {List of independent variable (t) values}}
+        {-y= -required -help {List of dependent variable (y) values}}
+        {-ti= -required -alias xi -help {List of independent variable interpolation (ti) values}}
+        {-deriv -help {Select the alternative output option}}
     }
     set keyMap [dcreate quad 0 der1 1 der2 2 notaknot 3]
     set tLen [llength $t]
@@ -604,11 +615,11 @@ proc ::tclinterp::interpolation::cubicSpline1d {args} {
     if {$tLen!=$yLen} {
         return -code error "Length of -y '$yLen' must be equal to length of -t '$tLen'"
     } elseif {$tiLen==0} {
-        return -code error "Length of interpolation points list -ti must be more than zero"
+        return -code error {Length of interpolation points list -ti must be more than zero}
     }
-    ::tclinterp::lists2arrays [list tArray yArray] [list $t $y]
-    ::tclinterp::newArrays [list yppArray] [list $tLen]
-    ::tclinterp::newDoubleps [list ypPnt yppPnt]
+    ::tclinterp::lists2arrays {tArray yArray} [list $t $y]
+    ::tclinterp::newArrays yppArray $tLen
+    ::tclinterp::newDoubleps {ypPnt yppPnt}
     set yppArray [::tclinterp::spline_cubic_set $tLen $tArray $yArray [dget $keyMap $ibcbeg] $ybcbeg\
                           [dget $keyMap $ibcend] $ybcend]
     for {set i 0} {$i<$tiLen} {incr i} {
@@ -638,12 +649,14 @@ proc ::tclinterp::interpolation::hermiteSpline1d {args} {
     # Returns: list of interpolated dependent variable values. If `-deriv` switch is in args, the output is
     # dictionary that contains `yi` values under `yi` key, `yi` derivative under `yder1` key.
     # Synopsis: -t|x list -y list -yp list -ti|xi list ?-deriv?
-    argparse {
-        {-t= -required -alias x}
-        {-y= -required}
-        {-yp= -required}
-        {-ti= -required -alias xi}
-        -deriv
+    argparse -help {Does Hermite polynomial spline interpolation. Returns: list of interpolated dependent variable\
+                            values. If '-deriv' switch is in args, the output is dictionary that contains 'yi' values\
+                            under 'yi' key, 'yi' derivative under 'yder1' key} {
+        {-t= -required -alias x -help {List of independent variable (t) values, must be strictly increasing}}
+        {-y= -required -help {List of dependent variable (y) values}}
+        {-yp= -required -help {List of dependent variable (y) derivative values}}
+        {-ti= -required -alias xi -help {List of independent variable interpolation (ti) values}}
+        {-deriv -help {Select the alternative output option}}
     }
     set tLen [llength $t]
     set yLen [llength $y]
@@ -654,14 +667,14 @@ proc ::tclinterp::interpolation::hermiteSpline1d {args} {
     } elseif {$tLen!=$ypLen} {
         return -code error "Length of -yp '$ypLen' must be equal to length of -t '$tLen'"
     } elseif {$tiLen==0} {
-        return -code error "Length of interpolation points list -ti must be more than zero"
+        return -code error {Length of interpolation points list -ti must be more than zero}
     }
-    ::tclinterp::lists2arrays [list tArray yArray ypArray] [list $t $y $yp]
+    ::tclinterp::lists2arrays {tArray yArray ypArray} [list $t $y $yp]
     if {[::tclinterp::r8vec_ascends_strictly $tLen $tArray]==0} {
-        error "Independent variable array -t is not strictly increasing"
+        return -code error {Independent variable array -t is not strictly increasing}
     }
-    ::tclinterp::newArrays [list cArray] [list [= {$tLen*4}]]
-    ::tclinterp::newDoubleps [list yiPnt yipPnt]
+    ::tclinterp::newArrays cArray [= {$tLen*4}]
+    ::tclinterp::newDoubleps {yiPnt yipPnt}
     set cArray [::tclinterp::spline_hermite_set $tLen $tArray $yArray $ypArray]
     for {set i 0} {$i<$tiLen} {incr i} {
         ::tclinterp::spline_hermite_val $tLen $tArray $cArray [@ $ti $i] $yiPnt $yipPnt
@@ -686,10 +699,11 @@ proc ::tclinterp::interpolation::pchip1d {args} {
     #  -xe - list of independent variable interpolation (xe) values, -xi is an alias
     # Returns: list of interpolated dependent variable values.
     # Synopsis: -x list -f|y list -xe|xi list
-    argparse {
-        {-x= -required}
-        {-f= -required -alias y}
-        {-xe= -required -alias xi}
+    argparse -help {Does piecewise cubic Hermite interpolation (PCHIP). Returns: list of interpolated dependent variable\
+                            values} {
+        {-x= -required -help {List of independent variable (x) values, must be strictly increasing}}
+        {-f= -required -alias y -help {List of dependent variable (f) values}}
+        {-xe= -required -alias xi -help {List of independent variable interpolation (xe) values}}
     }
     set xLen [llength $x]
     set fLen [llength $f]
@@ -697,13 +711,13 @@ proc ::tclinterp::interpolation::pchip1d {args} {
     if {$xLen!=$fLen} {
         return -code error "Length of -f '$fLen' must be equal to length of -x '$xLen'"
     } elseif {$xeLen==0} {
-        return -code error "Length of interpolation points list -xe must be more than zero"
+        return -code error {Length of interpolation points list -xe must be more than zero}
     }
-    ::tclinterp::lists2arrays [list xArray fArray xeArray] [list $x $f $xe]
+    ::tclinterp::lists2arrays {xArray fArray xeArray} [list $x $f $xe]
     if {[::tclinterp::r8vec_ascends_strictly $xLen $xArray]==0} {
-        error "Independent variable array -x is not strictly increasing"
+        return -code error {Independent variable array -x is not strictly increasing}
     }
-    ::tclinterp::newArrays [list dArray feArray] [list $xLen $xeLen]
+    ::tclinterp::newArrays {dArray feArray} [list $xLen $xeLen]
     ::tclinterp::spline_pchip_set $xLen $xArray $fArray $dArray
     ::tclinterp::spline_pchip_val $xLen $xArray $fArray $dArray $xeLen $xeArray $feArray
     set feList [::tclinterp::array2list $feArray $xeLen]

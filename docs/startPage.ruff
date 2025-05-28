@@ -43,4 +43,28 @@ variable startPage {
 
     You can find some documentation [here](https://georgtree.github.io/tclinterp)
 
+    # Interactive help
+
+    All public procedures has interactive help. To get information about procedure and its arguments call it with `-help`
+    switch:
+
+    ``` tcl
+    package require tclinterp
+    namespace import ::tclinterp::interpolation::*
+    near1d -help
+    ```
+
+    ``` text
+    Does nearest one-dimensional interpolation. Returns: list of interpolated
+    dependent variable values, 'yi', at 'xi'. Can accepts unambiguous prefixes
+    instead of switches names. Accepts switches only before parameters.
+    Switches:
+    -x - Required, expects argument. List of independent variable (x)
+    values, must be strictly increasing.
+    -y - Required, expects argument. List of dependent variable (y) values.
+    -xi - Required, expects argument. list of independent variable
+    interpolation (xi) values.
+    ```
+
+    Best to do it in interactive console, see [tkcon](https://github.com/bohagan1/TkCon)
 }

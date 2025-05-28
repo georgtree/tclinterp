@@ -1,7 +1,7 @@
 '\"
 '\" '\" Copyright (c) George Yashin
 '\"
-.TH "tclinterp" 3tcl 0\&.14 "tcl_tools" "Tcl wrapper for C interpolation procedures"
+.TH "tclinterp" 3tcl 0\&.15 "tcl_tools" "Tcl wrapper for C interpolation procedures"
 .SH NAME
 tclinterp - Commands in namespace tclinterp
 .SH SYNOPSIS

@@ -6,7 +6,7 @@
 <body>
 <div class='ruff-layout'>
 <header class='ruff-layout-header ruff-hd'>
-<a style='text-decoration:none;' href='index.html'>Tcl wrapper for C interpolation procedures (v0.14)</a>
+<a style='text-decoration:none;' href='index.html'>Tcl wrapper for C interpolation procedures (v0.15)</a>
 
 
             <div id="ruffButtonBar">
@@ -54,6 +54,28 @@ sudo make install
 <h1 class='ruff'><a name='Documentation'></a>Documentation<span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h1>
 <div style='clear:both;'></div>
 <p class='ruff'>You can find some documentation <a href="https://georgtree.github.io/tclinterp" >here</a></p>
+<h1 class='ruff'><a name='Interactive help'></a>Interactive help<span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h1>
+<div style='clear:both;'></div>
+<p class='ruff'>All public procedures has interactive help. To get information about procedure and its arguments call it with <code><font color=#b9b96e>-help</font></code> switch:</p>
+
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#ffa500>package</font></b> require tclinterp
+<b><font color=#ffa500>namespace</font></b> import ::tclinterp::interpolation::*
+near1d <font color=#b9b96e>-help</font>
+</pre>
+
+</figure>
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'>Does nearest one-dimensional interpolation. Returns: list of interpolated
+dependent variable values, 'yi', at 'xi'. Can accepts unambiguous prefixes
+instead of switches names. Accepts switches only before parameters.
+Switches:
+<font color=#b9b96e>-x</font> - Required, expects argument. List of independent variable (x)
+values, must be strictly increasing.
+<font color=#b9b96e>-y</font> - Required, expects argument. List of dependent variable (y) values.
+<font color=#b9b96e>-xi</font> - Required, expects argument. list of independent variable
+interpolation (xi) values.
+</pre>
+
+</figure><p class='ruff'>Best to do it in interactive console, see <a href="https://github.com/bohagan1/TkCon" >tkcon</a></p>
 </main><nav class='ruff-nav'><ul ><li class='ruff-toc1'><a class='ruff-highlight' style='padding-top:2px;' href='index.html'>Start page</a></li>
 <li class='ruff-toc1'><a href='index-docindex.html' accesskey='i'>Index</a></li>
 <hr>

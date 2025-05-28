@@ -6,7 +6,7 @@
 <body>
 <div class='ruff-layout'>
 <header class='ruff-layout-header ruff-hd'>
-<a style='text-decoration:none;' href='index.html'>Tcl wrapper for C interpolation procedures (v0.14)</a>
+<a style='text-decoration:none;' href='index.html'>Tcl wrapper for C interpolation procedures (v0.15)</a>
 
 
             <div id="ruffButtonBar">
@@ -147,7 +147,7 @@
         <b><font color=#ffa500>try</font></b> {
             ::tclinterp::doubleArray_setitem <font color=#f1b479>$a</font> <font color=#f1b479>$i</font> <font color=#f1b479>$iElem</font>
         } on error {errmsg erropts} {
-            <b><font color=#ffa500>if</font></b> {[<b><font color=#ffa500>dget</font></b> <font color=#f1b479>$erropts</font> <font color=#b9b96e>-errorcode</font>]==<font color=#90ee90>&quot;SWIG TypeError&quot;</font>} {
+            <b><font color=#ffa500>if</font></b> {[<b><font color=#ffa500>dget</font></b> <font color=#f1b479>$erropts</font> <font color=#b9b96e>-errorcode</font>] eq {SWIG TypeError}} {
                 <b><font color=#ffa500>error</font></b> <font color=#90ee90>&quot;List must contains only double elements, but get '<font color=#f1b479>$</font>iElem'&quot;</font>
             } <b><font color=#ffa500>else</font></b> {
                 <b><font color=#ffa500>error</font></b> <font color=#90ee90>&quot;Array creation failed with message '<font color=#f1b479>$</font>errmsg' and opts '<font color=#f1b479>$</font>erropts'&quot;</font>

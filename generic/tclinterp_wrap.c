@@ -1731,7 +1731,7 @@ static swig_module_info swig_module = {swig_types, 2, 0, 0, 0, 0};
 #define SWIG_prefix  "tclinterp::"
 #define SWIG_namespace "tclinterp"
 
-#define SWIG_version "0.14"
+#define SWIG_version "0.15"
 
 #define SWIG_as_voidptr(a) (void *)((const void *)(a)) 
 #define SWIG_as_voidptrptr(a) ((void)SWIG_as_voidptr(*a),(void**)(a)) 
