@@ -64,7 +64,7 @@ double basis_function_b_val ( double tdata[], double tval )
   int left;
   int right;
   double u;
-  double yval;
+  double yval = 0.0;
 
   if ( tval <= tdata[0] || tdata[NDATA-1] <= tval )
   {
@@ -181,7 +181,7 @@ double basis_function_beta_val ( double beta1, double beta2, double tdata[],
   int left;
   int right;
   double u;
-  double yval;
+  double yval = 0.0;
 
   if ( tval <= tdata[0] || tdata[NDATA-1] <= tval )
   {
@@ -944,8 +944,8 @@ double basis_matrix_tmp ( int left, int n, double mbasis[], int ndata,
     Output, double BASIS_MATRIX_TMP, the value of the spline at TVAL.
 */
 {
-  double arg;
-  int first;
+  double arg = 0.0;
+  int first = 1;
   int i;
   int j;
   double tm;
@@ -3189,7 +3189,7 @@ double pchst ( double arg1, double arg2 )
     +1.0, if ARG1 and ARG2 are of the same sign.
 */
 {
-  double value;
+  double value = 0.0;
 
   if ( arg1 == 0.0 )
   {
@@ -5967,9 +5967,9 @@ double spline_overhauser_uni_val ( int ndata, double tdata[], double ydata[],
 */
 {
   int left;
-  double *mbasis;
+  double *mbasis = NULL;
   int right;
-  double yval;
+  double yval = 0.0;
 /*
   Check NDATA.
 */
