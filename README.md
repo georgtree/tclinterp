@@ -1,6 +1,6 @@
 ![Static Badge](https://img.shields.io/badge/version-0.15-blue)
 
-![Static Badge](https://img.shields.io/badge/license-GPL3-blue)
+![Static Badge](https://img.shields.io/badge/license-LGPL2.1-blue)
 
 ![Static Badge](https://img.shields.io/badge/Tcl_version-9.0-blue)
 ![Static Badge](https://img.shields.io/badge/Tcl_version-8.6.15-blue)
