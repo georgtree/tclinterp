@@ -76,9 +76,9 @@
     } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$tiLen</font>==0} {
         <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error {Length of interpolation points list <font color=#b9b96e>-ti</font> must be more than zero}
     }
-    ::tclinterp::lists2arrays {tArray yArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$t</font> <font color=#f1b479>$y</font>]
-    ::tclinterp::newArrays yppArray <font color=#f1b479>$tLen</font>
-    ::tclinterp::newDoubleps {ypPnt yppPnt}
+    ::tclinterp::Lists2arrays {tArray yArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$t</font> <font color=#f1b479>$y</font>]
+    ::tclinterp::NewArrays yppArray <font color=#f1b479>$tLen</font>
+    ::tclinterp::NewDoubleps {ypPnt yppPnt}
     <b><font color=#ffa500>set</font></b> yppArray [::tclinterp::spline_cubic_set <font color=#f1b479>$tLen</font> <font color=#f1b479>$tArray</font> <font color=#f1b479>$yArray</font> [<b><font color=#ffa500>dget</font></b> <font color=#f1b479>$keyMap</font> <font color=#f1b479>$ibcbeg</font>] <font color=#f1b479>$ybcbeg</font> [<b><font color=#ffa500>dget</font></b> <font color=#f1b479>$keyMap</font> <font color=#f1b479>$ibcend</font>] <font color=#f1b479>$ybcend</font>]
     <b><font color=#ffa500>for</font></b> {<b><font color=#ffa500>set</font></b> i 0} {<font color=#f1b479>$i</font>&lt;<font color=#f1b479>$tiLen</font>} {<b><font color=#ffa500>incr</font></b> i} {
         <b><font color=#ffa500>set</font></b> iElem [::tclinterp::spline_cubic_val <font color=#f1b479>$tLen</font> <font color=#f1b479>$tArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$yppArray</font> [@ <font color=#f1b479>$ti</font> <font color=#f1b479>$i</font>] <font color=#f1b479>$ypPnt</font> <font color=#f1b479>$yppPnt</font>]
@@ -86,8 +86,8 @@
         <b><font color=#ffa500>lappend</font></b> ypList [::tclinterp::doublep_value <font color=#f1b479>$ypPnt</font>]
         <b><font color=#ffa500>lappend</font></b> yppList [::tclinterp::doublep_value <font color=#f1b479>$yppPnt</font>]
     }
-    ::tclinterp::deleteArrays <font color=#f1b479>$tArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$yppArray</font>
-    ::tclinterp::deleteDoubleps <font color=#f1b479>$ypPnt</font> <font color=#f1b479>$yppPnt</font>
+    ::tclinterp::DeleteArrays <font color=#f1b479>$tArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$yppArray</font>
+    ::tclinterp::DeleteDoubleps <font color=#f1b479>$ypPnt</font> <font color=#f1b479>$yppPnt</font>
     <b><font color=#ffa500>if</font></b> {[<b><font color=#ffa500>info</font></b> exists deriv]} {
         <b><font color=#fe6efe>return</font></b> [<b><font color=#ffa500>dict</font></b> create yi <font color=#f1b479>$yiList</font> yder1 <font color=#f1b479>$ypList</font> yder2 <font color=#f1b479>$yppList</font>]
     } <b><font color=#ffa500>else</font></b> {
@@ -130,11 +130,11 @@
     } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$xiLen</font>==0} {
         <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error {Length of interpolation points list <font color=#b9b96e>-xi</font> must be more than zero}
     }
-    <b><font color=#ffa500>if</font></b> {[::tclinterp::duplListCheck <font color=#f1b479>$x</font>]} {
+    <b><font color=#ffa500>if</font></b> {[::tclinterp::DuplListCheck <font color=#f1b479>$x</font>]} {
         <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error {List of <font color=#b9b96e>-x</font> values must not contain duplicated elements}
     }
-    ::tclinterp::lists2arrays {xArray yArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$x</font> <font color=#f1b479>$y</font>]
-    ::tclinterp::newArrays difTab <font color=#f1b479>$xLen</font>
+    ::tclinterp::Lists2arrays {xArray yArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$x</font> <font color=#f1b479>$y</font>]
+    ::tclinterp::NewArrays difTab <font color=#f1b479>$xLen</font>
     <i><font color=#76a396># create difference table for given data</font></i>
     ::tclinterp::data_to_dif <font color=#f1b479>$xLen</font> <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$difTab</font>
     <i><font color=#76a396># calculate polynomial value for each xi value</font></i>
@@ -143,11 +143,11 @@
         <b><font color=#ffa500>lappend</font></b> yiList <font color=#f1b479>$iElem</font>
     }
     <b><font color=#ffa500>if</font></b> {[<b><font color=#ffa500>info</font></b> exists coeffs]} {
-        ::tclinterp::arrays2lists difTabList <font color=#f1b479>$difTab</font> <font color=#f1b479>$xLen</font>
-        ::tclinterp::deleteArrays <font color=#f1b479>$difTab</font> <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font>
+        ::tclinterp::Arrays2lists difTabList <font color=#f1b479>$difTab</font> <font color=#f1b479>$xLen</font>
+        ::tclinterp::DeleteArrays <font color=#f1b479>$difTab</font> <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font>
         <b><font color=#fe6efe>return</font></b> [<b><font color=#ffa500>dcreate</font></b> yi <font color=#f1b479>$yiList</font> coeffs <font color=#f1b479>$difTabList</font>]
     } <b><font color=#ffa500>else</font></b> {
-        ::tclinterp::deleteArrays <font color=#f1b479>$difTab</font> <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font>
+        ::tclinterp::DeleteArrays <font color=#f1b479>$difTab</font> <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font>
         <b><font color=#fe6efe>return</font></b> <font color=#f1b479>$yiList</font>
     }
     <b><font color=#fe6efe>return</font></b>
@@ -194,20 +194,20 @@
     } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$tiLen</font>==0} {
         <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error {Length of interpolation points list <font color=#b9b96e>-ti</font> must be more than zero}
     }
-    ::tclinterp::lists2arrays {tArray yArray ypArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$t</font> <font color=#f1b479>$y</font> <font color=#f1b479>$yp</font>]
+    ::tclinterp::Lists2arrays {tArray yArray ypArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$t</font> <font color=#f1b479>$y</font> <font color=#f1b479>$yp</font>]
     <b><font color=#ffa500>if</font></b> {[::tclinterp::r8vec_ascends_strictly <font color=#f1b479>$tLen</font> <font color=#f1b479>$tArray</font>]==0} {
         <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error {Independent variable array <font color=#b9b96e>-t</font> is not strictly increasing}
     }
-    ::tclinterp::newArrays cArray [= {<font color=#f1b479>$tLen</font>*4}]
-    ::tclinterp::newDoubleps {yiPnt yipPnt}
+    ::tclinterp::NewArrays cArray [= {<font color=#f1b479>$tLen</font>*4}]
+    ::tclinterp::NewDoubleps {yiPnt yipPnt}
     <b><font color=#ffa500>set</font></b> cArray [::tclinterp::spline_hermite_set <font color=#f1b479>$tLen</font> <font color=#f1b479>$tArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$ypArray</font>]
     <b><font color=#ffa500>for</font></b> {<b><font color=#ffa500>set</font></b> i 0} {<font color=#f1b479>$i</font>&lt;<font color=#f1b479>$tiLen</font>} {<b><font color=#ffa500>incr</font></b> i} {
         ::tclinterp::spline_hermite_val <font color=#f1b479>$tLen</font> <font color=#f1b479>$tArray</font> <font color=#f1b479>$cArray</font> [@ <font color=#f1b479>$ti</font> <font color=#f1b479>$i</font>] <font color=#f1b479>$yiPnt</font> <font color=#f1b479>$yipPnt</font>
         <b><font color=#ffa500>lappend</font></b> yiList [::tclinterp::doublep_value <font color=#f1b479>$yiPnt</font>]
         <b><font color=#ffa500>lappend</font></b> yipList [::tclinterp::doublep_value <font color=#f1b479>$yipPnt</font>]
     }
-    ::tclinterp::deleteArrays <font color=#f1b479>$tArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$cArray</font> <font color=#f1b479>$ypArray</font>
-    ::tclinterp::deleteDoubleps <font color=#f1b479>$yiPnt</font> <font color=#f1b479>$yipPnt</font>
+    ::tclinterp::DeleteArrays <font color=#f1b479>$tArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$cArray</font> <font color=#f1b479>$ypArray</font>
+    ::tclinterp::DeleteDoubleps <font color=#f1b479>$yiPnt</font> <font color=#f1b479>$yipPnt</font>
     <b><font color=#ffa500>if</font></b> {[<b><font color=#ffa500>info</font></b> exists deriv]} {
         <b><font color=#fe6efe>return</font></b> [<b><font color=#ffa500>dict</font></b> create yi <font color=#f1b479>$yiList</font> yder1 <font color=#f1b479>$yipList</font>]
     } <b><font color=#ffa500>else</font></b> {
@@ -246,10 +246,10 @@
     } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$xiLen</font>==0} {
         <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error {Length of interpolation points list <font color=#b9b96e>-xi</font> must be more than zero}
     }
-    ::tclinterp::lists2arrays {xArray yArray xiArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$x</font> <font color=#f1b479>$y</font> <font color=#f1b479>$xi</font>]
+    ::tclinterp::Lists2arrays {xArray yArray xiArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$x</font> <font color=#f1b479>$y</font> <font color=#f1b479>$xi</font>]
     <b><font color=#ffa500>set</font></b> yiArray [::tclinterp::interp_lagrange 1 <font color=#f1b479>$xLen</font> <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$xiLen</font> <font color=#f1b479>$xiArray</font>]
-    <b><font color=#ffa500>set</font></b> yiList [::tclinterp::array2list <font color=#f1b479>$yiArray</font> <font color=#f1b479>$xiLen</font>]
-    ::tclinterp::deleteArrays <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$xiArray</font> <font color=#f1b479>$yiArray</font>
+    <b><font color=#ffa500>set</font></b> yiList [::tclinterp::Array2list <font color=#f1b479>$yiArray</font> <font color=#f1b479>$xiLen</font>]
+    ::tclinterp::DeleteArrays <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$xiArray</font> <font color=#f1b479>$yiArray</font>
     <b><font color=#fe6efe>return</font></b> <font color=#f1b479>$yiList</font>
 }</pre></div>
 </div><h3 class='ruffproc'><a name='::tclinterp::interpolation::least1d'>least1d</a><span class='ns_scope'> [<a href="index-tclinterp-interpolation.html#::tclinterp::interpolation" title="::tclinterp::interpolation" class='ruff_cmd'>::tclinterp::interpolation</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
@@ -303,8 +303,8 @@
     } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$xiLen</font>==0} {
         <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error {Length of interpolation points list <font color=#b9b96e>-xi</font> must be more than zero}
     }
-    ::tclinterp::lists2arrays {xArray yArray wArray xiArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$x</font> <font color=#f1b479>$y</font> <font color=#f1b479>$w</font> <font color=#f1b479>$xi</font>]
-    ::tclinterp::newArrays {b c d} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$nterms</font> <font color=#f1b479>$nterms</font> <font color=#f1b479>$nterms</font>]
+    ::tclinterp::Lists2arrays {xArray yArray wArray xiArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$x</font> <font color=#f1b479>$y</font> <font color=#f1b479>$w</font> <font color=#f1b479>$xi</font>]
+    ::tclinterp::NewArrays {b c d} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$nterms</font> <font color=#f1b479>$nterms</font> <font color=#f1b479>$nterms</font>]
     <i><font color=#76a396># create polynomial coefficients for given data</font></i>
     ::tclinterp::least_set <font color=#f1b479>$xLen</font> <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$wArray</font> <font color=#f1b479>$nterms</font> <font color=#f1b479>$b</font> <font color=#f1b479>$c</font> <font color=#f1b479>$d</font>
     <i><font color=#76a396># calculate polynomial value for each xi value</font></i>
@@ -313,11 +313,11 @@
         <b><font color=#ffa500>lappend</font></b> yiList <font color=#f1b479>$iElem</font>
     }
     <b><font color=#ffa500>if</font></b> {[<b><font color=#ffa500>info</font></b> exists coeffs]} {
-        ::tclinterp::arrays2lists {bList cList dList} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$b</font> <font color=#f1b479>$c</font> <font color=#f1b479>$d</font>] [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$nterms</font> <font color=#f1b479>$nterms</font> <font color=#f1b479>$nterms</font>]
-        ::tclinterp::deleteArrays <font color=#f1b479>$b</font> <font color=#f1b479>$c</font> <font color=#f1b479>$d</font> <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$xiArray</font>
+        ::tclinterp::Arrays2lists {bList cList dList} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$b</font> <font color=#f1b479>$c</font> <font color=#f1b479>$d</font>] [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$nterms</font> <font color=#f1b479>$nterms</font> <font color=#f1b479>$nterms</font>]
+        ::tclinterp::DeleteArrays <font color=#f1b479>$b</font> <font color=#f1b479>$c</font> <font color=#f1b479>$d</font> <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$xiArray</font>
         <b><font color=#fe6efe>return</font></b> [<b><font color=#ffa500>dcreate</font></b> yi <font color=#f1b479>$yiList</font> coeffs [<b><font color=#ffa500>dcreate</font></b> b <font color=#f1b479>$bList</font> c <font color=#f1b479>$cList</font> d <font color=#f1b479>$dList</font>]]
     } <b><font color=#ffa500>else</font></b> {
-        ::tclinterp::deleteArrays <font color=#f1b479>$b</font> <font color=#f1b479>$c</font> <font color=#f1b479>$d</font> <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$xiArray</font>
+        ::tclinterp::DeleteArrays <font color=#f1b479>$b</font> <font color=#f1b479>$c</font> <font color=#f1b479>$d</font> <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$xiArray</font>
         <b><font color=#fe6efe>return</font></b> <font color=#f1b479>$yiList</font>
     }
     <b><font color=#fe6efe>return</font></b>
@@ -373,9 +373,9 @@
     } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$xiLen</font>==0} {
         <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error {Length of interpolation points list <font color=#b9b96e>-xi</font> must be more than zero}
     }
-    ::tclinterp::lists2arrays {xArray yArray wArray xiArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$x</font> <font color=#f1b479>$y</font> <font color=#f1b479>$w</font> <font color=#f1b479>$xi</font>]
-    ::tclinterp::newArrays {b c d} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$nterms</font> <font color=#f1b479>$nterms</font> <font color=#f1b479>$nterms</font>]
-    ::tclinterp::newDoubleps {yiPnt yiDerPnt}
+    ::tclinterp::Lists2arrays {xArray yArray wArray xiArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$x</font> <font color=#f1b479>$y</font> <font color=#f1b479>$w</font> <font color=#f1b479>$xi</font>]
+    ::tclinterp::NewArrays {b c d} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$nterms</font> <font color=#f1b479>$nterms</font> <font color=#f1b479>$nterms</font>]
+    ::tclinterp::NewDoubleps {yiPnt yiDerPnt}
     <i><font color=#76a396># create polynomial coefficients for given data</font></i>
     ::tclinterp::least_set <font color=#f1b479>$xLen</font> <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$wArray</font> <font color=#f1b479>$nterms</font> <font color=#f1b479>$b</font> <font color=#f1b479>$c</font> <font color=#f1b479>$d</font>
     <i><font color=#76a396># calculate polynomial value and derivative for each xi value</font></i>
@@ -385,13 +385,13 @@
         <b><font color=#ffa500>lappend</font></b> yiDerList [::tclinterp::doublep_value <font color=#f1b479>$yiDerPnt</font>]
     }
     <b><font color=#ffa500>if</font></b> {[<b><font color=#ffa500>info</font></b> exists coeffs]} {
-        ::tclinterp::arrays2lists {bList cList dList} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$b</font> <font color=#f1b479>$c</font> <font color=#f1b479>$d</font>] [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$nterms</font> <font color=#f1b479>$nterms</font> <font color=#f1b479>$nterms</font>]
-        ::tclinterp::deleteArrays <font color=#f1b479>$b</font> <font color=#f1b479>$c</font> <font color=#f1b479>$d</font> <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$xiArray</font>
-        ::tclinterp::deleteDoubleps <font color=#f1b479>$yiPnt</font> <font color=#f1b479>$yiDerPnt</font>
+        ::tclinterp::Arrays2lists {bList cList dList} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$b</font> <font color=#f1b479>$c</font> <font color=#f1b479>$d</font>] [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$nterms</font> <font color=#f1b479>$nterms</font> <font color=#f1b479>$nterms</font>]
+        ::tclinterp::DeleteArrays <font color=#f1b479>$b</font> <font color=#f1b479>$c</font> <font color=#f1b479>$d</font> <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$xiArray</font>
+        ::tclinterp::DeleteDoubleps <font color=#f1b479>$yiPnt</font> <font color=#f1b479>$yiDerPnt</font>
         <b><font color=#fe6efe>return</font></b> [<b><font color=#ffa500>dcreate</font></b> yi <font color=#f1b479>$yiList</font> yiDer <font color=#f1b479>$yiDerList</font> coeffs [<b><font color=#ffa500>dcreate</font></b> b <font color=#f1b479>$bList</font> c <font color=#f1b479>$cList</font> d <font color=#f1b479>$dList</font>]]
     } <b><font color=#ffa500>else</font></b> {
-        ::tclinterp::deleteArrays <font color=#f1b479>$b</font> <font color=#f1b479>$c</font> <font color=#f1b479>$d</font> <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$xiArray</font>
-        ::tclinterp::deleteDoubleps <font color=#f1b479>$yiPnt</font> <font color=#f1b479>$yiDerPnt</font>
+        ::tclinterp::DeleteArrays <font color=#f1b479>$b</font> <font color=#f1b479>$c</font> <font color=#f1b479>$d</font> <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$xiArray</font>
+        ::tclinterp::DeleteDoubleps <font color=#f1b479>$yiPnt</font> <font color=#f1b479>$yiDerPnt</font>
         <b><font color=#fe6efe>return</font></b> [<b><font color=#ffa500>dcreate</font></b> yi <font color=#f1b479>$yiList</font> yiDer <font color=#f1b479>$yiDerList</font>]
     }
     <b><font color=#fe6efe>return</font></b>
@@ -428,13 +428,13 @@
     } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$xiLen</font>==0} {
         <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error {Length of interpolation points list <font color=#b9b96e>-xi</font> must be more than zero}
     }
-    ::tclinterp::lists2arrays {xArray yArray xiArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$x</font> <font color=#f1b479>$y</font> <font color=#f1b479>$xi</font>]
+    ::tclinterp::Lists2arrays {xArray yArray xiArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$x</font> <font color=#f1b479>$y</font> <font color=#f1b479>$xi</font>]
     <b><font color=#ffa500>if</font></b> {![::tclinterp::r8vec_ascends_strictly <font color=#f1b479>$xLen</font> <font color=#f1b479>$xArray</font>]} {
         <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error {Independent variable array <font color=#b9b96e>-x</font> is not strictly increasing}
     }
     <b><font color=#ffa500>set</font></b> yiArray [::tclinterp::interp_linear 1 <font color=#f1b479>$xLen</font> <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$xiLen</font> <font color=#f1b479>$xiArray</font>]
-    <b><font color=#ffa500>set</font></b> yiList [::tclinterp::array2list <font color=#f1b479>$yiArray</font> <font color=#f1b479>$xiLen</font>]
-    ::tclinterp::deleteArrays <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$xiArray</font> <font color=#f1b479>$yiArray</font>
+    <b><font color=#ffa500>set</font></b> yiList [::tclinterp::Array2list <font color=#f1b479>$yiArray</font> <font color=#f1b479>$xiLen</font>]
+    ::tclinterp::DeleteArrays <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$xiArray</font> <font color=#f1b479>$yiArray</font>
     <b><font color=#fe6efe>return</font></b> <font color=#f1b479>$yiList</font>
 }</pre></div>
 </div><h3 class='ruffproc'><a name='::tclinterp::interpolation::near1d'>near1d</a><span class='ns_scope'> [<a href="index-tclinterp-interpolation.html#::tclinterp::interpolation" title="::tclinterp::interpolation" class='ruff_cmd'>::tclinterp::interpolation</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
@@ -469,10 +469,10 @@
     } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$xiLen</font>==0} {
         <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error {Length of interpolation points list <font color=#b9b96e>-xi</font> must be more than zero}
     }
-    ::tclinterp::lists2arrays {xArray yArray xiArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$x</font> <font color=#f1b479>$y</font> <font color=#f1b479>$xi</font>]
+    ::tclinterp::Lists2arrays {xArray yArray xiArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$x</font> <font color=#f1b479>$y</font> <font color=#f1b479>$xi</font>]
     <b><font color=#ffa500>set</font></b> yiArray [::tclinterp::interp_nearest 1 <font color=#f1b479>$xLen</font> <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$xiLen</font> <font color=#f1b479>$xiArray</font>]
-    <b><font color=#ffa500>set</font></b> yiList [::tclinterp::array2list <font color=#f1b479>$yiArray</font> <font color=#f1b479>$xiLen</font>]
-    ::tclinterp::deleteArrays <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$xiArray</font> <font color=#f1b479>$yiArray</font>
+    <b><font color=#ffa500>set</font></b> yiList [::tclinterp::Array2list <font color=#f1b479>$yiArray</font> <font color=#f1b479>$xiLen</font>]
+    ::tclinterp::DeleteArrays <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$xiArray</font> <font color=#f1b479>$yiArray</font>
     <b><font color=#fe6efe>return</font></b> <font color=#f1b479>$yiList</font>
 }</pre></div>
 </div><h3 class='ruffproc'><a name='::tclinterp::interpolation::pchip1d'>pchip1d</a><span class='ns_scope'> [<a href="index-tclinterp-interpolation.html#::tclinterp::interpolation" title="::tclinterp::interpolation" class='ruff_cmd'>::tclinterp::interpolation</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
@@ -507,15 +507,15 @@
     } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$xeLen</font>==0} {
         <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error {Length of interpolation points list <font color=#b9b96e>-xe</font> must be more than zero}
     }
-    ::tclinterp::lists2arrays {xArray fArray xeArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$x</font> <font color=#f1b479>$f</font> <font color=#f1b479>$xe</font>]
+    ::tclinterp::Lists2arrays {xArray fArray xeArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$x</font> <font color=#f1b479>$f</font> <font color=#f1b479>$xe</font>]
     <b><font color=#ffa500>if</font></b> {[::tclinterp::r8vec_ascends_strictly <font color=#f1b479>$xLen</font> <font color=#f1b479>$xArray</font>]==0} {
         <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error {Independent variable array <font color=#b9b96e>-x</font> is not strictly increasing}
     }
-    ::tclinterp::newArrays {dArray feArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$xLen</font> <font color=#f1b479>$xeLen</font>]
+    ::tclinterp::NewArrays {dArray feArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$xLen</font> <font color=#f1b479>$xeLen</font>]
     ::tclinterp::spline_pchip_set <font color=#f1b479>$xLen</font> <font color=#f1b479>$xArray</font> <font color=#f1b479>$fArray</font> <font color=#f1b479>$dArray</font>
     ::tclinterp::spline_pchip_val <font color=#f1b479>$xLen</font> <font color=#f1b479>$xArray</font> <font color=#f1b479>$fArray</font> <font color=#f1b479>$dArray</font> <font color=#f1b479>$xeLen</font> <font color=#f1b479>$xeArray</font> <font color=#f1b479>$feArray</font>
-    <b><font color=#ffa500>set</font></b> feList [::tclinterp::array2list <font color=#f1b479>$feArray</font> <font color=#f1b479>$xeLen</font>]
-    ::tclinterp::deleteArrays <font color=#f1b479>$xArray</font> <font color=#f1b479>$fArray</font> <font color=#f1b479>$dArray</font> <font color=#f1b479>$xeArray</font> <font color=#f1b479>$feArray</font>
+    <b><font color=#ffa500>set</font></b> feList [::tclinterp::Array2list <font color=#f1b479>$feArray</font> <font color=#f1b479>$xeLen</font>]
+    ::tclinterp::DeleteArrays <font color=#f1b479>$xArray</font> <font color=#f1b479>$fArray</font> <font color=#f1b479>$dArray</font> <font color=#f1b479>$xeArray</font> <font color=#f1b479>$feArray</font>
     <b><font color=#fe6efe>return</font></b> <font color=#f1b479>$feList</font>
 }</pre></div>
 </div></main><nav class='ruff-nav'><ul ><li class='ruff-toc1'><a style='padding-top:2px;' href='index.html'>Start page</a></li>

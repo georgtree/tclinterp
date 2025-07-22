@@ -13,11 +13,11 @@ set packageVersion [package versions tclinterp]
 set title "Tcl wrapper for C interpolation procedures"
 puts $packageVersion
 set commonHtml [list -title $title -sortnamespaces false -preamble $startPage -pagesplit namespace -recurse false\
-                        -includesource true -pagesplit namespace -autopunctuate true -compact false\
+                        -includesource true -pagesplit namespace -autopunctuate true -compact false -excludeprocs {^[A-Z].*}\
                         -includeprivate true -product tcl_tools -diagrammer "ditaa --border-width 1"\
                         -version $packageVersion -copyright "George Yashin" {*}$::argv]
 set commonNroff [list -title $title -sortnamespaces false -preamble $startPage -pagesplit namespace -recurse false\
-                         -pagesplit namespace -autopunctuate true -compact false -includeprivate true\
+                         -pagesplit namespace -autopunctuate true -compact false -includeprivate true -excludeprocs {^[A-Z].*}\
                          -product tcl_tools -diagrammer "ditaa --border-width 1" -version $packageVersion\
                          -copyright "George Yashin" {*}$::argv]
 set namespaces [list ::Examples ::tclinterp ::tclinterp::approximation ::tclinterp::interpolation]

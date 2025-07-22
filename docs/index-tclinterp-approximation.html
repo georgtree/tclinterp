@@ -57,11 +57,11 @@
     } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$xLen</font>==0} {
         <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error {Length of points list <font color=#b9b96e>-x</font> must be more than zero}
     }
-    ::tclinterp::lists2arrays yArray [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$y</font>]
+    ::tclinterp::Lists2arrays yArray [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$y</font>]
     <b><font color=#ffa500>for</font></b> {<b><font color=#ffa500>set</font></b> i 0} {<font color=#f1b479>$i</font>&lt;<font color=#f1b479>$xLen</font>} {<b><font color=#ffa500>incr</font></b> i} {
         <b><font color=#ffa500>lappend</font></b> yiList [::tclinterp::bez_val <font color=#f1b479>$n</font> [@ <font color=#f1b479>$x</font> <font color=#f1b479>$i</font>] <font color=#f1b479>$a</font> <font color=#f1b479>$b</font> <font color=#f1b479>$yArray</font>]
     }
-    ::tclinterp::deleteArrays <font color=#f1b479>$yArray</font>
+    ::tclinterp::DeleteArrays <font color=#f1b479>$yArray</font>
     <b><font color=#fe6efe>return</font></b> <font color=#f1b479>$yiList</font>
 }</pre></div>
 </div><h3 class='ruffproc'><a name='::tclinterp::approximation::cubicBetaSpline1d'>cubicBetaSpline1d</a><span class='ns_scope'> [<a href="index-tclinterp-approximation.html#::tclinterp::approximation" title="::tclinterp::approximation" class='ruff_cmd'>::tclinterp::approximation</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
@@ -102,12 +102,12 @@
     } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$tiLen</font>==0} {
         <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error {Length of interpolation points list <font color=#b9b96e>-ti</font> must be more than zero}
     }
-    ::tclinterp::lists2arrays {tArray yArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$t</font> <font color=#f1b479>$y</font>]
+    ::tclinterp::Lists2arrays {tArray yArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$t</font> <font color=#f1b479>$y</font>]
     <b><font color=#ffa500>for</font></b> {<b><font color=#ffa500>set</font></b> i 0} {<font color=#f1b479>$i</font>&lt;<font color=#f1b479>$tiLen</font>} {<b><font color=#ffa500>incr</font></b> i} {
         <b><font color=#ffa500>set</font></b> iElem [::tclinterp::spline_beta_val <font color=#f1b479>$beta1</font> <font color=#f1b479>$beta2</font> <font color=#f1b479>$tLen</font> <font color=#f1b479>$tArray</font> <font color=#f1b479>$yArray</font> [@ <font color=#f1b479>$ti</font> <font color=#f1b479>$i</font>]]
         <b><font color=#ffa500>lappend</font></b> yiList <font color=#f1b479>$iElem</font>
     }
-    ::tclinterp::deleteArrays <font color=#f1b479>$tArray</font> <font color=#f1b479>$yArray</font>
+    ::tclinterp::DeleteArrays <font color=#f1b479>$tArray</font> <font color=#f1b479>$yArray</font>
     <b><font color=#fe6efe>return</font></b> <font color=#f1b479>$yiList</font>
 }</pre></div>
 </div><h3 class='ruffproc'><a name='::tclinterp::approximation::cubicBSpline1d'>cubicBSpline1d</a><span class='ns_scope'> [<a href="index-tclinterp-approximation.html#::tclinterp::approximation" title="::tclinterp::approximation" class='ruff_cmd'>::tclinterp::approximation</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
@@ -142,12 +142,12 @@
     } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$tiLen</font>==0} {
         <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error {Length of interpolation points list <font color=#b9b96e>-ti</font> must be more than zero}
     }
-    ::tclinterp::lists2arrays {tArray yArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$t</font> <font color=#f1b479>$y</font>]
+    ::tclinterp::Lists2arrays {tArray yArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$t</font> <font color=#f1b479>$y</font>]
     <b><font color=#ffa500>for</font></b> {<b><font color=#ffa500>set</font></b> i 0} {<font color=#f1b479>$i</font>&lt;<font color=#f1b479>$tiLen</font>} {<b><font color=#ffa500>incr</font></b> i} {
         <b><font color=#ffa500>set</font></b> iElem [::tclinterp::spline_b_val <font color=#f1b479>$tLen</font> <font color=#f1b479>$tArray</font> <font color=#f1b479>$yArray</font> [@ <font color=#f1b479>$ti</font> <font color=#f1b479>$i</font>]]
         <b><font color=#ffa500>lappend</font></b> yiList <font color=#f1b479>$iElem</font>
     }
-    ::tclinterp::deleteArrays <font color=#f1b479>$tArray</font> <font color=#f1b479>$yArray</font>
+    ::tclinterp::DeleteArrays <font color=#f1b479>$tArray</font> <font color=#f1b479>$yArray</font>
     <b><font color=#fe6efe>return</font></b> <font color=#f1b479>$yiList</font>
 }</pre></div>
 </div><h3 class='ruffproc'><a name='::tclinterp::approximation::genBezier'>genBezier</a><span class='ns_scope'> [<a href="index-tclinterp-approximation.html#::tclinterp::approximation" title="::tclinterp::approximation" class='ruff_cmd'>::tclinterp::approximation</a>]</span><span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h3>
@@ -188,15 +188,15 @@
     } <b><font color=#ffa500>elseif</font></b> {<font color=#f1b479>$tLen</font>==0} {
         <b><font color=#fe6efe>return</font></b> <font color=#b9b96e>-code</font> error {Length of points list <font color=#b9b96e>-t</font> must be more than zero}
     }
-    ::tclinterp::lists2arrays {xArray yArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$x</font> <font color=#f1b479>$y</font>]
-    ::tclinterp::newDoubleps {xiPnt yiPnt}
+    ::tclinterp::Lists2arrays {xArray yArray} [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$x</font> <font color=#f1b479>$y</font>]
+    ::tclinterp::NewDoubleps {xiPnt yiPnt}
     <b><font color=#ffa500>for</font></b> {<b><font color=#ffa500>set</font></b> i 0} {<font color=#f1b479>$i</font>&lt;<font color=#f1b479>$tLen</font>} {<b><font color=#ffa500>incr</font></b> i} {
         ::tclinterp::bc_val <font color=#f1b479>$n</font> [@ <font color=#f1b479>$t</font> <font color=#f1b479>$i</font>] <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font> <font color=#f1b479>$xiPnt</font> <font color=#f1b479>$yiPnt</font>
         <b><font color=#ffa500>lappend</font></b> xiList [::tclinterp::doublep_value <font color=#f1b479>$xiPnt</font>]
         <b><font color=#ffa500>lappend</font></b> yiList [::tclinterp::doublep_value <font color=#f1b479>$yiPnt</font>]
     }
-    ::tclinterp::deleteArrays <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font>
-    ::tclinterp::deleteDoubleps <font color=#f1b479>$xiPnt</font> <font color=#f1b479>$yiPnt</font>
+    ::tclinterp::DeleteArrays <font color=#f1b479>$xArray</font> <font color=#f1b479>$yArray</font>
+    ::tclinterp::DeleteDoubleps <font color=#f1b479>$xiPnt</font> <font color=#f1b479>$yiPnt</font>
     <b><font color=#fe6efe>return</font></b> [<b><font color=#ffa500>dcreate</font></b> xi <font color=#f1b479>$xiList</font> yi <font color=#f1b479>$yiList</font>]
 }</pre></div>
 </div></main><nav class='ruff-nav'><ul ><li class='ruff-toc1'><a style='padding-top:2px;' href='index.html'>Start page</a></li>
