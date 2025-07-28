@@ -186,8 +186,8 @@ proc ::tclinterp::interpolation::near1d {args} {
     #  -xi - list of independent variable interpolation (xi) values
     # Returns: list of interpolated dependent variable values, `yi`, at `xi`
     # Synopsis: -x list -y list -xi list
-    argparse -help {Does nearest one-dimensional interpolation. Returns: list of interpolated dependent variable values,\
-                            'yi', at 'xi'} {
+    argparse -help {Does nearest one-dimensional interpolation. Returns: list of interpolated dependent variable\
+                            values, 'yi', at 'xi'} {
         {-x= -required -help {List of independent variable (x) values, must be strictly increasing}}
         {-y= -required -help {List of dependent variable (y) values}}
         {-xi= -required -help {list of independent variable interpolation (xi) values}}
@@ -253,10 +253,10 @@ proc ::tclinterp::interpolation::least1d {args} {
     # is dictionary that contains `yi` values under `yi` key, and the values of interpolation polynom coefficients under
     # the keys `b`, `c` and `d`.
     # Synopsis: -x list -y list -xi list ?-w list? ?-nterms value? ?-coeffs?
-    argparse -help {Does least squares polynomial one-dimensional interpolation. Returns: list of interpolated dependent\
-                            variable values, 'yi', at 'xi'. If '-coeffs' switch is in args, the output is dictionary\
-                            that contains 'yi' values under 'yi' key, and the values of interpolation polynom\
-                            coefficients under the keys 'b', 'c' and 'd'} {
+    argparse -help {Does least squares polynomial one-dimensional interpolation. Returns: list of interpolated\
+                            dependent variable values, 'yi', at 'xi'. If '-coeffs' switch is in args, the output is\
+                            dictionary that contains 'yi' values under 'yi' key, and the values of interpolation\
+                            polynom coefficients under the keys 'b', 'c' and 'd'} {
         {-x= -required -help {List of independent variable (x) values}}
         {-y= -required -help {List of dependent variable (y) values}}
         {-xi= -required -help {List of independent variable interpolation (xi) values}}
@@ -379,8 +379,8 @@ proc ::tclinterp::approximation::genBezier {args} {
     #   [0,1]
     # Returns: dict with lists of xi and yi points at specified t points
     # Synopsis: -n value -x list -y list -t list
-    argparse -help {Finds values of general Bezier function at specified t points. Returns: dict with lists of xi and yi\
-                            points at specified t points} {
+    argparse -help {Finds values of general Bezier function at specified t points. Returns: dict with lists of xi and\
+                            yi points at specified t points} {
         {-n= -required -help {Order of Bezier function, must be zero or more} -type integer -validate {$arg>0}\
                  -errormsg {Order of Bezier curve -n '$arg' must be more than or equal to zero}}
         {-x= -required -help {List of x control points values of size n+1}}
@@ -592,8 +592,8 @@ proc ::tclinterp::interpolation::cubicSpline1d {args} {
                             under 'yi' key, 'yi' derivative under 'yder1' key, and 'yi' second derivative under 'yder2'\
                             key} {
         {-ibcbeg= -default quad -enum {quad der1 der2 notaknot} -alias begflag\
-                 -help {Left boundary condition flag. Possible values: quad, the cubic spline should be a quadratic over\
-                                the first interval; der1, the first derivative at the left endpoint should be\
+                 -help {Left boundary condition flag. Possible values: quad, the cubic spline should be a quadratic\
+                                over the first interval; der1, the first derivative at the left endpoint should be\
                                 YBCBEG; der2, the second derivative at the left endpoint should be YBCBEG; notaknot,\
                                 not-a-knot, the third derivative is continuous at T(2)}}
         {-ibcend= -default quad -enum {quad der1 der2 notaknot} -alias endflag\
@@ -601,8 +601,10 @@ proc ::tclinterp::interpolation::cubicSpline1d {args} {
                                 should be a quadratic over the last interval; der1, the first derivative at the right\
                                 endpoint should be YBCBEG; der2, the second derivative at the right endpoint should be\
                                 YBCBEG; notaknot, not-a-knot, the third derivative is continuous at T(2)}}
-        {-ybcbeg= -default 0.0 -help {The values to be used in the boundary conditions if ibcbeg is equal to der1 or der2}}
-        {-ybcend= -default 0.0 -help {The values to be used in the boundary conditions if ibcend is equal to der1 or der2}}
+        {-ybcbeg= -default 0.0 -help {The values to be used in the boundary conditions if ibcbeg is equal to der1 or\
+                                              der2}}
+        {-ybcend= -default 0.0 -help {The values to be used in the boundary conditions if ibcend is equal to der1 or\
+                                              der2}}
         {-t= -required -alias x -help {List of independent variable (t) values}}
         {-y= -required -help {List of dependent variable (y) values}}
         {-ti= -required -alias xi -help {List of independent variable interpolation (ti) values}}
@@ -699,8 +701,8 @@ proc ::tclinterp::interpolation::pchip1d {args} {
     #  -xe - list of independent variable interpolation (xe) values, -xi is an alias
     # Returns: list of interpolated dependent variable values.
     # Synopsis: -x list -f|y list -xe|xi list
-    argparse -help {Does piecewise cubic Hermite interpolation (PCHIP). Returns: list of interpolated dependent variable\
-                            values} {
+    argparse -help {Does piecewise cubic Hermite interpolation (PCHIP). Returns: list of interpolated dependent\
+                            variable values} {
         {-x= -required -help {List of independent variable (x) values, must be strictly increasing}}
         {-f= -required -alias y -help {List of dependent variable (f) values}}
         {-xe= -required -alias xi -help {List of independent variable interpolation (xe) values}}
