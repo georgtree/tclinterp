@@ -37,98 +37,98 @@ rel.err = ──────────────── ⋅ 100%
 
 </figure><p class='ruff'>Import all procedures from <a href="index-tclinterp.html#::tclinterp" title="::tclinterp" class='ruff_cmd'>::tclinterp</a> namespace:</p>
 
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#ffa500>package</font></b> require tclinterp
-<b><font color=#ffa500>package</font></b> require ticklecharts
-<b><font color=#ffa500>set</font></b> ::ticklecharts::theme <font color=#90ee90>&quot;dark&quot;</font>
-<b><font color=#ffa500>namespace</font></b> import ::tclinterp::*
-<b><font color=#ffa500>namespace</font></b> import ::tclinterp::interpolation::*
-<b><font color=#ffa500>namespace</font></b> import ::tclinterp::approximation::*
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#923B23>package</font></b> require tclinterp
+<b><font color=#923B23>package</font></b> require ticklecharts
+<b><font color=#923B23>set</font></b> ::ticklecharts::theme <font color=#035103>&quot;dark&quot;</font>
+<b><font color=#923B23>namespace</font></b> import ::tclinterp::*
+<b><font color=#923B23>namespace</font></b> import ::tclinterp::interpolation::*
+<b><font color=#923B23>namespace</font></b> import ::tclinterp::approximation::*
 </pre>
 
 </figure><p class='ruff'>Define procedures for sinusoidal function calculation, error calculation and for generating sequence of x values:</p>
 
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#fe6efe>proc</font></b> sinFunc {x} {
-    <b><font color=#fe6efe>return</font></b> [= {sin(<font color=#f1b479>$x</font>*10)+1.1}]
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#ca14ca>proc</font></b> sinFunc {x} {
+    <b><font color=#ca14ca>return</font></b> [= {sin(<font color=#4A181B>$x</font>*10)+1.1}]
 }
-<b><font color=#fe6efe>proc</font></b> relError {ref act} {
-    <b><font color=#fe6efe>return</font></b> [= {(<font color=#f1b479>$ref</font>-<font color=#f1b479>$act</font>)*100/<font color=#f1b479>$ref</font>}]
+<b><font color=#ca14ca>proc</font></b> relError {ref act} {
+    <b><font color=#ca14ca>return</font></b> [= {(<font color=#4A181B>$ref</font>-<font color=#4A181B>$act</font>)*100/<font color=#4A181B>$ref</font>}]
 }
-<b><font color=#fe6efe>proc</font></b> genSeq {xmin xmax step func} {
-    <b><font color=#ffa500>for</font></b> {<b><font color=#ffa500>set</font></b> i 0} {<font color=#f1b479>$i</font>&lt;=[= {(<font color=#f1b479>$xmax</font>-<font color=#f1b479>$xmin</font>)/<font color=#f1b479>$step</font>}]} {<b><font color=#ffa500>incr</font></b> i} {
-        <b><font color=#ffa500>set</font></b> xval [= {<font color=#f1b479>$xmin</font>+<font color=#f1b479>$i</font>*<font color=#f1b479>$step</font>}]
-        <b><font color=#ffa500>lappend</font></b> x <font color=#f1b479>$xval</font>
-        <b><font color=#ffa500>lappend</font></b> y [<font color=#f1b479>$func</font> <font color=#f1b479>$xval</font>]
+<b><font color=#ca14ca>proc</font></b> genSeq {xmin xmax step func} {
+    <b><font color=#923B23>for</font></b> {<b><font color=#923B23>set</font></b> i 0} {<font color=#4A181B>$i</font>&lt;=[= {(<font color=#4A181B>$xmax</font>-<font color=#4A181B>$xmin</font>)/<font color=#4A181B>$step</font>}]} {<b><font color=#923B23>incr</font></b> i} {
+        <b><font color=#923B23>set</font></b> xval [= {<font color=#4A181B>$xmin</font>+<font color=#4A181B>$i</font>*<font color=#4A181B>$step</font>}]
+        <b><font color=#923B23>lappend</font></b> x <font color=#4A181B>$xval</font>
+        <b><font color=#923B23>lappend</font></b> y [<font color=#4A181B>$func</font> <font color=#4A181B>$xval</font>]
     }
-    <b><font color=#fe6efe>return</font></b> [<b><font color=#ffa500>list</font></b> <font color=#f1b479>$x</font> <font color=#f1b479>$y</font>]
+    <b><font color=#ca14ca>return</font></b> [<b><font color=#923B23>list</font></b> <font color=#4A181B>$x</font> <font color=#4A181B>$y</font>]
 }
 </pre>
 
 </figure><p class='ruff'>Create input data, interpolation points <code>xi</code> and exact values at these points:</p>
 
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#ffa500>set</font></b> xmin 0
-<b><font color=#ffa500>set</font></b> xmax 1
-<b><font color=#ffa500>set</font></b> step 0.05
-<b><font color=#ffa500>set</font></b> stepInterp 0.01
-<b><font color=#ffa500>lassign</font></b> [genSeq <font color=#f1b479>$xmin</font> <font color=#f1b479>$xmax</font> <font color=#f1b479>$step</font> sinFunc] x y
-<b><font color=#ffa500>lassign</font></b> [genSeq <font color=#f1b479>$xmin</font> <font color=#f1b479>$xmax</font> <font color=#f1b479>$stepInterp</font> sinFunc] xInterp yExact
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#923B23>set</font></b> xmin 0
+<b><font color=#923B23>set</font></b> xmax 1
+<b><font color=#923B23>set</font></b> step 0.05
+<b><font color=#923B23>set</font></b> stepInterp 0.01
+<b><font color=#923B23>lassign</font></b> [genSeq <font color=#4A181B>$xmin</font> <font color=#4A181B>$xmax</font> <font color=#4A181B>$step</font> sinFunc] x y
+<b><font color=#923B23>lassign</font></b> [genSeq <font color=#4A181B>$xmin</font> <font color=#4A181B>$xmax</font> <font color=#4A181B>$stepInterp</font> sinFunc] xInterp yExact
 </pre>
 
 </figure><p class='ruff'>Input data has points with 0.05 step, <code>xi</code> values are separated by 0.01 step.</p>
 <p class='ruff'>Zip input data for <code>ticklecharts</code> plotting:</p>
 
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#ffa500>set</font></b> xydata [<b><font color=#ffa500>lmap</font></b> xi <font color=#f1b479>$x</font> yi <font color=#f1b479>$y</font> {<b><font color=#ffa500>list</font></b> <font color=#f1b479>$xi</font> <font color=#f1b479>$yi</font>}]
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#923B23>set</font></b> xydata [<b><font color=#923B23>lmap</font></b> xi <font color=#4A181B>$x</font> yi <font color=#4A181B>$y</font> {<b><font color=#923B23>list</font></b> <font color=#4A181B>$xi</font> <font color=#4A181B>$yi</font>}]
 </pre>
 
 </figure><p class='ruff'>Call interpolation function <a href="index-tclinterp-interpolation.html#::tclinterp::interpolation::lin1d" title="::tclinterp::interpolation::lin1d" class='ruff_cmd'>::tclinterp::interpolation::lin1d</a> that returns list of interpolated y values, and zip <code>xi</code> and <code>yInterpLin</code> points:</p>
 
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#ffa500>set</font></b> yInterpLin [lin1d <font color=#b9b96e>-x</font> <font color=#f1b479>$x</font> <font color=#b9b96e>-y</font> <font color=#f1b479>$y</font> <font color=#b9b96e>-xi</font> <font color=#f1b479>$xInterp</font>]
-<b><font color=#ffa500>set</font></b> xydataInterpLin [<b><font color=#ffa500>lmap</font></b> xi <font color=#f1b479>$xInterp</font> yi <font color=#f1b479>$yInterpLin</font> {<b><font color=#ffa500>list</font></b> <font color=#f1b479>$xi</font> <font color=#f1b479>$yi</font>}]
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#923B23>set</font></b> yInterpLin [lin1d <font color=#463e11>-x</font> <font color=#4A181B>$x</font> <font color=#463e11>-y</font> <font color=#4A181B>$y</font> <font color=#463e11>-xi</font> <font color=#4A181B>$xInterp</font>]
+<b><font color=#923B23>set</font></b> xydataInterpLin [<b><font color=#923B23>lmap</font></b> xi <font color=#4A181B>$xInterp</font> yi <font color=#4A181B>$yInterpLin</font> {<b><font color=#923B23>list</font></b> <font color=#4A181B>$xi</font> <font color=#4A181B>$yi</font>}]
 </pre>
 
 </figure><p class='ruff'>Do the same for <a href="index-tclinterp-interpolation.html#::tclinterp::interpolation::near1d" title="::tclinterp::interpolation::near1d" class='ruff_cmd'>::tclinterp::interpolation::near1d</a>:</p>
 
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#ffa500>set</font></b> yInterpNear [near1d <font color=#b9b96e>-x</font> <font color=#f1b479>$x</font> <font color=#b9b96e>-y</font> <font color=#f1b479>$y</font> <font color=#b9b96e>-xi</font> <font color=#f1b479>$xInterp</font>]
-<b><font color=#ffa500>set</font></b> xydataInterpNear [<b><font color=#ffa500>lmap</font></b> xi <font color=#f1b479>$xInterp</font> yi <font color=#f1b479>$yInterpNear</font> {<b><font color=#ffa500>list</font></b> <font color=#f1b479>$xi</font> <font color=#f1b479>$yi</font>}]
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#923B23>set</font></b> yInterpNear [near1d <font color=#463e11>-x</font> <font color=#4A181B>$x</font> <font color=#463e11>-y</font> <font color=#4A181B>$y</font> <font color=#463e11>-xi</font> <font color=#4A181B>$xInterp</font>]
+<b><font color=#923B23>set</font></b> xydataInterpNear [<b><font color=#923B23>lmap</font></b> xi <font color=#4A181B>$xInterp</font> yi <font color=#4A181B>$yInterpNear</font> {<b><font color=#923B23>list</font></b> <font color=#4A181B>$xi</font> <font color=#4A181B>$yi</font>}]
 </pre>
 
 </figure><p class='ruff'>Zip exact values:</p>
 
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#ffa500>set</font></b> xydataExact [<b><font color=#ffa500>lmap</font></b> xi <font color=#f1b479>$xInterp</font> yi <font color=#f1b479>$yExact</font> {<b><font color=#ffa500>list</font></b> <font color=#f1b479>$xi</font> <font color=#f1b479>$yi</font>}]
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#923B23>set</font></b> xydataExact [<b><font color=#923B23>lmap</font></b> xi <font color=#4A181B>$xInterp</font> yi <font color=#4A181B>$yExact</font> {<b><font color=#923B23>list</font></b> <font color=#4A181B>$xi</font> <font color=#4A181B>$yi</font>}]
 </pre>
 
 </figure><p class='ruff'>Calculate errors:</p>
 
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#ffa500>set</font></b> interpErrorLin [<b><font color=#ffa500>lmap</font></b> xi <font color=#f1b479>$xInterp</font> yiExact <font color=#f1b479>$yExact</font> yiInterpLin <font color=#f1b479>$yInterpLin</font> {<b><font color=#ffa500>list</font></b> <font color=#f1b479>$xi</font> [relError <font color=#f1b479>$yiExact</font> <font color=#f1b479>$yiInterpLin</font>]}]
-<b><font color=#ffa500>set</font></b> interpErrorNear [<b><font color=#ffa500>lmap</font></b> xi <font color=#f1b479>$xInterp</font> yiExact <font color=#f1b479>$yExact</font> yiInterpNear <font color=#f1b479>$yInterpNear</font> {<b><font color=#ffa500>list</font></b> <font color=#f1b479>$xi</font> [relError <font color=#f1b479>$yiExact</font> <font color=#f1b479>$yiInterpNear</font>]}]
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#923B23>set</font></b> interpErrorLin [<b><font color=#923B23>lmap</font></b> xi <font color=#4A181B>$xInterp</font> yiExact <font color=#4A181B>$yExact</font> yiInterpLin <font color=#4A181B>$yInterpLin</font> {<b><font color=#923B23>list</font></b> <font color=#4A181B>$xi</font> [relError <font color=#4A181B>$yiExact</font> <font color=#4A181B>$yiInterpLin</font>]}]
+<b><font color=#923B23>set</font></b> interpErrorNear [<b><font color=#923B23>lmap</font></b> xi <font color=#4A181B>$xInterp</font> yiExact <font color=#4A181B>$yExact</font> yiInterpNear <font color=#4A181B>$yInterpNear</font> {<b><font color=#923B23>list</font></b> <font color=#4A181B>$xi</font> [relError <font color=#4A181B>$yiExact</font> <font color=#4A181B>$yiInterpNear</font>]}]
 </pre>
 
 </figure><p class='ruff'>Plot and save results using <code>ticklecharts</code>:</p>
 
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><i><font color=#76a396># plot interpolated data and errors</font></i>
-<b><font color=#ffa500>set</font></b> chart [ticklecharts::chart new]
-<font color=#f1b479>$chart</font> Xaxis <font color=#b9b96e>-name</font> <font color=#90ee90>&quot;x&quot;</font> <font color=#b9b96e>-minorTick</font> {show <font color=#90ee90>&quot;True&quot;</font>} <font color=#b9b96e>-min</font> 0 <font color=#b9b96e>-max</font> 1 <font color=#b9b96e>-type</font> <font color=#90ee90>&quot;value&quot;</font> <font color=#b9b96e>-splitLine</font> {show <font color=#90ee90>&quot;True&quot;</font>}
-<font color=#f1b479>$chart</font> Yaxis <font color=#b9b96e>-name</font> <font color=#90ee90>&quot;y&quot;</font> <font color=#b9b96e>-minorTick</font> {show <font color=#90ee90>&quot;True&quot;</font>} <font color=#b9b96e>-min</font> 0 <font color=#b9b96e>-max</font> 2.5 <font color=#b9b96e>-type</font> <font color=#90ee90>&quot;value&quot;</font> <font color=#b9b96e>-splitLine</font> {show <font color=#90ee90>&quot;True&quot;</font>}
-<font color=#f1b479>$chart</font> SetOptions <font color=#b9b96e>-title</font> {} <font color=#b9b96e>-legend</font> {top <font color=#90ee90>&quot;0%&quot;</font> left <font color=#90ee90>&quot;20%&quot;</font>} <font color=#b9b96e>-tooltip</font> {} <font color=#b9b96e>-animation</font> <font color=#90ee90>&quot;False&quot;</font> <font color=#b9b96e>-backgroundColor</font> <font color=#90ee90>&quot;#212121&quot;</font> <font color=#b9b96e>-toolbox</font> {feature {dataZoom {yAxisIndex <font color=#90ee90>&quot;none&quot;</font>}}}
-<font color=#f1b479>$chart</font> Add <font color=#90ee90>&quot;lineSeries&quot;</font> <font color=#b9b96e>-data</font> <font color=#f1b479>$xydata</font> <font color=#b9b96e>-showAllSymbol</font> <font color=#90ee90>&quot;nothing&quot;</font> <font color=#b9b96e>-name</font> <font color=#90ee90>&quot;Initial data&quot;</font>
-<font color=#f1b479>$chart</font> Add <font color=#90ee90>&quot;lineSeries&quot;</font> <font color=#b9b96e>-data</font> <font color=#f1b479>$xydataInterpLin</font> <font color=#b9b96e>-showAllSymbol</font> <font color=#90ee90>&quot;nothing&quot;</font> <font color=#b9b96e>-name</font> <font color=#90ee90>&quot;Linear interpolation&quot;</font>
-<font color=#f1b479>$chart</font> Add <font color=#90ee90>&quot;lineSeries&quot;</font> <font color=#b9b96e>-data</font> <font color=#f1b479>$xydataInterpNear</font> <font color=#b9b96e>-showAllSymbol</font> <font color=#90ee90>&quot;nothing&quot;</font> <font color=#b9b96e>-name</font> <font color=#90ee90>&quot;Nearest interpolation&quot;</font>
-<font color=#f1b479>$chart</font> Add <font color=#90ee90>&quot;lineSeries&quot;</font> <font color=#b9b96e>-data</font> <font color=#f1b479>$xydataExact</font> <font color=#b9b96e>-showAllSymbol</font> <font color=#90ee90>&quot;nothing&quot;</font> <font color=#b9b96e>-name</font> <font color=#90ee90>&quot;Exact data&quot;</font>
+<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><i><font color=#4b5d50># plot interpolated data and errors</font></i>
+<b><font color=#923B23>set</font></b> chart [ticklecharts::chart new]
+<font color=#4A181B>$chart</font> Xaxis <font color=#463e11>-name</font> <font color=#035103>&quot;x&quot;</font> <font color=#463e11>-minorTick</font> {show <font color=#035103>&quot;True&quot;</font>} <font color=#463e11>-min</font> 0 <font color=#463e11>-max</font> 1 <font color=#463e11>-type</font> <font color=#035103>&quot;value&quot;</font> <font color=#463e11>-splitLine</font> {show <font color=#035103>&quot;True&quot;</font>}
+<font color=#4A181B>$chart</font> Yaxis <font color=#463e11>-name</font> <font color=#035103>&quot;y&quot;</font> <font color=#463e11>-minorTick</font> {show <font color=#035103>&quot;True&quot;</font>} <font color=#463e11>-min</font> 0 <font color=#463e11>-max</font> 2.5 <font color=#463e11>-type</font> <font color=#035103>&quot;value&quot;</font> <font color=#463e11>-splitLine</font> {show <font color=#035103>&quot;True&quot;</font>}
+<font color=#4A181B>$chart</font> SetOptions <font color=#463e11>-title</font> {} <font color=#463e11>-legend</font> {top <font color=#035103>&quot;0%&quot;</font> left <font color=#035103>&quot;20%&quot;</font>} <font color=#463e11>-tooltip</font> {} <font color=#463e11>-animation</font> <font color=#035103>&quot;False&quot;</font> <font color=#463e11>-backgroundColor</font> <font color=#035103>&quot;#212121&quot;</font> <font color=#463e11>-toolbox</font> {feature {dataZoom {yAxisIndex <font color=#035103>&quot;none&quot;</font>}}}
+<font color=#4A181B>$chart</font> Add <font color=#035103>&quot;lineSeries&quot;</font> <font color=#463e11>-data</font> <font color=#4A181B>$xydata</font> <font color=#463e11>-showAllSymbol</font> <font color=#035103>&quot;nothing&quot;</font> <font color=#463e11>-name</font> <font color=#035103>&quot;Initial data&quot;</font>
+<font color=#4A181B>$chart</font> Add <font color=#035103>&quot;lineSeries&quot;</font> <font color=#463e11>-data</font> <font color=#4A181B>$xydataInterpLin</font> <font color=#463e11>-showAllSymbol</font> <font color=#035103>&quot;nothing&quot;</font> <font color=#463e11>-name</font> <font color=#035103>&quot;Linear interpolation&quot;</font>
+<font color=#4A181B>$chart</font> Add <font color=#035103>&quot;lineSeries&quot;</font> <font color=#463e11>-data</font> <font color=#4A181B>$xydataInterpNear</font> <font color=#463e11>-showAllSymbol</font> <font color=#035103>&quot;nothing&quot;</font> <font color=#463e11>-name</font> <font color=#035103>&quot;Nearest interpolation&quot;</font>
+<font color=#4A181B>$chart</font> Add <font color=#035103>&quot;lineSeries&quot;</font> <font color=#463e11>-data</font> <font color=#4A181B>$xydataExact</font> <font color=#463e11>-showAllSymbol</font> <font color=#035103>&quot;nothing&quot;</font> <font color=#463e11>-name</font> <font color=#035103>&quot;Exact data&quot;</font>
 
-<b><font color=#ffa500>set</font></b> chartError [ticklecharts::chart new]
-<font color=#f1b479>$chartError</font> Xaxis <font color=#b9b96e>-name</font> <font color=#90ee90>&quot;x&quot;</font> <font color=#b9b96e>-minorTick</font> {show <font color=#90ee90>&quot;True&quot;</font>} <font color=#b9b96e>-min</font> 0 <font color=#b9b96e>-max</font> 1 <font color=#b9b96e>-type</font> <font color=#90ee90>&quot;value&quot;</font> <font color=#b9b96e>-splitLine</font> {show <font color=#90ee90>&quot;True&quot;</font>}
-<font color=#f1b479>$chartError</font> Yaxis <font color=#b9b96e>-name</font> <font color=#90ee90>&quot;Rel. error, %&quot;</font> <font color=#b9b96e>-minorTick</font> {show <font color=#90ee90>&quot;True&quot;</font>} <font color=#b9b96e>-type</font> <font color=#90ee90>&quot;value&quot;</font> <font color=#b9b96e>-splitLine</font> {show <font color=#90ee90>&quot;True&quot;</font>}
-<font color=#f1b479>$chartError</font> SetOptions <font color=#b9b96e>-title</font> {} <font color=#b9b96e>-legend</font> {top <font color=#90ee90>&quot;50%&quot;</font> left <font color=#90ee90>&quot;30%&quot;</font>} <font color=#b9b96e>-tooltip</font> {} <font color=#b9b96e>-animation</font> <font color=#90ee90>&quot;False&quot;</font> <font color=#b9b96e>-backgroundColor</font> <font color=#90ee90>&quot;#212121&quot;</font> <font color=#b9b96e>-toolbox</font> {feature {dataZoom {yAxisIndex <font color=#90ee90>&quot;none&quot;</font>}}}
-<font color=#f1b479>$chartError</font> Add <font color=#90ee90>&quot;lineSeries&quot;</font> <font color=#b9b96e>-data</font> <font color=#f1b479>$interpErrorLin</font> <font color=#b9b96e>-showAllSymbol</font> <font color=#90ee90>&quot;nothing&quot;</font> <font color=#b9b96e>-name</font> <font color=#90ee90>&quot;Linear interpolation error&quot;</font>
-<font color=#f1b479>$chartError</font> Add <font color=#90ee90>&quot;lineSeries&quot;</font> <font color=#b9b96e>-data</font> <font color=#f1b479>$interpErrorNear</font> <font color=#b9b96e>-showAllSymbol</font> <font color=#90ee90>&quot;nothing&quot;</font> <font color=#b9b96e>-name</font> <font color=#90ee90>&quot;Nearest interpolation error&quot;</font>
+<b><font color=#923B23>set</font></b> chartError [ticklecharts::chart new]
+<font color=#4A181B>$chartError</font> Xaxis <font color=#463e11>-name</font> <font color=#035103>&quot;x&quot;</font> <font color=#463e11>-minorTick</font> {show <font color=#035103>&quot;True&quot;</font>} <font color=#463e11>-min</font> 0 <font color=#463e11>-max</font> 1 <font color=#463e11>-type</font> <font color=#035103>&quot;value&quot;</font> <font color=#463e11>-splitLine</font> {show <font color=#035103>&quot;True&quot;</font>}
+<font color=#4A181B>$chartError</font> Yaxis <font color=#463e11>-name</font> <font color=#035103>&quot;Rel. error, %&quot;</font> <font color=#463e11>-minorTick</font> {show <font color=#035103>&quot;True&quot;</font>} <font color=#463e11>-type</font> <font color=#035103>&quot;value&quot;</font> <font color=#463e11>-splitLine</font> {show <font color=#035103>&quot;True&quot;</font>}
+<font color=#4A181B>$chartError</font> SetOptions <font color=#463e11>-title</font> {} <font color=#463e11>-legend</font> {top <font color=#035103>&quot;50%&quot;</font> left <font color=#035103>&quot;30%&quot;</font>} <font color=#463e11>-tooltip</font> {} <font color=#463e11>-animation</font> <font color=#035103>&quot;False&quot;</font> <font color=#463e11>-backgroundColor</font> <font color=#035103>&quot;#212121&quot;</font> <font color=#463e11>-toolbox</font> {feature {dataZoom {yAxisIndex <font color=#035103>&quot;none&quot;</font>}}}
+<font color=#4A181B>$chartError</font> Add <font color=#035103>&quot;lineSeries&quot;</font> <font color=#463e11>-data</font> <font color=#4A181B>$interpErrorLin</font> <font color=#463e11>-showAllSymbol</font> <font color=#035103>&quot;nothing&quot;</font> <font color=#463e11>-name</font> <font color=#035103>&quot;Linear interpolation error&quot;</font>
+<font color=#4A181B>$chartError</font> Add <font color=#035103>&quot;lineSeries&quot;</font> <font color=#463e11>-data</font> <font color=#4A181B>$interpErrorNear</font> <font color=#463e11>-showAllSymbol</font> <font color=#035103>&quot;nothing&quot;</font> <font color=#463e11>-name</font> <font color=#035103>&quot;Nearest interpolation error&quot;</font>
 
-<i><font color=#76a396># create multiplot</font></i>
-<b><font color=#ffa500>set</font></b> layout [ticklecharts::Gridlayout new]
-<font color=#f1b479>$layout</font> Add <font color=#f1b479>$chart</font> <font color=#b9b96e>-bottom</font> <font color=#90ee90>&quot;55%&quot;</font> <font color=#b9b96e>-height</font> <font color=#90ee90>&quot;40%&quot;</font> <font color=#b9b96e>-width</font> <font color=#90ee90>&quot;80%&quot;</font>
-<font color=#f1b479>$layout</font> Add <font color=#f1b479>$chartError</font> <font color=#b9b96e>-bottom</font> <font color=#90ee90>&quot;5%&quot;</font> <font color=#b9b96e>-height</font> <font color=#90ee90>&quot;40%&quot;</font> <font color=#b9b96e>-width</font> <font color=#90ee90>&quot;80%&quot;</font>
+<i><font color=#4b5d50># create multiplot</font></i>
+<b><font color=#923B23>set</font></b> layout [ticklecharts::Gridlayout new]
+<font color=#4A181B>$layout</font> Add <font color=#4A181B>$chart</font> <font color=#463e11>-bottom</font> <font color=#035103>&quot;55%&quot;</font> <font color=#463e11>-height</font> <font color=#035103>&quot;40%&quot;</font> <font color=#463e11>-width</font> <font color=#035103>&quot;80%&quot;</font>
+<font color=#4A181B>$layout</font> Add <font color=#4A181B>$chartError</font> <font color=#463e11>-bottom</font> <font color=#035103>&quot;5%&quot;</font> <font color=#463e11>-height</font> <font color=#035103>&quot;40%&quot;</font> <font color=#463e11>-width</font> <font color=#035103>&quot;80%&quot;</font>
 
-<i><font color=#76a396># save to file</font></i>
-<b><font color=#ffa500>set</font></b> fbasename [<b><font color=#ffa500>file</font></b> rootname [<b><font color=#ffa500>file</font></b> tail [<b><font color=#ffa500>info</font></b> script]]]
-<font color=#f1b479>$layout</font> Render <font color=#b9b96e>-outfile</font> [<b><font color=#ffa500>file</font></b> normalize [<b><font color=#ffa500>file</font></b> join html_charts <font color=#f1b479>$fbasename</font>.html]] <font color=#b9b96e>-height</font> 800px
+<i><font color=#4b5d50># save to file</font></i>
+<b><font color=#923B23>set</font></b> fbasename [<b><font color=#923B23>file</font></b> rootname [<b><font color=#923B23>file</font></b> tail [<b><font color=#923B23>info</font></b> script]]]
+<font color=#4A181B>$layout</font> Render <font color=#463e11>-outfile</font> [<b><font color=#923B23>file</font></b> normalize [<b><font color=#923B23>file</font></b> join html_charts <font color=#4A181B>$fbasename</font>.html]] <font color=#463e11>-height</font> 800px
 </pre>
 
 </figure><p class='ruff'>Results are:</p>
@@ -140,22 +140,21 @@ rel.err = ──────────────── ⋅ 100%
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
   </head>
   <body>
-    <div id="id_eb828ba601814fcfab42c4beb2e140fd" class="chart-container" style="width:900px; height:800px;"></div>
+    <div id="id_e558ae8f53d24f68af60368cd3f502cc" class="chart-container" style="width:900px; height:800px;"></div>
     <script>
-      var chart_eb828ba601814fcfab42c4beb2e140fd = echarts.init(document.getElementById("id_eb828ba601814fcfab42c4beb2e140fd"), null, {renderer: "canvas"});
-      var option_eb828ba601814fcfab42c4beb2e140fd = {
-  "darkMode": true,
-  "backgroundColor": "#212121",
+      var chart_e558ae8f53d24f68af60368cd3f502cc = echarts.init(document.getElementById("id_e558ae8f53d24f68af60368cd3f502cc"), null, {renderer: "canvas"});
+      var option_e558ae8f53d24f68af60368cd3f502cc = {
+  "backgroundColor": "rgba(0,0,0,0)",
   "color": [
-    "#4992ff",
-    "#7cffb2",
-    "#fddd60",
-    "#ff6e76",
-    "#58d9f9",
-    "#05c091",
-    "#ff8a45",
-    "#8d48e3",
-    "#dd79ff"
+    "#5470c6",
+    "#91cc75",
+    "#fac858",
+    "#ee6666",
+    "#73c0de",
+    "#3ba272",
+    "#fc8452",
+    "#9a60b4",
+    "#ea7ccc"
   ],
   "animation": false,
   "animationDuration": 1000,
@@ -181,28 +180,15 @@ rel.err = ──────────────── ⋅ 100%
       "scale": false,
       "silent": false,
       "triggerEvent": false,
-      "axisLine": {
-        "show": true,
-        "lineStyle": {
-          "color": "#B9B8CE",
-          "width": 1
-        }
-      },
-      "axisTick": {"show": true},
       "minorTick": {
         "show": true,
         "splitNumber": 5,
         "length": 3
       },
-      "axisLabel": {"color": "#B9B8CE"},
       "splitLine": {
         "show": true,
         "onZero": true,
-        "symbol": null,
-        "lineStyle": {
-          "color": "#484753",
-          "width": 1
-        }
+        "symbol": null
       },
       "zlevel": 0,
       "z": 0
@@ -223,28 +209,15 @@ rel.err = ──────────────── ⋅ 100%
       "scale": false,
       "silent": false,
       "triggerEvent": false,
-      "axisLine": {
-        "show": true,
-        "lineStyle": {
-          "color": "#B9B8CE",
-          "width": 1
-        }
-      },
-      "axisTick": {"show": true},
       "minorTick": {
         "show": true,
         "splitNumber": 5,
         "length": 3
       },
-      "axisLabel": {"color": "#B9B8CE"},
       "splitLine": {
         "show": true,
         "onZero": true,
-        "symbol": null,
-        "lineStyle": {
-          "color": "#484753",
-          "width": 1
-        }
+        "symbol": null
       },
       "zlevel": 0,
       "z": 0
@@ -269,28 +242,15 @@ rel.err = ──────────────── ⋅ 100%
       "scale": false,
       "silent": false,
       "triggerEvent": false,
-      "axisLine": {
-        "show": true,
-        "lineStyle": {
-          "color": "#B9B8CE",
-          "width": 1
-        }
-      },
-      "axisTick": {"show": true},
       "minorTick": {
         "show": true,
         "splitNumber": 5,
         "length": 3
       },
-      "axisLabel": {"color": "#B9B8CE"},
       "splitLine": {
         "show": true,
         "onZero": true,
-        "symbol": null,
-        "lineStyle": {
-          "color": "#484753",
-          "width": 1
-        }
+        "symbol": null
       },
       "zlevel": 0,
       "z": 0
@@ -311,28 +271,15 @@ rel.err = ──────────────── ⋅ 100%
       "scale": false,
       "silent": false,
       "triggerEvent": false,
-      "axisLine": {
-        "show": true,
-        "lineStyle": {
-          "color": "#B9B8CE",
-          "width": 1
-        }
-      },
-      "axisTick": {"show": true},
       "minorTick": {
         "show": true,
         "splitNumber": 5,
         "length": 3
       },
-      "axisLabel": {"color": "#B9B8CE"},
       "splitLine": {
         "show": true,
         "onZero": true,
-        "symbol": null,
-        "lineStyle": {
-          "color": "#484753",
-          "width": 1
-        }
+        "symbol": null
       },
       "zlevel": 0,
       "z": 0
@@ -342,9 +289,7 @@ rel.err = ──────────────── ⋅ 100%
     {
       "show": true,
       "target": "blank",
-      "textStyle": {"color": "#EEF1FA"},
       "subtarget": "blank",
-      "subtextStyle": {"color": "#B9B8CE"},
       "textAlign": null,
       "textVerticalAlign": "auto",
       "padding": 5,
@@ -362,9 +307,7 @@ rel.err = ──────────────── ⋅ 100%
     {
       "show": true,
       "target": "blank",
-      "textStyle": {"color": "#EEF1FA"},
       "subtarget": "blank",
-      "subtextStyle": {"color": "#B9B8CE"},
       "textAlign": null,
       "textVerticalAlign": "auto",
       "padding": 5,
@@ -402,7 +345,6 @@ rel.err = ──────────────── ⋅ 100%
       "inactiveColor": "rgb(204, 204, 204)",
       "inactiveBorderColor": "rgb(204, 204, 204)",
       "inactiveBorderWidth": "auto",
-      "textStyle": {"color": "#B9B8CE"},
       "backgroundColor": "transparent",
       "borderWidth": 0,
       "borderRadius": 0,
@@ -438,7 +380,6 @@ rel.err = ──────────────── ⋅ 100%
       "inactiveColor": "rgb(204, 204, 204)",
       "inactiveBorderColor": "rgb(204, 204, 204)",
       "inactiveBorderWidth": "auto",
-      "textStyle": {"color": "#B9B8CE"},
       "backgroundColor": "transparent",
       "borderWidth": 0,
       "borderRadius": 0,
@@ -455,7 +396,7 @@ rel.err = ──────────────── ⋅ 100%
   "tooltip": [
     {
       "show": true,
-      "trigger": "item",
+      "trigger": "axis",
       "showContent": true,
       "alwaysShowContent": false,
       "triggerOn": "mousemove|click",
@@ -485,13 +426,12 @@ rel.err = ──────────────── ⋅ 100%
         "filterMode": "filter",
         "yAxisIndex": "none"
       }},
-    "iconStyle": {"borderColor": "#B9B8CE"},
     "z": 2,
     "top": "auto",
     "right": "auto",
     "width": "auto",
     "height": "auto",
-    "24": {
+    "22": {
       "show": true,
       "orient": "horizontal",
       "itemSize": 15,
@@ -502,7 +442,6 @@ rel.err = ──────────────── ⋅ 100%
           "filterMode": "filter",
           "yAxisIndex": "none"
         }},
-      "iconStyle": {"borderColor": "#B9B8CE"},
       "z": 2,
       "top": "auto",
       "right": "auto",
@@ -516,8 +455,8 @@ rel.err = ──────────────── ⋅ 100%
       "name": "Initial data",
       "colorBy": "series",
       "coordinateSystem": "cartesian2d",
-      "symbol": "circle",
-      "symbolSize": 4,
+      "symbol": "emptyCircle",
+      "symbolSize": 3,
       "symbolKeepAspect": true,
       "showSymbol": true,
       "legendHoverLink": true,
@@ -527,7 +466,6 @@ rel.err = ──────────────── ⋅ 100%
       "clip": true,
       "triggerLineEvent": false,
       "step": false,
-      "label": {"color": "#B9B8CE"},
       "smooth": false,
       "data": [
         [
@@ -626,8 +564,8 @@ rel.err = ──────────────── ⋅ 100%
       "name": "Linear interpolation",
       "colorBy": "series",
       "coordinateSystem": "cartesian2d",
-      "symbol": "circle",
-      "symbolSize": 4,
+      "symbol": "emptyCircle",
+      "symbolSize": 3,
       "symbolKeepAspect": true,
       "showSymbol": true,
       "legendHoverLink": true,
@@ -637,7 +575,6 @@ rel.err = ──────────────── ⋅ 100%
       "clip": true,
       "triggerLineEvent": false,
       "step": false,
-      "label": {"color": "#B9B8CE"},
       "smooth": false,
       "data": [
         [
@@ -1056,8 +993,8 @@ rel.err = ──────────────── ⋅ 100%
       "name": "Nearest interpolation",
       "colorBy": "series",
       "coordinateSystem": "cartesian2d",
-      "symbol": "circle",
-      "symbolSize": 4,
+      "symbol": "emptyCircle",
+      "symbolSize": 3,
       "symbolKeepAspect": true,
       "showSymbol": true,
       "legendHoverLink": true,
@@ -1067,7 +1004,6 @@ rel.err = ──────────────── ⋅ 100%
       "clip": true,
       "triggerLineEvent": false,
       "step": false,
-      "label": {"color": "#B9B8CE"},
       "smooth": false,
       "data": [
         [
@@ -1486,8 +1422,8 @@ rel.err = ──────────────── ⋅ 100%
       "name": "Exact data",
       "colorBy": "series",
       "coordinateSystem": "cartesian2d",
-      "symbol": "circle",
-      "symbolSize": 4,
+      "symbol": "emptyCircle",
+      "symbolSize": 3,
       "symbolKeepAspect": true,
       "showSymbol": true,
       "legendHoverLink": true,
@@ -1497,7 +1433,6 @@ rel.err = ──────────────── ⋅ 100%
       "clip": true,
       "triggerLineEvent": false,
       "step": false,
-      "label": {"color": "#B9B8CE"},
       "smooth": false,
       "data": [
         [
@@ -1916,8 +1851,8 @@ rel.err = ──────────────── ⋅ 100%
       "name": "Linear interpolation error",
       "colorBy": "series",
       "coordinateSystem": "cartesian2d",
-      "symbol": "circle",
-      "symbolSize": 4,
+      "symbol": "emptyCircle",
+      "symbolSize": 3,
       "symbolKeepAspect": true,
       "showSymbol": true,
       "legendHoverLink": true,
@@ -1927,7 +1862,6 @@ rel.err = ──────────────── ⋅ 100%
       "clip": true,
       "triggerLineEvent": false,
       "step": false,
-      "label": {"color": "#B9B8CE"},
       "smooth": false,
       "data": [
         [
@@ -2346,8 +2280,8 @@ rel.err = ──────────────── ⋅ 100%
       "name": "Nearest interpolation error",
       "colorBy": "series",
       "coordinateSystem": "cartesian2d",
-      "symbol": "circle",
-      "symbolSize": 4,
+      "symbol": "emptyCircle",
+      "symbolSize": 3,
       "symbolKeepAspect": true,
       "showSymbol": true,
       "legendHoverLink": true,
@@ -2357,7 +2291,6 @@ rel.err = ──────────────── ⋅ 100%
       "clip": true,
       "triggerLineEvent": false,
       "step": false,
-      "label": {"color": "#B9B8CE"},
       "smooth": false,
       "data": [
         [
@@ -2785,7 +2718,7 @@ rel.err = ──────────────── ⋅ 100%
     }
   ]
 };
-      chart_eb828ba601814fcfab42c4beb2e140fd.setOption(option_eb828ba601814fcfab42c4beb2e140fd);
+      chart_e558ae8f53d24f68af60368cd3f502cc.setOption(option_e558ae8f53d24f68af60368cd3f502cc);
     </script>
   </body>
 </html>

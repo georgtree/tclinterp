@@ -14,10 +14,10 @@ set title "Tcl wrapper for C interpolation procedures"
 puts $packageVersion
 set commonHtml [list -title $title -sortnamespaces false -preamble $startPage -pagesplit namespace -recurse false\
                         -includesource true -pagesplit namespace -autopunctuate true -compact false -excludeprocs {^[A-Z].*}\
-                        -includeprivate true -product tcl_tools -diagrammer "ditaa --border-width 1"\
+                        -includeprivate false -product tcl_tools -diagrammer "ditaa --border-width 1"\
                         -version $packageVersion -copyright "George Yashin" {*}$::argv]
 set commonNroff [list -title $title -sortnamespaces false -preamble $startPage -pagesplit namespace -recurse false\
-                         -pagesplit namespace -autopunctuate true -compact false -includeprivate true -excludeprocs {^[A-Z].*}\
+                         -pagesplit namespace -autopunctuate true -compact false -includeprivate false -excludeprocs {^[A-Z].*}\
                          -product tcl_tools -diagrammer "ditaa --border-width 1" -version $packageVersion\
                          -copyright "George Yashin" {*}$::argv]
 set namespaces [list ::Examples ::tclinterp ::tclinterp::approximation ::tclinterp::interpolation]
@@ -33,11 +33,11 @@ foreach file [glob ${docDir}/*.html] {
 
 # change default width
 proc processContentsCss {fileContents} {
-    return [string map {max-width:60rem max-width:100rem} $fileContents]
+    return [string map [list max-width:60rem max-width:100rem "overflow-wrap:break-word" "overflow-wrap:normal"] $fileContents]
 }
 # change default theme 
 proc processContentsJs {fileContents} {
-    return [string map {init()\{currentTheme=localStorage.ruff_theme init()\{currentTheme=currentTheme="dark"}\
+    return [string map {init()\{currentTheme=localStorage.ruff_theme init()\{currentTheme=currentTheme="v1"}\
                     $fileContents]
 }
 
@@ -52,6 +52,16 @@ proc processContents {fileContents} {
     }
     return $fileContents
 }
+
+set tableWrapping {
+    .ruff-bd table.ruff_deflist th:first-child,
+    .ruff-bd table.ruff_deflist td:first-child {
+        white-space: nowrap;      /* never wrap */
+        overflow-wrap: normal;
+        word-break: normal;
+    }
+}
+::fileutil::appendToFile [file join $docDir assets ruff-min.css] $tableWrapping
 
 set chartsMap [dcreate !ticklechart_mark_linear_near_interpolation! linear_near_interpolation.html]
 set path [file join $docDir .. examples html_charts]

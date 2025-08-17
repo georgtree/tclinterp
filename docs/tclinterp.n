@@ -33,7 +33,7 @@ For building you need:
 For run you also need:
 .TP
 \(bu
-\fIargparse\fP [URL: https://wiki\&.tcl-lang\&.org/page/argparse]
+\fIargparse\fP [URL: https://github\&.com/georgtree/argparse]
 .TP
 \(bu
 \fITcllib\fP [URL: https://www\&.tcl\&.tk/software/tcllib/]

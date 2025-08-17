@@ -1,6 +1,5 @@
 package require tclinterp
 package require ticklecharts
-set ::ticklecharts::theme "dark"
 namespace import ::tclinterp::*
 namespace import ::tclinterp::interpolation::*
 namespace import ::tclinterp::approximation::*
@@ -48,7 +47,7 @@ set interpErrorNear [lmap xi $xInterp yiExact $yExact yiInterpNear $yInterpNear\
 set chart [ticklecharts::chart new]
 $chart Xaxis -name "x" -minorTick {show "True"} -min 0 -max 1 -type "value" -splitLine {show "True"}
 $chart Yaxis -name "y" -minorTick {show "True"} -min 0 -max 2.5 -type "value" -splitLine {show "True"}
-$chart SetOptions -title {} -legend {top "0%" left "20%"} -tooltip {} -animation "False" -backgroundColor "#212121"\
+$chart SetOptions -title {} -legend {top "0%" left "20%"} -tooltip {trigger "axis"} -animation "False"\
         -toolbox {feature {dataZoom {yAxisIndex "none"}}}
 $chart Add "lineSeries" -data $xydata -showAllSymbol "nothing" -name "Initial data"
 $chart Add "lineSeries" -data $xydataInterpLin -showAllSymbol "nothing" -name "Linear interpolation"
@@ -59,7 +58,7 @@ set chartError [ticklecharts::chart new]
 $chartError Xaxis -name "x" -minorTick {show "True"} -min 0 -max 1 -type "value" -splitLine {show "True"}
 $chartError Yaxis -name "Rel. error, %" -minorTick {show "True"} -type "value" -splitLine {show "True"}
 $chartError SetOptions -title {} -legend {top "50%" left "30%"} -tooltip {} -animation "False"\
-        -backgroundColor "#212121" -toolbox {feature {dataZoom {yAxisIndex "none"}}}
+        -toolbox {feature {dataZoom {yAxisIndex "none"}}}
 $chartError Add "lineSeries" -data $interpErrorLin -showAllSymbol "nothing" -name "Linear interpolation error"
 $chartError Add "lineSeries" -data $interpErrorNear -showAllSymbol "nothing" -name "Nearest interpolation error"
 

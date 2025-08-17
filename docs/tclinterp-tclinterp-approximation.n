@@ -28,19 +28,19 @@ Finds values of Bezier function at x points\&.
 \fBParameters\fR
 .RS 4n
 .TP
--a
+-a value
 Start of the interval\&.
 .TP
--b
+-b value
 End of interval\&.
 .TP
--n
+-n value
 Order of Bezier function, must be zero or more\&.
 .TP
--x
+-x list
 List of x values\&.
 .TP
--y
+-y list
 List of y control points values of size n+1\&.
 .RE
 .PP
@@ -60,19 +60,19 @@ Evaluates a cubic beta spline approximant\&.
 \fBParameters\fR
 .RS 4n
 .TP
--beta1
+-beta1 value
 The skew or bias parameter, beta1 = 1 for no skew or bias\&.
 .TP
--beta2
+-beta2 value
 The tension parameter, beta2 = 0 for no tension\&.
 .TP
--t
+-t list
 List of independent variable (t) values, -x is an alias\&.
 .TP
--ti
+-ti list
 List of independent variable interpolation (ti) values, -xi is an alias\&.
 .TP
--y
+-y list
 List of dependent variable (y) values\&.
 .RE
 .PP
@@ -92,13 +92,13 @@ Evaluates a cubic B spline approximant\&.
 \fBParameters\fR
 .RS 4n
 .TP
--t
+-t list
 List of independent variable (t) values, -x is an alias\&.
 .TP
--ti
+-ti list
 List of independent variable interpolation (ti) values, -xi is an alias\&.
 .TP
--y
+-y list
 List of dependent variable (y) values\&.
 .RE
 .PP
@@ -118,16 +118,16 @@ Finds values of general Bezier function at specified t points\&.
 \fBParameters\fR
 .RS 4n
 .TP
--n
+-n value
 Order of Bezier function, must be zero or more\&.
 .TP
--t
+-t list
 List of t points at which we want to evaluate Bezier function, best results are obtained within the interval \fI0,1\fP
 .TP
--x
+-x list
 List of x control points values of size n+1\&.
 .TP
--y
+-y list
 List of y control points values of size n+1\&.
 .RE
 .PP

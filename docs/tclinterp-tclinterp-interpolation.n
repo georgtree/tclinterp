@@ -41,25 +41,25 @@ Does piecewise cubic spline interpolation\&.
 -deriv
 Select the alternative output option\&.
 .TP
--ibcbeg
+-ibcbeg value
 Left boundary condition flag, -begflag is an alias\&. Possible values: \fBquad\fP, the cubic spline should be a quadratic over the first interval; \fBder1\fP, the first derivative at the left endpoint should be YBCBEG; \fBder2\fP, the second derivative at the left endpoint should be YBCBEG; \fBnotaknot\fP, not-a-knot, the third derivative is continuous at T(2)\&.
 .TP
--ibcend
+-ibcend value
 Right boundary condition flag, -endflag is an alias\&. Possible values: \fBquad\fP, the cubic spline should be a quadratic over the last interval; \fBder1\fP, the first derivative at the right endpoint should be YBCBEG; \fBder2\fP, the second derivative at the right endpoint should be YBCBEG; \fBnotaknot\fP, not-a-knot, the third derivative is continuous at T(2)\&.
 .TP
--t
+-t list
 List of independent variable (t) values, -x is an alias\&.
 .TP
--ti
+-ti list
 List of independent variable interpolation (ti) values, -xi is an alias\&.
 .TP
--y
+-y list
 List of dependent variable (y) values\&.
 .TP
--ybcbeg
+-ybcbeg value
 The values to be used in the boundary conditions if ibcbeg is equal to der1 or der2, default is 0\&.0\&.
 .TP
--ybcend
+-ybcend value
 The values to be used in the boundary conditions if ibcend is equal to der1 or der2, default is 0\&.0\&.
 .RE
 .PP
@@ -84,13 +84,13 @@ Does divided difference one-dimensional interpolation\&.
 -coeffs
 Selects the alternative output option\&.
 .TP
--x
+-x list
 List of independent variable (x) values\&.
 .TP
--xi
+-xi list
 List of independent variable interpolation (xi) values\&.
 .TP
--y
+-y list
 List of dependent variable (y) values\&.
 .RE
 .PP
@@ -114,16 +114,16 @@ Does Hermite polynomial spline interpolation\&.
 -deriv
 Select the alternative output option\&.
 .TP
--t
+-t list
 List of independent variable (t) values, must be strictly increasing, -x is an alias\&.
 .TP
--ti
+-ti list
 List of independent variable interpolation (ti) values, -xi is an alias\&.
 .TP
--y
+-y list
 List of dependent variable (y) values\&.
 .TP
--yp
+-yp list
 List of dependent variable (y) derivative values\&.
 .RE
 .PP
@@ -144,13 +144,13 @@ Does Lagrange polynomial one-dimensional interpolation\&.
 \fBParameters\fR
 .RS 4n
 .TP
--x
+-x list
 List of independent variable (x) values\&.
 .TP
--xi
+-xi list
 List of independent variable interpolation (xi) values\&.
 .TP
--y
+-y list
 List of dependent variable (y) values\&.
 .RE
 .PP
@@ -173,19 +173,19 @@ Does least squares polynomial one-dimensional interpolation\&.
 -coeffs
 Selects the alternative output option\&.
 .TP
--nterms
+-nterms value
 Number of terms of interpolation polynom, default is 3\&.
 .TP
--w
+-w list
 List of weights, optional\&.
 .TP
--x
+-x list
 List of independent variable (x) values\&.
 .TP
--xi
+-xi list
 List of independent variable interpolation (xi) values\&.
 .TP
--y
+-y list
 List of dependent variable (y) values\&.
 .RE
 .PP
@@ -210,19 +210,19 @@ Does least squares polynomial one-dimensional interpolation with calculation of 
 -coeffs
 Selects the alternative output option\&.
 .TP
--nterms
+-nterms value
 Number of terms of interpolation polynom, default is 3\&.
 .TP
--w
+-w list
 List of weights, optional\&.
 .TP
--x
+-x list
 List of independent variable (x) values\&.
 .TP
--xi
+-xi list
 List of independent variable interpolation (xi) values\&.
 .TP
--y
+-y list
 List of dependent variable (y) values\&.
 .RE
 .PP
@@ -244,13 +244,13 @@ Does linear one-dimensional interpolation\&.
 \fBParameters\fR
 .RS 4n
 .TP
--x
+-x list
 List of independent variable (x) values, must be strictly increasing\&.
 .TP
--xi
+-xi list
 List of independent variable interpolation (xi) values\&.
 .TP
--y
+-y list
 List of dependent variable (y) values\&.
 .RE
 .PP
@@ -270,13 +270,13 @@ Does nearest one-dimensional interpolation\&.
 \fBParameters\fR
 .RS 4n
 .TP
--x
+-x list
 List of independent variable (x) values\&.
 .TP
--xi
+-xi list
 List of independent variable interpolation (xi) values\&.
 .TP
--y
+-y list
 List of dependent variable (y) values\&.
 .RE
 .PP
@@ -296,13 +296,13 @@ Does piecewise cubic Hermite interpolation (PCHIP)\&.
 \fBParameters\fR
 .RS 4n
 .TP
--f
+-f list
 List of dependent variable (f) values, -y is an alias\&.
 .TP
--x
+-x list
 List of independent variable (x) values, must be strictly increasing\&.
 .TP
--xe
+-xe list
 List of independent variable interpolation (xe) values, -xi is an alias\&.
 .RE
 .PP
