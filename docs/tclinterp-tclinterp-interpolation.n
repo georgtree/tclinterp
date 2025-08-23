@@ -31,7 +31,8 @@ tclinterp::interpolation - Commands in namespace tclinterp::interpolation
 .RE
 .PP
 Does piecewise cubic spline interpolation\&.
-.RS 4n\fBcubicSpline1d\fP \fI-t|x list -y list -ti|xi list ?-ibcbeg|begflag value -ybcbeg value? ?-ibcend|endflag value -ybcend value? ?-deriv?\fP
+.RS 4n
+\fBcubicSpline1d\fP \fI-t|x list -y list -ti|xi list ?-ibcbeg|begflag value -ybcbeg value? ?-ibcend|endflag value -ybcend value? ?-deriv?\fP
 .br
 .RE
 .PP
@@ -74,7 +75,8 @@ under yder2 key\&.
 .RE
 .PP
 Does divided difference one-dimensional interpolation\&.
-.RS 4n\fBdivDif1d\fP \fI-x list -y list -xi list ?-coeffs?\fP
+.RS 4n
+\fBdivDif1d\fP \fI-x list -y list -xi list ?-coeffs?\fP
 .br
 .RE
 .PP
@@ -104,7 +106,8 @@ is dictionary that contains yi values under yi key, and the values of difference
 .RE
 .PP
 Does Hermite polynomial spline interpolation\&.
-.RS 4n\fBhermiteSpline1d\fP \fI-t|x list -y list -yp list -ti|xi list ?-deriv?\fP
+.RS 4n
+\fBhermiteSpline1d\fP \fI-t|x list -y list -yp list -ti|xi list ?-deriv?\fP
 .br
 .RE
 .PP
@@ -137,7 +140,8 @@ dictionary that contains yi values under yi key, yi derivative under yder1 key\&
 .RE
 .PP
 Does Lagrange polynomial one-dimensional interpolation\&.
-.RS 4n\fBlagr1d\fP \fI-x list -y list -xi list\fP
+.RS 4n
+\fBlagr1d\fP \fI-x list -y list -xi list\fP
 .br
 .RE
 .PP
@@ -163,7 +167,8 @@ list of interpolated dependent variable values, yi, at xi
 .RE
 .PP
 Does least squares polynomial one-dimensional interpolation\&.
-.RS 4n\fBleast1d\fP \fI-x list -y list -xi list ?-w list? ?-nterms value? ?-coeffs?\fP
+.RS 4n
+\fBleast1d\fP \fI-x list -y list -xi list ?-w list? ?-nterms value? ?-coeffs?\fP
 .br
 .RE
 .PP
@@ -200,7 +205,8 @@ the keys b, c and d\&.
 .RE
 .PP
 Does least squares polynomial one-dimensional interpolation with calculation of its derivative\&.
-.RS 4n\fBleast1dDer\fP \fI-x list -y list -xi list ?-w list? ?-nterms value? ?-coeffs?\fP
+.RS 4n
+\fBleast1dDer\fP \fI-x list -y list -xi list ?-w list? ?-nterms value? ?-coeffs?\fP
 .br
 .RE
 .PP
@@ -237,7 +243,8 @@ under yiDer key, and the values of interpolation polynom coefficients under the 
 .RE
 .PP
 Does linear one-dimensional interpolation\&.
-.RS 4n\fBlin1d\fP \fI-x list -y list -xi list\fP
+.RS 4n
+\fBlin1d\fP \fI-x list -y list -xi list\fP
 .br
 .RE
 .PP
@@ -263,7 +270,8 @@ list of interpolated dependent variable values, yi, at xi
 .RE
 .PP
 Does nearest one-dimensional interpolation\&.
-.RS 4n\fBnear1d\fP \fI-x list -y list -xi list\fP
+.RS 4n
+\fBnear1d\fP \fI-x list -y list -xi list\fP
 .br
 .RE
 .PP
@@ -289,7 +297,8 @@ list of interpolated dependent variable values, yi, at xi
 .RE
 .PP
 Does piecewise cubic Hermite interpolation (PCHIP)\&.
-.RS 4n\fBpchip1d\fP \fI-x list -f|y list -xe|xi list\fP
+.RS 4n
+\fBpchip1d\fP \fI-x list -f|y list -xe|xi list\fP
 .br
 .RE
 .PP

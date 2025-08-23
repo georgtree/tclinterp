@@ -142,10 +142,6 @@ proc ::tclinterp::DuplListCheck {list} {
     return $flag
 }
 
-
-### Linear interpolations
-#### Linear interpolation
-
 proc ::tclinterp::interpolation::lin1d {args} {
     # Does linear one-dimensional interpolation.
     #  -x list - list of independent variable (x) values, must be strictly increasing
@@ -177,8 +173,6 @@ proc ::tclinterp::interpolation::lin1d {args} {
     return $yiList
 }
 
-#### Nearest interpolation
-
 proc ::tclinterp::interpolation::near1d {args} {
     # Does nearest one-dimensional interpolation.
     #  -x list - list of independent variable (x) values
@@ -207,8 +201,6 @@ proc ::tclinterp::interpolation::near1d {args} {
     return $yiList
 }
 
-### Lagrange interpolation
-
 proc ::tclinterp::interpolation::lagr1d {args} {
     # Does Lagrange polynomial one-dimensional interpolation.
     #  -x list - list of independent variable (x) values
@@ -236,10 +228,6 @@ proc ::tclinterp::interpolation::lagr1d {args} {
     ::tclinterp::DeleteArrays $xArray $yArray $xiArray $yiArray
     return $yiList
 }
-
-### Spline interpolation
-
-#### Least squares polynomial interpolation
 
 proc ::tclinterp::interpolation::least1d {args} {
     # Does least squares polynomial one-dimensional interpolation.
@@ -368,8 +356,6 @@ proc ::tclinterp::interpolation::least1dDer {args} {
     return
 }
 
-#### Bezier functions approximation
-
 proc ::tclinterp::approximation::genBezier {args} {
     # Finds values of general Bezier function at specified t points.
     #  -n value - order of Bezier function, must be zero or more
@@ -445,8 +431,6 @@ proc ::tclinterp::approximation::bezier {args} {
     return $yiList
 }
 
-#### Divided difference interpolation
-
 proc ::tclinterp::interpolation::divDif1d {args} {
     # Does divided difference one-dimensional interpolation.
     #  -x list - list of independent variable (x) values
@@ -496,8 +480,6 @@ proc ::tclinterp::interpolation::divDif1d {args} {
     return
 }
 
-#### Cubic B spline approximation
-
 proc ::tclinterp::approximation::cubicBSpline1d {args} {
     # Evaluates a cubic B spline approximant.
     #  -t list - list of independent variable (t) values, -x is an alias
@@ -526,8 +508,6 @@ proc ::tclinterp::approximation::cubicBSpline1d {args} {
     ::tclinterp::DeleteArrays $tArray $yArray
     return $yiList
 }
-
-#### Cubic beta spline approximation
 
 proc ::tclinterp::approximation::cubicBetaSpline1d {args} {
     # Evaluates a cubic beta spline approximant.
@@ -561,8 +541,6 @@ proc ::tclinterp::approximation::cubicBetaSpline1d {args} {
     ::tclinterp::DeleteArrays $tArray $yArray
     return $yiList
 }
-
-#### Piecewise cubic spline interpolation
 
 proc ::tclinterp::interpolation::cubicSpline1d {args} {
     # Does piecewise cubic spline interpolation.
@@ -641,8 +619,6 @@ proc ::tclinterp::interpolation::cubicSpline1d {args} {
     }
 }
 
-#### Hermite polynomial spline interpolation
-
 proc ::tclinterp::interpolation::hermiteSpline1d {args} {
     # Does Hermite polynomial spline interpolation.
     #  -t list - list of independent variable (t) values, must be strictly increasing, -x is an alias
@@ -693,8 +669,6 @@ proc ::tclinterp::interpolation::hermiteSpline1d {args} {
         return $yiList
     }
 }
-
-#### piecewise cubic Hermite interpolation (PCHIP)
 
 proc ::tclinterp::interpolation::pchip1d {args} {
     # Does piecewise cubic Hermite interpolation (PCHIP).

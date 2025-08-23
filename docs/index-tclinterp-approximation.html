@@ -22,11 +22,11 @@
 <p class='ruff'>Finds values of Bezier function at x points.</p>
 <div class='ruff_synopsis'><span class='ruff_cmd'>bezier</span> <span class='ruff_arg'>-n value -a value -b value -x list -y list</span></div>
 <h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
-<tr><td><code><font color=#463e11>-a</font> value</code></td><td>Start of the interval.</td></tr>
-<tr><td><code><font color=#463e11>-b</font> value</code></td><td>End of interval.</td></tr>
-<tr><td><code><font color=#463e11>-n</font> value</code></td><td>Order of Bezier function, must be zero or more.</td></tr>
-<tr><td><code><font color=#463e11>-x</font> list</code></td><td>List of x values.</td></tr>
-<tr><td><code><font color=#463e11>-y</font> list</code></td><td>List of y control points values of size n+1.</td></tr>
+<tr><td><nobr><code><font color=#463e11>-a</font> value</code></nobr></td><td>Start of the interval.</td></tr>
+<tr><td><nobr><code><font color=#463e11>-b</font> value</code></nobr></td><td>End of interval.</td></tr>
+<tr><td><nobr><code><font color=#463e11>-n</font> value</code></nobr></td><td>Order of Bezier function, must be zero or more.</td></tr>
+<tr><td><nobr><code><font color=#463e11>-x</font> list</code></nobr></td><td>List of x values.</td></tr>
+<tr><td><nobr><code><font color=#463e11>-y</font> list</code></nobr></td><td>List of y control points values of size n+1.</td></tr>
 </table>
 <h5 class='ruff'>Return value</h5><p class='ruff'>yi values of Bezier function at x points</p>
 <div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_approximation_bezier' href="javascript:toggleSource('tclinterp_approximation_bezier')">Show source</a></p>
@@ -69,11 +69,11 @@
 <p class='ruff'>Evaluates a cubic beta spline approximant.</p>
 <div class='ruff_synopsis'><span class='ruff_cmd'>cubicBetaSpline1d</span> <span class='ruff_arg'>-beta1 value -beta2 value -t|x list -y list -ti|xi list</span></div>
 <h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
-<tr><td><code><font color=#463e11>-beta1</font> value</code></td><td>The skew or bias parameter, beta1 = 1 for no skew or bias.</td></tr>
-<tr><td><code><font color=#463e11>-beta2</font> value</code></td><td>The tension parameter, beta2 = 0 for no tension.</td></tr>
-<tr><td><code><font color=#463e11>-t</font> list</code></td><td>List of independent variable (t) values, -x is an alias.</td></tr>
-<tr><td><code><font color=#463e11>-ti</font> list</code></td><td>List of independent variable interpolation (ti) values, -xi is an alias.</td></tr>
-<tr><td><code><font color=#463e11>-y</font> list</code></td><td>List of dependent variable (y) values.</td></tr>
+<tr><td><nobr><code><font color=#463e11>-beta1</font> value</code></nobr></td><td>The skew or bias parameter, beta1 = 1 for no skew or bias.</td></tr>
+<tr><td><nobr><code><font color=#463e11>-beta2</font> value</code></nobr></td><td>The tension parameter, beta2 = 0 for no tension.</td></tr>
+<tr><td><nobr><code><font color=#463e11>-t</font> list</code></nobr></td><td>List of independent variable (t) values, -x is an alias.</td></tr>
+<tr><td><nobr><code><font color=#463e11>-ti</font> list</code></nobr></td><td>List of independent variable interpolation (ti) values, -xi is an alias.</td></tr>
+<tr><td><nobr><code><font color=#463e11>-y</font> list</code></nobr></td><td>List of dependent variable (y) values.</td></tr>
 </table>
 <h5 class='ruff'>Return value</h5><p class='ruff'>list of approximation values yi at ti points.</p>
 <div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_approximation_cubicBetaSpline1d' href="javascript:toggleSource('tclinterp_approximation_cubicBetaSpline1d')">Show source</a></p>
@@ -115,9 +115,9 @@
 <p class='ruff'>Evaluates a cubic B spline approximant.</p>
 <div class='ruff_synopsis'><span class='ruff_cmd'>cubicBSpline1d</span> <span class='ruff_arg'>-t|x list -y list -ti|xi list</span></div>
 <h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
-<tr><td><code><font color=#463e11>-t</font> list</code></td><td>List of independent variable (t) values, -x is an alias.</td></tr>
-<tr><td><code><font color=#463e11>-ti</font> list</code></td><td>List of independent variable interpolation (ti) values, -xi is an alias.</td></tr>
-<tr><td><code><font color=#463e11>-y</font> list</code></td><td>List of dependent variable (y) values.</td></tr>
+<tr><td><nobr><code><font color=#463e11>-t</font> list</code></nobr></td><td>List of independent variable (t) values, -x is an alias.</td></tr>
+<tr><td><nobr><code><font color=#463e11>-ti</font> list</code></nobr></td><td>List of independent variable interpolation (ti) values, -xi is an alias.</td></tr>
+<tr><td><nobr><code><font color=#463e11>-y</font> list</code></nobr></td><td>List of dependent variable (y) values.</td></tr>
 </table>
 <h5 class='ruff'>Return value</h5><p class='ruff'>list of approximation values yi at ti points.</p>
 <div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_approximation_cubicBSpline1d' href="javascript:toggleSource('tclinterp_approximation_cubicBSpline1d')">Show source</a></p>
@@ -155,10 +155,10 @@
 <p class='ruff'>Finds values of general Bezier function at specified t points.</p>
 <div class='ruff_synopsis'><span class='ruff_cmd'>genBezier</span> <span class='ruff_arg'>-n value -x list -y list -t list</span></div>
 <h5 class='ruff'>Parameters</h5><table class='ruff_deflist'>
-<tr><td><code><font color=#463e11>-n</font> value</code></td><td>Order of Bezier function, must be zero or more.</td></tr>
-<tr><td><code><font color=#463e11>-t</font> list</code></td><td>List of t points at which we want to evaluate Bezier function, best results are obtained within the interval [0,1]</td></tr>
-<tr><td><code><font color=#463e11>-x</font> list</code></td><td>List of x control points values of size n+1.</td></tr>
-<tr><td><code><font color=#463e11>-y</font> list</code></td><td>List of y control points values of size n+1.</td></tr>
+<tr><td><nobr><code><font color=#463e11>-n</font> value</code></nobr></td><td>Order of Bezier function, must be zero or more.</td></tr>
+<tr><td><nobr><code><font color=#463e11>-t</font> list</code></nobr></td><td>List of t points at which we want to evaluate Bezier function, best results are obtained within the interval [0,1]</td></tr>
+<tr><td><nobr><code><font color=#463e11>-x</font> list</code></nobr></td><td>List of x control points values of size n+1.</td></tr>
+<tr><td><nobr><code><font color=#463e11>-y</font> list</code></nobr></td><td>List of y control points values of size n+1.</td></tr>
 </table>
 <h5 class='ruff'>Return value</h5><p class='ruff'>dict with lists of xi and yi points at specified t points</p>
 <div class='ruff_source'><p class='ruff_source_link'><a id='l_tclinterp_approximation_genBezier' href="javascript:toggleSource('tclinterp_approximation_genBezier')">Show source</a></p>
@@ -197,18 +197,17 @@
     }
     ::tclinterp::DeleteArrays <font color=#4A181B>$xArray</font> <font color=#4A181B>$yArray</font>
     ::tclinterp::DeleteDoubleps <font color=#4A181B>$xiPnt</font> <font color=#4A181B>$yiPnt</font>
-    <b><font color=#ca14ca>return</font></b> [<b><font color=#923B23>dcreate</font></b> xi <font color=#4A181B>$xiList</font> yi <font color=#4A181B>$yiList</font>]
+    <b><font color=#ca14ca>return</font></b> [dcreate xi <font color=#4A181B>$xiList</font> yi <font color=#4A181B>$yiList</font>]
 }</pre></div>
 </div></main><nav class='ruff-nav'><ul ><li class='ruff-toc1'><a style='padding-top:2px;' href='index.html'>Start page</a></li>
 <li class='ruff-toc1'><a href='index-docindex.html' accesskey='i'>Index</a></li>
 <hr>
 <li class='ruff-toc1'><a href='index-Examples.html'>Examples</a></li>
-<li class='ruff-toc1'><a href='index-tclinterp.html'>tclinterp</a></li>
 <li class='ruff-toc1'><a class='ruff-highlight' href='index-tclinterp-approximation.html'>tclinterp::approximation</a></li>
 <li class='ruff-toc1'><a href='index-tclinterp-interpolation.html'>tclinterp::interpolation</a></li>
-<hr><li class='ruff-toc2'><a href='#::tclinterp::approximation-Commands'>Commands</a></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-approximation.html#::tclinterp::approximation::bezier'>bezier</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;bezier&lt;/span&gt; &lt;span class='ruff_arg'&gt;<font color=#463e11>-n</font> value <font color=#463e11>-a</font> value <font color=#463e11>-b</font> value <font color=#463e11>-x</font> list <font color=#463e11>-y</font> list&lt;/span&gt;</pre>Finds values of Bezier function at x points.
-</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-approximation.html#::tclinterp::approximation::cubicBetaSpline1d'>cubicBetaSpline1d</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;cubicBetaSpline1d&lt;/span&gt; &lt;span class='ruff_arg'&gt;<font color=#463e11>-beta1</font> value <font color=#463e11>-beta2</font> value <font color=#463e11>-t</font>|x list <font color=#463e11>-y</font> list <font color=#463e11>-ti</font>|xi list&lt;/span&gt;</pre>Evaluates a cubic beta spline approximant.
-</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-approximation.html#::tclinterp::approximation::cubicBSpline1d'>cubicBSpline1d</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;cubicBSpline1d&lt;/span&gt; &lt;span class='ruff_arg'&gt;<font color=#463e11>-t</font>|x list <font color=#463e11>-y</font> list <font color=#463e11>-ti</font>|xi list&lt;/span&gt;</pre>Evaluates a cubic B spline approximant.
-</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-approximation.html#::tclinterp::approximation::genBezier'>genBezier</a><span class='ruff-tiptext'><pre>&lt;span class='ruff_cmd'&gt;genBezier&lt;/span&gt; &lt;span class='ruff_arg'&gt;<font color=#463e11>-n</font> value <font color=#463e11>-x</font> list <font color=#463e11>-y</font> list <font color=#463e11>-t</font> list&lt;/span&gt;</pre>Finds values of general Bezier function at specified t points.
+<hr><li class='ruff-toc2'><a href='#::tclinterp::approximation-Commands'>Commands</a></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-approximation.html#::tclinterp::approximation::bezier'>bezier</a><span class='ruff-tiptext'><pre><span class='ruff_cmd'>bezier</span> <span class='ruff_arg'>-n value -a value -b value -x list -y list</span></pre>Finds values of Bezier function at x points.
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-approximation.html#::tclinterp::approximation::cubicBetaSpline1d'>cubicBetaSpline1d</a><span class='ruff-tiptext'><pre><span class='ruff_cmd'>cubicBetaSpline1d</span> <span class='ruff_arg'>-beta1 value -beta2 value -t|x list -y list -ti|xi list</span></pre>Evaluates a cubic beta spline approximant.
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-approximation.html#::tclinterp::approximation::cubicBSpline1d'>cubicBSpline1d</a><span class='ruff-tiptext'><pre><span class='ruff_cmd'>cubicBSpline1d</span> <span class='ruff_arg'>-t|x list -y list -ti|xi list</span></pre>Evaluates a cubic B spline approximant.
+</span></li><li class='ruff-toc3 ruff-tip'><a href='index-tclinterp-approximation.html#::tclinterp::approximation::genBezier'>genBezier</a><span class='ruff-tiptext'><pre><span class='ruff_cmd'>genBezier</span> <span class='ruff_arg'>-n value -x list -y list -t list</span></pre>Finds values of general Bezier function at specified t points.
 </span></li></ul></nav><footer class='ruff-layout-footer ruff-ft'><div style='float: right;'>Document generated by <a href='https://ruff.magicsplat.com'>Ruff!</a></div><div>&copy; George Yashin</div></footer>
 </div></body></html>
