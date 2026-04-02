@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>::tclinterp::approximation &#8212; tclinterp  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
+    
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="::tclinterp::interpolation" href="Examples-tclinterp-interpolation.html" />
+    <link rel="prev" title="::Examples" href="Examples-Examples.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="Examples-tclinterp-interpolation.html" title="::tclinterp::interpolation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Examples-Examples.html" title="::Examples"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">tclinterp  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">::tclinterp::approximation</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="tclinterp-approximation">
+<span id="r-tclinterp-approximation"></span><span id="r-3a3atclinterp3a3aapproximation"></span><h1>::tclinterp::approximation<a class="headerlink" href="#tclinterp-approximation" title="Link to this heading">¶</a></h1>
+<section id="commands">
+<span id="r-tclinterp-approximation-commands"></span><span id="r-3a3atclinterp3a3aapproximationqzcommands"></span><h2>Commands<a class="headerlink" href="#commands" title="Link to this heading">¶</a></h2>
+<section id="bezier">
+<span id="r-3a3atclinterp3a3aapproximation3a3abezier"></span><span id="index-1"></span><span id="index-0"></span><h3><code class="docutils literal notranslate"><span class="pre">bezier</span></code><a class="headerlink" href="#bezier" title="Link to this heading">¶</a></h3>
+<p>Finds values of Bezier function at x points.</p>
+<pre class="literal-block"><strong>bezier</strong> <em>-n value -a value -b value -x list -y list</em></pre>
+<p class="rubric">Parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-a</span> <span class="pre">value</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Start of the interval.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-b</span> <span class="pre">value</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>End of interval.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-n</span> <span class="pre">value</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Order of Bezier function, must be zero or more.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>List of x values.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of y control points values of size n+1.</p>
+</dd>
+</dl>
+<p class="rubric">Return value</p>
+<p>yi values of Bezier function at x points</p>
+</section>
+<section id="cubicbetaspline1d">
+<span id="r-3a3atclinterp3a3aapproximation3a3acubicbetaspline1d"></span><span id="index-3"></span><span id="index-2"></span><h3><code class="docutils literal notranslate"><span class="pre">cubicBetaSpline1d</span></code><a class="headerlink" href="#cubicbetaspline1d" title="Link to this heading">¶</a></h3>
+<p>Evaluates a cubic beta spline approximant.</p>
+<pre class="literal-block"><strong>cubicBetaSpline1d</strong> <em>-beta1 value -beta2 value -t|x list -y list -ti|xi list</em></pre>
+<p class="rubric">Parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-beta1</span> <span class="pre">value</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>The skew or bias parameter, beta1 = 1 for no skew or bias.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-beta2</span> <span class="pre">value</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>The tension parameter, beta2 = 0 for no tension.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-t</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of independent variable (t) values, -x is an alias.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ti</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>List of independent variable interpolation (ti) values, -xi is an alias.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of dependent variable (y) values.</p>
+</dd>
+</dl>
+<p class="rubric">Return value</p>
+<p>list of approximation values yi at ti points.</p>
+</section>
+<section id="cubicbspline1d">
+<span id="r-3a3atclinterp3a3aapproximation3a3acubicbspline1d"></span><span id="index-5"></span><span id="index-4"></span><h3><code class="docutils literal notranslate"><span class="pre">cubicBSpline1d</span></code><a class="headerlink" href="#cubicbspline1d" title="Link to this heading">¶</a></h3>
+<p>Evaluates a cubic B spline approximant.</p>
+<pre class="literal-block"><strong>cubicBSpline1d</strong> <em>-t|x list -y list -ti|xi list</em></pre>
+<p class="rubric">Parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-t</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of independent variable (t) values, -x is an alias.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ti</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>List of independent variable interpolation (ti) values, -xi is an alias.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of dependent variable (y) values.</p>
+</dd>
+</dl>
+<p class="rubric">Return value</p>
+<p>list of approximation values yi at ti points.</p>
+</section>
+<section id="genbezier">
+<span id="r-3a3atclinterp3a3aapproximation3a3agenbezier"></span><span id="index-7"></span><span id="index-6"></span><h3><code class="docutils literal notranslate"><span class="pre">genBezier</span></code><a class="headerlink" href="#genbezier" title="Link to this heading">¶</a></h3>
+<p>Finds values of general Bezier function at specified t points.</p>
+<pre class="literal-block"><strong>genBezier</strong> <em>-n value -x list -y list -t list</em></pre>
+<p class="rubric">Parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-n</span> <span class="pre">value</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Order of Bezier function, must be zero or more.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-t</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>List of t points at which we want to evaluate Bezier function, best results are obtained within the interval [0,1]</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of x control points values of size n+1.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>List of y control points values of size n+1.</p>
+</dd>
+</dl>
+<p class="rubric">Return value</p>
+<p>dict with lists of xi and yi points at specified t points</p>
+<hr class="docutils" />
+<p class="centered">
+<strong>Copyright (c) George Yashin</strong></p></section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">::tclinterp::approximation</a><ul>
+<li><a class="reference internal" href="#commands">Commands</a><ul>
+<li><a class="reference internal" href="#bezier"><code class="docutils literal notranslate"><span class="pre">bezier</span></code></a></li>
+<li><a class="reference internal" href="#cubicbetaspline1d"><code class="docutils literal notranslate"><span class="pre">cubicBetaSpline1d</span></code></a></li>
+<li><a class="reference internal" href="#cubicbspline1d"><code class="docutils literal notranslate"><span class="pre">cubicBSpline1d</span></code></a></li>
+<li><a class="reference internal" href="#genbezier"><code class="docutils literal notranslate"><span class="pre">genBezier</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="Examples-Examples.html"
+                          title="previous chapter">::Examples</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="Examples-tclinterp-interpolation.html"
+                          title="next chapter">::tclinterp::interpolation</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/Examples-tclinterp-approximation.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="Examples-tclinterp-interpolation.html" title="::tclinterp::interpolation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Examples-Examples.html" title="::Examples"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">tclinterp  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">::tclinterp::approximation</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright George Yashin.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

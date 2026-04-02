@@ -1,8 +1,6 @@
 
-set path_to_hl_tcl "/home/georgtree/tcl/hl_tcl"
 source /home/georgtree/tcl/ruff/src/ruff.tcl
 package require fileutil
-source [file join $path_to_hl_tcl hl_tcl_html.tcl]
 set docDir [file dirname [file normalize [info script]]]
 set sourceDir "${docDir}/../"
 source [file join $docDir startPage.ruff]
@@ -11,48 +9,41 @@ source [file join $sourceDir tclinterp.tcl]
 
 set packageVersion [package versions tclinterp]
 set title "Tcl wrapper for C interpolation procedures"
-puts $packageVersion
-set commonHtml [list -title $title -sortnamespaces false -preamble $startPage -pagesplit namespace -recurse false\
-                        -includesource true -pagesplit namespace -autopunctuate true -compact false\
-                        -excludeprocs {^[A-Z].*} -includeprivate false -product tcl_tools\
+set commonSphinx [list -title $title -sortnamespaces false -preamble $startPage -pagesplit namespace -recurse false\
+                        -includesource false -pagesplit namespace -autopunctuate true -compact false\
+                        -excludeprocs {^[A-Z].*} -includeprivate false -product tclinterp\
                         -diagrammer "ditaa --border-width 1" -version $packageVersion -copyright "George Yashin"\
                         {*}$::argv]
 set commonNroff [list -title $title -sortnamespaces false -preamble $startPage -pagesplit namespace -recurse false\
                          -pagesplit namespace -autopunctuate true -compact false -includeprivate false\
-                         -excludeprocs {^[A-Z].*} -product tcl_tools -diagrammer "ditaa --border-width 1"\
+                         -excludeprocs {^[A-Z].*} -product tclinterp -diagrammer "ditaa --border-width 1"\
                          -version $packageVersion -copyright "George Yashin" {*}$::argv]
-set namespaces [list ::Examples ::tclinterp::approximation ::tclinterp::interpolation]
+set namespaces [list Examples ::tclinterp::approximation ::tclinterp::interpolation]
 
-if {[llength $argv] == 0 || "html" in $argv} {
-    ruff::document $namespaces -format html -outdir $docDir -outfile index.html {*}$commonHtml
-    ruff::document $namespaces -format nroff -outdir $docDir -outfile tclinterp.n {*}$commonNroff
+ruff::document $namespaces -format sphinx -outdir [file join $docDir sphinx] {*}$commonSphinx
+ruff::document $namespaces -format nroff -outdir $docDir -outfile tclinterp.n {*}$commonNroff
+
+::fileutil::appendToFile [file join $docDir sphinx conf.py] {html_theme = "classic"
+extensions = [
+    "sphinx.ext.githubpages",
+]
+from pygments.lexers.tcl import TclLexer
+from pygments.token import Operator
+
+class MyTclLexer(TclLexer):
+    def get_tokens_unprocessed(self, text):
+        for i, t, v in super().get_tokens_unprocessed(text):
+            if v == "=":
+                yield i, Operator, v   # or Name.Builtin
+            else:
+                yield i, t, v
+
+def setup(app):
+    from sphinx.highlighting import lexers
+    lexers["tcl"] = MyTclLexer()
 }
-
-# add new command keywords to hl_tcl
-lappend ::hl_tcl::my::data(CMD_TCL) {*}{lin1d near1d lagr1d least1d least1dDer divDif1d cubicSpline1d hermiteSpline1d\
-                                                pchip1d genBezier bezier cubicBSpline1d cubicBetaSpline1d}
-set ::hl_tcl::my::data(CMD_TCL) [lsort $::hl_tcl::my::data(CMD_TCL)]
-
-foreach file [glob ${docDir}/*.html] {
-    ::hl_tcl_html::highlight $file no \
-        {<pre class='ruff'>} </pre> \
-        <div id='*' class='ruff_dyn_src'><pre> </pre> \
-        <code> </code>  
-}
-
-# change default width
-proc processContentsCss {fileContents} {
-    return [string map [list max-width:60rem max-width:100rem "overflow-wrap:break-word" "overflow-wrap:normal"]\
-                    $fileContents]
-}
-# change default theme 
-proc processContentsJs {fileContents} {
-    return [string map {init()\{currentTheme=localStorage.ruff_theme init()\{currentTheme=currentTheme="v1"}\
-                    $fileContents]
-}
-
-fileutil::updateInPlace [file join $docDir assets ruff-min.css] processContentsCss
-fileutil::updateInPlace [file join $docDir assets ruff-min.js] processContentsJs
+catch {exec sphinx-build -b html [file join $docDir sphinx] [file join $docDir]} errorStr
+puts $errorStr
 
 proc processContents {fileContents} {
     global path chartsMap
@@ -63,16 +54,7 @@ proc processContents {fileContents} {
     return $fileContents
 }
 
-set tableWrapping {
-    .ruff-bd table.ruff_deflist th:first-child,
-    .ruff-bd table.ruff_deflist td:first-child {
-        white-space: nowrap;      /* never wrap */
-        overflow-wrap: normal;
-        word-break: normal;
-    }
-}
-::fileutil::appendToFile [file join $docDir assets ruff-min.css] $tableWrapping
 
 set chartsMap [dcreate !ticklechart_mark_linear_near_interpolation! linear_near_interpolation.html]
 set path [file join $docDir .. examples html_charts]
-fileutil::updateInPlace [file join $docDir index-Examples.html] processContents
+fileutil::updateInPlace [file join $docDir Examples-Examples.html] processContents

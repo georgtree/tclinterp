@@ -1,86 +1,131 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"/>
-<title>Tcl wrapper for C interpolation procedures</title>
-<link rel='stylesheet' type='text/css' href='assets/ruff-min.css' />
-<script type='text/javascript' src='assets/ruff-min.js'></script>
-</head>
-<body>
-<div class='ruff-layout'>
-<header class='ruff-layout-header ruff-hd'>
-<a style='text-decoration:none;' href='index.html'>Tcl wrapper for C interpolation procedures (v0.15)</a>
+<!DOCTYPE html>
 
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-            <div id="ruffButtonBar">
-            <button id="ruffNavMove" onclick="ruffMoveNavPane()"></button>
-            <button id="ruffToggleTheme" onclick="ruffNextTheme()"></button>
-            </div>
-        </header><main class='ruff-layout-main ruff-bd'><h1 class='ruff'><a name='Content'></a>Content<span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h1>
-<div style='clear:both;'></div>
-<p class='ruff'>This package provides tcl wrapper for interpolation and approximation procedures. The sources of procedures are:</p>
-<ul class='ruff'>
-<li><a href="https://people.math.sc.edu/Burkardt/c_src/interp/interp.html" >Linear interpolation routines</a></li>
-<li><a href="https://people.math.sc.edu/Burkardt/c_src/spline/spline.html" >Spline interpolation and approximation routines</a></li>
+    <title>&lt;no title&gt; &#8212; tclinterp  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
+    
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Content" href="Examples.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="Examples.html" title="Content"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">tclinterp  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">&lt;no title&gt;</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Content</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#installation-and-dependencies">Installation and dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#supported-platforms">Supported platforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#documentation">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#interactive-help">Interactive help</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples-Examples.html">::Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Examples-Examples.html#d-linear-and-nearest-interpolation">1D Linear and nearest interpolation</a></li>
 </ul>
-<h1 class='ruff'><a name='Installation and dependencies'></a>Installation and dependencies<span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h1>
-<div style='clear:both;'></div>
-<p class='ruff'>For building you need:</p>
-<ul class='ruff'>
-<li><a href="https://www.swig.org/download.html" >SWIG of version 4.3</a></li>
-<li><a href="https://www.tcl.tk/software/tcltk/9.0.html" >Tcl9</a> or <a href="https://www.tcl.tk/software/tcltk/8.6.html" >Tcl8.6.15</a></li>
-<li><a href="https://gcc.gnu.org/" >gcc compiler</a></li>
-<li><a href="https://www.gnu.org/software/make/" >make tool</a></li>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Examples-tclinterp-approximation.html">::tclinterp::approximation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Examples-tclinterp-approximation.html#commands">Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Examples-tclinterp-approximation.html#bezier"><code class="docutils literal notranslate"><span class="pre">bezier</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Examples-tclinterp-approximation.html#cubicbetaspline1d"><code class="docutils literal notranslate"><span class="pre">cubicBetaSpline1d</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Examples-tclinterp-approximation.html#cubicbspline1d"><code class="docutils literal notranslate"><span class="pre">cubicBSpline1d</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Examples-tclinterp-approximation.html#genbezier"><code class="docutils literal notranslate"><span class="pre">genBezier</span></code></a></li>
 </ul>
-<p class='ruff'>For run you also need:</p>
-<ul class='ruff'>
-<li><a href="https://github.com/georgtree/argparse" >argparse</a></li>
-<li><a href="https://www.tcl.tk/software/tcllib/" >Tcllib</a></li>
+</li>
 </ul>
-<p class='ruff'>To build run</p>
-
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'>./configure
-make
-sudo make install
-</pre>
-
-</figure><p class='ruff'>If you have different versions of Tcl on the same machine, you can set the path to this version with <code><font color=#463e11>-with-tcl</font>=path</code> flag to configure script.</p>
-<p class='ruff'>For Windows build it is strongly recommended to use <a href="https://www.msys2.org/" >MSYS64 UCRT64 environment</a>, the above steps are identical if you run it from UCRT64 shell.</p>
-<p class='ruff'>There are prebuilt packages that contains .so/.dll files, tcl code and tests for Windows and Linux.</p>
-<h1 class='ruff'><a name='Supported platforms'></a>Supported platforms<span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h1>
-<div style='clear:both;'></div>
-<p class='ruff'>I've tested it on:</p>
-<ul class='ruff'>
-<li>Kubuntu 24.04 with Tcl 9 and Tcl 8.6.15</li>
-<li>Windows 11 in MSYS64 UCRT64 environment with Tcl9</li>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Examples-tclinterp-interpolation.html">::tclinterp::interpolation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Examples-tclinterp-interpolation.html#commands">Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Examples-tclinterp-interpolation.html#cubicspline1d"><code class="docutils literal notranslate"><span class="pre">cubicSpline1d</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Examples-tclinterp-interpolation.html#divdif1d"><code class="docutils literal notranslate"><span class="pre">divDif1d</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Examples-tclinterp-interpolation.html#hermitespline1d"><code class="docutils literal notranslate"><span class="pre">hermiteSpline1d</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Examples-tclinterp-interpolation.html#lagr1d"><code class="docutils literal notranslate"><span class="pre">lagr1d</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Examples-tclinterp-interpolation.html#least1d"><code class="docutils literal notranslate"><span class="pre">least1d</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Examples-tclinterp-interpolation.html#least1dder"><code class="docutils literal notranslate"><span class="pre">least1dDer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Examples-tclinterp-interpolation.html#lin1d"><code class="docutils literal notranslate"><span class="pre">lin1d</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Examples-tclinterp-interpolation.html#near1d"><code class="docutils literal notranslate"><span class="pre">near1d</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Examples-tclinterp-interpolation.html#pchip1d"><code class="docutils literal notranslate"><span class="pre">pchip1d</span></code></a></li>
 </ul>
-<h1 class='ruff'><a name='Documentation'></a>Documentation<span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h1>
-<div style='clear:both;'></div>
-<p class='ruff'>You can find some documentation <a href="https://georgtree.github.io/tclinterp" >here</a></p>
-<h1 class='ruff'><a name='Interactive help'></a>Interactive help<span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h1>
-<div style='clear:both;'></div>
-<p class='ruff'>All public procedures has interactive help. To get information about procedure and its arguments call it with <code><font color=#463e11>-help</font></code> switch:</p>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
+</ul>
+</div>
 
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#923B23>package</font></b> require tclinterp
-<b><font color=#923B23>namespace</font></b> import ::tclinterp::interpolation::*
-<b><font color=#923B23>near1d</font></b> <font color=#463e11>-help</font>
-</pre>
 
-</figure>
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'>Does nearest one-dimensional interpolation. Returns: list of interpolated
-dependent variable values, 'yi', at 'xi'. Can accepts unambiguous prefixes
-instead of switches names. Accepts switches only before parameters.
-Switches:
-<font color=#463e11>-x</font> - Required, expects argument. List of independent variable (x)
-values, must be strictly increasing.
-<font color=#463e11>-y</font> - Required, expects argument. List of dependent variable (y) values.
-<font color=#463e11>-xi</font> - Required, expects argument. list of independent variable
-interpolation (xi) values.
-</pre>
-
-</figure><p class='ruff'>Best to do it in interactive console, see <a href="https://github.com/bohagan1/TkCon" >tkcon</a></p>
-</main><nav class='ruff-nav'><ul ><li class='ruff-toc1'><a class='ruff-highlight' style='padding-top:2px;' href='index.html'>Start page</a></li>
-<li class='ruff-toc1'><a href='index-docindex.html' accesskey='i'>Index</a></li>
-<hr>
-<li class='ruff-toc1'><a href='index-Examples.html'>Examples</a></li>
-<li class='ruff-toc1'><a href='index-tclinterp-approximation.html'>tclinterp::approximation</a></li>
-<li class='ruff-toc1'><a href='index-tclinterp-interpolation.html'>tclinterp::interpolation</a></li>
-<hr></ul></nav><footer class='ruff-layout-footer ruff-ft'><div style='float: right;'>Document generated by <a href='https://ruff.magicsplat.com'>Ruff!</a></div><div>&copy; George Yashin</div></footer>
-</div></body></html>
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="Examples.html"
+                          title="next chapter">Content</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="Examples.html" title="Content"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">tclinterp  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">&lt;no title&gt;</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright George Yashin.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

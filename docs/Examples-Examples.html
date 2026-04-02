@@ -1,138 +1,158 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"/>
-<title>Tcl wrapper for C interpolation procedures</title>
-<link rel='stylesheet' type='text/css' href='assets/ruff-min.css' />
-<script type='text/javascript' src='assets/ruff-min.js'></script>
-</head>
-<body>
-<div class='ruff-layout'>
-<header class='ruff-layout-header ruff-hd'>
-<a style='text-decoration:none;' href='index.html'>Tcl wrapper for C interpolation procedures (v0.15)</a>
+<!DOCTYPE html>
 
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-            <div id="ruffButtonBar">
-            <button id="ruffNavMove" onclick="ruffMoveNavPane()"></button>
-            <button id="ruffToggleTheme" onclick="ruffNextTheme()"></button>
-            </div>
-        </header><main class='ruff-layout-main ruff-bd'><h1 class='ruff'><a name='Examples'></a>Examples<span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h1>
-<div style='clear:both;'></div>
-<p class='ruff'>This section contains examples of usage of interpolation/approximation procedures of the package. List of availible examples:</p>
-<ul class='ruff'>
-<li><a href="index-Examples.html#::Examples-1D Linear and nearest interpolation" title="1D Linear and nearest interpolation" >1D Linear and nearest interpolation</a> - &quot;examples/linear_near_interpolation.tcl&quot; file</li>
+    <title>::Examples &#8212; tclinterp  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
+    
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="::tclinterp::approximation" href="Examples-tclinterp-approximation.html" />
+    <link rel="prev" title="Content" href="Examples.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="Examples-tclinterp-approximation.html" title="::tclinterp::approximation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Examples.html" title="Content"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">tclinterp  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">::Examples</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="examples">
+<span id="r-examples"></span><span id="r-3a3aexamples"></span><h1>::Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h1>
+<p>This section contains examples of usage of interpolation/approximation procedures of the package.
+List of availible examples:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#r-3a3aexamplesqz1d20linear20and20nearest20interpolation"><span class="std std-ref">1D Linear and nearest interpolation</span></a> - “examples/linear_near_interpolation.tcl” file</p></li>
 </ul>
-<h2 class='ruff'><a name='::Examples-1D Linear and nearest interpolation'></a>1D Linear and nearest interpolation<span class='ruff-uplink'><a href='#top'>Top</a>, <a href='index.html'>Main</a>, <a href='index-docindex.html#'>Index</a></span></h2>
-<div style='clear:both;'></div>
-<p class='ruff'>The two most basic types of interpolation are linear and nearest ones. These types are availible with procedures <a href="index-tclinterp-interpolation.html#::tclinterp::interpolation::lin1d" title="::tclinterp::interpolation::lin1d" class='ruff_cmd'>::tclinterp::interpolation::lin1d</a> and <a href="index-tclinterp-interpolation.html#::tclinterp::interpolation::near1d" title="::tclinterp::interpolation::near1d" class='ruff_cmd'>::tclinterp::interpolation::near1d</a>. To demonstrate both type we use shifted sinusoidal function:</p>
-
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'>f(x) = sin(10 ⋅ x) + 1.1
-</pre>
-
-</figure><p class='ruff'>Relative error is calculated here and in all subsequent chapters is defined as:</p>
-
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'>          f      - f             
-           exact    interp       
+<section id="d-linear-and-nearest-interpolation">
+<span id="r-examples-1d-linear-and-nearest-interpolation"></span><span id="r-3a3aexamplesqz1d20linear20and20nearest20interpolation"></span><h2>1D Linear and nearest interpolation<a class="headerlink" href="#d-linear-and-nearest-interpolation" title="Link to this heading">¶</a></h2>
+<p>The two most basic types of interpolation are linear and nearest ones. These types are availible with procedures
+<a class="reference internal" href="Examples-tclinterp-interpolation.html#r-3a3atclinterp3a3ainterpolation3a3alin1d"><span class="std std-ref">::tclinterp::interpolation::lin1d</span></a> and <a class="reference internal" href="Examples-tclinterp-interpolation.html#r-3a3atclinterp3a3ainterpolation3a3anear1d"><span class="std std-ref">::tclinterp::interpolation::near1d</span></a>.
+To demonstrate both type we use shifted sinusoidal function:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>f(x) = sin(10 ⋅ x) + 1.1
+</pre></div>
+</div>
+<p>Relative error is calculated here and in all subsequent chapters is defined as:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>          f      - f
+           exact    interp
 rel.err = ──────────────── ⋅ 100%
-               f                 
-                exact            
-</pre>
+               f
+                exact
+</pre></div>
+</div>
+<p>Import all procedures from [::tclinterp] namespace:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nb">package</span><span class="w"> </span>require<span class="w"> </span>tclinterp
+<span class="nb">package</span><span class="w"> </span>require<span class="w"> </span>ticklecharts
+<span class="k">set</span><span class="w"> </span><span class="o">::</span>ticklecharts::theme<span class="w"> </span><span class="s2">&quot;dark&quot;</span>
+<span class="k">namespace</span><span class="w"> </span>import<span class="w"> </span><span class="o">::</span>tclinterp::<span class="o">*</span>
+<span class="k">namespace</span><span class="w"> </span>import<span class="w"> </span><span class="o">::</span>tclinterp::interpolation::<span class="o">*</span>
+<span class="k">namespace</span><span class="w"> </span>import<span class="w"> </span><span class="o">::</span>tclinterp::approximation::<span class="o">*</span>
+</pre></div>
+</div>
+<p>Define procedures for sinusoidal function calculation, error calculation and for generating sequence of x values:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="k">proc</span><span class="w"> </span>sinFunc<span class="w"> </span><span class="k">{</span><span class="nv">x</span><span class="k">}</span><span class="w"> </span><span class="k">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">[</span><span class="o">=</span><span class="w"> </span><span class="k">{</span><span class="nv">sin</span><span class="k">(</span><span class="nv">$x</span><span class="o">*</span><span class="nv">10</span><span class="k">)</span><span class="o">+</span><span class="mf">1.1</span><span class="k">}]</span>
+<span class="k">}</span>
+<span class="k">proc</span><span class="w"> </span>relError<span class="w"> </span><span class="k">{</span><span class="nv">ref</span><span class="w"> </span>act<span class="k">}</span><span class="w"> </span><span class="k">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">[</span><span class="o">=</span><span class="w"> </span><span class="k">{(</span><span class="nv">$ref-$act</span><span class="k">)</span><span class="o">*</span><span class="nv">100</span><span class="o">/</span><span class="nv">$ref</span><span class="k">}]</span>
+<span class="k">}</span>
+<span class="k">proc</span><span class="w"> </span>genSeq<span class="w"> </span><span class="k">{</span><span class="nv">xmin</span><span class="w"> </span>xmax<span class="w"> </span>step<span class="w"> </span>func<span class="k">}</span><span class="w"> </span><span class="k">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="k">{set</span><span class="w"> </span>i<span class="w"> </span><span class="mi">0</span><span class="k">}</span><span class="w"> </span><span class="k">{</span><span class="nv">$i</span><span class="o">&lt;=</span><span class="k">[</span><span class="o">=</span><span class="w"> </span><span class="k">{(</span><span class="nv">$xmax-$xmin</span><span class="k">)</span><span class="o">/</span><span class="nv">$step</span><span class="k">}]}</span><span class="w"> </span><span class="k">{</span><span class="nb">incr</span><span class="w"> </span>i<span class="k">}</span><span class="w"> </span><span class="k">{</span>
+<span class="w">        </span><span class="k">set</span><span class="w"> </span>xval<span class="w"> </span><span class="k">[</span><span class="o">=</span><span class="w"> </span><span class="k">{</span><span class="nv">$xmin</span><span class="o">+</span><span class="nv">$i</span><span class="o">*</span><span class="nv">$step</span><span class="k">}]</span>
+<span class="w">        </span><span class="nb">lappend</span><span class="w"> </span>x<span class="w"> </span><span class="nv">$xval</span>
+<span class="w">        </span><span class="nb">lappend</span><span class="w"> </span>y<span class="w"> </span><span class="k">[</span><span class="nv">$func</span><span class="w"> </span><span class="nv">$xval</span><span class="k">]</span>
+<span class="w">    </span><span class="k">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">[</span><span class="nb">list</span><span class="w"> </span><span class="nv">$x</span><span class="w"> </span><span class="nv">$y</span><span class="k">]</span>
+<span class="k">}</span>
+</pre></div>
+</div>
+<p>Create input data, interpolation points <code class="docutils literal notranslate"><span class="pre">xi</span></code> and exact values at these points:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="k">set</span><span class="w"> </span>xmin<span class="w"> </span><span class="mi">0</span>
+<span class="k">set</span><span class="w"> </span>xmax<span class="w"> </span><span class="mi">1</span>
+<span class="k">set</span><span class="w"> </span>step<span class="w"> </span><span class="mf">0.05</span>
+<span class="k">set</span><span class="w"> </span>stepInterp<span class="w"> </span><span class="mf">0.01</span>
+<span class="nb">lassign</span><span class="w"> </span><span class="k">[</span><span class="nv">genSeq</span><span class="w"> </span><span class="nv">$xmin</span><span class="w"> </span><span class="nv">$xmax</span><span class="w"> </span><span class="nv">$step</span><span class="w"> </span>sinFunc<span class="k">]</span><span class="w"> </span>x<span class="w"> </span>y
+<span class="nb">lassign</span><span class="w"> </span><span class="k">[</span><span class="nv">genSeq</span><span class="w"> </span><span class="nv">$xmin</span><span class="w"> </span><span class="nv">$xmax</span><span class="w"> </span><span class="nv">$stepInterp</span><span class="w"> </span>sinFunc<span class="k">]</span><span class="w"> </span>xInterp<span class="w"> </span>yExact
+</pre></div>
+</div>
+<p>Input data has points with 0.05 step, <code class="docutils literal notranslate"><span class="pre">xi</span></code> values are separated by 0.01 step.</p>
+<p>Zip input data for <code class="docutils literal notranslate"><span class="pre">ticklecharts</span></code> plotting:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="k">set</span><span class="w"> </span>xydata<span class="w"> </span><span class="k">[</span><span class="nv">lmap</span><span class="w"> </span>xi<span class="w"> </span><span class="nv">$x</span><span class="w"> </span>yi<span class="w"> </span><span class="nv">$y</span><span class="w"> </span><span class="k">{</span><span class="nb">list</span><span class="w"> </span><span class="nv">$xi</span><span class="w"> </span><span class="nv">$yi</span><span class="k">}]</span>
+</pre></div>
+</div>
+<p>Call interpolation function <a class="reference internal" href="Examples-tclinterp-interpolation.html#r-3a3atclinterp3a3ainterpolation3a3alin1d"><span class="std std-ref">::tclinterp::interpolation::lin1d</span></a> that returns list of interpolated y values, and
+zip <code class="docutils literal notranslate"><span class="pre">xi</span></code> and <code class="docutils literal notranslate"><span class="pre">yInterpLin</span></code> points:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="k">set</span><span class="w"> </span>yInterpLin<span class="w"> </span><span class="k">[</span><span class="nv">lin1d</span><span class="w"> </span><span class="o">-</span>x<span class="w"> </span><span class="nv">$x</span><span class="w"> </span><span class="o">-</span>y<span class="w"> </span><span class="nv">$y</span><span class="w"> </span><span class="o">-</span>xi<span class="w"> </span><span class="nv">$xInterp</span><span class="k">]</span>
+<span class="k">set</span><span class="w"> </span>xydataInterpLin<span class="w"> </span><span class="k">[</span><span class="nv">lmap</span><span class="w"> </span>xi<span class="w"> </span><span class="nv">$xInterp</span><span class="w"> </span>yi<span class="w"> </span><span class="nv">$yInterpLin</span><span class="w"> </span><span class="k">{</span><span class="nb">list</span><span class="w"> </span><span class="nv">$xi</span><span class="w"> </span><span class="nv">$yi</span><span class="k">}]</span>
+</pre></div>
+</div>
+<p>Do the same for <a class="reference internal" href="Examples-tclinterp-interpolation.html#r-3a3atclinterp3a3ainterpolation3a3anear1d"><span class="std std-ref">::tclinterp::interpolation::near1d</span></a>:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="k">set</span><span class="w"> </span>yInterpNear<span class="w"> </span><span class="k">[</span><span class="nv">near1d</span><span class="w"> </span><span class="o">-</span>x<span class="w"> </span><span class="nv">$x</span><span class="w"> </span><span class="o">-</span>y<span class="w"> </span><span class="nv">$y</span><span class="w"> </span><span class="o">-</span>xi<span class="w"> </span><span class="nv">$xInterp</span><span class="k">]</span>
+<span class="k">set</span><span class="w"> </span>xydataInterpNear<span class="w"> </span><span class="k">[</span><span class="nv">lmap</span><span class="w"> </span>xi<span class="w"> </span><span class="nv">$xInterp</span><span class="w"> </span>yi<span class="w"> </span><span class="nv">$yInterpNear</span><span class="w"> </span><span class="k">{</span><span class="nb">list</span><span class="w"> </span><span class="nv">$xi</span><span class="w"> </span><span class="nv">$yi</span><span class="k">}]</span>
+</pre></div>
+</div>
+<p>Zip exact values:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="k">set</span><span class="w"> </span>xydataExact<span class="w"> </span><span class="k">[</span><span class="nv">lmap</span><span class="w"> </span>xi<span class="w"> </span><span class="nv">$xInterp</span><span class="w"> </span>yi<span class="w"> </span><span class="nv">$yExact</span><span class="w"> </span><span class="k">{</span><span class="nb">list</span><span class="w"> </span><span class="nv">$xi</span><span class="w"> </span><span class="nv">$yi</span><span class="k">}]</span>
+</pre></div>
+</div>
+<p>Calculate errors:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="k">set</span><span class="w"> </span>interpErrorLin<span class="w"> </span><span class="k">[</span><span class="nv">lmap</span><span class="w"> </span>xi<span class="w"> </span><span class="nv">$xInterp</span><span class="w"> </span>yiExact<span class="w"> </span><span class="nv">$yExact</span><span class="w"> </span>yiInterpLin<span class="w"> </span><span class="nv">$yInterpLin</span><span class="w"> </span><span class="k">{</span><span class="nb">list</span><span class="w"> </span><span class="nv">$xi</span><span class="w"> </span><span class="k">[</span><span class="nv">relError</span><span class="w"> </span><span class="nv">$yiExact</span><span class="w"> </span><span class="nv">$yiInterpLin</span><span class="k">]}]</span>
+<span class="k">set</span><span class="w"> </span>interpErrorNear<span class="w"> </span><span class="k">[</span><span class="nv">lmap</span><span class="w"> </span>xi<span class="w"> </span><span class="nv">$xInterp</span><span class="w"> </span>yiExact<span class="w"> </span><span class="nv">$yExact</span><span class="w"> </span>yiInterpNear<span class="w"> </span><span class="nv">$yInterpNear</span><span class="w"> </span><span class="k">{</span><span class="nb">list</span><span class="w"> </span><span class="nv">$xi</span><span class="w"> </span><span class="k">[</span><span class="nv">relError</span><span class="w"> </span><span class="nv">$yiExact</span><span class="w"> </span><span class="nv">$yiInterpNear</span><span class="k">]}]</span>
+</pre></div>
+</div>
+<p>Plot and save results using <code class="docutils literal notranslate"><span class="pre">ticklecharts</span></code>:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="c"># plot interpolated data and errors</span>
+<span class="k">set</span><span class="w"> </span>chart<span class="w"> </span><span class="k">[</span><span class="nv">ticklecharts</span><span class="o">::</span>chart<span class="w"> </span>new<span class="k">]</span>
+<span class="nv">$chart</span><span class="w"> </span><span class="nv">Xaxis</span><span class="w"> </span><span class="o">-</span>name<span class="w"> </span><span class="s2">&quot;x&quot;</span><span class="w"> </span><span class="o">-</span>minorTick<span class="w"> </span><span class="k">{</span><span class="nv">show</span><span class="w"> </span><span class="s2">&quot;True&quot;</span><span class="k">}</span><span class="w"> </span><span class="o">-</span>min<span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">-</span>max<span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">-</span>type<span class="w"> </span><span class="s2">&quot;value&quot;</span><span class="w"> </span><span class="o">-</span>splitLine<span class="w"> </span><span class="k">{</span><span class="nv">show</span><span class="w"> </span><span class="s2">&quot;True&quot;</span><span class="k">}</span>
+<span class="nv">$chart</span><span class="w"> </span><span class="nv">Yaxis</span><span class="w"> </span><span class="o">-</span>name<span class="w"> </span><span class="s2">&quot;y&quot;</span><span class="w"> </span><span class="o">-</span>minorTick<span class="w"> </span><span class="k">{</span><span class="nv">show</span><span class="w"> </span><span class="s2">&quot;True&quot;</span><span class="k">}</span><span class="w"> </span><span class="o">-</span>min<span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">-</span>max<span class="w"> </span><span class="mf">2.5</span><span class="w"> </span><span class="o">-</span>type<span class="w"> </span><span class="s2">&quot;value&quot;</span><span class="w"> </span><span class="o">-</span>splitLine<span class="w"> </span><span class="k">{</span><span class="nv">show</span><span class="w"> </span><span class="s2">&quot;True&quot;</span><span class="k">}</span>
+<span class="nv">$chart</span><span class="w"> </span><span class="nv">SetOptions</span><span class="w"> </span><span class="o">-</span>title<span class="w"> </span><span class="k">{}</span><span class="w"> </span><span class="o">-</span>legend<span class="w"> </span><span class="k">{</span><span class="nv">top</span><span class="w"> </span><span class="s2">&quot;0%&quot;</span><span class="w"> </span>left<span class="w"> </span><span class="s2">&quot;20%&quot;</span><span class="k">}</span><span class="w"> </span><span class="o">-</span>tooltip<span class="w"> </span><span class="k">{}</span><span class="w"> </span><span class="o">-</span>animation<span class="w"> </span><span class="s2">&quot;False&quot;</span><span class="w"> </span><span class="o">-</span>backgroundColor<span class="w"> </span><span class="s2">&quot;#212121&quot;</span><span class="w"> </span><span class="o">-</span>toolbox<span class="w"> </span><span class="k">{</span><span class="nv">feature</span><span class="w"> </span><span class="k">{</span><span class="nv">dataZoom</span><span class="w"> </span><span class="k">{</span><span class="nv">yAxisIndex</span><span class="w"> </span><span class="s2">&quot;none&quot;</span><span class="k">}}}</span>
+<span class="nv">$chart</span><span class="w"> </span><span class="nv">Add</span><span class="w"> </span><span class="s2">&quot;lineSeries&quot;</span><span class="w"> </span><span class="o">-</span>data<span class="w"> </span><span class="nv">$xydata</span><span class="w"> </span><span class="o">-</span>showAllSymbol<span class="w"> </span><span class="s2">&quot;nothing&quot;</span><span class="w"> </span><span class="o">-</span>name<span class="w"> </span><span class="s2">&quot;Initial data&quot;</span>
+<span class="nv">$chart</span><span class="w"> </span><span class="nv">Add</span><span class="w"> </span><span class="s2">&quot;lineSeries&quot;</span><span class="w"> </span><span class="o">-</span>data<span class="w"> </span><span class="nv">$xydataInterpLin</span><span class="w"> </span><span class="o">-</span>showAllSymbol<span class="w"> </span><span class="s2">&quot;nothing&quot;</span><span class="w"> </span><span class="o">-</span>name<span class="w"> </span><span class="s2">&quot;Linear interpolation&quot;</span>
+<span class="nv">$chart</span><span class="w"> </span><span class="nv">Add</span><span class="w"> </span><span class="s2">&quot;lineSeries&quot;</span><span class="w"> </span><span class="o">-</span>data<span class="w"> </span><span class="nv">$xydataInterpNear</span><span class="w"> </span><span class="o">-</span>showAllSymbol<span class="w"> </span><span class="s2">&quot;nothing&quot;</span><span class="w"> </span><span class="o">-</span>name<span class="w"> </span><span class="s2">&quot;Nearest interpolation&quot;</span>
+<span class="nv">$chart</span><span class="w"> </span><span class="nv">Add</span><span class="w"> </span><span class="s2">&quot;lineSeries&quot;</span><span class="w"> </span><span class="o">-</span>data<span class="w"> </span><span class="nv">$xydataExact</span><span class="w"> </span><span class="o">-</span>showAllSymbol<span class="w"> </span><span class="s2">&quot;nothing&quot;</span><span class="w"> </span><span class="o">-</span>name<span class="w"> </span><span class="s2">&quot;Exact data&quot;</span>
 
-</figure><p class='ruff'>Import all procedures from [::tclinterp] namespace:</p>
+<span class="k">set</span><span class="w"> </span>chartError<span class="w"> </span><span class="k">[</span><span class="nv">ticklecharts</span><span class="o">::</span>chart<span class="w"> </span>new<span class="k">]</span>
+<span class="nv">$chartError</span><span class="w"> </span><span class="nv">Xaxis</span><span class="w"> </span><span class="o">-</span>name<span class="w"> </span><span class="s2">&quot;x&quot;</span><span class="w"> </span><span class="o">-</span>minorTick<span class="w"> </span><span class="k">{</span><span class="nv">show</span><span class="w"> </span><span class="s2">&quot;True&quot;</span><span class="k">}</span><span class="w"> </span><span class="o">-</span>min<span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">-</span>max<span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">-</span>type<span class="w"> </span><span class="s2">&quot;value&quot;</span><span class="w"> </span><span class="o">-</span>splitLine<span class="w"> </span><span class="k">{</span><span class="nv">show</span><span class="w"> </span><span class="s2">&quot;True&quot;</span><span class="k">}</span>
+<span class="nv">$chartError</span><span class="w"> </span><span class="nv">Yaxis</span><span class="w"> </span><span class="o">-</span>name<span class="w"> </span><span class="s2">&quot;Rel. error, %&quot;</span><span class="w"> </span><span class="o">-</span>minorTick<span class="w"> </span><span class="k">{</span><span class="nv">show</span><span class="w"> </span><span class="s2">&quot;True&quot;</span><span class="k">}</span><span class="w"> </span><span class="o">-</span>type<span class="w"> </span><span class="s2">&quot;value&quot;</span><span class="w"> </span><span class="o">-</span>splitLine<span class="w"> </span><span class="k">{</span><span class="nv">show</span><span class="w"> </span><span class="s2">&quot;True&quot;</span><span class="k">}</span>
+<span class="nv">$chartError</span><span class="w"> </span><span class="nv">SetOptions</span><span class="w"> </span><span class="o">-</span>title<span class="w"> </span><span class="k">{}</span><span class="w"> </span><span class="o">-</span>legend<span class="w"> </span><span class="k">{</span><span class="nv">top</span><span class="w"> </span><span class="s2">&quot;50%&quot;</span><span class="w"> </span>left<span class="w"> </span><span class="s2">&quot;30%&quot;</span><span class="k">}</span><span class="w"> </span><span class="o">-</span>tooltip<span class="w"> </span><span class="k">{}</span><span class="w"> </span><span class="o">-</span>animation<span class="w"> </span><span class="s2">&quot;False&quot;</span><span class="w"> </span><span class="o">-</span>backgroundColor<span class="w"> </span><span class="s2">&quot;#212121&quot;</span><span class="w"> </span><span class="o">-</span>toolbox<span class="w"> </span><span class="k">{</span><span class="nv">feature</span><span class="w"> </span><span class="k">{</span><span class="nv">dataZoom</span><span class="w"> </span><span class="k">{</span><span class="nv">yAxisIndex</span><span class="w"> </span><span class="s2">&quot;none&quot;</span><span class="k">}}}</span>
+<span class="nv">$chartError</span><span class="w"> </span><span class="nv">Add</span><span class="w"> </span><span class="s2">&quot;lineSeries&quot;</span><span class="w"> </span><span class="o">-</span>data<span class="w"> </span><span class="nv">$interpErrorLin</span><span class="w"> </span><span class="o">-</span>showAllSymbol<span class="w"> </span><span class="s2">&quot;nothing&quot;</span><span class="w"> </span><span class="o">-</span>name<span class="w"> </span><span class="s2">&quot;Linear interpolation error&quot;</span>
+<span class="nv">$chartError</span><span class="w"> </span><span class="nv">Add</span><span class="w"> </span><span class="s2">&quot;lineSeries&quot;</span><span class="w"> </span><span class="o">-</span>data<span class="w"> </span><span class="nv">$interpErrorNear</span><span class="w"> </span><span class="o">-</span>showAllSymbol<span class="w"> </span><span class="s2">&quot;nothing&quot;</span><span class="w"> </span><span class="o">-</span>name<span class="w"> </span><span class="s2">&quot;Nearest interpolation error&quot;</span>
 
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#923B23>package</font></b> require tclinterp
-<b><font color=#923B23>package</font></b> require ticklecharts
-<b><font color=#923B23>set</font></b> ::ticklecharts::theme <font color=#035103>&quot;dark&quot;</font>
-<b><font color=#923B23>namespace</font></b> import ::tclinterp::*
-<b><font color=#923B23>namespace</font></b> import ::tclinterp::interpolation::*
-<b><font color=#923B23>namespace</font></b> import ::tclinterp::approximation::*
-</pre>
+<span class="c"># create multiplot</span>
+<span class="k">set</span><span class="w"> </span>layout<span class="w"> </span><span class="k">[</span><span class="nv">ticklecharts</span><span class="o">::</span>Gridlayout<span class="w"> </span>new<span class="k">]</span>
+<span class="nv">$layout</span><span class="w"> </span><span class="nv">Add</span><span class="w"> </span><span class="nv">$chart</span><span class="w"> </span><span class="o">-</span>bottom<span class="w"> </span><span class="s2">&quot;55%&quot;</span><span class="w"> </span><span class="o">-</span>height<span class="w"> </span><span class="s2">&quot;40%&quot;</span><span class="w"> </span><span class="o">-</span>width<span class="w"> </span><span class="s2">&quot;80%&quot;</span>
+<span class="nv">$layout</span><span class="w"> </span><span class="nv">Add</span><span class="w"> </span><span class="nv">$chartError</span><span class="w"> </span><span class="o">-</span>bottom<span class="w"> </span><span class="s2">&quot;5%&quot;</span><span class="w"> </span><span class="o">-</span>height<span class="w"> </span><span class="s2">&quot;40%&quot;</span><span class="w"> </span><span class="o">-</span>width<span class="w"> </span><span class="s2">&quot;80%&quot;</span>
 
-</figure><p class='ruff'>Define procedures for sinusoidal function calculation, error calculation and for generating sequence of x values:</p>
-
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#ca14ca>proc</font></b> sinFunc {x} {
-    <b><font color=#ca14ca>return</font></b> [= {sin(<font color=#4A181B>$x</font>*10)+1.1}]
-}
-<b><font color=#ca14ca>proc</font></b> relError {ref act} {
-    <b><font color=#ca14ca>return</font></b> [= {(<font color=#4A181B>$ref</font>-<font color=#4A181B>$act</font>)*100/<font color=#4A181B>$ref</font>}]
-}
-<b><font color=#ca14ca>proc</font></b> genSeq {xmin xmax step func} {
-    <b><font color=#923B23>for</font></b> {<b><font color=#923B23>set</font></b> i 0} {<font color=#4A181B>$i</font>&lt;=[= {(<font color=#4A181B>$xmax</font>-<font color=#4A181B>$xmin</font>)/<font color=#4A181B>$step</font>}]} {<b><font color=#923B23>incr</font></b> i} {
-        <b><font color=#923B23>set</font></b> xval [= {<font color=#4A181B>$xmin</font>+<font color=#4A181B>$i</font>*<font color=#4A181B>$step</font>}]
-        <b><font color=#923B23>lappend</font></b> x <font color=#4A181B>$xval</font>
-        <b><font color=#923B23>lappend</font></b> y [<font color=#4A181B>$func</font> <font color=#4A181B>$xval</font>]
-    }
-    <b><font color=#ca14ca>return</font></b> [<b><font color=#923B23>list</font></b> <font color=#4A181B>$x</font> <font color=#4A181B>$y</font>]
-}
-</pre>
-
-</figure><p class='ruff'>Create input data, interpolation points <code>xi</code> and exact values at these points:</p>
-
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#923B23>set</font></b> xmin 0
-<b><font color=#923B23>set</font></b> xmax 1
-<b><font color=#923B23>set</font></b> step 0.05
-<b><font color=#923B23>set</font></b> stepInterp 0.01
-<b><font color=#923B23>lassign</font></b> [genSeq <font color=#4A181B>$xmin</font> <font color=#4A181B>$xmax</font> <font color=#4A181B>$step</font> sinFunc] x y
-<b><font color=#923B23>lassign</font></b> [genSeq <font color=#4A181B>$xmin</font> <font color=#4A181B>$xmax</font> <font color=#4A181B>$stepInterp</font> sinFunc] xInterp yExact
-</pre>
-
-</figure><p class='ruff'>Input data has points with 0.05 step, <code>xi</code> values are separated by 0.01 step.</p>
-<p class='ruff'>Zip input data for <code>ticklecharts</code> plotting:</p>
-
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#923B23>set</font></b> xydata [<b><font color=#923B23>lmap</font></b> xi <font color=#4A181B>$x</font> yi <font color=#4A181B>$y</font> {<b><font color=#923B23>list</font></b> <font color=#4A181B>$xi</font> <font color=#4A181B>$yi</font>}]
-</pre>
-
-</figure><p class='ruff'>Call interpolation function <a href="index-tclinterp-interpolation.html#::tclinterp::interpolation::lin1d" title="::tclinterp::interpolation::lin1d" class='ruff_cmd'>::tclinterp::interpolation::lin1d</a> that returns list of interpolated y values, and zip <code>xi</code> and <code>yInterpLin</code> points:</p>
-
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#923B23>set</font></b> yInterpLin [<b><font color=#923B23>lin1d</font></b> <font color=#463e11>-x</font> <font color=#4A181B>$x</font> <font color=#463e11>-y</font> <font color=#4A181B>$y</font> <font color=#463e11>-xi</font> <font color=#4A181B>$xInterp</font>]
-<b><font color=#923B23>set</font></b> xydataInterpLin [<b><font color=#923B23>lmap</font></b> xi <font color=#4A181B>$xInterp</font> yi <font color=#4A181B>$yInterpLin</font> {<b><font color=#923B23>list</font></b> <font color=#4A181B>$xi</font> <font color=#4A181B>$yi</font>}]
-</pre>
-
-</figure><p class='ruff'>Do the same for <a href="index-tclinterp-interpolation.html#::tclinterp::interpolation::near1d" title="::tclinterp::interpolation::near1d" class='ruff_cmd'>::tclinterp::interpolation::near1d</a>:</p>
-
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#923B23>set</font></b> yInterpNear [<b><font color=#923B23>near1d</font></b> <font color=#463e11>-x</font> <font color=#4A181B>$x</font> <font color=#463e11>-y</font> <font color=#4A181B>$y</font> <font color=#463e11>-xi</font> <font color=#4A181B>$xInterp</font>]
-<b><font color=#923B23>set</font></b> xydataInterpNear [<b><font color=#923B23>lmap</font></b> xi <font color=#4A181B>$xInterp</font> yi <font color=#4A181B>$yInterpNear</font> {<b><font color=#923B23>list</font></b> <font color=#4A181B>$xi</font> <font color=#4A181B>$yi</font>}]
-</pre>
-
-</figure><p class='ruff'>Zip exact values:</p>
-
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#923B23>set</font></b> xydataExact [<b><font color=#923B23>lmap</font></b> xi <font color=#4A181B>$xInterp</font> yi <font color=#4A181B>$yExact</font> {<b><font color=#923B23>list</font></b> <font color=#4A181B>$xi</font> <font color=#4A181B>$yi</font>}]
-</pre>
-
-</figure><p class='ruff'>Calculate errors:</p>
-
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><b><font color=#923B23>set</font></b> interpErrorLin [<b><font color=#923B23>lmap</font></b> xi <font color=#4A181B>$xInterp</font> yiExact <font color=#4A181B>$yExact</font> yiInterpLin <font color=#4A181B>$yInterpLin</font> {<b><font color=#923B23>list</font></b> <font color=#4A181B>$xi</font> [relError <font color=#4A181B>$yiExact</font> <font color=#4A181B>$yiInterpLin</font>]}]
-<b><font color=#923B23>set</font></b> interpErrorNear [<b><font color=#923B23>lmap</font></b> xi <font color=#4A181B>$xInterp</font> yiExact <font color=#4A181B>$yExact</font> yiInterpNear <font color=#4A181B>$yInterpNear</font> {<b><font color=#923B23>list</font></b> <font color=#4A181B>$xi</font> [relError <font color=#4A181B>$yiExact</font> <font color=#4A181B>$yiInterpNear</font>]}]
-</pre>
-
-</figure><p class='ruff'>Plot and save results using <code>ticklecharts</code>:</p>
-
-<figure  class='ruff-snippet ruff-figure'><pre class='ruff'><i><font color=#4b5d50># plot interpolated data and errors</font></i>
-<b><font color=#923B23>set</font></b> chart [ticklecharts::chart new]
-<font color=#4A181B>$chart</font> Xaxis <font color=#463e11>-name</font> <font color=#035103>&quot;x&quot;</font> <font color=#463e11>-minorTick</font> {show <font color=#035103>&quot;True&quot;</font>} <font color=#463e11>-min</font> 0 <font color=#463e11>-max</font> 1 <font color=#463e11>-type</font> <font color=#035103>&quot;value&quot;</font> <font color=#463e11>-splitLine</font> {show <font color=#035103>&quot;True&quot;</font>}
-<font color=#4A181B>$chart</font> Yaxis <font color=#463e11>-name</font> <font color=#035103>&quot;y&quot;</font> <font color=#463e11>-minorTick</font> {show <font color=#035103>&quot;True&quot;</font>} <font color=#463e11>-min</font> 0 <font color=#463e11>-max</font> 2.5 <font color=#463e11>-type</font> <font color=#035103>&quot;value&quot;</font> <font color=#463e11>-splitLine</font> {show <font color=#035103>&quot;True&quot;</font>}
-<font color=#4A181B>$chart</font> SetOptions <font color=#463e11>-title</font> {} <font color=#463e11>-legend</font> {top <font color=#035103>&quot;0%&quot;</font> left <font color=#035103>&quot;20%&quot;</font>} <font color=#463e11>-tooltip</font> {} <font color=#463e11>-animation</font> <font color=#035103>&quot;False&quot;</font> <font color=#463e11>-backgroundColor</font> <font color=#035103>&quot;#212121&quot;</font> <font color=#463e11>-toolbox</font> {feature {dataZoom {yAxisIndex <font color=#035103>&quot;none&quot;</font>}}}
-<font color=#4A181B>$chart</font> Add <font color=#035103>&quot;lineSeries&quot;</font> <font color=#463e11>-data</font> <font color=#4A181B>$xydata</font> <font color=#463e11>-showAllSymbol</font> <font color=#035103>&quot;nothing&quot;</font> <font color=#463e11>-name</font> <font color=#035103>&quot;Initial data&quot;</font>
-<font color=#4A181B>$chart</font> Add <font color=#035103>&quot;lineSeries&quot;</font> <font color=#463e11>-data</font> <font color=#4A181B>$xydataInterpLin</font> <font color=#463e11>-showAllSymbol</font> <font color=#035103>&quot;nothing&quot;</font> <font color=#463e11>-name</font> <font color=#035103>&quot;Linear interpolation&quot;</font>
-<font color=#4A181B>$chart</font> Add <font color=#035103>&quot;lineSeries&quot;</font> <font color=#463e11>-data</font> <font color=#4A181B>$xydataInterpNear</font> <font color=#463e11>-showAllSymbol</font> <font color=#035103>&quot;nothing&quot;</font> <font color=#463e11>-name</font> <font color=#035103>&quot;Nearest interpolation&quot;</font>
-<font color=#4A181B>$chart</font> Add <font color=#035103>&quot;lineSeries&quot;</font> <font color=#463e11>-data</font> <font color=#4A181B>$xydataExact</font> <font color=#463e11>-showAllSymbol</font> <font color=#035103>&quot;nothing&quot;</font> <font color=#463e11>-name</font> <font color=#035103>&quot;Exact data&quot;</font>
-
-<b><font color=#923B23>set</font></b> chartError [ticklecharts::chart new]
-<font color=#4A181B>$chartError</font> Xaxis <font color=#463e11>-name</font> <font color=#035103>&quot;x&quot;</font> <font color=#463e11>-minorTick</font> {show <font color=#035103>&quot;True&quot;</font>} <font color=#463e11>-min</font> 0 <font color=#463e11>-max</font> 1 <font color=#463e11>-type</font> <font color=#035103>&quot;value&quot;</font> <font color=#463e11>-splitLine</font> {show <font color=#035103>&quot;True&quot;</font>}
-<font color=#4A181B>$chartError</font> Yaxis <font color=#463e11>-name</font> <font color=#035103>&quot;Rel. error, %&quot;</font> <font color=#463e11>-minorTick</font> {show <font color=#035103>&quot;True&quot;</font>} <font color=#463e11>-type</font> <font color=#035103>&quot;value&quot;</font> <font color=#463e11>-splitLine</font> {show <font color=#035103>&quot;True&quot;</font>}
-<font color=#4A181B>$chartError</font> SetOptions <font color=#463e11>-title</font> {} <font color=#463e11>-legend</font> {top <font color=#035103>&quot;50%&quot;</font> left <font color=#035103>&quot;30%&quot;</font>} <font color=#463e11>-tooltip</font> {} <font color=#463e11>-animation</font> <font color=#035103>&quot;False&quot;</font> <font color=#463e11>-backgroundColor</font> <font color=#035103>&quot;#212121&quot;</font> <font color=#463e11>-toolbox</font> {feature {dataZoom {yAxisIndex <font color=#035103>&quot;none&quot;</font>}}}
-<font color=#4A181B>$chartError</font> Add <font color=#035103>&quot;lineSeries&quot;</font> <font color=#463e11>-data</font> <font color=#4A181B>$interpErrorLin</font> <font color=#463e11>-showAllSymbol</font> <font color=#035103>&quot;nothing&quot;</font> <font color=#463e11>-name</font> <font color=#035103>&quot;Linear interpolation error&quot;</font>
-<font color=#4A181B>$chartError</font> Add <font color=#035103>&quot;lineSeries&quot;</font> <font color=#463e11>-data</font> <font color=#4A181B>$interpErrorNear</font> <font color=#463e11>-showAllSymbol</font> <font color=#035103>&quot;nothing&quot;</font> <font color=#463e11>-name</font> <font color=#035103>&quot;Nearest interpolation error&quot;</font>
-
-<i><font color=#4b5d50># create multiplot</font></i>
-<b><font color=#923B23>set</font></b> layout [ticklecharts::Gridlayout new]
-<font color=#4A181B>$layout</font> Add <font color=#4A181B>$chart</font> <font color=#463e11>-bottom</font> <font color=#035103>&quot;55%&quot;</font> <font color=#463e11>-height</font> <font color=#035103>&quot;40%&quot;</font> <font color=#463e11>-width</font> <font color=#035103>&quot;80%&quot;</font>
-<font color=#4A181B>$layout</font> Add <font color=#4A181B>$chartError</font> <font color=#463e11>-bottom</font> <font color=#035103>&quot;5%&quot;</font> <font color=#463e11>-height</font> <font color=#035103>&quot;40%&quot;</font> <font color=#463e11>-width</font> <font color=#035103>&quot;80%&quot;</font>
-
-<i><font color=#4b5d50># save to file</font></i>
-<b><font color=#923B23>set</font></b> fbasename [<b><font color=#923B23>file</font></b> rootname [<b><font color=#923B23>file</font></b> tail [<b><font color=#923B23>info</font></b> script]]]
-<font color=#4A181B>$layout</font> Render <font color=#463e11>-outfile</font> [<b><font color=#923B23>file</font></b> normalize [<b><font color=#923B23>file</font></b> join html_charts <font color=#4A181B>$fbasename</font>.html]] <font color=#463e11>-height</font> 800px
-</pre>
-
-</figure><p class='ruff'>Results are:</p>
-<p class='ruff'><!DOCTYPE html>
+<span class="c"># save to file</span>
+<span class="k">set</span><span class="w"> </span>fbasename<span class="w"> </span><span class="k">[</span><span class="nb">file</span><span class="w"> </span>rootname<span class="w"> </span><span class="k">[</span><span class="nb">file</span><span class="w"> </span>tail<span class="w"> </span><span class="k">[</span><span class="nb">info</span><span class="w"> </span>script<span class="k">]]]</span>
+<span class="nv">$layout</span><span class="w"> </span><span class="nv">Render</span><span class="w"> </span><span class="o">-</span>outfile<span class="w"> </span><span class="k">[</span><span class="nb">file</span><span class="w"> </span>normalize<span class="w"> </span><span class="k">[</span><span class="nb">file</span><span class="w"> </span>join<span class="w"> </span>html_charts<span class="w"> </span><span class="nv">$fbasename.html</span><span class="k">]]</span><span class="w"> </span><span class="o">-</span>height<span class="w"> </span><span class="mi">800</span>px
+</pre></div>
+</div>
+<p>Results are:</p>
+<p><!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8">
@@ -140,10 +160,10 @@ rel.err = ──────────────── ⋅ 100%
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
   </head>
   <body>
-    <div id="id_e558ae8f53d24f68af60368cd3f502cc" class="chart-container" style="width:900px; height:800px;"></div>
+    <div id="id_8e81c4553d454c929fcbdd34ed362a32" class="chart-container" style="width:800px; height:500px;"></div>
     <script>
-      var chart_e558ae8f53d24f68af60368cd3f502cc = echarts.init(document.getElementById("id_e558ae8f53d24f68af60368cd3f502cc"), null, {renderer: "canvas"});
-      var option_e558ae8f53d24f68af60368cd3f502cc = {
+      var chart_8e81c4553d454c929fcbdd34ed362a32 = echarts.init(document.getElementById("id_8e81c4553d454c929fcbdd34ed362a32"), null, {renderer: "canvas"});
+      var option_8e81c4553d454c929fcbdd34ed362a32 = {
   "backgroundColor": "rgba(0,0,0,0)",
   "color": [
     "#5470c6",
@@ -2718,16 +2738,83 @@ rel.err = ──────────────── ⋅ 100%
     }
   ]
 };
-      chart_e558ae8f53d24f68af60368cd3f502cc.setOption(option_e558ae8f53d24f68af60368cd3f502cc);
+      chart_8e81c4553d454c929fcbdd34ed362a32.setOption(option_8e81c4553d454c929fcbdd34ed362a32);
     </script>
   </body>
 </html>
 </p>
-</main><nav class='ruff-nav'><ul ><li class='ruff-toc1'><a style='padding-top:2px;' href='index.html'>Start page</a></li>
-<li class='ruff-toc1'><a href='index-docindex.html' accesskey='i'>Index</a></li>
-<hr>
-<li class='ruff-toc1'><a class='ruff-highlight' href='index-Examples.html'>Examples</a></li>
-<li class='ruff-toc1'><a href='index-tclinterp-approximation.html'>tclinterp::approximation</a></li>
-<li class='ruff-toc1'><a href='index-tclinterp-interpolation.html'>tclinterp::interpolation</a></li>
-<hr><li class='ruff-toc2'><a href='#::Examples-1D Linear and nearest interpolation'>1D Linear and nearest interpolation</a></li></ul></nav><footer class='ruff-layout-footer ruff-ft'><div style='float: right;'>Document generated by <a href='https://ruff.magicsplat.com'>Ruff!</a></div><div>&copy; George Yashin</div></footer>
-</div></body></html>
+<hr class="docutils" />
+<p class="centered">
+<strong>Copyright (c) George Yashin</strong></p></section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">::Examples</a><ul>
+<li><a class="reference internal" href="#d-linear-and-nearest-interpolation">1D Linear and nearest interpolation</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="Examples.html"
+                          title="previous chapter">Content</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="Examples-tclinterp-approximation.html"
+                          title="next chapter">::tclinterp::approximation</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/Examples-Examples.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="Examples-tclinterp-approximation.html" title="::tclinterp::approximation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Examples.html" title="Content"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">tclinterp  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">::Examples</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright George Yashin.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

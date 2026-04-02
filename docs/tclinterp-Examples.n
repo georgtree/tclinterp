@@ -1,10 +1,10 @@
 '\"
 '\" '\" Copyright (c) George Yashin
 '\"
-.TH "Examples" 3tcl 0\&.15 "tcl_tools" "Tcl wrapper for C interpolation procedures"
+.TH "Examples" 3tcl 0\&.15 "tclinterp" "Tcl wrapper for C interpolation procedures"
 .SH NAME
 Examples - Commands in namespace Examples
-.SH EXAMPLES
+.SH ::EXAMPLES
 .PP
 This section contains examples of usage of interpolation/approximation procedures of the package\&.
 List of availible examples:

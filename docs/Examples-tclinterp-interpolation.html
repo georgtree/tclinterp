@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>::tclinterp::interpolation &#8212; tclinterp  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
+    
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="::tclinterp::approximation" href="Examples-tclinterp-approximation.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="Examples-tclinterp-approximation.html" title="::tclinterp::approximation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">tclinterp  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">::tclinterp::interpolation</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="tclinterp-interpolation">
+<span id="r-tclinterp-interpolation"></span><span id="r-3a3atclinterp3a3ainterpolation"></span><h1>::tclinterp::interpolation<a class="headerlink" href="#tclinterp-interpolation" title="Link to this heading">¶</a></h1>
+<section id="commands">
+<span id="r-tclinterp-interpolation-commands"></span><span id="r-3a3atclinterp3a3ainterpolationqzcommands"></span><h2>Commands<a class="headerlink" href="#commands" title="Link to this heading">¶</a></h2>
+<section id="cubicspline1d">
+<span id="r-3a3atclinterp3a3ainterpolation3a3acubicspline1d"></span><span id="index-1"></span><span id="index-0"></span><h3><code class="docutils literal notranslate"><span class="pre">cubicSpline1d</span></code><a class="headerlink" href="#cubicspline1d" title="Link to this heading">¶</a></h3>
+<p>Does piecewise cubic spline interpolation.</p>
+<pre class="literal-block"><strong>cubicSpline1d</strong> <em>-t|x list -y list -ti|xi list ?-ibcbeg|begflag value -ybcbeg value? ?-ibcend|endflag value -ybcend value? ?-deriv?</em></pre>
+<p class="rubric">Parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-deriv</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Select the alternative output option.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ibcbeg</span> <span class="pre">value</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Left boundary condition flag, -begflag is an alias. Possible values: <strong>quad</strong>, the cubic spline should be a quadratic over the first interval; <strong>der1</strong>, the first derivative at the left endpoint should be YBCBEG; <strong>der2</strong>, the second derivative at the left endpoint should be YBCBEG; <strong>notaknot</strong>, not-a-knot, the third derivative is continuous at T(2).</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-ibcend</span> <span class="pre">value</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Right boundary condition flag, -endflag is an alias. Possible values: <strong>quad</strong>, the cubic spline should be a quadratic over the last interval; <strong>der1</strong>, the first derivative at the right endpoint should be YBCBEG; <strong>der2</strong>, the second derivative at the right endpoint should be YBCBEG; <strong>notaknot</strong>, not-a-knot, the third derivative is continuous at T(2).</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-t</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>List of independent variable (t) values, -x is an alias.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-ti</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of independent variable interpolation (ti) values, -xi is an alias.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>List of dependent variable (y) values.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-ybcbeg</span> <span class="pre">value</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>The values to be used in the boundary conditions if ibcbeg is equal to der1 or der2, default is 0.0.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ybcend</span> <span class="pre">value</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>The values to be used in the boundary conditions if ibcend is equal to der1 or der2, default is 0.0.</p>
+</dd>
+</dl>
+<p class="rubric">Return value</p>
+<p>list of interpolated dependent variable values under. If <code class="docutils literal notranslate"><span class="pre">-deriv</span></code> switch is in args, the output is
+dictionary that contains <code class="docutils literal notranslate"><span class="pre">yi</span></code> values under <code class="docutils literal notranslate"><span class="pre">yi</span></code> key, <code class="docutils literal notranslate"><span class="pre">yi</span></code> derivative under <code class="docutils literal notranslate"><span class="pre">yder1</span></code> key, and <code class="docutils literal notranslate"><span class="pre">yi</span></code> second derivative
+under <code class="docutils literal notranslate"><span class="pre">yder2</span></code> key.</p>
+</section>
+<section id="divdif1d">
+<span id="r-3a3atclinterp3a3ainterpolation3a3adivdif1d"></span><span id="index-3"></span><span id="index-2"></span><h3><code class="docutils literal notranslate"><span class="pre">divDif1d</span></code><a class="headerlink" href="#divdif1d" title="Link to this heading">¶</a></h3>
+<p>Does divided difference one-dimensional interpolation.</p>
+<pre class="literal-block"><strong>divDif1d</strong> <em>-x list -y list -xi list ?-coeffs?</em></pre>
+<p class="rubric">Parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-coeffs</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Selects the alternative output option.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>List of independent variable (x) values.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-xi</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of independent variable interpolation (xi) values.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>List of dependent variable (y) values.</p>
+</dd>
+</dl>
+<p class="rubric">Return value</p>
+<p>list of interpolated dependent variable values, <code class="docutils literal notranslate"><span class="pre">yi</span></code>, at <code class="docutils literal notranslate"><span class="pre">xi</span></code>. If <code class="docutils literal notranslate"><span class="pre">-coeffs</span></code> switch is in args, the output
+is dictionary that contains <code class="docutils literal notranslate"><span class="pre">yi</span></code> values under <code class="docutils literal notranslate"><span class="pre">yi</span></code> key, and the values of difference table under the key <code class="docutils literal notranslate"><span class="pre">coeffs</span></code>.</p>
+</section>
+<section id="hermitespline1d">
+<span id="r-3a3atclinterp3a3ainterpolation3a3ahermitespline1d"></span><span id="index-5"></span><span id="index-4"></span><h3><code class="docutils literal notranslate"><span class="pre">hermiteSpline1d</span></code><a class="headerlink" href="#hermitespline1d" title="Link to this heading">¶</a></h3>
+<p>Does Hermite polynomial spline interpolation.</p>
+<pre class="literal-block"><strong>hermiteSpline1d</strong> <em>-t|x list -y list -yp list -ti|xi list ?-deriv?</em></pre>
+<p class="rubric">Parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-deriv</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Select the alternative output option.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-t</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>List of independent variable (t) values, must be strictly increasing, -x is an alias.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-ti</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of independent variable interpolation (ti) values, -xi is an alias.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>List of dependent variable (y) values.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-yp</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of dependent variable (y) derivative values.</p>
+</dd>
+</dl>
+<p class="rubric">Return value</p>
+<p>list of interpolated dependent variable values. If <code class="docutils literal notranslate"><span class="pre">-deriv</span></code> switch is in args, the output is
+dictionary that contains <code class="docutils literal notranslate"><span class="pre">yi</span></code> values under <code class="docutils literal notranslate"><span class="pre">yi</span></code> key, <code class="docutils literal notranslate"><span class="pre">yi</span></code> derivative under <code class="docutils literal notranslate"><span class="pre">yder1</span></code> key.</p>
+</section>
+<section id="lagr1d">
+<span id="r-3a3atclinterp3a3ainterpolation3a3alagr1d"></span><span id="index-7"></span><span id="index-6"></span><h3><code class="docutils literal notranslate"><span class="pre">lagr1d</span></code><a class="headerlink" href="#lagr1d" title="Link to this heading">¶</a></h3>
+<p>Does Lagrange polynomial one-dimensional interpolation.</p>
+<pre class="literal-block"><strong>lagr1d</strong> <em>-x list -y list -xi list</em></pre>
+<p class="rubric">Parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of independent variable (x) values.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-xi</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>List of independent variable interpolation (xi) values.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of dependent variable (y) values.</p>
+</dd>
+</dl>
+<p class="rubric">Return value</p>
+<p>list of interpolated dependent variable values, <code class="docutils literal notranslate"><span class="pre">yi</span></code>, at <code class="docutils literal notranslate"><span class="pre">xi</span></code></p>
+</section>
+<section id="least1d">
+<span id="r-3a3atclinterp3a3ainterpolation3a3aleast1d"></span><span id="index-9"></span><span id="index-8"></span><h3><code class="docutils literal notranslate"><span class="pre">least1d</span></code><a class="headerlink" href="#least1d" title="Link to this heading">¶</a></h3>
+<p>Does least squares polynomial one-dimensional interpolation.</p>
+<pre class="literal-block"><strong>least1d</strong> <em>-x list -y list -xi list ?-w list? ?-nterms value? ?-coeffs?</em></pre>
+<p class="rubric">Parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-coeffs</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Selects the alternative output option.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-nterms</span> <span class="pre">value</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Number of terms of interpolation polynom, default is 3.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-w</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of weights, optional.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>List of independent variable (x) values.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-xi</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of independent variable interpolation (xi) values.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>List of dependent variable (y) values.</p>
+</dd>
+</dl>
+<p class="rubric">Return value</p>
+<p>list of interpolated dependent variable values, <code class="docutils literal notranslate"><span class="pre">yi</span></code>, at <code class="docutils literal notranslate"><span class="pre">xi</span></code>. If <code class="docutils literal notranslate"><span class="pre">-coeffs</span></code> switch is in args, the output
+is dictionary that contains <code class="docutils literal notranslate"><span class="pre">yi</span></code> values under <code class="docutils literal notranslate"><span class="pre">yi</span></code> key, and the values of interpolation polynom coefficients under
+the keys <code class="docutils literal notranslate"><span class="pre">b</span></code>, <code class="docutils literal notranslate"><span class="pre">c</span></code> and <code class="docutils literal notranslate"><span class="pre">d</span></code>.</p>
+</section>
+<section id="least1dder">
+<span id="r-3a3atclinterp3a3ainterpolation3a3aleast1dder"></span><span id="index-11"></span><span id="index-10"></span><h3><code class="docutils literal notranslate"><span class="pre">least1dDer</span></code><a class="headerlink" href="#least1dder" title="Link to this heading">¶</a></h3>
+<p>Does least squares polynomial one-dimensional interpolation with calculation of its derivative.</p>
+<pre class="literal-block"><strong>least1dDer</strong> <em>-x list -y list -xi list ?-w list? ?-nterms value? ?-coeffs?</em></pre>
+<p class="rubric">Parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-coeffs</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Selects the alternative output option.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-nterms</span> <span class="pre">value</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Number of terms of interpolation polynom, default is 3.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-w</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of weights, optional.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>List of independent variable (x) values.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-xi</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of independent variable interpolation (xi) values.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>List of dependent variable (y) values.</p>
+</dd>
+</dl>
+<p class="rubric">Return value</p>
+<p>dict of interpolated dependent variable values and its derivatives under <code class="docutils literal notranslate"><span class="pre">yi</span></code> and <code class="docutils literal notranslate"><span class="pre">yiDer</span></code> keys. If
+<code class="docutils literal notranslate"><span class="pre">-coeffs</span></code> switch is in args, the output is dictionary that contains <code class="docutils literal notranslate"><span class="pre">yi</span></code> values under <code class="docutils literal notranslate"><span class="pre">yi</span></code> key, <code class="docutils literal notranslate"><span class="pre">yi</span></code> derivatives
+under <code class="docutils literal notranslate"><span class="pre">yiDer</span></code> key, and the values of interpolation polynom coefficients under the keys <code class="docutils literal notranslate"><span class="pre">b</span></code>, <code class="docutils literal notranslate"><span class="pre">c</span></code> and <code class="docutils literal notranslate"><span class="pre">d</span></code>.</p>
+</section>
+<section id="lin1d">
+<span id="r-3a3atclinterp3a3ainterpolation3a3alin1d"></span><span id="index-13"></span><span id="index-12"></span><h3><code class="docutils literal notranslate"><span class="pre">lin1d</span></code><a class="headerlink" href="#lin1d" title="Link to this heading">¶</a></h3>
+<p>Does linear one-dimensional interpolation.</p>
+<pre class="literal-block"><strong>lin1d</strong> <em>-x list -y list -xi list</em></pre>
+<p class="rubric">Parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of independent variable (x) values, must be strictly increasing.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-xi</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>List of independent variable interpolation (xi) values.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of dependent variable (y) values.</p>
+</dd>
+</dl>
+<p class="rubric">Return value</p>
+<p>list of interpolated dependent variable values, <code class="docutils literal notranslate"><span class="pre">yi</span></code>, at <code class="docutils literal notranslate"><span class="pre">xi</span></code></p>
+</section>
+<section id="near1d">
+<span id="r-3a3atclinterp3a3ainterpolation3a3anear1d"></span><span id="index-15"></span><span id="index-14"></span><h3><code class="docutils literal notranslate"><span class="pre">near1d</span></code><a class="headerlink" href="#near1d" title="Link to this heading">¶</a></h3>
+<p>Does nearest one-dimensional interpolation.</p>
+<pre class="literal-block"><strong>near1d</strong> <em>-x list -y list -xi list</em></pre>
+<p class="rubric">Parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of independent variable (x) values.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-xi</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>List of independent variable interpolation (xi) values.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of dependent variable (y) values.</p>
+</dd>
+</dl>
+<p class="rubric">Return value</p>
+<p>list of interpolated dependent variable values, <code class="docutils literal notranslate"><span class="pre">yi</span></code>, at <code class="docutils literal notranslate"><span class="pre">xi</span></code></p>
+</section>
+<section id="pchip1d">
+<span id="r-3a3atclinterp3a3ainterpolation3a3apchip1d"></span><span id="index-17"></span><span id="index-16"></span><h3><code class="docutils literal notranslate"><span class="pre">pchip1d</span></code><a class="headerlink" href="#pchip1d" title="Link to this heading">¶</a></h3>
+<p>Does piecewise cubic Hermite interpolation (PCHIP).</p>
+<pre class="literal-block"><strong>pchip1d</strong> <em>-x list -f|y list -xe|xi list</em></pre>
+<p class="rubric">Parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of dependent variable (f) values, -y is an alias.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>List of independent variable (x) values, must be strictly increasing.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-xe</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of independent variable interpolation (xe) values, -xi is an alias.</p>
+</dd>
+</dl>
+<p class="rubric">Return value</p>
+<p>list of interpolated dependent variable values.</p>
+<hr class="docutils" />
+<p class="centered">
+<strong>Copyright (c) George Yashin</strong></p></section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">::tclinterp::interpolation</a><ul>
+<li><a class="reference internal" href="#commands">Commands</a><ul>
+<li><a class="reference internal" href="#cubicspline1d"><code class="docutils literal notranslate"><span class="pre">cubicSpline1d</span></code></a></li>
+<li><a class="reference internal" href="#divdif1d"><code class="docutils literal notranslate"><span class="pre">divDif1d</span></code></a></li>
+<li><a class="reference internal" href="#hermitespline1d"><code class="docutils literal notranslate"><span class="pre">hermiteSpline1d</span></code></a></li>
+<li><a class="reference internal" href="#lagr1d"><code class="docutils literal notranslate"><span class="pre">lagr1d</span></code></a></li>
+<li><a class="reference internal" href="#least1d"><code class="docutils literal notranslate"><span class="pre">least1d</span></code></a></li>
+<li><a class="reference internal" href="#least1dder"><code class="docutils literal notranslate"><span class="pre">least1dDer</span></code></a></li>
+<li><a class="reference internal" href="#lin1d"><code class="docutils literal notranslate"><span class="pre">lin1d</span></code></a></li>
+<li><a class="reference internal" href="#near1d"><code class="docutils literal notranslate"><span class="pre">near1d</span></code></a></li>
+<li><a class="reference internal" href="#pchip1d"><code class="docutils literal notranslate"><span class="pre">pchip1d</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="Examples-tclinterp-approximation.html"
+                          title="previous chapter">::tclinterp::approximation</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/Examples-tclinterp-interpolation.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="Examples-tclinterp-approximation.html" title="::tclinterp::approximation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">tclinterp  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">::tclinterp::interpolation</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright George Yashin.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>
