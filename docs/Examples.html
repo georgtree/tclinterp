@@ -7,10 +7,10 @@
 
     <title>Content &#8212; tclinterp  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
     
     <script src="_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
@@ -18,7 +18,7 @@
     <link rel="next" title="Examples" href="Examples-Examples.html" />
     <link rel="prev" title="&lt;no title&gt;" href="index.html" /> 
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -54,7 +54,7 @@ The sources of procedures are:</p>
 <p>For building you need:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.swig.org/download.html">SWIG of version 4.3</a></p></li>
-<li><p><a class="reference external" href="https://www.tcl.tk/software/tcltk/9.0.html">Tcl9</a> or <a class="reference external" href="https://www.tcl.tk/software/tcltk/8.6.html">Tcl8.6.15</a></p></li>
+<li><p><a class="reference external" href="https://www.tcl.tk/software/tcltk/9.0.html">Tcl9</a></p></li>
 <li><p><a class="reference external" href="https://gcc.gnu.org/">gcc compiler</a></p></li>
 <li><p><a class="reference external" href="https://www.gnu.org/software/make/">make tool</a></p></li>
 </ul>
@@ -79,7 +79,7 @@ steps are identical if you run it from UCRT64 shell.</p>
 <span id="r-supported-platforms"></span><span id="r-supported20platforms"></span><h1>Supported platforms<a class="headerlink" href="#supported-platforms" title="Link to this heading">¶</a></h1>
 <p>I’ve tested it on:</p>
 <ul class="simple">
-<li><p>Kubuntu 24.04 with Tcl 9 and Tcl 8.6.15</p></li>
+<li><p>Kubuntu 24.04 with Tcl 9</p></li>
 <li><p>Windows 11 in MSYS64 UCRT64 environment with Tcl9</p></li>
 </ul>
 </section>
@@ -99,12 +99,12 @@ switch:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Does nearest one-dimensional interpolation. Returns: list of interpolated
 dependent variable values, &#39;yi&#39;, at &#39;xi&#39;. Can accepts unambiguous prefixes
 instead of switches names. Accepts switches only before parameters.
-Switches:
--x - Required, expects argument. List of independent variable (x)
-values, must be strictly increasing.
--y - Required, expects argument. List of dependent variable (y) values.
--xi - Required, expects argument. list of independent variable
-interpolation (xi) values.
+    Switches:
+        -x - Required, expects argument. List of independent variable (x)
+            values, must be strictly increasing.
+        -y - Required, expects argument. List of dependent variable (y) values.
+        -xi - Required, expects argument. list of independent variable
+            interpolation (xi) values.
 </pre></div>
 </div>
 <p>Best to do it in interactive console, see <a class="reference external" href="https://github.com/bohagan1/TkCon">tkcon</a></p>
@@ -117,7 +117,7 @@ interpolation (xi) values.
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
   <div>
     <h3><a href="index.html">Table of Contents</a></h3>
@@ -147,7 +147,7 @@ interpolation (xi) values.
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
@@ -155,13 +155,13 @@ interpolation (xi) values.
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -179,7 +179,7 @@ interpolation (xi) values.
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright George Yashin.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     </div>
   </body>
 </html>

@@ -5,15 +5,15 @@ namespace import ::tclinterp::interpolation::*
 namespace import ::tclinterp::approximation::*
 
 proc sinFunc {x} {
-    return [= {sin($x*10)+1.1}]
+    return [expr {sin($x*10)+1.1}]
 }
 proc relError {ref act} {
-    return [= {($ref-$act)*100/$ref}]
+    return [expr {($ref-$act)*100/$ref}]
 }
 
 proc genSeq {xmin xmax step func} {
-    for {set i 0} {$i<=[= {($xmax-$xmin)/$step}]} {incr i} {
-        set xval [= {$xmin+$i*$step}]
+    for {set i 0} {$i<=[expr {($xmax-$xmin)/$step}]} {incr i} {
+        set xval [expr {$xmin+$i*$step}]
         lappend x $xval
         lappend y [$func $xval]
     }

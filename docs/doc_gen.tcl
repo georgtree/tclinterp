@@ -1,5 +1,5 @@
 
-source /home/georgtree/tcl/ruff/src/ruff.tcl
+package require ruff
 package require fileutil
 set docDir [file dirname [file normalize [info script]]]
 set sourceDir "${docDir}/../"
@@ -55,6 +55,6 @@ proc processContents {fileContents} {
 }
 
 
-set chartsMap [dcreate !ticklechart_mark_linear_near_interpolation! linear_near_interpolation.html]
+set chartsMap [dict create !ticklechart_mark_linear_near_interpolation! linear_near_interpolation.html]
 set path [file join $docDir .. examples html_charts]
 fileutil::updateInPlace [file join $docDir Examples-Examples.html] processContents

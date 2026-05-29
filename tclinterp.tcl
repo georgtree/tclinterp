@@ -1,12 +1,6 @@
 package require argparse 0.58
 package provide tclinterp 0.15
 
-interp alias {} dget {} dict get
-interp alias {} @ {} lindex
-interp alias {} = {} expr
-interp alias {} dexist {} dict exists
-interp alias {} dcreate {} dict create
-
 namespace eval ::tclinterp {
     namespace import ::tcl::mathop::*
     namespace eval interpolation {
@@ -24,11 +18,11 @@ proc ::tclinterp::List2array {list} {
     set length [llength $list]
     set a [::tclinterp::new_doubleArray $length]
     for {set i 0} {$i<$length} {incr i} {
-        set iElem [@ $list $i]
+        set iElem [lindex $list $i]
         try {
             ::tclinterp::doubleArray_setitem $a $i $iElem
         } on error {errmsg erropts} {
-            if {[dget $erropts -errorcode] eq {SWIG TypeError}} {
+            if {[dict get $erropts -errorcode] eq {SWIG TypeError}} {
                 error "List must contains only double elements, but get '$iElem'"
             } else {
                 error "Array creation failed with message '$errmsg' and opts '$erropts'"
@@ -276,13 +270,13 @@ proc ::tclinterp::interpolation::least1d {args} {
     ::tclinterp::least_set $xLen $xArray $yArray $wArray $nterms $b $c $d
     # calculate polynomial value for each xi value
     for {set i 0} {$i<$xiLen} {incr i} {
-        set iElem [::tclinterp::least_val $nterms $b $c $d [@ $xi $i]]
+        set iElem [::tclinterp::least_val $nterms $b $c $d [lindex $xi $i]]
         lappend yiList $iElem
     }
     if {[info exists coeffs]} {
         ::tclinterp::Arrays2lists {bList cList dList} [list $b $c $d] [list $nterms $nterms $nterms]
         ::tclinterp::DeleteArrays $b $c $d $xArray $yArray $xiArray
-        return [dcreate yi $yiList coeffs [dcreate b $bList c $cList d $dList]]
+        return [dict create yi $yiList coeffs [dict create b $bList c $cList d $dList]]
     } else {
         ::tclinterp::DeleteArrays $b $c $d $xArray $yArray $xiArray
         return $yiList
@@ -339,7 +333,7 @@ proc ::tclinterp::interpolation::least1dDer {args} {
     ::tclinterp::least_set $xLen $xArray $yArray $wArray $nterms $b $c $d
     # calculate polynomial value and derivative for each xi value
     for {set i 0} {$i<$xiLen} {incr i} {
-        ::tclinterp::least_val2 $nterms $b $c $d [@ $xi $i] $yiPnt $yiDerPnt
+        ::tclinterp::least_val2 $nterms $b $c $d [lindex $xi $i] $yiPnt $yiDerPnt
         lappend yiList [::tclinterp::doublep_value $yiPnt]
         lappend yiDerList [::tclinterp::doublep_value $yiDerPnt]
     }
@@ -347,11 +341,11 @@ proc ::tclinterp::interpolation::least1dDer {args} {
         ::tclinterp::Arrays2lists {bList cList dList} [list $b $c $d] [list $nterms $nterms $nterms]
         ::tclinterp::DeleteArrays $b $c $d $xArray $yArray $xiArray
         ::tclinterp::DeleteDoubleps $yiPnt $yiDerPnt
-        return [dcreate yi $yiList yiDer $yiDerList coeffs [dcreate b $bList c $cList d $dList]]
+        return [dict create yi $yiList yiDer $yiDerList coeffs [dict create b $bList c $cList d $dList]]
     } else {
         ::tclinterp::DeleteArrays $b $c $d $xArray $yArray $xiArray
         ::tclinterp::DeleteDoubleps $yiPnt $yiDerPnt
-        return [dcreate yi $yiList yiDer $yiDerList]
+        return [dict create yi $yiList yiDer $yiDerList]
     }
     return
 }
@@ -377,23 +371,23 @@ proc ::tclinterp::approximation::genBezier {args} {
     set xLen [llength $x]
     set yLen [llength $y]
     set tLen [llength $t]
-    if {$xLen!=[= {$n+1}]} {
-        return -code error "Length of -x '$xLen' must be equal to n+1=[= {$n+1}]"
-    } elseif {$yLen!=[= {$n+1}]} {
-        return -code error "Length of -y '$yLen' must be equal to n+1=[= {$n+1}]"
+    if {$xLen!=[expr {$n+1}]} {
+        return -code error "Length of -x '$xLen' must be equal to n+1=[expr {$n+1}]"
+    } elseif {$yLen!=[expr {$n+1}]} {
+        return -code error "Length of -y '$yLen' must be equal to n+1=[expr {$n+1}]"
     } elseif {$tLen==0} {
         return -code error {Length of points list -t must be more than zero}
     }
     ::tclinterp::Lists2arrays {xArray yArray} [list $x $y]
     ::tclinterp::NewDoubleps {xiPnt yiPnt}
     for {set i 0} {$i<$tLen} {incr i} {
-        ::tclinterp::bc_val $n [@ $t $i] $xArray $yArray $xiPnt $yiPnt
+        ::tclinterp::bc_val $n [lindex $t $i] $xArray $yArray $xiPnt $yiPnt
         lappend xiList [::tclinterp::doublep_value $xiPnt]
         lappend yiList [::tclinterp::doublep_value $yiPnt]
     }
     ::tclinterp::DeleteArrays $xArray $yArray
     ::tclinterp::DeleteDoubleps $xiPnt $yiPnt
-    return [dcreate xi $xiList yi $yiList]
+    return [dict create xi $xiList yi $yiList]
 }
 
 proc ::tclinterp::approximation::bezier {args} {
@@ -418,14 +412,14 @@ proc ::tclinterp::approximation::bezier {args} {
     }
     set xLen [llength $x]
     set yLen [llength $y]
-    if {$yLen!=[= {$n+1}]} {
-        return -code error "Length of -y '$yLen' must be equal to n+1=[= {$n+1}]"
+    if {$yLen!=[expr {$n+1}]} {
+        return -code error "Length of -y '$yLen' must be equal to n+1=[expr {$n+1}]"
     } elseif {$xLen==0} {
         return -code error {Length of points list -x must be more than zero}
     }
     ::tclinterp::Lists2arrays yArray [list $y]
     for {set i 0} {$i<$xLen} {incr i} {
-        lappend yiList [::tclinterp::bez_val $n [@ $x $i] $a $b $yArray]
+        lappend yiList [::tclinterp::bez_val $n [lindex $x $i] $a $b $yArray]
     }
     ::tclinterp::DeleteArrays $yArray
     return $yiList
@@ -466,13 +460,13 @@ proc ::tclinterp::interpolation::divDif1d {args} {
     ::tclinterp::data_to_dif $xLen $xArray $yArray $difTab
     # calculate polynomial value for each xi value
     for {set i 0} {$i<$xiLen} {incr i} {
-        set iElem [::tclinterp::dif_val $xLen $xArray $difTab [@ $xi $i]]
+        set iElem [::tclinterp::dif_val $xLen $xArray $difTab [lindex $xi $i]]
         lappend yiList $iElem
     }
     if {[info exists coeffs]} {
         ::tclinterp::Arrays2lists difTabList $difTab $xLen
         ::tclinterp::DeleteArrays $difTab $xArray $yArray
-        return [dcreate yi $yiList coeffs $difTabList]
+        return [dict create yi $yiList coeffs $difTabList]
     } else {
         ::tclinterp::DeleteArrays $difTab $xArray $yArray
         return $yiList
@@ -502,7 +496,7 @@ proc ::tclinterp::approximation::cubicBSpline1d {args} {
     }
     ::tclinterp::Lists2arrays {tArray yArray} [list $t $y]
     for {set i 0} {$i<$tiLen} {incr i} {
-        set iElem [::tclinterp::spline_b_val $tLen $tArray $yArray [@ $ti $i]]
+        set iElem [::tclinterp::spline_b_val $tLen $tArray $yArray [lindex $ti $i]]
         lappend yiList $iElem
     }
     ::tclinterp::DeleteArrays $tArray $yArray
@@ -535,7 +529,7 @@ proc ::tclinterp::approximation::cubicBetaSpline1d {args} {
     }
     ::tclinterp::Lists2arrays {tArray yArray} [list $t $y]
     for {set i 0} {$i<$tiLen} {incr i} {
-        set iElem [::tclinterp::spline_beta_val $beta1 $beta2 $tLen $tArray $yArray [@ $ti $i]]
+        set iElem [::tclinterp::spline_beta_val $beta1 $beta2 $tLen $tArray $yArray [lindex $ti $i]]
         lappend yiList $iElem
     }
     ::tclinterp::DeleteArrays $tArray $yArray
@@ -590,7 +584,7 @@ proc ::tclinterp::interpolation::cubicSpline1d {args} {
         {-ti= -required -alias xi -help {List of independent variable interpolation (ti) values}}
         {-deriv -help {Select the alternative output option}}
     }
-    set keyMap [dcreate quad 0 der1 1 der2 2 notaknot 3]
+    set keyMap [dict create quad 0 der1 1 der2 2 notaknot 3]
     set tLen [llength $t]
     set yLen [llength $y]
     set tiLen [llength $ti]
@@ -602,10 +596,10 @@ proc ::tclinterp::interpolation::cubicSpline1d {args} {
     ::tclinterp::Lists2arrays {tArray yArray} [list $t $y]
     ::tclinterp::NewArrays yppArray $tLen
     ::tclinterp::NewDoubleps {ypPnt yppPnt}
-    set yppArray [::tclinterp::spline_cubic_set $tLen $tArray $yArray [dget $keyMap $ibcbeg] $ybcbeg\
-                          [dget $keyMap $ibcend] $ybcend]
+    set yppArray [::tclinterp::spline_cubic_set $tLen $tArray $yArray [dict get $keyMap $ibcbeg] $ybcbeg\
+                          [dict get $keyMap $ibcend] $ybcend]
     for {set i 0} {$i<$tiLen} {incr i} {
-        set iElem [::tclinterp::spline_cubic_val $tLen $tArray $yArray $yppArray [@ $ti $i] $ypPnt $yppPnt]
+        set iElem [::tclinterp::spline_cubic_val $tLen $tArray $yArray $yppArray [lindex $ti $i] $ypPnt $yppPnt]
         lappend yiList $iElem
         lappend ypList [::tclinterp::doublep_value $ypPnt]
         lappend yppList [::tclinterp::doublep_value $yppPnt]
@@ -653,11 +647,11 @@ proc ::tclinterp::interpolation::hermiteSpline1d {args} {
     if {[::tclinterp::r8vec_ascends_strictly $tLen $tArray]==0} {
         return -code error {Independent variable array -t is not strictly increasing}
     }
-    ::tclinterp::NewArrays cArray [= {$tLen*4}]
+    ::tclinterp::NewArrays cArray [expr {$tLen*4}]
     ::tclinterp::NewDoubleps {yiPnt yipPnt}
     set cArray [::tclinterp::spline_hermite_set $tLen $tArray $yArray $ypArray]
     for {set i 0} {$i<$tiLen} {incr i} {
-        ::tclinterp::spline_hermite_val $tLen $tArray $cArray [@ $ti $i] $yiPnt $yipPnt
+        ::tclinterp::spline_hermite_val $tLen $tArray $cArray [lindex $ti $i] $yiPnt $yipPnt
         lappend yiList [::tclinterp::doublep_value $yiPnt]
         lappend yipList [::tclinterp::doublep_value $yipPnt]
     }

@@ -22,7 +22,7 @@ The sources of procedures are:
 
 For building you need:
 - [SWIG of version 4.3](https://www.swig.org/download.html)
-- [Tcl9](https://www.tcl.tk/software/tcltk/9.0.html) or [Tcl8.6.15](https://www.tcl.tk/software/tcltk/8.6.html)
+- [Tcl9](https://www.tcl.tk/software/tcltk/9.0.html)
 - [gcc compiler](https://gcc.gnu.org/)
 - [make tool](https://www.gnu.org/software/make/)
 
@@ -47,7 +47,7 @@ There are prebuilt packages that contains .so/.dll files, tcl code and tests for
 # Supported platforms
 
 I've tested it on:
-- Kubuntu 24.04 with Tcl 9 and Tcl 8.6.15
+- Kubuntu 24.04 with Tcl 9
 - Windows 11 in MSYS64 UCRT64 environment with Tcl9
 
 # Documentation
@@ -59,13 +59,13 @@ You can find some documentation [here](https://georgtree.github.io/tclinterp)
 All public procedures has interactive help. To get information about procedure and its arguments call it with `-help`
 switch:
 
-``` tcl
+```tcl
 package require tclinterp
 namespace import ::tclinterp::interpolation::*
 near1d -help
 ```
 
-``` text
+```text
 Does nearest one-dimensional interpolation. Returns: list of interpolated
 dependent variable values, 'yi', at 'xi'. Can accepts unambiguous prefixes
 instead of switches names. Accepts switches only before parameters.
