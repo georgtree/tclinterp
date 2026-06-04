@@ -20,7 +20,7 @@ set commonNroff [list -title $title -sortnamespaces false -preamble $startPage -
                          -version $packageVersion -copyright "George Yashin" {*}$::argv]
 set namespaces [list Examples ::tclinterp::approximation ::tclinterp::interpolation]
 
-ruff::document $namespaces -format sphinx -outdir [file join $docDir sphinx] {*}$commonSphinx
+ruff::document $namespaces -format sphinx -outfile tclinterp.rst -outdir [file join $docDir sphinx] {*}$commonSphinx
 ruff::document $namespaces -format nroff -outdir $docDir -outfile tclinterp.n {*}$commonNroff
 
 ::fileutil::appendToFile [file join $docDir sphinx conf.py] {html_theme = "classic"
@@ -57,4 +57,4 @@ proc processContents {fileContents} {
 
 set chartsMap [dict create !ticklechart_mark_linear_near_interpolation! linear_near_interpolation.html]
 set path [file join $docDir .. examples html_charts]
-fileutil::updateInPlace [file join $docDir Examples-Examples.html] processContents
+fileutil::updateInPlace [file join $docDir tclinterp-Examples.html] processContents
