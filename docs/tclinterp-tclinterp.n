@@ -6,3 +6,50 @@
 tclinterp - Commands in namespace tclinterp
 .SH TCLINTERP
 
+
+.SH SEE ALSO
+tclinterp(n) - package's main page
+.br
+tclinterp-examples(n) - examples of usage with detailed explanations
+.br
+.sp 1
+Public commands documentation:
+.br
+spicegentcl-examples(n)
+.br
+spicegentcl-tclinterp-approximation(n)
+.br
+spicegentcl-tclinterp-interpolation(n)
+.SH SEE ALSO
+tclinterp(n) - package's main page
+.br
+tclinterp-examples(n) - examples of usage with detailed explanations
+.br
+.sp 1
+Public commands documentation:
+.br
+tclinterp-tclinterp-approximation(n)
+.br
+tclinterp-tclinterp-interpolation(n)
+.SH SEE ALSO
+tclinterp(n) - package's main page
+.br
+tclinterp-examples(n) - examples of usage with detailed explanations
+.br
+.sp 1
+Public commands documentation:
+.br
+tclinterp-tclinterp-approximation(n)
+.br
+tclinterp-tclinterp-interpolation(n)
+.SH SEE ALSO
+tclinterp(n) - package's main page
+.br
+tclinterp-examples(n) - examples of usage with detailed explanations
+.br
+.sp 1
+Public commands documentation:
+.br
+tclinterp-tclinterp-approximation(n)
+.br
+tclinterp-tclinterp-interpolation(n)

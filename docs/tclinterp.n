@@ -96,3 +96,15 @@ instead of switches names\&. Accepts switches only before parameters\&.
 .PP
 Best to do it in interactive console, see \fItkcon\fP [URL: https://github\&.com/bohagan1/TkCon]
 
+
+.SH SEE ALSO
+tclinterp(n) - package's main page
+.br
+tclinterp-examples(n) - examples of usage with detailed explanations
+.br
+.sp 1
+Public commands documentation:
+.br
+tclinterp-tclinterp-approximation(n)
+.br
+tclinterp-tclinterp-interpolation(n)

@@ -139,3 +139,15 @@ List of y control points values of size n+1\&.
 .PP
 dict with lists of xi and yi points at specified t points
 
+
+.SH SEE ALSO
+tclinterp(n) - package's main page
+.br
+tclinterp-examples(n) - examples of usage with detailed explanations
+.br
+.sp 1
+Public commands documentation:
+.br
+tclinterp-tclinterp-approximation(n)
+.br
+tclinterp-tclinterp-interpolation(n)

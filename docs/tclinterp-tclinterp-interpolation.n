@@ -319,3 +319,15 @@ List of independent variable interpolation (xe) values, -xi is an alias\&.
 .PP
 list of interpolated dependent variable values\&.
 
+
+.SH SEE ALSO
+tclinterp(n) - package's main page
+.br
+tclinterp-examples(n) - examples of usage with detailed explanations
+.br
+.sp 1
+Public commands documentation:
+.br
+tclinterp-tclinterp-approximation(n)
+.br
+tclinterp-tclinterp-interpolation(n)
