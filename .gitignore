@@ -12,3 +12,4 @@ configure~
 /docs/.doctrees
 /docs/*.bak
 *.dll
+/dist/

@@ -8,7 +8,7 @@ source [file join $docDir rbcBindings.ruff]
 source [file join $docDir examples.ruff]
 source [file join $sourceDir tclinterp.tcl]
 
-set packageVersion [package versions tclinterp]
+set packageVersion [package provide tclinterp]
 if {$packageVersion eq {}} {
     return -code error "Package version is empty"
 }
@@ -46,8 +46,11 @@ def setup(app):
     from sphinx.highlighting import lexers
     lexers["tcl"] = MyTclLexer()
 }
-catch {exec sphinx-build -b html [file join $docDir sphinx] [file join $docDir]} errorStr
-puts $errorStr
+if {[catch {exec sphinx-build -b html [file join $docDir sphinx] $docDir 2>@1} output]} {
+    puts stderr $output
+    exit 1
+}
+puts $output
 
 proc processContents {fileContents} {
     global path chartsMap
@@ -68,8 +71,11 @@ foreach file [glob -directory $docDir *.n] {
     set old $file
     set tmp [file join $docDir __temp_rename__.n]
     set new [file join $docDir [string tolower [file tail $file]]]
-    file rename $old $tmp
-    file rename $tmp $new
+    if {$old eq $new} {
+        continue
+    }
+    file rename -force $old $tmp
+    file rename -force $tmp $new
 }
 set specialPages [list tclinterp-examples tclinterp-rbcbindings]
 foreach namespacePath $namespaces {

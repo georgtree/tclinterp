@@ -45,13 +45,54 @@ sudo make install
 .fi
 .RE
 .PP
-If you have different versions of Tcl on the same machine, you can set the path to this version with -with-tcl=path
+If you have different versions of Tcl on the same machine, you can set the path to this version with --with-tcl=path
 flag to configure script\&.
 .PP
 For Windows build it is strongly recommended to use \fIMSYS64 UCRT64 environment\fP [URL: https://www\&.msys2\&.org/], the above
 steps are identical if you run it from UCRT64 shell\&.
 .PP
-There are prebuilt packages that contains \&.so/\&.dll files, tcl code and tests for Windows and Linux\&.
+The install targets honor --prefix, --exec-prefix, the standard directory options, and DESTDIR\&.
+The runtime library, Tcl interface and pkgIndex\&.tcl are installed in lib/tclinterp0\&.15;
+headers in include; manpages in share/man/mann; and HTML documentation, images and the
+license in share/tclinterp0\&.15/doc, relative to the configured prefix by default (runtime libraries use exec_prefix)\&.
+Set both --prefix and --exec-prefix when relocating the complete installation\&.
+make uninstall removes these installed files\&. Use the same directory overrides and DESTDIR
+for installation and uninstallation\&. DOC_INSTALL_DIR can override the documentation destination;
+an explicit override should include the staging directory when using DESTDIR\&.
+.PP
+.RS 4n
+.nf
+\&./configure --with-tcl=/path/to/tcl/lib --prefix=/desired/prefix --exec-prefix=/desired/prefix
+make
+make install DESTDIR=/temporary/staging
+make uninstall DESTDIR=/temporary/staging
+.fi
+.RE
+.PP
+make dist creates dist/tclinterp0\&.15\&.tar\&.gz from a staged make install\&.
+make dist-zip also creates dist/tclinterp0\&.15\&.zip with the same payload\&. Extract the archive
+contents into the desired install prefix: the archive contains lib, include, and share
+according to the configured directories\&. All installation directories must be under prefix
+for these targets\&. These are installation archives; development tests and examples stay in the
+source checkout\&. DIST_ROOT and DIST_NAME override the output directory and archive basename\&.
+make dist-clean removes the staging tree and archives\&.
+.PP
+Documentation is generated explicitly with make doc; installation and distribution use the
+existing files in docs and do not require documentation tools\&. To regenerate them, install
+Ruff!, Tcllib, argparse and Sphinx (sphinx-build on PATH)\&. Optional diagram generation also
+requires ditaa\&. Set TCLLIBPATH to locate Tcl dependencies and use DOCFLAGS to pass Ruff options\&.
+The generated HTML and manpages are written into the source docs directory, including when
+building out of tree\&. A documentation-generation failure makes make doc fail\&.
+.PP
+.RS 4n
+.nf
+make doc TCLLIBPATH="/path/to/ruff /path/to/tcllib /path/to/argparse"
+\&./config\&.status --recheck && \&./config\&.status
+.fi
+.RE
+.PP
+Re-run configure with config\&.status --recheck after generating documentation so the configured HTML/static-file list
+includes any newly generated files before running make install or make dist\&.
 .SH "SUPPORTED PLATFORMS"
 .PP
 I've tested it on:

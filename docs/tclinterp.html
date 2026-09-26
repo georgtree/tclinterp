@@ -68,11 +68,43 @@ make
 sudo<span class="w"> </span>make<span class="w"> </span>install
 </pre></div>
 </div>
-<p>If you have different versions of Tcl on the same machine, you can set the path to this version with <code class="docutils literal notranslate"><span class="pre">-with-tcl=path</span></code>
+<p>If you have different versions of Tcl on the same machine, you can set the path to this version with <code class="docutils literal notranslate"><span class="pre">--with-tcl=path</span></code>
 flag to configure script.</p>
 <p>For Windows build it is strongly recommended to use <a class="reference external" href="https://www.msys2.org/">MSYS64 UCRT64 environment</a>, the above
 steps are identical if you run it from UCRT64 shell.</p>
-<p>There are prebuilt packages that contains .so/.dll files, tcl code and tests for Windows and Linux.</p>
+<p>The install targets honor <code class="docutils literal notranslate"><span class="pre">--prefix</span></code>, <code class="docutils literal notranslate"><span class="pre">--exec-prefix</span></code>, the standard directory options, and <code class="docutils literal notranslate"><span class="pre">DESTDIR</span></code>.
+The runtime library, Tcl interface and <code class="docutils literal notranslate"><span class="pre">pkgIndex.tcl</span></code> are installed in <code class="docutils literal notranslate"><span class="pre">lib/tclinterp0.15</span></code>;
+headers in <code class="docutils literal notranslate"><span class="pre">include</span></code>; manpages in <code class="docutils literal notranslate"><span class="pre">share/man/mann</span></code>; and HTML documentation, images and the
+license in <code class="docutils literal notranslate"><span class="pre">share/tclinterp0.15/doc</span></code>, relative to the configured prefix by default (runtime libraries use <code class="docutils literal notranslate"><span class="pre">exec_prefix</span></code>).
+Set both <code class="docutils literal notranslate"><span class="pre">--prefix</span></code> and <code class="docutils literal notranslate"><span class="pre">--exec-prefix</span></code> when relocating the complete installation.
+<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">uninstall</span></code> removes these installed files. Use the same directory overrides and <code class="docutils literal notranslate"><span class="pre">DESTDIR</span></code>
+for installation and uninstallation. <code class="docutils literal notranslate"><span class="pre">DOC_INSTALL_DIR</span></code> can override the documentation destination;
+an explicit override should include the staging directory when using <code class="docutils literal notranslate"><span class="pre">DESTDIR</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./configure<span class="w"> </span>--with-tcl<span class="o">=</span>/path/to/tcl/lib<span class="w"> </span>--prefix<span class="o">=</span>/desired/prefix<span class="w"> </span>--exec-prefix<span class="o">=</span>/desired/prefix
+make
+make<span class="w"> </span>install<span class="w"> </span><span class="nv">DESTDIR</span><span class="o">=</span>/temporary/staging
+make<span class="w"> </span>uninstall<span class="w"> </span><span class="nv">DESTDIR</span><span class="o">=</span>/temporary/staging
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">dist</span></code> creates <code class="docutils literal notranslate"><span class="pre">dist/tclinterp0.15.tar.gz</span></code> from a staged <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">install</span></code>.
+<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">dist-zip</span></code> also creates <code class="docutils literal notranslate"><span class="pre">dist/tclinterp0.15.zip</span></code> with the same payload. Extract the archive
+contents into the desired install prefix: the archive contains <code class="docutils literal notranslate"><span class="pre">lib</span></code>, <code class="docutils literal notranslate"><span class="pre">include</span></code>, and <code class="docutils literal notranslate"><span class="pre">share</span></code>
+according to the configured directories. All installation directories must be under <code class="docutils literal notranslate"><span class="pre">prefix</span></code>
+for these targets. These are installation archives; development tests and examples stay in the
+source checkout. <code class="docutils literal notranslate"><span class="pre">DIST_ROOT</span></code> and <code class="docutils literal notranslate"><span class="pre">DIST_NAME</span></code> override the output directory and archive basename.
+<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">dist-clean</span></code> removes the staging tree and archives.</p>
+<p>Documentation is generated explicitly with <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">doc</span></code>; installation and distribution use the
+existing files in <code class="docutils literal notranslate"><span class="pre">docs</span></code> and do not require documentation tools. To regenerate them, install
+Ruff!, Tcllib, argparse and Sphinx (<code class="docutils literal notranslate"><span class="pre">sphinx-build</span></code> on <code class="docutils literal notranslate"><span class="pre">PATH</span></code>). Optional diagram generation also
+requires ditaa. Set <code class="docutils literal notranslate"><span class="pre">TCLLIBPATH</span></code> to locate Tcl dependencies and use <code class="docutils literal notranslate"><span class="pre">DOCFLAGS</span></code> to pass Ruff options.
+The generated HTML and manpages are written into the source <code class="docutils literal notranslate"><span class="pre">docs</span></code> directory, including when
+building out of tree. A documentation-generation failure makes <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">doc</span></code> fail.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>doc<span class="w"> </span><span class="nv">TCLLIBPATH</span><span class="o">=</span><span class="s2">&quot;/path/to/ruff /path/to/tcllib /path/to/argparse&quot;</span>
+./config.status<span class="w"> </span>--recheck<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>./config.status
+</pre></div>
+</div>
+<p>Re-run configure with <code class="docutils literal notranslate"><span class="pre">config.status</span> <span class="pre">--recheck</span></code> after generating documentation so the configured HTML/static-file list
+includes any newly generated files before running <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">install</span></code> or <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">dist</span></code>.</p>
 </section>
 <section id="supported-platforms">
 <span id="r-supported-platforms"></span><span id="r-supported20platforms"></span><h1>Supported platforms<a class="headerlink" href="#supported-platforms" title="Link to this heading">¶</a></h1>
