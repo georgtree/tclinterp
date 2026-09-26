@@ -15,7 +15,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Examples" href="tclinterp-Examples.html" />
+    <link rel="next" title="Native bindings and RBC vectors" href="tclinterp-rbcBindings.html" />
     <link rel="prev" title="&lt;no title&gt;" href="index.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="Related">
@@ -25,7 +25,7 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="tclinterp-Examples.html" title="Examples"
+          <a href="tclinterp-rbcBindings.html" title="Native bindings and RBC vectors"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="index.html" title="&lt;no title&gt;"
@@ -53,7 +53,6 @@ The sources of procedures are:</p>
 <span id="r-installation-and-dependencies"></span><span id="r-installation20and20dependencies"></span><h1>Installation and dependencies<a class="headerlink" href="#installation-and-dependencies" title="Link to this heading">¶</a></h1>
 <p>For building you need:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://www.swig.org/download.html">SWIG of version 4.3</a></p></li>
 <li><p><a class="reference external" href="https://www.tcl.tk/software/tcltk/9.0.html">Tcl9</a></p></li>
 <li><p><a class="reference external" href="https://gcc.gnu.org/">gcc compiler</a></p></li>
 <li><p><a class="reference external" href="https://www.gnu.org/software/make/">make tool</a></p></li>
@@ -96,15 +95,30 @@ switch:</p>
 <span class="nv">near1d</span><span class="w"> </span><span class="o">-</span>help
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Does nearest one-dimensional interpolation. Returns: list of interpolated
-dependent variable values, &#39;yi&#39;, at &#39;xi&#39;. Can accepts unambiguous prefixes
-instead of switches names. Accepts switches only before parameters.
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Performs nearest-neighbor one-dimensional interpolation. Returns: The
+interpolated values yi, as a Tcl list by default or an RBC vector name with
+-output vector. Can accepts unambiguous prefixes instead of switches names.
+Accepts switches only before parameters.
     Switches:
-        -x - Required, expects argument. List of independent variable (x)
-            values, must be strictly increasing.
-        -y - Required, expects argument. List of dependent variable (y) values.
-        -xi - Required, expects argument. list of independent variable
-            interpolation (xi) values.
+        -x value - Required. Sample positions; at least one value.
+        -y value - Required. Sample values; must have the same length as -x.
+        -xi value - Required. Evaluation positions; must not be empty.
+        -input value - Input representation for all array arguments: Tcl lists
+            or real RBC vector names. Defaults to list. Default value is list. Value
+            must be one of: list or vector.
+        -output value - Output representation for every numeric result array:
+            Tcl list or RBC vector name. Defaults to list; independent of -input.
+            Default value is list. Value must be one of: list or vector.
+        -name value - Destination vector name for yi; requires -output vector.
+            Omit it or use #auto to create an automatically named vector.
+        -names value - Dictionary mapping output fields to destination vector
+            names; requires -output vector. Valid fields: yi. Type dict.
+        -ifexists value - Policy for existing destination vectors; defaults to
+            error. With replace, an existing real vector is resized and overwritten.
+            Default value is error. Value must be one of: error or replace.
+        -help - Help switch, when provided, forces ignoring all other switches
+            and parameters, prints the help message to stdout, and returns up to 2
+            levels above the current level.
 </pre></div>
 </div>
 <p>Best to do it in interactive console, see <a class="reference external" href="https://github.com/bohagan1/TkCon">tkcon</a></p>
@@ -137,8 +151,8 @@ instead of switches names. Accepts switches only before parameters.
   </div>
   <div>
     <h4>Next topic</h4>
-    <p class="topless"><a href="tclinterp-Examples.html"
-                          title="next chapter">Examples</a></p>
+    <p class="topless"><a href="tclinterp-rbcBindings.html"
+                          title="next chapter">Native bindings and RBC vectors</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
@@ -168,7 +182,7 @@ instead of switches names. Accepts switches only before parameters.
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="tclinterp-Examples.html" title="Examples"
+          <a href="tclinterp-rbcBindings.html" title="Native bindings and RBC vectors"
              >next</a> |</li>
         <li class="right" >
           <a href="index.html" title="&lt;no title&gt;"

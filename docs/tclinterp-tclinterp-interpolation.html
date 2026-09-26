@@ -41,225 +41,458 @@
 <section id="commands">
 <span id="r-tclinterp-interpolation-commands"></span><span id="r-3a3atclinterp3a3ainterpolationqzcommands"></span><h2>Commands<a class="headerlink" href="#commands" title="Link to this heading">¶</a></h2>
 <section id="cubicspline1d">
-<span id="r-3a3atclinterp3a3ainterpolation3a3acubicspline1d"></span><span id="index-1"></span><span id="index-0"></span><h3><code class="docutils literal notranslate"><span class="pre">cubicSpline1d</span></code><a class="headerlink" href="#cubicspline1d" title="Link to this heading">¶</a></h3>
-<p>Does piecewise cubic spline interpolation.</p>
-<pre class="literal-block"><strong>cubicSpline1d</strong> <em>-t|x list -y list -ti|xi list ?-ibcbeg|begflag value -ybcbeg value? ?-ibcend|endflag value -ybcend value? ?-deriv?</em></pre>
+<span id="r-symbolqz3a3atclinterp3a3ainterpolation3a3acubicspline1d"></span><span id="index-1"></span><span id="index-0"></span><h3><code class="docutils literal notranslate"><span class="pre">cubicSpline1d</span></code><a class="headerlink" href="#cubicspline1d" title="Link to this heading">¶</a></h3>
+<p>Performs piecewise cubic spline interpolation.</p>
+<pre class="literal-block"><strong>cubicSpline1d</strong> <em>-t values -y values -ti values ?-ibcbeg condition? ?-ibcend condition? ?-ybcbeg value? ?-ybcend value? ?-deriv? ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?</em></pre>
 <p class="rubric">Parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-deriv</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>Select the alternative output option.</p>
+<dd class="field-odd"><p>Include first and second derivatives in the result dictionary.</p>
 </dd>
-<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ibcbeg</span> <span class="pre">value</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>Left boundary condition flag, -begflag is an alias. Possible values: <strong>quad</strong>, the cubic spline should be a quadratic over the first interval; <strong>der1</strong>, the first derivative at the left endpoint should be YBCBEG; <strong>der2</strong>, the second derivative at the left endpoint should be YBCBEG; <strong>notaknot</strong>, not-a-knot, the third derivative is continuous at T(2).</p>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ibcbeg</span> <span class="pre">condition</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Left boundary condition: quad, der1, der2, or notaknot; defaults to quad. Alias: -begflag.</p>
 </dd>
-<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-ibcend</span> <span class="pre">value</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>Right boundary condition flag, -endflag is an alias. Possible values: <strong>quad</strong>, the cubic spline should be a quadratic over the last interval; <strong>der1</strong>, the first derivative at the right endpoint should be YBCBEG; <strong>der2</strong>, the second derivative at the right endpoint should be YBCBEG; <strong>notaknot</strong>, not-a-knot, the third derivative is continuous at T(2).</p>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-ibcend</span> <span class="pre">condition</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Right boundary condition: quad, der1, der2, or notaknot; defaults to quad. Alias: -endflag.</p>
 </dd>
-<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-t</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>List of independent variable (t) values, -x is an alias.</p>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error|replace</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
 </dd>
-<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-ti</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of independent variable interpolation (ti) values, -xi is an alias.</p>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to list.</p>
 </dd>
-<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>List of dependent variable (y) values.</p>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-name</span> <span class="pre">name</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Destination vector name for yi; requires -output vector. Omit it or use #auto to create an automatically named vector.</p>
 </dd>
-<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-ybcbeg</span> <span class="pre">value</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>The values to be used in the boundary conditions if ibcbeg is equal to der1 or der2, default is 0.0.</p>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-names</span> <span class="pre">dictionary</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary mapping output fields to destination vector names; requires -output vector. Valid fields: <code class="docutils literal notranslate"><span class="pre">yi</span></code> and, only with -deriv, <code class="docutils literal notranslate"><span class="pre">yder1</span></code>, <code class="docutils literal notranslate"><span class="pre">yder2</span></code>.</p>
 </dd>
-<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ybcend</span> <span class="pre">value</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>The values to be used in the boundary conditions if ibcend is equal to der1 or der2, default is 0.0.</p>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Output representation for every numeric result array: Tcl list or RBC vector name. Defaults to list; independent of -input.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-t</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Strictly increasing sample positions; at least two values. Alias: -x.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ti</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Evaluation positions; must not be empty. Alias: -xi.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sample values; must have the same length as -t.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ybcbeg</span> <span class="pre">value</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Prescribed left endpoint derivative for der1 or der2; defaults to 0.0.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-ybcend</span> <span class="pre">value</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Prescribed right endpoint derivative for der1 or der2; defaults to 0.0.</p>
 </dd>
 </dl>
+<p class="rubric">Description</p>
+<p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
+ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+vectors.</p>
+<p>Vector names resolve in the caller’s namespace; destination namespaces must already exist. Each unnamed
+output, including fields omitted from -names, is created with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">create</span> <span class="pre">#auto</span></code>. Returned
+vector names are fully qualified.</p>
+<p>Do not specify both -name and the <code class="docutils literal notranslate"><span class="pre">yi</span></code> entry of -names. Unknown output fields and duplicate destinations
+are errors. The caller owns returned vectors and can release them with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">destroy</span>
+<span class="pre">$vectorName</span></code>.</p>
+<p>The boundary condition <code class="docutils literal notranslate"><span class="pre">quad</span></code> makes the first or last interval quadratic. The conditions <code class="docutils literal notranslate"><span class="pre">der1</span></code> and <code class="docutils literal notranslate"><span class="pre">der2</span></code>
+prescribe the first or second endpoint derivative using -ybcbeg or -ybcend, respectively for the left or
+right endpoint. The condition <code class="docutils literal notranslate"><span class="pre">notaknot</span></code> makes the third derivative continuous at the first or last
+interior knot and requires at least four samples.</p>
 <p class="rubric">Return value</p>
-<p>list of interpolated dependent variable values under. If <code class="docutils literal notranslate"><span class="pre">-deriv</span></code> switch is in args, the output is
-dictionary that contains <code class="docutils literal notranslate"><span class="pre">yi</span></code> values under <code class="docutils literal notranslate"><span class="pre">yi</span></code> key, <code class="docutils literal notranslate"><span class="pre">yi</span></code> derivative under <code class="docutils literal notranslate"><span class="pre">yder1</span></code> key, and <code class="docutils literal notranslate"><span class="pre">yi</span></code> second derivative
-under <code class="docutils literal notranslate"><span class="pre">yder2</span></code> key.</p>
+<p>The interpolated values <code class="docutils literal notranslate"><span class="pre">yi</span></code>. With <code class="docutils literal notranslate"><span class="pre">-deriv</span></code>, returns a dictionary with <code class="docutils literal notranslate"><span class="pre">yi</span></code>, first derivatives
+<code class="docutils literal notranslate"><span class="pre">yder1</span></code>, and second derivatives <code class="docutils literal notranslate"><span class="pre">yder2</span></code>. Each numeric array is a Tcl list by default or an RBC vector name
+with <code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">vector</span></code>.</p>
 </section>
 <section id="divdif1d">
-<span id="r-3a3atclinterp3a3ainterpolation3a3adivdif1d"></span><span id="index-3"></span><span id="index-2"></span><h3><code class="docutils literal notranslate"><span class="pre">divDif1d</span></code><a class="headerlink" href="#divdif1d" title="Link to this heading">¶</a></h3>
-<p>Does divided difference one-dimensional interpolation.</p>
-<pre class="literal-block"><strong>divDif1d</strong> <em>-x list -y list -xi list ?-coeffs?</em></pre>
+<span id="r-symbolqz3a3atclinterp3a3ainterpolation3a3adivdif1d"></span><span id="index-3"></span><span id="index-2"></span><h3><code class="docutils literal notranslate"><span class="pre">divDif1d</span></code><a class="headerlink" href="#divdif1d" title="Link to this heading">¶</a></h3>
+<p>Performs divided-difference polynomial interpolation.</p>
+<pre class="literal-block"><strong>divDif1d</strong> <em>-x values -y values -xi values ?-coeffs? ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?</em></pre>
 <p class="rubric">Parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-coeffs</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>Selects the alternative output option.</p>
+<dd class="field-odd"><p>Include the divided-difference coefficient array in the result dictionary.</p>
 </dd>
-<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>List of independent variable (x) values.</p>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error|replace</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
 </dd>
-<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-xi</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of independent variable interpolation (xi) values.</p>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to list.</p>
 </dd>
-<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>List of dependent variable (y) values.</p>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-name</span> <span class="pre">name</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Destination vector name for yi; requires -output vector. Omit it or use #auto to create an automatically named vector.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-names</span> <span class="pre">dictionary</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary mapping output fields to destination vector names; requires -output vector. Valid fields: <code class="docutils literal notranslate"><span class="pre">yi</span></code> and, only with -coeffs, <code class="docutils literal notranslate"><span class="pre">coeffs</span></code>.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Output representation for every numeric result array: Tcl list or RBC vector name. Defaults to list; independent of -input.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Distinct sample positions; at least one value.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-xi</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Evaluation positions; must not be empty.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sample values; must have the same length as -x.</p>
 </dd>
 </dl>
+<p class="rubric">Description</p>
+<p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
+ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+vectors.</p>
+<p>Vector names resolve in the caller’s namespace; destination namespaces must already exist. Each unnamed
+output, including fields omitted from -names, is created with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">create</span> <span class="pre">#auto</span></code>. Returned
+vector names are fully qualified.</p>
+<p>Do not specify both -name and the <code class="docutils literal notranslate"><span class="pre">yi</span></code> entry of -names. Unknown output fields and duplicate destinations
+are errors. The caller owns returned vectors and can release them with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">destroy</span>
+<span class="pre">$vectorName</span></code>.</p>
 <p class="rubric">Return value</p>
-<p>list of interpolated dependent variable values, <code class="docutils literal notranslate"><span class="pre">yi</span></code>, at <code class="docutils literal notranslate"><span class="pre">xi</span></code>. If <code class="docutils literal notranslate"><span class="pre">-coeffs</span></code> switch is in args, the output
-is dictionary that contains <code class="docutils literal notranslate"><span class="pre">yi</span></code> values under <code class="docutils literal notranslate"><span class="pre">yi</span></code> key, and the values of difference table under the key <code class="docutils literal notranslate"><span class="pre">coeffs</span></code>.</p>
+<p>The interpolated values <code class="docutils literal notranslate"><span class="pre">yi</span></code>. With <code class="docutils literal notranslate"><span class="pre">-coeffs</span></code>, returns a dictionary with <code class="docutils literal notranslate"><span class="pre">yi</span></code> and <code class="docutils literal notranslate"><span class="pre">coeffs</span></code> arrays.
+Each numeric array is a Tcl list by default or an RBC vector name with <code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">vector</span></code>.</p>
 </section>
 <section id="hermitespline1d">
-<span id="r-3a3atclinterp3a3ainterpolation3a3ahermitespline1d"></span><span id="index-5"></span><span id="index-4"></span><h3><code class="docutils literal notranslate"><span class="pre">hermiteSpline1d</span></code><a class="headerlink" href="#hermitespline1d" title="Link to this heading">¶</a></h3>
-<p>Does Hermite polynomial spline interpolation.</p>
-<pre class="literal-block"><strong>hermiteSpline1d</strong> <em>-t|x list -y list -yp list -ti|xi list ?-deriv?</em></pre>
+<span id="r-symbolqz3a3atclinterp3a3ainterpolation3a3ahermitespline1d"></span><span id="index-5"></span><span id="index-4"></span><h3><code class="docutils literal notranslate"><span class="pre">hermiteSpline1d</span></code><a class="headerlink" href="#hermitespline1d" title="Link to this heading">¶</a></h3>
+<p>Performs cubic Hermite spline interpolation.</p>
+<pre class="literal-block"><strong>hermiteSpline1d</strong> <em>-t values -y values -yp values -ti values ?-deriv? ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?</em></pre>
 <p class="rubric">Parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-deriv</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>Select the alternative output option.</p>
+<dd class="field-odd"><p>Include first derivatives in the result dictionary.</p>
 </dd>
-<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-t</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>List of independent variable (t) values, must be strictly increasing, -x is an alias.</p>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error|replace</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
 </dd>
-<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-ti</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of independent variable interpolation (ti) values, -xi is an alias.</p>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to list.</p>
 </dd>
-<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>List of dependent variable (y) values.</p>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-name</span> <span class="pre">name</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Destination vector name for yi; requires -output vector. Omit it or use #auto to create an automatically named vector.</p>
 </dd>
-<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-yp</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of dependent variable (y) derivative values.</p>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-names</span> <span class="pre">dictionary</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary mapping output fields to destination vector names; requires -output vector. Valid fields: <code class="docutils literal notranslate"><span class="pre">yi</span></code> and, only with -deriv, <code class="docutils literal notranslate"><span class="pre">yder1</span></code>.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Output representation for every numeric result array: Tcl list or RBC vector name. Defaults to list; independent of -input.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-t</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Strictly increasing sample positions; at least two values. Alias: -x.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ti</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Evaluation positions; must not be empty. Alias: -xi.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sample values; must have the same length as -t.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-yp</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>First derivatives at the sample positions; same length as -t.</p>
 </dd>
 </dl>
+<p class="rubric">Description</p>
+<p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
+ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+vectors.</p>
+<p>Vector names resolve in the caller’s namespace; destination namespaces must already exist. Each unnamed
+output, including fields omitted from -names, is created with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">create</span> <span class="pre">#auto</span></code>. Returned
+vector names are fully qualified.</p>
+<p>Do not specify both -name and the <code class="docutils literal notranslate"><span class="pre">yi</span></code> entry of -names. Unknown output fields and duplicate destinations
+are errors. The caller owns returned vectors and can release them with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">destroy</span>
+<span class="pre">$vectorName</span></code>.</p>
 <p class="rubric">Return value</p>
-<p>list of interpolated dependent variable values. If <code class="docutils literal notranslate"><span class="pre">-deriv</span></code> switch is in args, the output is
-dictionary that contains <code class="docutils literal notranslate"><span class="pre">yi</span></code> values under <code class="docutils literal notranslate"><span class="pre">yi</span></code> key, <code class="docutils literal notranslate"><span class="pre">yi</span></code> derivative under <code class="docutils literal notranslate"><span class="pre">yder1</span></code> key.</p>
+<p>The interpolated values <code class="docutils literal notranslate"><span class="pre">yi</span></code>. With <code class="docutils literal notranslate"><span class="pre">-deriv</span></code>, returns a dictionary with <code class="docutils literal notranslate"><span class="pre">yi</span></code> and first derivatives
+<code class="docutils literal notranslate"><span class="pre">yder1</span></code>. Each numeric array is a Tcl list by default or an RBC vector name with <code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">vector</span></code>.</p>
 </section>
 <section id="lagr1d">
-<span id="r-3a3atclinterp3a3ainterpolation3a3alagr1d"></span><span id="index-7"></span><span id="index-6"></span><h3><code class="docutils literal notranslate"><span class="pre">lagr1d</span></code><a class="headerlink" href="#lagr1d" title="Link to this heading">¶</a></h3>
-<p>Does Lagrange polynomial one-dimensional interpolation.</p>
-<pre class="literal-block"><strong>lagr1d</strong> <em>-x list -y list -xi list</em></pre>
+<span id="r-symbolqz3a3atclinterp3a3ainterpolation3a3alagr1d"></span><span id="index-7"></span><span id="index-6"></span><h3><code class="docutils literal notranslate"><span class="pre">lagr1d</span></code><a class="headerlink" href="#lagr1d" title="Link to this heading">¶</a></h3>
+<p>Performs Lagrange polynomial one-dimensional interpolation.</p>
+<pre class="literal-block"><strong>lagr1d</strong> <em>-x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?</em></pre>
 <p class="rubric">Parameters</p>
 <dl class="field-list simple">
-<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of independent variable (x) values.</p>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error|replace</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
 </dd>
-<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-xi</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>List of independent variable interpolation (xi) values.</p>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to list.</p>
 </dd>
-<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of dependent variable (y) values.</p>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-name</span> <span class="pre">name</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Destination vector name for yi; requires -output vector. Omit it or use #auto to create an automatically named vector.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-names</span> <span class="pre">dictionary</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary mapping output fields to destination vector names; requires -output vector. Valid fields: <code class="docutils literal notranslate"><span class="pre">yi</span></code>.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Output representation for every numeric result array: Tcl list or RBC vector name. Defaults to list; independent of -input.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Distinct sample positions; at least one value.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-xi</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Evaluation positions; must not be empty.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Sample values; must have the same length as -x.</p>
 </dd>
 </dl>
+<p class="rubric">Description</p>
+<p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
+ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+vectors.</p>
+<p>Vector names resolve in the caller’s namespace; destination namespaces must already exist. Each unnamed
+output, including fields omitted from -names, is created with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">create</span> <span class="pre">#auto</span></code>. Returned
+vector names are fully qualified.</p>
+<p>Do not specify both -name and the <code class="docutils literal notranslate"><span class="pre">yi</span></code> entry of -names. Unknown output fields and duplicate destinations
+are errors. The caller owns returned vectors and can release them with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">destroy</span>
+<span class="pre">$vectorName</span></code>.</p>
 <p class="rubric">Return value</p>
-<p>list of interpolated dependent variable values, <code class="docutils literal notranslate"><span class="pre">yi</span></code>, at <code class="docutils literal notranslate"><span class="pre">xi</span></code></p>
+<p>The interpolated values <code class="docutils literal notranslate"><span class="pre">yi</span></code>, as a Tcl list by default or an RBC vector name with <code class="docutils literal notranslate"><span class="pre">-output</span>
+<span class="pre">vector</span></code>.</p>
 </section>
 <section id="least1d">
-<span id="r-3a3atclinterp3a3ainterpolation3a3aleast1d"></span><span id="index-9"></span><span id="index-8"></span><h3><code class="docutils literal notranslate"><span class="pre">least1d</span></code><a class="headerlink" href="#least1d" title="Link to this heading">¶</a></h3>
-<p>Does least squares polynomial one-dimensional interpolation.</p>
-<pre class="literal-block"><strong>least1d</strong> <em>-x list -y list -xi list ?-w list? ?-nterms value? ?-coeffs?</em></pre>
+<span id="r-symbolqz3a3atclinterp3a3ainterpolation3a3aleast1d"></span><span id="index-9"></span><span id="index-8"></span><h3><code class="docutils literal notranslate"><span class="pre">least1d</span></code><a class="headerlink" href="#least1d" title="Link to this heading">¶</a></h3>
+<p>Fits a least-squares polynomial.</p>
+<pre class="literal-block"><strong>least1d</strong> <em>-x values -y values -xi values ?-w values? ?-nterms integer? ?-coeffs? ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?</em></pre>
 <p class="rubric">Parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-coeffs</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>Selects the alternative output option.</p>
+<dd class="field-odd"><p>Include polynomial coefficient arrays in the result dictionary.</p>
 </dd>
-<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-nterms</span> <span class="pre">value</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>Number of terms of interpolation polynom, default is 3.</p>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error|replace</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
 </dd>
-<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-w</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of weights, optional.</p>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to list.</p>
 </dd>
-<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>List of independent variable (x) values.</p>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-name</span> <span class="pre">name</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Destination vector name for yi; requires -output vector. Omit it or use #auto to create an automatically named vector.</p>
 </dd>
-<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-xi</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of independent variable interpolation (xi) values.</p>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-names</span> <span class="pre">dictionary</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary mapping output fields to destination vector names; requires -output vector. Valid fields: <code class="docutils literal notranslate"><span class="pre">yi</span></code>, and, only with -coeffs, <code class="docutils literal notranslate"><span class="pre">coeffs.b</span></code>, <code class="docutils literal notranslate"><span class="pre">coeffs.c</span></code>, <code class="docutils literal notranslate"><span class="pre">coeffs.d</span></code>.</p>
 </dd>
-<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>List of dependent variable (y) values.</p>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-nterms</span> <span class="pre">integer</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Number of polynomial terms; defaults to 3. Must be positive and no greater than the number of distinct sample positions.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Output representation for every numeric result array: Tcl list or RBC vector name. Defaults to list; independent of -input.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-w</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Optional positive weights; same length as -x. Defaults to all ones.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sample positions; at least one value.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-xi</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Evaluation positions; must not be empty.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sample values; must have the same length as -x.</p>
 </dd>
 </dl>
+<p class="rubric">Description</p>
+<p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
+ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+vectors.</p>
+<p>Vector names resolve in the caller’s namespace; destination namespaces must already exist. Each unnamed
+output, including fields omitted from -names, is created with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">create</span> <span class="pre">#auto</span></code>. Returned
+vector names are fully qualified.</p>
+<p>Do not specify both -name and the <code class="docutils literal notranslate"><span class="pre">yi</span></code> entry of -names. Unknown output fields and duplicate destinations
+are errors. The caller owns returned vectors and can release them with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">destroy</span>
+<span class="pre">$vectorName</span></code>.</p>
 <p class="rubric">Return value</p>
-<p>list of interpolated dependent variable values, <code class="docutils literal notranslate"><span class="pre">yi</span></code>, at <code class="docutils literal notranslate"><span class="pre">xi</span></code>. If <code class="docutils literal notranslate"><span class="pre">-coeffs</span></code> switch is in args, the output
-is dictionary that contains <code class="docutils literal notranslate"><span class="pre">yi</span></code> values under <code class="docutils literal notranslate"><span class="pre">yi</span></code> key, and the values of interpolation polynom coefficients under
-the keys <code class="docutils literal notranslate"><span class="pre">b</span></code>, <code class="docutils literal notranslate"><span class="pre">c</span></code> and <code class="docutils literal notranslate"><span class="pre">d</span></code>.</p>
+<p>The fitted values <code class="docutils literal notranslate"><span class="pre">yi</span></code>, or a dictionary containing <code class="docutils literal notranslate"><span class="pre">yi</span></code> when <code class="docutils literal notranslate"><span class="pre">-coeffs</span></code> is specified. With
+<code class="docutils literal notranslate"><span class="pre">-coeffs</span></code>, the dictionary also contains <code class="docutils literal notranslate"><span class="pre">coeffs</span></code>, a nested dictionary with keys <code class="docutils literal notranslate"><span class="pre">b</span></code>, <code class="docutils literal notranslate"><span class="pre">c</span></code>, and <code class="docutils literal notranslate"><span class="pre">d</span></code>. Each
+numeric array is a Tcl list by default or an RBC vector name with <code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">vector</span></code>.</p>
 </section>
 <section id="least1dder">
-<span id="r-3a3atclinterp3a3ainterpolation3a3aleast1dder"></span><span id="index-11"></span><span id="index-10"></span><h3><code class="docutils literal notranslate"><span class="pre">least1dDer</span></code><a class="headerlink" href="#least1dder" title="Link to this heading">¶</a></h3>
-<p>Does least squares polynomial one-dimensional interpolation with calculation of its derivative.</p>
-<pre class="literal-block"><strong>least1dDer</strong> <em>-x list -y list -xi list ?-w list? ?-nterms value? ?-coeffs?</em></pre>
+<span id="r-symbolqz3a3atclinterp3a3ainterpolation3a3aleast1dder"></span><span id="index-11"></span><span id="index-10"></span><h3><code class="docutils literal notranslate"><span class="pre">least1dDer</span></code><a class="headerlink" href="#least1dder" title="Link to this heading">¶</a></h3>
+<p>Fits a least-squares polynomial and evaluates its first derivative.</p>
+<pre class="literal-block"><strong>least1dDer</strong> <em>-x values -y values -xi values ?-w values? ?-nterms integer? ?-coeffs? ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?</em></pre>
 <p class="rubric">Parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-coeffs</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>Selects the alternative output option.</p>
+<dd class="field-odd"><p>Include polynomial coefficient arrays in the result dictionary.</p>
 </dd>
-<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-nterms</span> <span class="pre">value</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>Number of terms of interpolation polynom, default is 3.</p>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error|replace</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
 </dd>
-<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-w</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of weights, optional.</p>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to list.</p>
 </dd>
-<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>List of independent variable (x) values.</p>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-name</span> <span class="pre">name</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Destination vector name for yi; requires -output vector. Omit it or use #auto to create an automatically named vector.</p>
 </dd>
-<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-xi</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of independent variable interpolation (xi) values.</p>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-names</span> <span class="pre">dictionary</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary mapping output fields to destination vector names; requires -output vector. Valid fields: <code class="docutils literal notranslate"><span class="pre">yi</span></code>, <code class="docutils literal notranslate"><span class="pre">yiDer</span></code>, and, only with -coeffs, <code class="docutils literal notranslate"><span class="pre">coeffs.b</span></code>, <code class="docutils literal notranslate"><span class="pre">coeffs.c</span></code>, <code class="docutils literal notranslate"><span class="pre">coeffs.d</span></code>.</p>
 </dd>
-<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>List of dependent variable (y) values.</p>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-nterms</span> <span class="pre">integer</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Number of polynomial terms; defaults to 3. Must be positive and no greater than the number of distinct sample positions.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Output representation for every numeric result array: Tcl list or RBC vector name. Defaults to list; independent of -input.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-w</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Optional positive weights; same length as -x. Defaults to all ones.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sample positions; at least one value.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-xi</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Evaluation positions; must not be empty.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sample values; must have the same length as -x.</p>
 </dd>
 </dl>
+<p class="rubric">Description</p>
+<p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
+ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+vectors.</p>
+<p>Vector names resolve in the caller’s namespace; destination namespaces must already exist. Each unnamed
+output, including fields omitted from -names, is created with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">create</span> <span class="pre">#auto</span></code>. Returned
+vector names are fully qualified.</p>
+<p>Do not specify both -name and the <code class="docutils literal notranslate"><span class="pre">yi</span></code> entry of -names. Unknown output fields and duplicate destinations
+are errors. The caller owns returned vectors and can release them with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">destroy</span>
+<span class="pre">$vectorName</span></code>.</p>
 <p class="rubric">Return value</p>
-<p>dict of interpolated dependent variable values and its derivatives under <code class="docutils literal notranslate"><span class="pre">yi</span></code> and <code class="docutils literal notranslate"><span class="pre">yiDer</span></code> keys. If
-<code class="docutils literal notranslate"><span class="pre">-coeffs</span></code> switch is in args, the output is dictionary that contains <code class="docutils literal notranslate"><span class="pre">yi</span></code> values under <code class="docutils literal notranslate"><span class="pre">yi</span></code> key, <code class="docutils literal notranslate"><span class="pre">yi</span></code> derivatives
-under <code class="docutils literal notranslate"><span class="pre">yiDer</span></code> key, and the values of interpolation polynom coefficients under the keys <code class="docutils literal notranslate"><span class="pre">b</span></code>, <code class="docutils literal notranslate"><span class="pre">c</span></code> and <code class="docutils literal notranslate"><span class="pre">d</span></code>.</p>
+<p>A dictionary with <code class="docutils literal notranslate"><span class="pre">yi</span></code> values and <code class="docutils literal notranslate"><span class="pre">yiDer</span></code> first derivatives. With <code class="docutils literal notranslate"><span class="pre">-coeffs</span></code>, the dictionary also
+contains <code class="docutils literal notranslate"><span class="pre">coeffs</span></code>, a nested dictionary with keys <code class="docutils literal notranslate"><span class="pre">b</span></code>, <code class="docutils literal notranslate"><span class="pre">c</span></code>, and <code class="docutils literal notranslate"><span class="pre">d</span></code>. Each numeric array is a Tcl list by
+default or an RBC vector name with <code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">vector</span></code>.</p>
 </section>
 <section id="lin1d">
-<span id="r-3a3atclinterp3a3ainterpolation3a3alin1d"></span><span id="index-13"></span><span id="index-12"></span><h3><code class="docutils literal notranslate"><span class="pre">lin1d</span></code><a class="headerlink" href="#lin1d" title="Link to this heading">¶</a></h3>
-<p>Does linear one-dimensional interpolation.</p>
-<pre class="literal-block"><strong>lin1d</strong> <em>-x list -y list -xi list</em></pre>
+<span id="r-symbolqz3a3atclinterp3a3ainterpolation3a3alin1d"></span><span id="index-13"></span><span id="index-12"></span><h3><code class="docutils literal notranslate"><span class="pre">lin1d</span></code><a class="headerlink" href="#lin1d" title="Link to this heading">¶</a></h3>
+<p>Performs linear one-dimensional interpolation.</p>
+<pre class="literal-block"><strong>lin1d</strong> <em>-x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?</em></pre>
 <p class="rubric">Parameters</p>
 <dl class="field-list simple">
-<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of independent variable (x) values, must be strictly increasing.</p>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error|replace</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
 </dd>
-<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-xi</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>List of independent variable interpolation (xi) values.</p>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to list.</p>
 </dd>
-<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of dependent variable (y) values.</p>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-name</span> <span class="pre">name</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Destination vector name for yi; requires -output vector. Omit it or use #auto to create an automatically named vector.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-names</span> <span class="pre">dictionary</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary mapping output fields to destination vector names; requires -output vector. Valid fields: <code class="docutils literal notranslate"><span class="pre">yi</span></code>.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Output representation for every numeric result array: Tcl list or RBC vector name. Defaults to list; independent of -input.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Strictly increasing sample positions; at least two values.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-xi</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Evaluation positions; must not be empty.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Sample values; must have the same length as -x.</p>
 </dd>
 </dl>
+<p class="rubric">Description</p>
+<p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
+ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+vectors.</p>
+<p>Vector names resolve in the caller’s namespace; destination namespaces must already exist. Each unnamed
+output, including fields omitted from -names, is created with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">create</span> <span class="pre">#auto</span></code>. Returned
+vector names are fully qualified.</p>
+<p>Do not specify both -name and the <code class="docutils literal notranslate"><span class="pre">yi</span></code> entry of -names. Unknown output fields and duplicate destinations
+are errors. The caller owns returned vectors and can release them with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">destroy</span>
+<span class="pre">$vectorName</span></code>.</p>
 <p class="rubric">Return value</p>
-<p>list of interpolated dependent variable values, <code class="docutils literal notranslate"><span class="pre">yi</span></code>, at <code class="docutils literal notranslate"><span class="pre">xi</span></code></p>
+<p>The interpolated values <code class="docutils literal notranslate"><span class="pre">yi</span></code>, as a Tcl list by default or an RBC vector name with <code class="docutils literal notranslate"><span class="pre">-output</span>
+<span class="pre">vector</span></code>.</p>
 </section>
 <section id="near1d">
-<span id="r-3a3atclinterp3a3ainterpolation3a3anear1d"></span><span id="index-15"></span><span id="index-14"></span><h3><code class="docutils literal notranslate"><span class="pre">near1d</span></code><a class="headerlink" href="#near1d" title="Link to this heading">¶</a></h3>
-<p>Does nearest one-dimensional interpolation.</p>
-<pre class="literal-block"><strong>near1d</strong> <em>-x list -y list -xi list</em></pre>
+<span id="r-symbolqz3a3atclinterp3a3ainterpolation3a3anear1d"></span><span id="index-15"></span><span id="index-14"></span><h3><code class="docutils literal notranslate"><span class="pre">near1d</span></code><a class="headerlink" href="#near1d" title="Link to this heading">¶</a></h3>
+<p>Performs nearest-neighbor one-dimensional interpolation.</p>
+<pre class="literal-block"><strong>near1d</strong> <em>-x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?</em></pre>
 <p class="rubric">Parameters</p>
 <dl class="field-list simple">
-<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of independent variable (x) values.</p>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error|replace</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
 </dd>
-<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-xi</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>List of independent variable interpolation (xi) values.</p>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to list.</p>
 </dd>
-<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of dependent variable (y) values.</p>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-name</span> <span class="pre">name</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Destination vector name for yi; requires -output vector. Omit it or use #auto to create an automatically named vector.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-names</span> <span class="pre">dictionary</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary mapping output fields to destination vector names; requires -output vector. Valid fields: <code class="docutils literal notranslate"><span class="pre">yi</span></code>.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Output representation for every numeric result array: Tcl list or RBC vector name. Defaults to list; independent of -input.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Sample positions; at least one value.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-xi</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Evaluation positions; must not be empty.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Sample values; must have the same length as -x.</p>
 </dd>
 </dl>
+<p class="rubric">Description</p>
+<p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
+ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+vectors.</p>
+<p>Vector names resolve in the caller’s namespace; destination namespaces must already exist. Each unnamed
+output, including fields omitted from -names, is created with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">create</span> <span class="pre">#auto</span></code>. Returned
+vector names are fully qualified.</p>
+<p>Do not specify both -name and the <code class="docutils literal notranslate"><span class="pre">yi</span></code> entry of -names. Unknown output fields and duplicate destinations
+are errors. The caller owns returned vectors and can release them with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">destroy</span>
+<span class="pre">$vectorName</span></code>.</p>
 <p class="rubric">Return value</p>
-<p>list of interpolated dependent variable values, <code class="docutils literal notranslate"><span class="pre">yi</span></code>, at <code class="docutils literal notranslate"><span class="pre">xi</span></code></p>
+<p>The interpolated values <code class="docutils literal notranslate"><span class="pre">yi</span></code>, as a Tcl list by default or an RBC vector name with <code class="docutils literal notranslate"><span class="pre">-output</span>
+<span class="pre">vector</span></code>.</p>
 </section>
 <section id="pchip1d">
-<span id="r-3a3atclinterp3a3ainterpolation3a3apchip1d"></span><span id="index-17"></span><span id="index-16"></span><h3><code class="docutils literal notranslate"><span class="pre">pchip1d</span></code><a class="headerlink" href="#pchip1d" title="Link to this heading">¶</a></h3>
-<p>Does piecewise cubic Hermite interpolation (PCHIP).</p>
-<pre class="literal-block"><strong>pchip1d</strong> <em>-x list -f|y list -xe|xi list</em></pre>
+<span id="r-symbolqz3a3atclinterp3a3ainterpolation3a3apchip1d"></span><span id="index-17"></span><span id="index-16"></span><h3><code class="docutils literal notranslate"><span class="pre">pchip1d</span></code><a class="headerlink" href="#pchip1d" title="Link to this heading">¶</a></h3>
+<p>Performs piecewise cubic Hermite interpolation (PCHIP).</p>
+<pre class="literal-block"><strong>pchip1d</strong> <em>-x values -f values -xe values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?</em></pre>
 <p class="rubric">Parameters</p>
 <dl class="field-list simple">
-<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of dependent variable (f) values, -y is an alias.</p>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sample values; same length as -x. Alias: -y.</p>
 </dd>
-<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>List of independent variable (x) values, must be strictly increasing.</p>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error|replace</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
 </dd>
-<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-xe</span> <span class="pre">list</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of independent variable interpolation (xe) values, -xi is an alias.</p>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to list.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-name</span> <span class="pre">name</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Destination vector name for yi; requires -output vector. Omit it or use #auto to create an automatically named vector.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-names</span> <span class="pre">dictionary</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary mapping output fields to destination vector names; requires -output vector. Valid fields: <code class="docutils literal notranslate"><span class="pre">yi</span></code>.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Output representation for every numeric result array: Tcl list or RBC vector name. Defaults to list; independent of -input.</p>
+</dd>
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Strictly increasing sample positions; at least two values.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-xe</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Evaluation positions; must not be empty. Alias: -xi.</p>
 </dd>
 </dl>
+<p class="rubric">Description</p>
+<p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
+ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+vectors.</p>
+<p>Vector names resolve in the caller’s namespace; destination namespaces must already exist. Each unnamed
+output, including fields omitted from -names, is created with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">create</span> <span class="pre">#auto</span></code>. Returned
+vector names are fully qualified.</p>
+<p>Do not specify both -name and the <code class="docutils literal notranslate"><span class="pre">yi</span></code> entry of -names. Unknown output fields and duplicate destinations
+are errors. The caller owns returned vectors and can release them with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">destroy</span>
+<span class="pre">$vectorName</span></code>.</p>
 <p class="rubric">Return value</p>
-<p>list of interpolated dependent variable values.</p>
+<p>The interpolated values <code class="docutils literal notranslate"><span class="pre">yi</span></code>, as a Tcl list by default or an RBC vector name with <code class="docutils literal notranslate"><span class="pre">-output</span>
+<span class="pre">vector</span></code>.</p>
 <hr class="docutils" />
 <p class="centered">
 <strong>Copyright (c) George Yashin</strong></p></section>

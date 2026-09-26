@@ -165,6 +165,8 @@ tclinterp(n) - package's main page
 .br
 tclinterp-examples(n) - examples of usage with detailed explanations
 .br
+tclinterp-rbcbindings(n) - description of RBC vectors support
+.br
 .sp 1
 Public commands documentation:
 .br

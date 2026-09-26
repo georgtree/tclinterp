@@ -16,7 +16,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="::tclinterp::approximation" href="tclinterp-tclinterp-approximation.html" />
-    <link rel="prev" title="Content" href="tclinterp.html" /> 
+    <link rel="prev" title="Native bindings and RBC vectors" href="tclinterp-rbcBindings.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
@@ -28,7 +28,7 @@
           <a href="tclinterp-tclinterp-approximation.html" title="::tclinterp::approximation"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="tclinterp.html" title="Content"
+          <a href="tclinterp-rbcBindings.html" title="Native bindings and RBC vectors"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">tclinterp  documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Examples</a></li> 
@@ -41,7 +41,7 @@
           <div class="body" role="main">
             
   <section id="examples">
-<span id="r-examples"></span><span id="r-3a3aexamples"></span><h1>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h1>
+<span id="r-examples"></span><span id="r-namespaceqz3a3aexamples"></span><h1>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h1>
 <p>This section contains examples of usage of interpolation/approximation procedures of the package.
 List of availible examples:</p>
 <ul class="simple">
@@ -50,7 +50,7 @@ List of availible examples:</p>
 <section id="d-linear-and-nearest-interpolation">
 <span id="r-examples-1d-linear-and-nearest-interpolation"></span><span id="r-3a3aexamplesqz1d20linear20and20nearest20interpolation"></span><h2>1D Linear and nearest interpolation<a class="headerlink" href="#d-linear-and-nearest-interpolation" title="Link to this heading">¶</a></h2>
 <p>The two most basic types of interpolation are linear and nearest ones. These types are availible with procedures
-<a class="reference internal" href="tclinterp-tclinterp-interpolation.html#r-3a3atclinterp3a3ainterpolation3a3alin1d"><span class="std std-ref">::tclinterp::interpolation::lin1d</span></a> and <a class="reference internal" href="tclinterp-tclinterp-interpolation.html#r-3a3atclinterp3a3ainterpolation3a3anear1d"><span class="std std-ref">::tclinterp::interpolation::near1d</span></a>.
+<a class="reference internal" href="tclinterp-tclinterp-interpolation.html#r-symbolqz3a3atclinterp3a3ainterpolation3a3alin1d"><span class="std std-ref">::tclinterp::interpolation::lin1d</span></a> and <a class="reference internal" href="tclinterp-tclinterp-interpolation.html#r-symbolqz3a3atclinterp3a3ainterpolation3a3anear1d"><span class="std std-ref">::tclinterp::interpolation::near1d</span></a>.
 To demonstrate both type we use shifted sinusoidal function:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>f(x) = sin(10 ⋅ x) + 1.1
 </pre></div>
@@ -102,13 +102,13 @@ rel.err = ──────────────── ⋅ 100%
 <div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="k">set</span><span class="w"> </span>xydata<span class="w"> </span><span class="k">[</span><span class="nv">lmap</span><span class="w"> </span>xi<span class="w"> </span><span class="nv">$x</span><span class="w"> </span>yi<span class="w"> </span><span class="nv">$y</span><span class="w"> </span><span class="k">{</span><span class="nb">list</span><span class="w"> </span><span class="nv">$xi</span><span class="w"> </span><span class="nv">$yi</span><span class="k">}]</span>
 </pre></div>
 </div>
-<p>Call interpolation function <a class="reference internal" href="tclinterp-tclinterp-interpolation.html#r-3a3atclinterp3a3ainterpolation3a3alin1d"><span class="std std-ref">::tclinterp::interpolation::lin1d</span></a> that returns list of interpolated y values, and
+<p>Call interpolation function <a class="reference internal" href="tclinterp-tclinterp-interpolation.html#r-symbolqz3a3atclinterp3a3ainterpolation3a3alin1d"><span class="std std-ref">::tclinterp::interpolation::lin1d</span></a> that returns list of interpolated y values, and
 zip <code class="docutils literal notranslate"><span class="pre">xi</span></code> and <code class="docutils literal notranslate"><span class="pre">yInterpLin</span></code> points:</p>
 <div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="k">set</span><span class="w"> </span>yInterpLin<span class="w"> </span><span class="k">[</span><span class="nv">lin1d</span><span class="w"> </span><span class="o">-</span>x<span class="w"> </span><span class="nv">$x</span><span class="w"> </span><span class="o">-</span>y<span class="w"> </span><span class="nv">$y</span><span class="w"> </span><span class="o">-</span>xi<span class="w"> </span><span class="nv">$xInterp</span><span class="k">]</span>
 <span class="k">set</span><span class="w"> </span>xydataInterpLin<span class="w"> </span><span class="k">[</span><span class="nv">lmap</span><span class="w"> </span>xi<span class="w"> </span><span class="nv">$xInterp</span><span class="w"> </span>yi<span class="w"> </span><span class="nv">$yInterpLin</span><span class="w"> </span><span class="k">{</span><span class="nb">list</span><span class="w"> </span><span class="nv">$xi</span><span class="w"> </span><span class="nv">$yi</span><span class="k">}]</span>
 </pre></div>
 </div>
-<p>Do the same for <a class="reference internal" href="tclinterp-tclinterp-interpolation.html#r-3a3atclinterp3a3ainterpolation3a3anear1d"><span class="std std-ref">::tclinterp::interpolation::near1d</span></a>:</p>
+<p>Do the same for <a class="reference internal" href="tclinterp-tclinterp-interpolation.html#r-symbolqz3a3atclinterp3a3ainterpolation3a3anear1d"><span class="std std-ref">::tclinterp::interpolation::near1d</span></a>:</p>
 <div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="k">set</span><span class="w"> </span>yInterpNear<span class="w"> </span><span class="k">[</span><span class="nv">near1d</span><span class="w"> </span><span class="o">-</span>x<span class="w"> </span><span class="nv">$x</span><span class="w"> </span><span class="o">-</span>y<span class="w"> </span><span class="nv">$y</span><span class="w"> </span><span class="o">-</span>xi<span class="w"> </span><span class="nv">$xInterp</span><span class="k">]</span>
 <span class="k">set</span><span class="w"> </span>xydataInterpNear<span class="w"> </span><span class="k">[</span><span class="nv">lmap</span><span class="w"> </span>xi<span class="w"> </span><span class="nv">$xInterp</span><span class="w"> </span>yi<span class="w"> </span><span class="nv">$yInterpNear</span><span class="w"> </span><span class="k">{</span><span class="nb">list</span><span class="w"> </span><span class="nv">$xi</span><span class="w"> </span><span class="nv">$yi</span><span class="k">}]</span>
 </pre></div>
@@ -2766,8 +2766,8 @@ zip <code class="docutils literal notranslate"><span class="pre">xi</span></code
   </div>
   <div>
     <h4>Previous topic</h4>
-    <p class="topless"><a href="tclinterp.html"
-                          title="previous chapter">Content</a></p>
+    <p class="topless"><a href="tclinterp-rbcBindings.html"
+                          title="previous chapter">Native bindings and RBC vectors</a></p>
   </div>
   <div>
     <h4>Next topic</h4>
@@ -2805,7 +2805,7 @@ zip <code class="docutils literal notranslate"><span class="pre">xi</span></code
           <a href="tclinterp-tclinterp-approximation.html" title="::tclinterp::approximation"
              >next</a> |</li>
         <li class="right" >
-          <a href="tclinterp.html" title="Content"
+          <a href="tclinterp-rbcBindings.html" title="Native bindings and RBC vectors"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">tclinterp  documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Examples</a></li> 

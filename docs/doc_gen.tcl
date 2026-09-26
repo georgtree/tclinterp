@@ -4,6 +4,7 @@ package require fileutil
 set docDir [file dirname [file normalize [info script]]]
 set sourceDir "${docDir}/../"
 source [file join $docDir startPage.ruff]
+source [file join $docDir rbcBindings.ruff]
 source [file join $docDir examples.ruff]
 source [file join $sourceDir tclinterp.tcl]
 
@@ -21,7 +22,7 @@ set commonNroff [list -title $title -sortnamespaces false -preamble $startPage -
                          -pagesplit namespace -autopunctuate true -compact false -includeprivate false\
                          -excludeprocs {^[A-Z].*} -product tclinterp -diagrammer "ditaa --border-width 1"\
                          -version $packageVersion -copyright "George Yashin" {*}$::argv]
-set namespaces [list Examples ::tclinterp::approximation ::tclinterp::interpolation]
+set namespaces [list rbcBindings Examples ::tclinterp::approximation ::tclinterp::interpolation]
 
 ruff::document $namespaces -format sphinx -outfile tclinterp.rst -outdir [file join $docDir sphinx] {*}$commonSphinx
 ruff::document $namespaces -format nroff -outdir $docDir -outfile tclinterp.n {*}$commonNroff
@@ -70,7 +71,7 @@ foreach file [glob -directory $docDir *.n] {
     file rename $old $tmp
     file rename $tmp $new
 }
-set specialPages [list tclinterp-examples]
+set specialPages [list tclinterp-examples tclinterp-rbcbindings]
 foreach namespacePath $namespaces {
     set tails [list]
     while {$namespacePath ne {}} {
@@ -90,6 +91,8 @@ set linksString ".SH SEE ALSO
 tclinterp(n) - package's main page
 .br
 tclinterp-examples(n) - examples of usage with detailed explanations
+.br
+tclinterp-rbcbindings(n) - description of RBC vectors support
 .br
 .sp 1
 Public commands documentation:

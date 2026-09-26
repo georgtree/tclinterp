@@ -11,688 +11,788 @@ namespace eval ::tclinterp {
     }
 }
 
-proc ::tclinterp::List2array {list} {
-    # Create and initialize doubleArray object from the list
-    #  list - list of values
-    # Returns: array object
-    set length [llength $list]
-    set a [::tclinterp::new_doubleArray $length]
-    for {set i 0} {$i<$length} {incr i} {
-        set iElem [lindex $list $i]
-        try {
-            ::tclinterp::doubleArray_setitem $a $i $iElem
-        } on error {errmsg erropts} {
-            if {[dict get $erropts -errorcode] eq {SWIG TypeError}} {
-                error "List must contains only double elements, but get '$iElem'"
-            } else {
-                error "Array creation failed with message '$errmsg' and opts '$erropts'"
-            }
-        }    
-    }
-    return $a
-}
-
-proc ::tclinterp::Lists2arrays {varNames lists} {
-    # Create and initialize doubleArray objects from lists, and set these objects to variables
-    #  varNames - list of variables names
-    #  lists - list of lists
-    # Returns: variables with doubleArray objects are set in caller's scope
-    if {[llength $varNames]!=[llength $lists]} {
-        error "Length of varName list '[llength $varNames]' must be equal to length of lists list '[llength $lists]'"
-    }
-    foreach varName $varNames list $lists {
-        uplevel 1 [list set $varName [::tclinterp::List2array $list]]
-    }
-    return
-}
-
-proc ::tclinterp::Array2list {array length} {
-    # Create list from doubleArray object
-    #  array - doubleArray object
-    #  length - number of elements in doubleArray
-    # Returns: list
-    for {set i 0} {$i<$length} {incr i} {
-        lappend list [::tclinterp::doubleArray_getitem $array $i]
-    }
-    return $list
-}
-
-proc ::tclinterp::Arrays2lists {varNames arrays lengths} {
-    # Create lists from doubleArray objects, and set these lists to variables
-    #  varNames - list of variables names
-    #  arrays - list of doubleArray
-    #  lengths - list of doubleArray lengths
-    # Returns: variables with lists are set in caller's scope
-    if {[llength $varNames]!=[llength $arrays]} {
-        error "Length of varName list '[llength $varNames]' must be equal to length of array list '[llength $arrays]'"
-    } elseif {[llength $varNames]!=[llength $lengths]} {
-        error "Length of varName list '[llength $varNames]' must be equal to length of lengths list\
-                '[llength $lengths]'"
-    }
-    foreach varName $varNames array $arrays length $lengths {
-        uplevel 1 [list set $varName [::tclinterp::Array2list $array $length]]
-    }
-    return
-}
-
-proc ::tclinterp::NewArrays {varNames lengths} {
-    # Creates doubleArray objects, and set these objects to variables
-    #  varNames - list of variables names
-    #  lengths - list of doubleArray's lengths
-    # Returns: variables with doubleArray objects are set in caller's scope
-    if {[llength $varNames]!=[llength $lengths]} {
-        error "Length of varName list '[llength $varNames]' must be equal to length of lengths list\
-                '[llength $lengths]'"
-    }
-    foreach varName $varNames length $lengths {
-        uplevel 1 [list set $varName [::tclinterp::new_doubleArray $length]]
-    }
-    return
-}
-
-proc ::tclinterp::NewDoubleps {varNames} {
-    # Creates doubleps objects, and set these objects to variables
-    #  varNames - list of variables names
-    # Returns: variables with doubleps objects are set in caller's scope
-    foreach varName $varNames {
-        uplevel 1 [list set $varName [::tclinterp::new_doublep]]
-    }
-    return
-}
-
-
-proc ::tclinterp::DeleteArrays {args} {
-    # Deletes doubleArray objects
-    #  args - list of arrays objects
-    foreach arg $args {
-        ::tclinterp::delete_doubleArray $arg
-    }
-    return
-}
-
-proc ::tclinterp::DeleteDoubleps {args} {
-    # Deletes doublep objects
-    #  args - list of doublep objects
-    foreach arg $args {
-        ::tclinterp::delete_doublep $arg
-    }
-    return
-}
-
-proc ::tclinterp::DuplListCheck {list} {
-    # Checks if list contains duplicates.
-    #  list - list to check
-    # Returns: false if there are no duplicates and true if there are.
-    set flag false
-    set new {}
-    foreach item $list {
-        if {[lsearch $new $item] < 0} {
-            lappend new $item
-        } else {
-            set flag true
-            break
-        }
-    }
-    return $flag
-}
-
 proc ::tclinterp::interpolation::lin1d {args} {
-    # Does linear one-dimensional interpolation.
-    #  -x list - list of independent variable (x) values, must be strictly increasing
-    #  -y list - list of dependent variable (y) values
-    #  -xi list - list of independent variable interpolation (xi) values
-    # Returns: list of interpolated dependent variable values, `yi`, at `xi`
-    # Synopsis: -x list -y list -xi list
-    argparse -help {Does linear one-dimensional interpolation. Returns: list of interpolated dependent variable values,\
-                            'yi', at 'xi'} {
-        {-x!= -help {List of independent variable (x) values, must be strictly increasing}}
-        {-y!= -help {List of dependent variable (y) values}}
-        {-xi!= -help {list of independent variable interpolation (xi) values}}
-    }
-    set xLen [llength $x]
-    set yLen [llength $y]
-    set xiLen [llength $xi]
-    if {$xLen!=$yLen} {
-        return -code error "Length of -y '$yLen' must be equal to length of -x '$xLen'"
-    } elseif {$xiLen==0} {
-        return -code error {Length of interpolation points list -xi must be more than zero}
-    }
-    ::tclinterp::Lists2arrays {xArray yArray xiArray} [list $x $y $xi]
-    if {![::tclinterp::r8vec_ascends_strictly $xLen $xArray]} {
-        return -code error {Independent variable array -x is not strictly increasing}
-    }
-    set yiArray [::tclinterp::interp_linear 1 $xLen $xArray $yArray $xiLen $xiArray]
-    set yiList [::tclinterp::Array2list $yiArray $xiLen]
-    ::tclinterp::DeleteArrays $xArray $yArray $xiArray $yiArray
-    return $yiList
+    # Performs linear one-dimensional interpolation.
+    #  -x values - Strictly increasing sample positions; at least two values.
+    #  -y values - Sample values; must have the same length as -x.
+    #  -xi values - Evaluation positions; must not be empty.
+    #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
+    #    Defaults to list.
+    #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
+    #    Defaults to list; independent of -input.
+    #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
+    #    automatically named vector.
+    #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
+    #    vector. Valid fields: `yi`.
+    #  -ifexists error|replace - Policy for existing destination vectors; defaults to error. With replace, an
+    #    existing real vector is resized and overwritten.
+    #
+    # Every array argument marked `values` uses the representation selected by -input. Scalar options remain
+    # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+    # vectors.
+    #
+    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
+    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
+    # vector names are fully qualified.
+    #
+    # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
+    # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
+    # $vectorName`.
+    #
+    # Returns: The interpolated values `yi`, as a Tcl list by default or an RBC vector name with `-output
+    # vector`.
+    #
+    # Synopsis: -x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-name name? ?-names
+    #   dictionary? ?-ifexists error|replace?
+    set arguments [argparse -inline -help {Performs linear one-dimensional interpolation. Returns: The interpolated\
+                                                   values yi, as a Tcl list by default or an RBC vector name with\
+                                                   -output vector} {
+        {-x!= -help {Strictly increasing sample positions; at least two values}}
+        {-y!= -help {Sample values; must have the same length as -x}}
+        {-xi!= -help {Evaluation positions; must not be empty}}
+        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
+                                                                  real RBC vector names. Defaults to list}}
+        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
+                                                                   list or RBC vector name. Defaults to list;\
+                                                                   independent of -input}}
+        {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
+                            automatically named vector}}
+        {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
+                                           vector. Valid fields: yi}}
+        {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\
+                                                                        error. With replace, an existing real vector is\
+                                                                        resized and overwritten}}
+    }]
+    return [uplevel 1 [list ::tclinterp::native lin1d $arguments]]
 }
 
 proc ::tclinterp::interpolation::near1d {args} {
-    # Does nearest one-dimensional interpolation.
-    #  -x list - list of independent variable (x) values
-    #  -y list - list of dependent variable (y) values
-    #  -xi list - list of independent variable interpolation (xi) values
-    # Returns: list of interpolated dependent variable values, `yi`, at `xi`
-    # Synopsis: -x list -y list -xi list
-    argparse -help {Does nearest one-dimensional interpolation. Returns: list of interpolated dependent variable\
-                            values, 'yi', at 'xi'} {
-        {-x= -required -help {List of independent variable (x) values, must be strictly increasing}}
-        {-y= -required -help {List of dependent variable (y) values}}
-        {-xi= -required -help {list of independent variable interpolation (xi) values}}
-    }
-    set xLen [llength $x]
-    set yLen [llength $y]
-    set xiLen [llength $xi]
-    if {$xLen!=$yLen} {
-        return -code error "Length of -y '$yLen' must be equal to length of -x '$xLen'"
-    } elseif {$xiLen==0} {
-        return -code error {Length of interpolation points list -xi must be more than zero}
-    }
-    ::tclinterp::Lists2arrays {xArray yArray xiArray} [list $x $y $xi]
-    set yiArray [::tclinterp::interp_nearest 1 $xLen $xArray $yArray $xiLen $xiArray]
-    set yiList [::tclinterp::Array2list $yiArray $xiLen]
-    ::tclinterp::DeleteArrays $xArray $yArray $xiArray $yiArray
-    return $yiList
+    # Performs nearest-neighbor one-dimensional interpolation.
+    #  -x values - Sample positions; at least one value.
+    #  -y values - Sample values; must have the same length as -x.
+    #  -xi values - Evaluation positions; must not be empty.
+    #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
+    #    Defaults to list.
+    #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
+    #    Defaults to list; independent of -input.
+    #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
+    #    automatically named vector.
+    #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
+    #    vector. Valid fields: `yi`.
+    #  -ifexists error|replace - Policy for existing destination vectors; defaults to error. With replace, an
+    #    existing real vector is resized and overwritten.
+    #
+    # Every array argument marked `values` uses the representation selected by -input. Scalar options remain
+    # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+    # vectors.
+    #
+    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
+    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
+    # vector names are fully qualified.
+    #
+    # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
+    # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
+    # $vectorName`.
+    #
+    # Returns: The interpolated values `yi`, as a Tcl list by default or an RBC vector name with `-output
+    # vector`.
+    #
+    # Synopsis: -x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-name name? ?-names
+    #   dictionary? ?-ifexists error|replace?
+    set arguments [argparse -inline -help {Performs nearest-neighbor one-dimensional interpolation. Returns: The\
+                                                   interpolated values yi, as a Tcl list by default or an RBC vector\
+                                                   name with -output vector} {
+        {-x= -required -help {Sample positions; at least one value}}
+        {-y= -required -help {Sample values; must have the same length as -x}}
+        {-xi= -required -help {Evaluation positions; must not be empty}}
+        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
+                                                                  real RBC vector names. Defaults to list}}
+        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
+                                                                   list or RBC vector name. Defaults to list;\
+                                                                   independent of -input}}
+        {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
+                            automatically named vector}}
+        {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
+                                           vector. Valid fields: yi}}
+        {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\
+                                                                        error. With replace, an existing real vector is\
+                                                                        resized and overwritten}}
+    }]
+    return [uplevel 1 [list ::tclinterp::native near1d $arguments]]
 }
 
 proc ::tclinterp::interpolation::lagr1d {args} {
-    # Does Lagrange polynomial one-dimensional interpolation.
-    #  -x list - list of independent variable (x) values
-    #  -y list - list of dependent variable (y) values
-    #  -xi list - list of independent variable interpolation (xi) values
-    # Returns: list of interpolated dependent variable values, `yi`, at `xi`
-    # Synopsis: -x list -y list -xi list
-    argparse -help {Does Lagrange polynomial one-dimensional interpolation. Returns: list of interpolated dependent\
-                            variable values, 'yi', at 'xi'} {
-        {-x= -required -help {List of independent variable (x) values, must be strictly increasing}}
-        {-y= -required -help {List of dependent variable (y) values}}
-        {-xi= -required -help {list of independent variable interpolation (xi) values}}
-    }
-    set xLen [llength $x]
-    set yLen [llength $y]
-    set xiLen [llength $xi]
-    if {$xLen!=$yLen} {
-        return -code error "Length of -y '$yLen' must be equal to length of -x '$xLen'"
-    } elseif {$xiLen==0} {
-        return -code error {Length of interpolation points list -xi must be more than zero}
-    }
-    ::tclinterp::Lists2arrays {xArray yArray xiArray} [list $x $y $xi]
-    set yiArray [::tclinterp::interp_lagrange 1 $xLen $xArray $yArray $xiLen $xiArray]
-    set yiList [::tclinterp::Array2list $yiArray $xiLen]
-    ::tclinterp::DeleteArrays $xArray $yArray $xiArray $yiArray
-    return $yiList
+    # Performs Lagrange polynomial one-dimensional interpolation.
+    #  -x values - Distinct sample positions; at least one value.
+    #  -y values - Sample values; must have the same length as -x.
+    #  -xi values - Evaluation positions; must not be empty.
+    #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
+    #    Defaults to list.
+    #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
+    #    Defaults to list; independent of -input.
+    #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
+    #    automatically named vector.
+    #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
+    #    vector. Valid fields: `yi`.
+    #  -ifexists error|replace - Policy for existing destination vectors; defaults to error. With replace, an
+    #    existing real vector is resized and overwritten.
+    #
+    # Every array argument marked `values` uses the representation selected by -input. Scalar options remain
+    # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+    # vectors.
+    #
+    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
+    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
+    # vector names are fully qualified.
+    #
+    # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
+    # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
+    # $vectorName`.
+    #
+    # Returns: The interpolated values `yi`, as a Tcl list by default or an RBC vector name with `-output
+    # vector`.
+    #
+    # Synopsis: -x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-name name? ?-names
+    #   dictionary? ?-ifexists error|replace?
+    set arguments [argparse -inline -help {Performs Lagrange polynomial one-dimensional interpolation. Returns: The\
+                                                   interpolated values yi, as a Tcl list by default or an RBC vector\
+                                                   name with -output vector} {
+        {-x= -required -help {Distinct sample positions; at least one value}}
+        {-y= -required -help {Sample values; must have the same length as -x}}
+        {-xi= -required -help {Evaluation positions; must not be empty}}
+        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
+                                                                  real RBC vector names. Defaults to list}}
+        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
+                                                                   list or RBC vector name. Defaults to list;\
+                                                                   independent of -input}}
+        {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
+                            automatically named vector}}
+        {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
+                                           vector. Valid fields: yi}}
+        {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\
+                                                                        error. With replace, an existing real vector is\
+                                                                        resized and overwritten}}
+    }]
+    return [uplevel 1 [list ::tclinterp::native lagr1d $arguments]]
 }
 
 proc ::tclinterp::interpolation::least1d {args} {
-    # Does least squares polynomial one-dimensional interpolation.
-    #  -x list - list of independent variable (x) values
-    #  -y list - list of dependent variable (y) values
-    #  -xi list - list of independent variable interpolation (xi) values
-    #  -w list - list of weights, optional
-    #  -nterms value - number of terms of interpolation polynom, default is 3
-    #  -coeffs - selects the alternative output option
-    # Returns: list of interpolated dependent variable values, `yi`, at `xi`. If `-coeffs` switch is in args, the output
-    # is dictionary that contains `yi` values under `yi` key, and the values of interpolation polynom coefficients under
-    # the keys `b`, `c` and `d`.
-    # Synopsis: -x list -y list -xi list ?-w list? ?-nterms value? ?-coeffs?
-    argparse -help {Does least squares polynomial one-dimensional interpolation. Returns: list of interpolated\
-                            dependent variable values, 'yi', at 'xi'. If '-coeffs' switch is in args, the output is\
-                            dictionary that contains 'yi' values under 'yi' key, and the values of interpolation\
-                            polynom coefficients under the keys 'b', 'c' and 'd'} {
-        {-x= -required -help {List of independent variable (x) values}}
-        {-y= -required -help {List of dependent variable (y) values}}
-        {-xi= -required -help {List of independent variable interpolation (xi) values}}
-        {-w= -help {List of weights}}
+    # Fits a least-squares polynomial.
+    #  -x values - Sample positions; at least one value.
+    #  -y values - Sample values; must have the same length as -x.
+    #  -xi values - Evaluation positions; must not be empty.
+    #  -w values - Optional positive weights; same length as -x. Defaults to all ones.
+    #  -nterms integer - Number of polynomial terms; defaults to 3. Must be positive and no greater than the
+    #    number of distinct sample positions.
+    #  -coeffs - Include polynomial coefficient arrays in the result dictionary.
+    #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
+    #    Defaults to list.
+    #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
+    #    Defaults to list; independent of -input.
+    #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
+    #    automatically named vector.
+    #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
+    #    vector. Valid fields: `yi`, and, only with -coeffs, `coeffs.b`, `coeffs.c`, `coeffs.d`.
+    #  -ifexists error|replace - Policy for existing destination vectors; defaults to error. With replace, an
+    #    existing real vector is resized and overwritten.
+    #
+    # Every array argument marked `values` uses the representation selected by -input. Scalar options remain
+    # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+    # vectors.
+    #
+    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
+    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
+    # vector names are fully qualified.
+    #
+    # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
+    # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
+    # $vectorName`.
+    #
+    # Returns: The fitted values `yi`, or a dictionary containing `yi` when `-coeffs` is specified. With
+    # `-coeffs`, the dictionary also contains `coeffs`, a nested dictionary with keys `b`, `c`, and `d`. Each
+    # numeric array is a Tcl list by default or an RBC vector name with `-output vector`.
+    #
+    # Synopsis: -x values -y values -xi values ?-w values? ?-nterms integer? ?-coeffs? ?-input list|vector?
+    #   ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?
+    set arguments [argparse -inline -help {Fits a least-squares polynomial. Returns: The fitted values yi, or a\
+                                                   dictionary containing yi when -coeffs is specified. With -coeffs,\
+                                                   the dictionary also contains coeffs, a nested dictionary with keys\
+                                                   b, c, and d. Each numeric array is a Tcl list by default or an RBC\
+                                                   vector name with -output vector} {
+        {-x= -required -help {Sample positions; at least one value}}
+        {-y= -required -help {Sample values; must have the same length as -x}}
+        {-xi= -required -help {Evaluation positions; must not be empty}}
+        {-w= -help {Optional positive weights; same length as -x. Defaults to all ones}}
         {-nterms= -default 3 -type integer -validate {$arg>0}\
                  -errormsg {Number of terms -nterms must be more than zero}\
-                 -help {Number of terms of interpolation polynom}}
-        {-coeffs -help {Selects the alternative output option}}
-    }
-    set xLen [llength $x]
-    set yLen [llength $y]
-    if {[info exists w]} {
-        set wLen [llength $w]
-    } else {
-        set wLen [llength $x]
-        set w [lrepeat $wLen 1]
-    }
-    set xiLen [llength $xi]
-    if {$xLen!=$yLen} {
-        return -code error "Length of -y '$yLen' must be equal to length of -x '$xLen'"
-    } elseif {$xLen!=$wLen} {
-        return -code error "Length of -w '$wLen' must be equal to length of -x '$xLen'"
-    } elseif {$xiLen==0} {
-        return -code error {Length of interpolation points list -xi must be more than zero}
-    }
-    ::tclinterp::Lists2arrays {xArray yArray wArray xiArray} [list $x $y $w $xi]
-    ::tclinterp::NewArrays {b c d} [list $nterms $nterms $nterms]
-    # create polynomial coefficients for given data
-    ::tclinterp::least_set $xLen $xArray $yArray $wArray $nterms $b $c $d
-    # calculate polynomial value for each xi value
-    for {set i 0} {$i<$xiLen} {incr i} {
-        set iElem [::tclinterp::least_val $nterms $b $c $d [lindex $xi $i]]
-        lappend yiList $iElem
-    }
-    if {[info exists coeffs]} {
-        ::tclinterp::Arrays2lists {bList cList dList} [list $b $c $d] [list $nterms $nterms $nterms]
-        ::tclinterp::DeleteArrays $b $c $d $xArray $yArray $xiArray
-        return [dict create yi $yiList coeffs [dict create b $bList c $cList d $dList]]
-    } else {
-        ::tclinterp::DeleteArrays $b $c $d $xArray $yArray $xiArray
-        return $yiList
-    }
-    return
+                 -help {Number of polynomial terms; defaults to 3. Must be positive and no greater than the number of\
+                            distinct sample positions}}
+        {-coeffs -help {Include polynomial coefficient arrays in the result dictionary}}
+        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
+                                                                  real RBC vector names. Defaults to list}}
+        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
+                                                                   list or RBC vector name. Defaults to list;\
+                                                                   independent of -input}}
+        {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
+                            automatically named vector}}
+        {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
+                                           vector. Valid fields: yi}}
+        {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\
+                                                                        error. With replace, an existing real vector is\
+                                                                        resized and overwritten}}
+    }]
+    return [uplevel 1 [list ::tclinterp::native least1d $arguments]]
 }
 
 proc ::tclinterp::interpolation::least1dDer {args} {
-    # Does least squares polynomial one-dimensional interpolation with calculation of its derivative.
-    #  -x list - list of independent variable (x) values
-    #  -y list - list of dependent variable (y) values
-    #  -xi list - list of independent variable interpolation (xi) values
-    #  -w list - list of weights, optional
-    #  -nterms value - number of terms of interpolation polynom, default is 3
-    #  -coeffs - selects the alternative output option
-    # Returns: dict of interpolated dependent variable values and its derivatives under `yi` and `yiDer` keys. If
-    # `-coeffs` switch is in args, the output is dictionary that contains `yi` values under `yi` key, `yi` derivatives
-    # under `yiDer` key, and the values of interpolation polynom coefficients under the keys `b`, `c` and `d`.
-    # Synopsis: -x list -y list -xi list ?-w list? ?-nterms value? ?-coeffs?
-    argparse -help {Does least squares polynomial one-dimensional interpolation with calculation of its derivative.\
-                            Returns: dict of interpolated dependent variable values and its derivatives under 'yi' and\
-                            'yiDer' keys. If '-coeffs' switch is in args, the output is dictionary that contains 'yi'\
-                            values under 'yi' key, 'yi' derivatives under 'yiDer' key, and the values of interpolation\
-                            polynom coefficients under the keys 'b', 'c' and 'd'} {
-        {-x= -required -help {List of independent variable (x) values}}
-        {-y= -required -help {List of dependent variable (y) values}}
-        {-xi= -required -help {List of independent variable interpolation (xi) values}}
-        {-w= -help {List of weights}}
+    # Fits a least-squares polynomial and evaluates its first derivative.
+    #  -x values - Sample positions; at least one value.
+    #  -y values - Sample values; must have the same length as -x.
+    #  -xi values - Evaluation positions; must not be empty.
+    #  -w values - Optional positive weights; same length as -x. Defaults to all ones.
+    #  -nterms integer - Number of polynomial terms; defaults to 3. Must be positive and no greater than the
+    #    number of distinct sample positions.
+    #  -coeffs - Include polynomial coefficient arrays in the result dictionary.
+    #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
+    #    Defaults to list.
+    #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
+    #    Defaults to list; independent of -input.
+    #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
+    #    automatically named vector.
+    #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
+    #    vector. Valid fields: `yi`, `yiDer`, and, only with -coeffs, `coeffs.b`, `coeffs.c`, `coeffs.d`.
+    #  -ifexists error|replace - Policy for existing destination vectors; defaults to error. With replace, an
+    #    existing real vector is resized and overwritten.
+    #
+    # Every array argument marked `values` uses the representation selected by -input. Scalar options remain
+    # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+    # vectors.
+    #
+    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
+    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
+    # vector names are fully qualified.
+    #
+    # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
+    # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
+    # $vectorName`.
+    #
+    # Returns: A dictionary with `yi` values and `yiDer` first derivatives. With `-coeffs`, the dictionary also
+    # contains `coeffs`, a nested dictionary with keys `b`, `c`, and `d`. Each numeric array is a Tcl list by
+    # default or an RBC vector name with `-output vector`.
+    #
+    # Synopsis: -x values -y values -xi values ?-w values? ?-nterms integer? ?-coeffs? ?-input list|vector?
+    #   ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?
+    set arguments [argparse -inline -help {Fits a least-squares polynomial and evaluates its first derivative. Returns:\
+                                                   A dictionary with yi values and yiDer first derivatives. With\
+                                                   -coeffs, the dictionary also contains coeffs, a nested dictionary\
+                                                   with keys b, c, and d. Each numeric array is a Tcl list by default\
+                                                   or an RBC vector name with -output vector} {
+        {-x= -required -help {Sample positions; at least one value}}
+        {-y= -required -help {Sample values; must have the same length as -x}}
+        {-xi= -required -help {Evaluation positions; must not be empty}}
+        {-w= -help {Optional positive weights; same length as -x. Defaults to all ones}}
         {-nterms= -default 3 -type integer -validate {$arg>0}\
                  -errormsg {Number of terms -nterms must be more than zero}\
-                 -help {Number of terms of interpolation polynom}}
-        {-coeffs -help {Selects the alternative output option}}
-    }
-    set xLen [llength $x]
-    set yLen [llength $y]
-    if {[info exists w]} {
-        set wLen [llength $w]
-    } else {
-        set wLen [llength $x]
-        set w [lrepeat $wLen 1]
-    }
-    set xiLen [llength $xi]
-    if {$xLen!=$yLen} {
-        return -code error "Length of -y '$yLen' must be equal to length of -x '$xLen'"
-    } elseif {$xLen!=$wLen} {
-        return -code error "Length of -w '$wLen' must be equal to length of -x '$xLen'"
-    } elseif {$xiLen==0} {
-        return -code error {Length of interpolation points list -xi must be more than zero}
-    }
-    ::tclinterp::Lists2arrays {xArray yArray wArray xiArray} [list $x $y $w $xi]
-    ::tclinterp::NewArrays {b c d} [list $nterms $nterms $nterms]
-    ::tclinterp::NewDoubleps {yiPnt yiDerPnt}
-    # create polynomial coefficients for given data
-    ::tclinterp::least_set $xLen $xArray $yArray $wArray $nterms $b $c $d
-    # calculate polynomial value and derivative for each xi value
-    for {set i 0} {$i<$xiLen} {incr i} {
-        ::tclinterp::least_val2 $nterms $b $c $d [lindex $xi $i] $yiPnt $yiDerPnt
-        lappend yiList [::tclinterp::doublep_value $yiPnt]
-        lappend yiDerList [::tclinterp::doublep_value $yiDerPnt]
-    }
-    if {[info exists coeffs]} {
-        ::tclinterp::Arrays2lists {bList cList dList} [list $b $c $d] [list $nterms $nterms $nterms]
-        ::tclinterp::DeleteArrays $b $c $d $xArray $yArray $xiArray
-        ::tclinterp::DeleteDoubleps $yiPnt $yiDerPnt
-        return [dict create yi $yiList yiDer $yiDerList coeffs [dict create b $bList c $cList d $dList]]
-    } else {
-        ::tclinterp::DeleteArrays $b $c $d $xArray $yArray $xiArray
-        ::tclinterp::DeleteDoubleps $yiPnt $yiDerPnt
-        return [dict create yi $yiList yiDer $yiDerList]
-    }
-    return
+                 -help {Number of polynomial terms; defaults to 3. Must be positive and no greater than the number of\
+                            distinct sample positions}}
+        {-coeffs -help {Include polynomial coefficient arrays in the result dictionary}}
+        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
+                                                                  real RBC vector names. Defaults to list}}
+        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
+                                                                   list or RBC vector name. Defaults to list;\
+                                                                   independent of -input}}
+        {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
+                            automatically named vector}}
+        {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
+                                           vector. Valid fields: yi}}
+        {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\
+                                                                        error. With replace, an existing real vector is\
+                                                                        resized and overwritten}}
+    }]
+    return [uplevel 1 [list ::tclinterp::native least1dDer $arguments]]
 }
 
 proc ::tclinterp::approximation::genBezier {args} {
-    # Finds values of general Bezier function at specified t points.
-    #  -n value - order of Bezier function, must be zero or more
-    #  -x list - list of x control points values of size n+1
-    #  -y list - list of y control points values of size n+1
-    #  -t list - list of t points at which we want to evaluate Bezier function, best results are obtained within the interval
-    #   [0,1]
-    # Returns: dict with lists of xi and yi points at specified t points
-    # Synopsis: -n value -x list -y list -t list
-    argparse -help {Finds values of general Bezier function at specified t points. Returns: dict with lists of xi and\
-                            yi points at specified t points} {
-        {-n= -required -help {Order of Bezier function, must be zero or more} -type integer -validate {$arg>0}\
+    # Evaluates a parametric Bezier curve.
+    #  -n integer - Curve degree; must be zero or greater.
+    #  -x values - X control coordinates; exactly n+1 values.
+    #  -y values - Y control coordinates; exactly n+1 values.
+    #  -t values - Nonempty evaluation parameters; normally between 0 and 1.
+    #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
+    #    Defaults to list.
+    #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
+    #    Defaults to list; independent of -input.
+    #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
+    #    automatically named vector.
+    #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
+    #    vector. Valid fields: `xi`, `yi`.
+    #  -ifexists error|replace - Policy for existing destination vectors; defaults to error. With replace, an
+    #    existing real vector is resized and overwritten.
+    #
+    # Every array argument marked `values` uses the representation selected by -input. Scalar options remain
+    # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+    # vectors.
+    #
+    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
+    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
+    # vector names are fully qualified.
+    #
+    # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
+    # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
+    # $vectorName`.
+    #
+    # Returns: A dictionary with `xi` and `yi` coordinates. Each numeric array is a Tcl list by default or an
+    # RBC vector name with `-output vector`.
+    #
+    # Synopsis: -n integer -x values -y values -t values ?-input list|vector? ?-output list|vector? ?-name name?
+    #   ?-names dictionary? ?-ifexists error|replace?
+    set arguments [argparse -inline -help {Evaluates a parametric Bezier curve. Returns: A dictionary with xi and yi\
+                                                   coordinates. Each numeric array is a Tcl list by default or an RBC\
+                                                   vector name with -output vector} {
+        {-n= -required -help {Curve degree; must be zero or greater} -type integer -validate {$arg>=0}\
                  -errormsg {Order of Bezier curve -n '$arg' must be more than or equal to zero}}
-        {-x= -required -help {List of x control points values of size n+1}}
-        {-y= -required -help {List of y control points values of size n+1}}
-        {-t= -required -help {List of t points at which we want to evaluate Bezier function, best results are obtained\
-                                      within the interval [0,1]}}
-    }
-    set xLen [llength $x]
-    set yLen [llength $y]
-    set tLen [llength $t]
-    if {$xLen!=[expr {$n+1}]} {
-        return -code error "Length of -x '$xLen' must be equal to n+1=[expr {$n+1}]"
-    } elseif {$yLen!=[expr {$n+1}]} {
-        return -code error "Length of -y '$yLen' must be equal to n+1=[expr {$n+1}]"
-    } elseif {$tLen==0} {
-        return -code error {Length of points list -t must be more than zero}
-    }
-    ::tclinterp::Lists2arrays {xArray yArray} [list $x $y]
-    ::tclinterp::NewDoubleps {xiPnt yiPnt}
-    for {set i 0} {$i<$tLen} {incr i} {
-        ::tclinterp::bc_val $n [lindex $t $i] $xArray $yArray $xiPnt $yiPnt
-        lappend xiList [::tclinterp::doublep_value $xiPnt]
-        lappend yiList [::tclinterp::doublep_value $yiPnt]
-    }
-    ::tclinterp::DeleteArrays $xArray $yArray
-    ::tclinterp::DeleteDoubleps $xiPnt $yiPnt
-    return [dict create xi $xiList yi $yiList]
+        {-x= -required -help {X control coordinates; exactly n+1 values}}
+        {-y= -required -help {Y control coordinates; exactly n+1 values}}
+        {-t= -required -help {Nonempty evaluation parameters; normally between 0 and 1}}
+        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
+                                                                  real RBC vector names. Defaults to list}}
+        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
+                                                                   list or RBC vector name. Defaults to list;\
+                                                                   independent of -input}}
+        {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
+                            automatically named vector}}
+        {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
+                                           vector. Valid fields: yi}}
+        {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\
+                                                                        error. With replace, an existing real vector is\
+                                                                        resized and overwritten}}
+    }]
+    return [uplevel 1 [list ::tclinterp::native genBezier $arguments]]
 }
 
 proc ::tclinterp::approximation::bezier {args} {
-    # Finds values of Bezier function at x points.
-    #  -n value - order of Bezier function, must be zero or more
-    #  -a value - start of the interval
-    #  -b value - end of interval
-    #  -x list - list of x values
-    #  -y list - list of y control points values of size n+1
-    # Returns: yi values of Bezier function at x points
-    # Synopsis: -n value -a value -b value -x list -y list
-    argparse -help {Finds values of Bezier function at x points. Returns: yi values of Bezier function at x points} {
-        {-n= -required -help {Order of Bezier function, must be zero or more} -type integer -validate {$arg>0}\
+    # Evaluates a Bezier polynomial on an interval.
+    #  -n integer - Polynomial degree; must be zero or greater.
+    #  -a value - Start of the interval; must differ from -b.
+    #  -b value - End of the interval; must differ from -a.
+    #  -x values - Evaluation positions; must not be empty.
+    #  -y values - Control values; exactly n+1 values.
+    #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
+    #    Defaults to list.
+    #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
+    #    Defaults to list; independent of -input.
+    #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
+    #    automatically named vector.
+    #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
+    #    vector. Valid fields: `yi`.
+    #  -ifexists error|replace - Policy for existing destination vectors; defaults to error. With replace, an
+    #    existing real vector is resized and overwritten.
+    #
+    # Every array argument marked `values` uses the representation selected by -input. Scalar options remain
+    # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+    # vectors.
+    #
+    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
+    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
+    # vector names are fully qualified.
+    #
+    # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
+    # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
+    # $vectorName`.
+    #
+    # Returns: The interpolated values `yi`, as a Tcl list by default or an RBC vector name with `-output
+    # vector`.
+    #
+    # Synopsis: -n integer -a value -b value -x values -y values ?-input list|vector? ?-output list|vector?
+    #   ?-name name? ?-names dictionary? ?-ifexists error|replace?
+    set arguments [argparse -inline -help {Evaluates a Bezier polynomial on an interval. Returns: The interpolated\
+                                                   values yi, as a Tcl list by default or an RBC vector name with\
+                                                   -output vector} {
+        {-n= -required -help {Polynomial degree; must be zero or greater} -type integer -validate {$arg>=0}\
                  -errormsg {Order of Bezier curve -n '$arg' must be more than or equal to zero}}
-        {-a= -required -help {Start of the interval}}
-        {-b= -required -help {End of interval}}
-        {-x= -required -help {List of x values}}
-        {-y= -required -help {List of y control points values of size n+1}}
-    }
-    if {$a==$b} {
-        return -code error "Start -a '$a' and end -b '$b' values of interval must not be equal"
-    }
-    set xLen [llength $x]
-    set yLen [llength $y]
-    if {$yLen!=[expr {$n+1}]} {
-        return -code error "Length of -y '$yLen' must be equal to n+1=[expr {$n+1}]"
-    } elseif {$xLen==0} {
-        return -code error {Length of points list -x must be more than zero}
-    }
-    ::tclinterp::Lists2arrays yArray [list $y]
-    for {set i 0} {$i<$xLen} {incr i} {
-        lappend yiList [::tclinterp::bez_val $n [lindex $x $i] $a $b $yArray]
-    }
-    ::tclinterp::DeleteArrays $yArray
-    return $yiList
+        {-a= -required -help {Start of the interval; must differ from -b}}
+        {-b= -required -help {End of the interval; must differ from -a}}
+        {-x= -required -help {Evaluation positions; must not be empty}}
+        {-y= -required -help {Control values; exactly n+1 values}}
+        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
+                                                                  real RBC vector names. Defaults to list}}
+        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
+                                                                   list or RBC vector name. Defaults to list;\
+                                                                   independent of -input}}
+        {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
+                            automatically named vector}}
+        {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
+                                           vector. Valid fields: yi}}
+        {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\
+                                                                        error. With replace, an existing real vector is\
+                                                                        resized and overwritten}}
+    }]
+    return [uplevel 1 [list ::tclinterp::native bezier $arguments]]
 }
 
 proc ::tclinterp::interpolation::divDif1d {args} {
-    # Does divided difference one-dimensional interpolation.
-    #  -x list - list of independent variable (x) values
-    #  -y list - list of dependent variable (y) values
-    #  -xi list - list of independent variable interpolation (xi) values
-    #  -coeffs - selects the alternative output option
-    # Returns: list of interpolated dependent variable values, `yi`, at `xi`. If `-coeffs` switch is in args, the output
-    # is dictionary that contains `yi` values under `yi` key, and the values of difference table under the key `coeffs`.
-    # Synopsis: -x list -y list -xi list ?-coeffs?
-    argparse -help {Does divided difference one-dimensional interpolation. Returns: list of interpolated dependent\
-                            variable values, 'yi', at 'xi'. If '-coeffs' switch is in args, the output is dictionary\
-                            that contains 'yi' values under 'yi' key, and the values of difference table under the key\
-                            'coeffs'} {
-        {-x= -required -help {List of independent variable (x) values}}
-        {-y= -required -help {List of dependent variable (y) values}}
-        {-xi= -required -help {List of independent variable interpolation (xi) values}}
-        {-coeffs -help {Selects the alternative output option}}
-    }
-    set xLen [llength $x]
-    set yLen [llength $y]
-    set xiLen [llength $xi]
-    if {$xLen!=$yLen} {
-        return -code error "Length of -y '$yLen' must be equal to length of -x '$xLen'"
-    } elseif {$xiLen==0} {
-        return -code error {Length of interpolation points list -xi must be more than zero}
-    }
-    if {[::tclinterp::DuplListCheck $x]} {
-        return -code error {List of -x values must not contain duplicated elements}
-    }
-    ::tclinterp::Lists2arrays {xArray yArray} [list $x $y]
-    ::tclinterp::NewArrays difTab $xLen
-    # create difference table for given data
-    ::tclinterp::data_to_dif $xLen $xArray $yArray $difTab
-    # calculate polynomial value for each xi value
-    for {set i 0} {$i<$xiLen} {incr i} {
-        set iElem [::tclinterp::dif_val $xLen $xArray $difTab [lindex $xi $i]]
-        lappend yiList $iElem
-    }
-    if {[info exists coeffs]} {
-        ::tclinterp::Arrays2lists difTabList $difTab $xLen
-        ::tclinterp::DeleteArrays $difTab $xArray $yArray
-        return [dict create yi $yiList coeffs $difTabList]
-    } else {
-        ::tclinterp::DeleteArrays $difTab $xArray $yArray
-        return $yiList
-    }
-    return
+    # Performs divided-difference polynomial interpolation.
+    #  -x values - Distinct sample positions; at least one value.
+    #  -y values - Sample values; must have the same length as -x.
+    #  -xi values - Evaluation positions; must not be empty.
+    #  -coeffs - Include the divided-difference coefficient array in the result dictionary.
+    #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
+    #    Defaults to list.
+    #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
+    #    Defaults to list; independent of -input.
+    #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
+    #    automatically named vector.
+    #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
+    #    vector. Valid fields: `yi` and, only with -coeffs, `coeffs`.
+    #  -ifexists error|replace - Policy for existing destination vectors; defaults to error. With replace, an
+    #    existing real vector is resized and overwritten.
+    #
+    # Every array argument marked `values` uses the representation selected by -input. Scalar options remain
+    # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+    # vectors.
+    #
+    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
+    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
+    # vector names are fully qualified.
+    #
+    # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
+    # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
+    # $vectorName`.
+    #
+    # Returns: The interpolated values `yi`. With `-coeffs`, returns a dictionary with `yi` and `coeffs` arrays.
+    # Each numeric array is a Tcl list by default or an RBC vector name with `-output vector`.
+    #
+    # Synopsis: -x values -y values -xi values ?-coeffs? ?-input list|vector? ?-output list|vector? ?-name name?
+    #   ?-names dictionary? ?-ifexists error|replace?
+    set arguments [argparse -inline -help {Performs divided-difference polynomial interpolation. Returns: The\
+                                                   interpolated values yi.  With -coeffs, returns a dictionary with yi\
+                                                   and coeffs arrays. Each numeric array is a Tcl list by default or an\
+                                                   RBC vector name with -output vector} {
+        {-x= -required -help {Distinct sample positions; at least one value}}
+        {-y= -required -help {Sample values; must have the same length as -x}}
+        {-xi= -required -help {Evaluation positions; must not be empty}}
+        {-coeffs -help {Include the divided-difference coefficient array in the result dictionary}}
+        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
+                                                                  real RBC vector names. Defaults to list}}
+        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
+                                                                   list or RBC vector name. Defaults to list;\
+                                                                   independent of -input}}
+        {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
+                            automatically named vector}}
+        {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
+                                           vector. Valid fields: yi}}
+        {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\
+                                                                        error. With replace, an existing real vector is\
+                                                                        resized and overwritten}}
+    }]
+    return [uplevel 1 [list ::tclinterp::native divDif1d $arguments]]
 }
 
 proc ::tclinterp::approximation::cubicBSpline1d {args} {
-    # Evaluates a cubic B spline approximant.
-    #  -t list - list of independent variable (t) values, -x is an alias
-    #  -y list - list of dependent variable (y) values
-    #  -ti list - list of independent variable interpolation (ti) values, -xi is an alias
-    # Returns: list of approximation values yi at ti points.
-    # Synopsis: -t|x list -y list -ti|xi list
-    argparse -help {Evaluates a cubic B spline approximant. Returns: list of approximation values yi at ti points} {
-        {-t= -required -alias x -help {List of independent variable (t) values}}
-        {-y= -required -help {List of dependent variable (y) values}}
-        {-ti= -required -alias xi -help {List of independent variable interpolation (ti) values}}
-    }
-    set tLen [llength $t]
-    set yLen [llength $y]
-    set tiLen [llength $ti]
-    if {$tLen!=$yLen} {
-        return -code error "Length of -y '$yLen' must be equal to length of -t '$tLen'"
-    } elseif {$tiLen==0} {
-        return -code error {Length of interpolation points list -ti must be more than zero}
-    }
-    ::tclinterp::Lists2arrays {tArray yArray} [list $t $y]
-    for {set i 0} {$i<$tiLen} {incr i} {
-        set iElem [::tclinterp::spline_b_val $tLen $tArray $yArray [lindex $ti $i]]
-        lappend yiList $iElem
-    }
-    ::tclinterp::DeleteArrays $tArray $yArray
-    return $yiList
+    # Evaluates a cubic B-spline approximant.
+    #  -t values - Strictly increasing sample positions; at least two values. Alias: -x.
+    #  -y values - Sample values; must have the same length as -t.
+    #  -ti values - Evaluation positions; must not be empty. Alias: -xi.
+    #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
+    #    Defaults to list.
+    #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
+    #    Defaults to list; independent of -input.
+    #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
+    #    automatically named vector.
+    #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
+    #    vector. Valid fields: `yi`.
+    #  -ifexists error|replace - Policy for existing destination vectors; defaults to error. With replace, an
+    #    existing real vector is resized and overwritten.
+    #
+    # Every array argument marked `values` uses the representation selected by -input. Scalar options remain
+    # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+    # vectors.
+    #
+    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
+    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
+    # vector names are fully qualified.
+    #
+    # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
+    # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
+    # $vectorName`.
+    #
+    # Returns: The approximated values `yi`, as a Tcl list by default or an RBC vector name with `-output
+    # vector`.
+    #
+    # Synopsis: -t values -y values -ti values ?-input list|vector? ?-output list|vector? ?-name name? ?-names
+    #   dictionary? ?-ifexists error|replace?
+    set arguments [argparse -inline -help {Evaluates a cubic B-spline approximant. Returns: The approximated values yi,\
+                                                   as a Tcl list by default or an RBC vector name with -output vector}\
+                           {
+        {-t= -required -alias x -help {Strictly increasing sample positions; at least two values. Alias: -x}}
+        {-y= -required -help {Sample values; must have the same length as -t}}
+        {-ti= -required -alias xi -help {Evaluation positions; must not be empty. Alias: -xi}}
+        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
+                                                                  real RBC vector names. Defaults to list}}
+        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
+                                                                   list or RBC vector name. Defaults to list;\
+                                                                   independent of -input}}
+        {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
+                            automatically named vector}}
+        {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
+                                           vector. Valid fields: yi}}
+        {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\
+                                                                        error. With replace, an existing real vector is\
+                                                                        resized and overwritten}}
+    }]
+    return [uplevel 1 [list ::tclinterp::native cubicBSpline1d $arguments]]
 }
 
 proc ::tclinterp::approximation::cubicBetaSpline1d {args} {
-    # Evaluates a cubic beta spline approximant.
-    #  -beta1 value - the skew or bias parameter, beta1 = 1 for no skew or bias
-    #  -beta2 value - the tension parameter, beta2 = 0 for no tension
-    #  -t list - list of independent variable (t) values, -x is an alias
-    #  -y list - list of dependent variable (y) values
-    #  -ti list - list of independent variable interpolation (ti) values, -xi is an alias
-    # Returns: list of approximation values yi at ti points.
-    # Synopsis: -beta1 value -beta2 value -t|x list -y list -ti|xi list
-    argparse -help {Evaluates a cubic beta spline approximant. Returns: list of approximation values yi at ti points} {
-        {-beta1= -required -type double -help {The skew or bias parameter, beta1 = 1 for no skew or bias}}
-        {-beta2= -required -type double -help {The tension parameter, beta2 = 0 for no tension}}
-        {-t= -required -alias x -help {List of independent variable (t) values}}
-        {-y= -required -help {List of dependent variable (y) values}}
-        {-ti= -required -alias xi -help {List of independent variable interpolation (ti) values}}
-    }
-    set tLen [llength $t]
-    set yLen [llength $y]
-    set tiLen [llength $ti]
-    if {$tLen!=$yLen} {
-        return -code error "Length of -y '$yLen' must be equal to length of -t '$tLen'"
-    } elseif {$tiLen==0} {
-        return -code error {Length of interpolation points list -ti must be more than zero}
-    }
-    ::tclinterp::Lists2arrays {tArray yArray} [list $t $y]
-    for {set i 0} {$i<$tiLen} {incr i} {
-        set iElem [::tclinterp::spline_beta_val $beta1 $beta2 $tLen $tArray $yArray [lindex $ti $i]]
-        lappend yiList $iElem
-    }
-    ::tclinterp::DeleteArrays $tArray $yArray
-    return $yiList
+    # Evaluates a cubic beta-spline approximant.
+    #  -beta1 value - Required skew or bias parameter; 1 means no skew or bias.
+    #  -beta2 value - Required tension parameter; 0 means no tension.
+    #  -t values - Strictly increasing sample positions; at least two values. Alias: -x.
+    #  -y values - Sample values; must have the same length as -t.
+    #  -ti values - Evaluation positions; must not be empty. Alias: -xi.
+    #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
+    #    Defaults to list.
+    #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
+    #    Defaults to list; independent of -input.
+    #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
+    #    automatically named vector.
+    #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
+    #    vector. Valid fields: `yi`.
+    #  -ifexists error|replace - Policy for existing destination vectors; defaults to error. With replace, an
+    #    existing real vector is resized and overwritten.
+    #
+    # Every array argument marked `values` uses the representation selected by -input. Scalar options remain
+    # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+    # vectors.
+    #
+    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
+    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
+    # vector names are fully qualified.
+    #
+    # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
+    # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
+    # $vectorName`.
+    #
+    # The parameters must produce a finite, nonzero beta-spline normalization.
+    #
+    # Returns: The approximated values `yi`, as a Tcl list by default or an RBC vector name with `-output
+    # vector`.
+    #
+    # Synopsis: -beta1 value -beta2 value -t values -y values -ti values ?-input list|vector? ?-output
+    #   list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?
+    set arguments [argparse -inline -help {Evaluates a cubic beta-spline approximant. Returns: The approximated values\
+                                                   yi, as a Tcl list by default or an RBC vector name with -output\
+                                                   vector} {
+        {-beta1= -required -type double -help {Required skew or bias parameter; 1 means no skew or bias}}
+        {-beta2= -required -type double -help {Required tension parameter; 0 means no tension}}
+        {-t= -required -alias x -help {Strictly increasing sample positions; at least two values. Alias: -x}}
+        {-y= -required -help {Sample values; must have the same length as -t}}
+        {-ti= -required -alias xi -help {Evaluation positions; must not be empty. Alias: -xi}}
+        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
+                                                                  real RBC vector names. Defaults to list}}
+        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
+                                                                   list or RBC vector name. Defaults to list;\
+                                                                   independent of -input}}
+        {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
+                            automatically named vector}}
+        {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
+                                           vector. Valid fields: yi}}
+        {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\
+                                                                        error. With replace, an existing real vector is\
+                                                                        resized and overwritten}}
+    }]
+    return [uplevel 1 [list ::tclinterp::native cubicBetaSpline1d $arguments]]
 }
 
 proc ::tclinterp::interpolation::cubicSpline1d {args} {
-    # Does piecewise cubic spline interpolation.
-    #  -ibcbeg value - left boundary condition flag, -begflag is an alias. Possible values:
-    #   **quad**, the cubic spline should be a quadratic over the first interval;
-    #   **der1**, the first derivative at the left endpoint should be YBCBEG;
-    #   **der2**, the second derivative at the left endpoint should be YBCBEG;
-    #   **notaknot**, not-a-knot, the third derivative is continuous at T(2).
-    #  -ibcend value - right boundary condition flag, -endflag is an alias. Possible values:
-    #   **quad**, the cubic spline should be a quadratic over the last interval;
-    #   **der1**, the first derivative at the right endpoint should be YBCBEG;
-    #   **der2**, the second derivative at the right endpoint should be YBCBEG;
-    #   **notaknot**, not-a-knot, the third derivative is continuous at T(2).
-    #  -ybcbeg value - the values to be used in the boundary conditions if ibcbeg is equal to der1 or der2, default is
-    #    0.0
-    #  -ybcend value - the values to be used in the boundary conditions if ibcend is equal to der1 or der2, default is
-    #    0.0
-    #  -t list - list of independent variable (t) values, -x is an alias
-    #  -y list - list of dependent variable (y) values
-    #  -ti list - list of independent variable interpolation (ti) values, -xi is an alias
-    #  -deriv - select the alternative output option
-    # Returns: list of interpolated dependent variable values under. If `-deriv` switch is in args, the output is
-    # dictionary that contains `yi` values under `yi` key, `yi` derivative under `yder1` key, and `yi` second derivative
-    # under `yder2` key.
-    # Synopsis: -t|x list -y list -ti|xi list ?-ibcbeg|begflag value -ybcbeg value? ?-ibcend|endflag value -ybcend
-    #   value?  ?-deriv?
-    argparse -help {Does piecewise cubic spline interpolation. Returns: list of interpolated dependent variable values\
-                            under. If '-deriv' switch is in args, the output is dictionary that contains 'yi' values\
-                            under 'yi' key, 'yi' derivative under 'yder1' key, and 'yi' second derivative under 'yder2'\
-                            key} {
+    # Performs piecewise cubic spline interpolation.
+    #  -t values - Strictly increasing sample positions; at least two values. Alias: -x.
+    #  -y values - Sample values; must have the same length as -t.
+    #  -ti values - Evaluation positions; must not be empty. Alias: -xi.
+    #  -ibcbeg condition - Left boundary condition: quad, der1, der2, or notaknot; defaults to quad. Alias:
+    #    -begflag.
+    #  -ibcend condition - Right boundary condition: quad, der1, der2, or notaknot; defaults to quad. Alias:
+    #    -endflag.
+    #  -ybcbeg value - Prescribed left endpoint derivative for der1 or der2; defaults to 0.0.
+    #  -ybcend value - Prescribed right endpoint derivative for der1 or der2; defaults to 0.0.
+    #  -deriv - Include first and second derivatives in the result dictionary.
+    #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
+    #    Defaults to list.
+    #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
+    #    Defaults to list; independent of -input.
+    #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
+    #    automatically named vector.
+    #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
+    #    vector. Valid fields: `yi` and, only with -deriv, `yder1`, `yder2`.
+    #  -ifexists error|replace - Policy for existing destination vectors; defaults to error. With replace, an
+    #    existing real vector is resized and overwritten.
+    #
+    # Every array argument marked `values` uses the representation selected by -input. Scalar options remain
+    # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+    # vectors.
+    #
+    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
+    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
+    # vector names are fully qualified.
+    #
+    # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
+    # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
+    # $vectorName`.
+    #
+    # The boundary condition `quad` makes the first or last interval quadratic. The conditions `der1` and `der2`
+    # prescribe the first or second endpoint derivative using -ybcbeg or -ybcend, respectively for the left or
+    # right endpoint. The condition `notaknot` makes the third derivative continuous at the first or last
+    # interior knot and requires at least four samples.
+    #
+    # Returns: The interpolated values `yi`. With `-deriv`, returns a dictionary with `yi`, first derivatives
+    # `yder1`, and second derivatives `yder2`. Each numeric array is a Tcl list by default or an RBC vector name
+    # with `-output vector`.
+    #
+    # Synopsis: -t values -y values -ti values ?-ibcbeg condition? ?-ibcend condition? ?-ybcbeg value? ?-ybcend
+    #   value? ?-deriv? ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists
+    #   error|replace?
+    set arguments [argparse -inline -help {Performs piecewise cubic spline interpolation. Returns: The interpolated\
+                                                   values yi. With -deriv, returns a dictionary with yi, first\
+                                                   derivatives yder1, and second derivatives yder2.  Each numeric array\
+                                                   is a Tcl list by default or an RBC vector name with -output vector}\
+                           {
         {-ibcbeg= -default quad -enum {quad der1 der2 notaknot} -alias begflag\
-                 -help {Left boundary condition flag. Possible values: quad, the cubic spline should be a quadratic\
-                                over the first interval; der1, the first derivative at the left endpoint should be\
-                                YBCBEG; der2, the second derivative at the left endpoint should be YBCBEG; notaknot,\
-                                not-a-knot, the third derivative is continuous at T(2)}}
+                 -help {Left boundary condition: quad, der1, der2, or notaknot; defaults to quad. Alias: -begflag}}
         {-ibcend= -default quad -enum {quad der1 der2 notaknot} -alias endflag\
-                 -help {Right boundary condition flag, -endflag is an alias. Possible values: quad, the cubic spline\
-                                should be a quadratic over the last interval; der1, the first derivative at the right\
-                                endpoint should be YBCBEG; der2, the second derivative at the right endpoint should be\
-                                YBCBEG; notaknot, not-a-knot, the third derivative is continuous at T(2)}}
-        {-ybcbeg= -default 0.0 -help {The values to be used in the boundary conditions if ibcbeg is equal to der1 or\
-                                              der2}}
-        {-ybcend= -default 0.0 -help {The values to be used in the boundary conditions if ibcend is equal to der1 or\
-                                              der2}}
-        {-t= -required -alias x -help {List of independent variable (t) values}}
-        {-y= -required -help {List of dependent variable (y) values}}
-        {-ti= -required -alias xi -help {List of independent variable interpolation (ti) values}}
-        {-deriv -help {Select the alternative output option}}
-    }
-    set keyMap [dict create quad 0 der1 1 der2 2 notaknot 3]
-    set tLen [llength $t]
-    set yLen [llength $y]
-    set tiLen [llength $ti]
-    if {$tLen!=$yLen} {
-        return -code error "Length of -y '$yLen' must be equal to length of -t '$tLen'"
-    } elseif {$tiLen==0} {
-        return -code error {Length of interpolation points list -ti must be more than zero}
-    }
-    ::tclinterp::Lists2arrays {tArray yArray} [list $t $y]
-    ::tclinterp::NewArrays yppArray $tLen
-    ::tclinterp::NewDoubleps {ypPnt yppPnt}
-    set yppArray [::tclinterp::spline_cubic_set $tLen $tArray $yArray [dict get $keyMap $ibcbeg] $ybcbeg\
-                          [dict get $keyMap $ibcend] $ybcend]
-    for {set i 0} {$i<$tiLen} {incr i} {
-        set iElem [::tclinterp::spline_cubic_val $tLen $tArray $yArray $yppArray [lindex $ti $i] $ypPnt $yppPnt]
-        lappend yiList $iElem
-        lappend ypList [::tclinterp::doublep_value $ypPnt]
-        lappend yppList [::tclinterp::doublep_value $yppPnt]
-    }
-    ::tclinterp::DeleteArrays $tArray $yArray $yppArray
-    ::tclinterp::DeleteDoubleps $ypPnt $yppPnt
-    if {[info exists deriv]} {
-        return [dict create yi $yiList yder1 $ypList yder2 $yppList]
-    } else {
-        return $yiList
-    }
+                 -help {Right boundary condition: quad, der1, der2, or notaknot; defaults to quad. Alias: -endflag}}
+        {-ybcbeg= -default 0.0 -help {Prescribed left endpoint derivative for der1 or der2; defaults to 0.0}}
+        {-ybcend= -default 0.0 -help {Prescribed right endpoint derivative for der1 or der2; defaults to 0.0}}
+        {-t= -required -alias x -help {Strictly increasing sample positions; at least two values. Alias: -x}}
+        {-y= -required -help {Sample values; must have the same length as -t}}
+        {-ti= -required -alias xi -help {Evaluation positions; must not be empty. Alias: -xi}}
+        {-deriv -help {Include first and second derivatives in the result dictionary}}
+        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
+                                                                  real RBC vector names. Defaults to list}}
+        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
+                                                                   list or RBC vector name. Defaults to list;\
+                                                                   independent of -input}}
+        {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
+                            automatically named vector}}
+        {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
+                                           vector. Valid fields: yi}}
+        {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\
+                                                                        error. With replace, an existing real vector is\
+                                                                        resized and overwritten}}
+    }]
+    return [uplevel 1 [list ::tclinterp::native cubicSpline1d $arguments]]
 }
 
 proc ::tclinterp::interpolation::hermiteSpline1d {args} {
-    # Does Hermite polynomial spline interpolation.
-    #  -t list - list of independent variable (t) values, must be strictly increasing, -x is an alias
-    #  -y list - list of dependent variable (y) values
-    #  -yp list - list of dependent variable (y) derivative values
-    #  -ti list - list of independent variable interpolation (ti) values, -xi is an alias
-    #  -deriv - select the alternative output option
-    # Returns: list of interpolated dependent variable values. If `-deriv` switch is in args, the output is
-    # dictionary that contains `yi` values under `yi` key, `yi` derivative under `yder1` key.
-    # Synopsis: -t|x list -y list -yp list -ti|xi list ?-deriv?
-    argparse -help {Does Hermite polynomial spline interpolation. Returns: list of interpolated dependent variable\
-                            values. If '-deriv' switch is in args, the output is dictionary that contains 'yi' values\
-                            under 'yi' key, 'yi' derivative under 'yder1' key} {
-        {-t= -required -alias x -help {List of independent variable (t) values, must be strictly increasing}}
-        {-y= -required -help {List of dependent variable (y) values}}
-        {-yp= -required -help {List of dependent variable (y) derivative values}}
-        {-ti= -required -alias xi -help {List of independent variable interpolation (ti) values}}
-        {-deriv -help {Select the alternative output option}}
-    }
-    set tLen [llength $t]
-    set yLen [llength $y]
-    set ypLen [llength $yp]
-    set tiLen [llength $ti]
-    if {$tLen!=$yLen} {
-        return -code error "Length of -y '$yLen' must be equal to length of -t '$tLen'"
-    } elseif {$tLen!=$ypLen} {
-        return -code error "Length of -yp '$ypLen' must be equal to length of -t '$tLen'"
-    } elseif {$tiLen==0} {
-        return -code error {Length of interpolation points list -ti must be more than zero}
-    }
-    ::tclinterp::Lists2arrays {tArray yArray ypArray} [list $t $y $yp]
-    if {[::tclinterp::r8vec_ascends_strictly $tLen $tArray]==0} {
-        return -code error {Independent variable array -t is not strictly increasing}
-    }
-    ::tclinterp::NewArrays cArray [expr {$tLen*4}]
-    ::tclinterp::NewDoubleps {yiPnt yipPnt}
-    set cArray [::tclinterp::spline_hermite_set $tLen $tArray $yArray $ypArray]
-    for {set i 0} {$i<$tiLen} {incr i} {
-        ::tclinterp::spline_hermite_val $tLen $tArray $cArray [lindex $ti $i] $yiPnt $yipPnt
-        lappend yiList [::tclinterp::doublep_value $yiPnt]
-        lappend yipList [::tclinterp::doublep_value $yipPnt]
-    }
-    ::tclinterp::DeleteArrays $tArray $yArray $cArray $ypArray
-    ::tclinterp::DeleteDoubleps $yiPnt $yipPnt
-    if {[info exists deriv]} {
-        return [dict create yi $yiList yder1 $yipList]
-    } else {
-        return $yiList
-    }
+    # Performs cubic Hermite spline interpolation.
+    #  -t values - Strictly increasing sample positions; at least two values. Alias: -x.
+    #  -y values - Sample values; must have the same length as -t.
+    #  -yp values - First derivatives at the sample positions; same length as -t.
+    #  -ti values - Evaluation positions; must not be empty. Alias: -xi.
+    #  -deriv - Include first derivatives in the result dictionary.
+    #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
+    #    Defaults to list.
+    #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
+    #    Defaults to list; independent of -input.
+    #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
+    #    automatically named vector.
+    #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
+    #    vector. Valid fields: `yi` and, only with -deriv, `yder1`.
+    #  -ifexists error|replace - Policy for existing destination vectors; defaults to error. With replace, an
+    #    existing real vector is resized and overwritten.
+    #
+    # Every array argument marked `values` uses the representation selected by -input. Scalar options remain
+    # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+    # vectors.
+    #
+    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
+    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
+    # vector names are fully qualified.
+    #
+    # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
+    # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
+    # $vectorName`.
+    #
+    # Returns: The interpolated values `yi`. With `-deriv`, returns a dictionary with `yi` and first derivatives
+    # `yder1`. Each numeric array is a Tcl list by default or an RBC vector name with `-output vector`.
+    #
+    # Synopsis: -t values -y values -yp values -ti values ?-deriv? ?-input list|vector? ?-output list|vector?
+    #   ?-name name? ?-names dictionary? ?-ifexists error|replace?
+    set arguments [argparse -inline -help {Performs cubic Hermite spline interpolation. Returns: The interpolated\
+                                                   values yi. With -deriv, returns a dictionary with yi and first\
+                                                   derivatives yder1. Each numeric array is a Tcl list by default or an\
+                                                   RBC vector name with -output vector} {
+        {-t= -required -alias x -help {Strictly increasing sample positions; at least two values. Alias: -x}}
+        {-y= -required -help {Sample values; must have the same length as -t}}
+        {-yp= -required -help {First derivatives at the sample positions; same length as -t}}
+        {-ti= -required -alias xi -help {Evaluation positions; must not be empty. Alias: -xi}}
+        {-deriv -help {Include first derivatives in the result dictionary}}
+        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
+                                                                  real RBC vector names. Defaults to list}}
+        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
+                                                                   list or RBC vector name. Defaults to list;\
+                                                                   independent of -input}}
+        {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
+                            automatically named vector}}
+        {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
+                                           vector. Valid fields: yi}}
+        {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\
+                                                                        error. With replace, an existing real vector is\
+                                                                        resized and overwritten}}
+    }]
+    return [uplevel 1 [list ::tclinterp::native hermiteSpline1d $arguments]]
 }
 
 proc ::tclinterp::interpolation::pchip1d {args} {
-    # Does piecewise cubic Hermite interpolation (PCHIP).
-    #  -x list - list of independent variable (x) values, must be strictly increasing
-    #  -f list - list of dependent variable (f) values, -y is an alias
-    #  -xe list - list of independent variable interpolation (xe) values, -xi is an alias
-    # Returns: list of interpolated dependent variable values.
-    # Synopsis: -x list -f|y list -xe|xi list
-    argparse -help {Does piecewise cubic Hermite interpolation (PCHIP). Returns: list of interpolated dependent\
-                            variable values} {
-        {-x= -required -help {List of independent variable (x) values, must be strictly increasing}}
-        {-f= -required -alias y -help {List of dependent variable (f) values}}
-        {-xe= -required -alias xi -help {List of independent variable interpolation (xe) values}}
-    }
-    set xLen [llength $x]
-    set fLen [llength $f]
-    set xeLen [llength $xe]
-    if {$xLen!=$fLen} {
-        return -code error "Length of -f '$fLen' must be equal to length of -x '$xLen'"
-    } elseif {$xeLen==0} {
-        return -code error {Length of interpolation points list -xe must be more than zero}
-    }
-    ::tclinterp::Lists2arrays {xArray fArray xeArray} [list $x $f $xe]
-    if {[::tclinterp::r8vec_ascends_strictly $xLen $xArray]==0} {
-        return -code error {Independent variable array -x is not strictly increasing}
-    }
-    ::tclinterp::NewArrays {dArray feArray} [list $xLen $xeLen]
-    ::tclinterp::spline_pchip_set $xLen $xArray $fArray $dArray
-    ::tclinterp::spline_pchip_val $xLen $xArray $fArray $dArray $xeLen $xeArray $feArray
-    set feList [::tclinterp::Array2list $feArray $xeLen]
-    ::tclinterp::DeleteArrays $xArray $fArray $dArray $xeArray $feArray
-    return $feList
+    # Performs piecewise cubic Hermite interpolation (PCHIP).
+    #  -x values - Strictly increasing sample positions; at least two values.
+    #  -f values - Sample values; same length as -x. Alias: -y.
+    #  -xe values - Evaluation positions; must not be empty. Alias: -xi.
+    #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
+    #    Defaults to list.
+    #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
+    #    Defaults to list; independent of -input.
+    #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
+    #    automatically named vector.
+    #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
+    #    vector. Valid fields: `yi`.
+    #  -ifexists error|replace - Policy for existing destination vectors; defaults to error. With replace, an
+    #    existing real vector is resized and overwritten.
+    #
+    # Every array argument marked `values` uses the representation selected by -input. Scalar options remain
+    # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
+    # vectors.
+    #
+    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
+    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
+    # vector names are fully qualified.
+    #
+    # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
+    # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
+    # $vectorName`.
+    #
+    # Returns: The interpolated values `yi`, as a Tcl list by default or an RBC vector name with `-output
+    # vector`.
+    #
+    # Synopsis: -x values -f values -xe values ?-input list|vector? ?-output list|vector? ?-name name? ?-names
+    #   dictionary? ?-ifexists error|replace?
+    set arguments [argparse -inline -help {Performs piecewise cubic Hermite interpolation (PCHIP). Returns: The\
+                                                   interpolated values yi, as a Tcl list by default or an RBC vector\
+                                                   name with -output vector} {
+        {-x= -required -help {Strictly increasing sample positions; at least two values}}
+        {-f= -required -alias y -help {Sample values; same length as -x. Alias: -y}}
+        {-xe= -required -alias xi -help {Evaluation positions; must not be empty. Alias: -xi}}
+        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
+                                                                  real RBC vector names. Defaults to list}}
+        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
+                                                                   list or RBC vector name. Defaults to list;\
+                                                                   independent of -input}}
+        {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
+                            automatically named vector}}
+        {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
+                                           vector. Valid fields: yi}}
+        {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\
+                                                                        error. With replace, an existing real vector is\
+                                                                        resized and overwritten}}
+    }]
+    return [uplevel 1 [list ::tclinterp::native pchip1d $arguments]]
 }

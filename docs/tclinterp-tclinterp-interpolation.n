@@ -5,23 +5,23 @@
 .SH NAME
 tclinterp::interpolation - Commands in namespace tclinterp::interpolation
 .SH SYNOPSIS
-\fBcubicSpline1d\fP \fI-t|x list -y list -ti|xi list ?-ibcbeg|begflag value -ybcbeg value? ?-ibcend|endflag value -ybcend value? ?-deriv?\fP
+\fBcubicSpline1d\fP \fI-t values -y values -ti values ?-ibcbeg condition? ?-ibcend condition? ?-ybcbeg value? ?-ybcend value? ?-deriv? ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
-\fBdivDif1d\fP \fI-x list -y list -xi list ?-coeffs?\fP
+\fBdivDif1d\fP \fI-x values -y values -xi values ?-coeffs? ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
-\fBhermiteSpline1d\fP \fI-t|x list -y list -yp list -ti|xi list ?-deriv?\fP
+\fBhermiteSpline1d\fP \fI-t values -y values -yp values -ti values ?-deriv? ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
-\fBlagr1d\fP \fI-x list -y list -xi list\fP
+\fBlagr1d\fP \fI-x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
-\fBleast1d\fP \fI-x list -y list -xi list ?-w list? ?-nterms value? ?-coeffs?\fP
+\fBleast1d\fP \fI-x values -y values -xi values ?-w values? ?-nterms integer? ?-coeffs? ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
-\fBleast1dDer\fP \fI-x list -y list -xi list ?-w list? ?-nterms value? ?-coeffs?\fP
+\fBleast1dDer\fP \fI-x values -y values -xi values ?-w values? ?-nterms integer? ?-coeffs? ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
-\fBlin1d\fP \fI-x list -y list -xi list\fP
+\fBlin1d\fP \fI-x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
-\fBnear1d\fP \fI-x list -y list -xi list\fP
+\fBnear1d\fP \fI-x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
-\fBpchip1d\fP \fI-x list -f|y list -xe|xi list\fP
+\fBpchip1d\fP \fI-x values -f values -xe values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
 .SH ::TCLINTERP::INTERPOLATION
 .SH COMMANDS
@@ -30,9 +30,9 @@ tclinterp::interpolation - Commands in namespace tclinterp::interpolation
 \fBcubicSpline1d\fR (::tclinterp::interpolation)
 .RE
 .PP
-Does piecewise cubic spline interpolation\&.
+Performs piecewise cubic spline interpolation\&.
 .RS 4n
-\fBcubicSpline1d\fP \fI-t|x list -y list -ti|xi list ?-ibcbeg|begflag value -ybcbeg value? ?-ibcend|endflag value -ybcend value? ?-deriv?\fP
+\fBcubicSpline1d\fP \fI-t values -y values -ti values ?-ibcbeg condition? ?-ibcend condition? ?-ybcbeg value? ?-ybcend value? ?-deriv? ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
 .RE
 .PP
@@ -40,43 +40,77 @@ Does piecewise cubic spline interpolation\&.
 .RS 4n
 .TP
 -deriv
-Select the alternative output option\&.
+Include first and second derivatives in the result dictionary\&.
 .TP
--ibcbeg value
-Left boundary condition flag, -begflag is an alias\&. Possible values: \fBquad\fP, the cubic spline should be a quadratic over the first interval; \fBder1\fP, the first derivative at the left endpoint should be YBCBEG; \fBder2\fP, the second derivative at the left endpoint should be YBCBEG; \fBnotaknot\fP, not-a-knot, the third derivative is continuous at T(2)\&.
+-ibcbeg condition
+Left boundary condition: quad, der1, der2, or notaknot; defaults to quad\&. Alias: -begflag\&.
 .TP
--ibcend value
-Right boundary condition flag, -endflag is an alias\&. Possible values: \fBquad\fP, the cubic spline should be a quadratic over the last interval; \fBder1\fP, the first derivative at the right endpoint should be YBCBEG; \fBder2\fP, the second derivative at the right endpoint should be YBCBEG; \fBnotaknot\fP, not-a-knot, the third derivative is continuous at T(2)\&.
+-ibcend condition
+Right boundary condition: quad, der1, der2, or notaknot; defaults to quad\&. Alias: -endflag\&.
 .TP
--t list
-List of independent variable (t) values, -x is an alias\&.
+-ifexists error|replace
+Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
--ti list
-List of independent variable interpolation (ti) values, -xi is an alias\&.
+-input list|vector
+Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to list\&.
 .TP
--y list
-List of dependent variable (y) values\&.
+-name name
+Destination vector name for yi; requires -output vector\&. Omit it or use #auto to create an automatically named vector\&.
+.TP
+-names dictionary
+Dictionary mapping output fields to destination vector names; requires -output vector\&. Valid fields: yi and, only with -deriv, yder1, yder2\&.
+.TP
+-output list|vector
+Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
+.TP
+-t values
+Strictly increasing sample positions; at least two values\&. Alias: -x\&.
+.TP
+-ti values
+Evaluation positions; must not be empty\&. Alias: -xi\&.
+.TP
+-y values
+Sample values; must have the same length as -t\&.
 .TP
 -ybcbeg value
-The values to be used in the boundary conditions if ibcbeg is equal to der1 or der2, default is 0\&.0\&.
+Prescribed left endpoint derivative for der1 or der2; defaults to 0\&.0\&.
 .TP
 -ybcend value
-The values to be used in the boundary conditions if ibcend is equal to der1 or der2, default is 0\&.0\&.
+Prescribed right endpoint derivative for der1 or der2; defaults to 0\&.0\&.
 .RE
+.PP
+\fBDescription\fR
+.PP
+Every array argument marked values uses the representation selected by -input\&. Scalar options remain
+ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
+vectors\&.
+.PP
+Vector names resolve in the caller's namespace; destination namespaces must already exist\&. Each unnamed
+output, including fields omitted from -names, is created with ::rbc::vector create #auto\&. Returned
+vector names are fully qualified\&.
+.PP
+Do not specify both -name and the yi entry of -names\&. Unknown output fields and duplicate destinations
+are errors\&. The caller owns returned vectors and can release them with ::rbc::vector destroy
+$vectorName\&.
+.PP
+The boundary condition quad makes the first or last interval quadratic\&. The conditions der1 and der2
+prescribe the first or second endpoint derivative using -ybcbeg or -ybcend, respectively for the left or
+right endpoint\&. The condition notaknot makes the third derivative continuous at the first or last
+interior knot and requires at least four samples\&.
 .PP
 \fBReturn value\fR
 .PP
-list of interpolated dependent variable values under\&. If -deriv switch is in args, the output is
-dictionary that contains yi values under yi key, yi derivative under yder1 key, and yi second derivative
-under yder2 key\&.
+The interpolated values yi\&. With -deriv, returns a dictionary with yi, first derivatives
+yder1, and second derivatives yder2\&. Each numeric array is a Tcl list by default or an RBC vector name
+with -output vector\&.
 .PP
 .RS -4n
 \fBdivDif1d\fR (::tclinterp::interpolation)
 .RE
 .PP
-Does divided difference one-dimensional interpolation\&.
+Performs divided-difference polynomial interpolation\&.
 .RS 4n
-\fBdivDif1d\fP \fI-x list -y list -xi list ?-coeffs?\fP
+\fBdivDif1d\fP \fI-x values -y values -xi values ?-coeffs? ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
 .RE
 .PP
@@ -84,30 +118,59 @@ Does divided difference one-dimensional interpolation\&.
 .RS 4n
 .TP
 -coeffs
-Selects the alternative output option\&.
+Include the divided-difference coefficient array in the result dictionary\&.
 .TP
--x list
-List of independent variable (x) values\&.
+-ifexists error|replace
+Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
--xi list
-List of independent variable interpolation (xi) values\&.
+-input list|vector
+Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to list\&.
 .TP
--y list
-List of dependent variable (y) values\&.
+-name name
+Destination vector name for yi; requires -output vector\&. Omit it or use #auto to create an automatically named vector\&.
+.TP
+-names dictionary
+Dictionary mapping output fields to destination vector names; requires -output vector\&. Valid fields: yi and, only with -coeffs, coeffs\&.
+.TP
+-output list|vector
+Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
+.TP
+-x values
+Distinct sample positions; at least one value\&.
+.TP
+-xi values
+Evaluation positions; must not be empty\&.
+.TP
+-y values
+Sample values; must have the same length as -x\&.
 .RE
+.PP
+\fBDescription\fR
+.PP
+Every array argument marked values uses the representation selected by -input\&. Scalar options remain
+ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
+vectors\&.
+.PP
+Vector names resolve in the caller's namespace; destination namespaces must already exist\&. Each unnamed
+output, including fields omitted from -names, is created with ::rbc::vector create #auto\&. Returned
+vector names are fully qualified\&.
+.PP
+Do not specify both -name and the yi entry of -names\&. Unknown output fields and duplicate destinations
+are errors\&. The caller owns returned vectors and can release them with ::rbc::vector destroy
+$vectorName\&.
 .PP
 \fBReturn value\fR
 .PP
-list of interpolated dependent variable values, yi, at xi\&. If -coeffs switch is in args, the output
-is dictionary that contains yi values under yi key, and the values of difference table under the key coeffs\&.
+The interpolated values yi\&. With -coeffs, returns a dictionary with yi and coeffs arrays\&.
+Each numeric array is a Tcl list by default or an RBC vector name with -output vector\&.
 .PP
 .RS -4n
 \fBhermiteSpline1d\fR (::tclinterp::interpolation)
 .RE
 .PP
-Does Hermite polynomial spline interpolation\&.
+Performs cubic Hermite spline interpolation\&.
 .RS 4n
-\fBhermiteSpline1d\fP \fI-t|x list -y list -yp list -ti|xi list ?-deriv?\fP
+\fBhermiteSpline1d\fP \fI-t values -y values -yp values -ti values ?-deriv? ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
 .RE
 .PP
@@ -115,60 +178,119 @@ Does Hermite polynomial spline interpolation\&.
 .RS 4n
 .TP
 -deriv
-Select the alternative output option\&.
+Include first derivatives in the result dictionary\&.
 .TP
--t list
-List of independent variable (t) values, must be strictly increasing, -x is an alias\&.
+-ifexists error|replace
+Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
--ti list
-List of independent variable interpolation (ti) values, -xi is an alias\&.
+-input list|vector
+Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to list\&.
 .TP
--y list
-List of dependent variable (y) values\&.
+-name name
+Destination vector name for yi; requires -output vector\&. Omit it or use #auto to create an automatically named vector\&.
 .TP
--yp list
-List of dependent variable (y) derivative values\&.
+-names dictionary
+Dictionary mapping output fields to destination vector names; requires -output vector\&. Valid fields: yi and, only with -deriv, yder1\&.
+.TP
+-output list|vector
+Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
+.TP
+-t values
+Strictly increasing sample positions; at least two values\&. Alias: -x\&.
+.TP
+-ti values
+Evaluation positions; must not be empty\&. Alias: -xi\&.
+.TP
+-y values
+Sample values; must have the same length as -t\&.
+.TP
+-yp values
+First derivatives at the sample positions; same length as -t\&.
 .RE
+.PP
+\fBDescription\fR
+.PP
+Every array argument marked values uses the representation selected by -input\&. Scalar options remain
+ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
+vectors\&.
+.PP
+Vector names resolve in the caller's namespace; destination namespaces must already exist\&. Each unnamed
+output, including fields omitted from -names, is created with ::rbc::vector create #auto\&. Returned
+vector names are fully qualified\&.
+.PP
+Do not specify both -name and the yi entry of -names\&. Unknown output fields and duplicate destinations
+are errors\&. The caller owns returned vectors and can release them with ::rbc::vector destroy
+$vectorName\&.
 .PP
 \fBReturn value\fR
 .PP
-list of interpolated dependent variable values\&. If -deriv switch is in args, the output is
-dictionary that contains yi values under yi key, yi derivative under yder1 key\&.
+The interpolated values yi\&. With -deriv, returns a dictionary with yi and first derivatives
+yder1\&. Each numeric array is a Tcl list by default or an RBC vector name with -output vector\&.
 .PP
 .RS -4n
 \fBlagr1d\fR (::tclinterp::interpolation)
 .RE
 .PP
-Does Lagrange polynomial one-dimensional interpolation\&.
+Performs Lagrange polynomial one-dimensional interpolation\&.
 .RS 4n
-\fBlagr1d\fP \fI-x list -y list -xi list\fP
+\fBlagr1d\fP \fI-x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
 .RE
 .PP
 \fBParameters\fR
 .RS 4n
 .TP
--x list
-List of independent variable (x) values\&.
+-ifexists error|replace
+Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
--xi list
-List of independent variable interpolation (xi) values\&.
+-input list|vector
+Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to list\&.
 .TP
--y list
-List of dependent variable (y) values\&.
+-name name
+Destination vector name for yi; requires -output vector\&. Omit it or use #auto to create an automatically named vector\&.
+.TP
+-names dictionary
+Dictionary mapping output fields to destination vector names; requires -output vector\&. Valid fields: yi\&.
+.TP
+-output list|vector
+Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
+.TP
+-x values
+Distinct sample positions; at least one value\&.
+.TP
+-xi values
+Evaluation positions; must not be empty\&.
+.TP
+-y values
+Sample values; must have the same length as -x\&.
 .RE
+.PP
+\fBDescription\fR
+.PP
+Every array argument marked values uses the representation selected by -input\&. Scalar options remain
+ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
+vectors\&.
+.PP
+Vector names resolve in the caller's namespace; destination namespaces must already exist\&. Each unnamed
+output, including fields omitted from -names, is created with ::rbc::vector create #auto\&. Returned
+vector names are fully qualified\&.
+.PP
+Do not specify both -name and the yi entry of -names\&. Unknown output fields and duplicate destinations
+are errors\&. The caller owns returned vectors and can release them with ::rbc::vector destroy
+$vectorName\&.
 .PP
 \fBReturn value\fR
 .PP
-list of interpolated dependent variable values, yi, at xi
+The interpolated values yi, as a Tcl list by default or an RBC vector name with -output
+vector\&.
 .PP
 .RS -4n
 \fBleast1d\fR (::tclinterp::interpolation)
 .RE
 .PP
-Does least squares polynomial one-dimensional interpolation\&.
+Fits a least-squares polynomial\&.
 .RS 4n
-\fBleast1d\fP \fI-x list -y list -xi list ?-w list? ?-nterms value? ?-coeffs?\fP
+\fBleast1d\fP \fI-x values -y values -xi values ?-w values? ?-nterms integer? ?-coeffs? ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
 .RE
 .PP
@@ -176,37 +298,66 @@ Does least squares polynomial one-dimensional interpolation\&.
 .RS 4n
 .TP
 -coeffs
-Selects the alternative output option\&.
+Include polynomial coefficient arrays in the result dictionary\&.
 .TP
--nterms value
-Number of terms of interpolation polynom, default is 3\&.
+-ifexists error|replace
+Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
--w list
-List of weights, optional\&.
+-input list|vector
+Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to list\&.
 .TP
--x list
-List of independent variable (x) values\&.
+-name name
+Destination vector name for yi; requires -output vector\&. Omit it or use #auto to create an automatically named vector\&.
 .TP
--xi list
-List of independent variable interpolation (xi) values\&.
+-names dictionary
+Dictionary mapping output fields to destination vector names; requires -output vector\&. Valid fields: yi, and, only with -coeffs, coeffs\&.b, coeffs\&.c, coeffs\&.d\&.
 .TP
--y list
-List of dependent variable (y) values\&.
+-nterms integer
+Number of polynomial terms; defaults to 3\&. Must be positive and no greater than the number of distinct sample positions\&.
+.TP
+-output list|vector
+Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
+.TP
+-w values
+Optional positive weights; same length as -x\&. Defaults to all ones\&.
+.TP
+-x values
+Sample positions; at least one value\&.
+.TP
+-xi values
+Evaluation positions; must not be empty\&.
+.TP
+-y values
+Sample values; must have the same length as -x\&.
 .RE
+.PP
+\fBDescription\fR
+.PP
+Every array argument marked values uses the representation selected by -input\&. Scalar options remain
+ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
+vectors\&.
+.PP
+Vector names resolve in the caller's namespace; destination namespaces must already exist\&. Each unnamed
+output, including fields omitted from -names, is created with ::rbc::vector create #auto\&. Returned
+vector names are fully qualified\&.
+.PP
+Do not specify both -name and the yi entry of -names\&. Unknown output fields and duplicate destinations
+are errors\&. The caller owns returned vectors and can release them with ::rbc::vector destroy
+$vectorName\&.
 .PP
 \fBReturn value\fR
 .PP
-list of interpolated dependent variable values, yi, at xi\&. If -coeffs switch is in args, the output
-is dictionary that contains yi values under yi key, and the values of interpolation polynom coefficients under
-the keys b, c and d\&.
+The fitted values yi, or a dictionary containing yi when -coeffs is specified\&. With
+-coeffs, the dictionary also contains coeffs, a nested dictionary with keys b, c, and d\&. Each
+numeric array is a Tcl list by default or an RBC vector name with -output vector\&.
 .PP
 .RS -4n
 \fBleast1dDer\fR (::tclinterp::interpolation)
 .RE
 .PP
-Does least squares polynomial one-dimensional interpolation with calculation of its derivative\&.
+Fits a least-squares polynomial and evaluates its first derivative\&.
 .RS 4n
-\fBleast1dDer\fP \fI-x list -y list -xi list ?-w list? ?-nterms value? ?-coeffs?\fP
+\fBleast1dDer\fP \fI-x values -y values -xi values ?-w values? ?-nterms integer? ?-coeffs? ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
 .RE
 .PP
@@ -214,116 +365,237 @@ Does least squares polynomial one-dimensional interpolation with calculation of 
 .RS 4n
 .TP
 -coeffs
-Selects the alternative output option\&.
+Include polynomial coefficient arrays in the result dictionary\&.
 .TP
--nterms value
-Number of terms of interpolation polynom, default is 3\&.
+-ifexists error|replace
+Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
--w list
-List of weights, optional\&.
+-input list|vector
+Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to list\&.
 .TP
--x list
-List of independent variable (x) values\&.
+-name name
+Destination vector name for yi; requires -output vector\&. Omit it or use #auto to create an automatically named vector\&.
 .TP
--xi list
-List of independent variable interpolation (xi) values\&.
+-names dictionary
+Dictionary mapping output fields to destination vector names; requires -output vector\&. Valid fields: yi, yiDer, and, only with -coeffs, coeffs\&.b, coeffs\&.c, coeffs\&.d\&.
 .TP
--y list
-List of dependent variable (y) values\&.
+-nterms integer
+Number of polynomial terms; defaults to 3\&. Must be positive and no greater than the number of distinct sample positions\&.
+.TP
+-output list|vector
+Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
+.TP
+-w values
+Optional positive weights; same length as -x\&. Defaults to all ones\&.
+.TP
+-x values
+Sample positions; at least one value\&.
+.TP
+-xi values
+Evaluation positions; must not be empty\&.
+.TP
+-y values
+Sample values; must have the same length as -x\&.
 .RE
+.PP
+\fBDescription\fR
+.PP
+Every array argument marked values uses the representation selected by -input\&. Scalar options remain
+ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
+vectors\&.
+.PP
+Vector names resolve in the caller's namespace; destination namespaces must already exist\&. Each unnamed
+output, including fields omitted from -names, is created with ::rbc::vector create #auto\&. Returned
+vector names are fully qualified\&.
+.PP
+Do not specify both -name and the yi entry of -names\&. Unknown output fields and duplicate destinations
+are errors\&. The caller owns returned vectors and can release them with ::rbc::vector destroy
+$vectorName\&.
 .PP
 \fBReturn value\fR
 .PP
-dict of interpolated dependent variable values and its derivatives under yi and yiDer keys\&. If
--coeffs switch is in args, the output is dictionary that contains yi values under yi key, yi derivatives
-under yiDer key, and the values of interpolation polynom coefficients under the keys b, c and d\&.
+A dictionary with yi values and yiDer first derivatives\&. With -coeffs, the dictionary also
+contains coeffs, a nested dictionary with keys b, c, and d\&. Each numeric array is a Tcl list by
+default or an RBC vector name with -output vector\&.
 .PP
 .RS -4n
 \fBlin1d\fR (::tclinterp::interpolation)
 .RE
 .PP
-Does linear one-dimensional interpolation\&.
+Performs linear one-dimensional interpolation\&.
 .RS 4n
-\fBlin1d\fP \fI-x list -y list -xi list\fP
+\fBlin1d\fP \fI-x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
 .RE
 .PP
 \fBParameters\fR
 .RS 4n
 .TP
--x list
-List of independent variable (x) values, must be strictly increasing\&.
+-ifexists error|replace
+Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
--xi list
-List of independent variable interpolation (xi) values\&.
+-input list|vector
+Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to list\&.
 .TP
--y list
-List of dependent variable (y) values\&.
+-name name
+Destination vector name for yi; requires -output vector\&. Omit it or use #auto to create an automatically named vector\&.
+.TP
+-names dictionary
+Dictionary mapping output fields to destination vector names; requires -output vector\&. Valid fields: yi\&.
+.TP
+-output list|vector
+Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
+.TP
+-x values
+Strictly increasing sample positions; at least two values\&.
+.TP
+-xi values
+Evaluation positions; must not be empty\&.
+.TP
+-y values
+Sample values; must have the same length as -x\&.
 .RE
+.PP
+\fBDescription\fR
+.PP
+Every array argument marked values uses the representation selected by -input\&. Scalar options remain
+ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
+vectors\&.
+.PP
+Vector names resolve in the caller's namespace; destination namespaces must already exist\&. Each unnamed
+output, including fields omitted from -names, is created with ::rbc::vector create #auto\&. Returned
+vector names are fully qualified\&.
+.PP
+Do not specify both -name and the yi entry of -names\&. Unknown output fields and duplicate destinations
+are errors\&. The caller owns returned vectors and can release them with ::rbc::vector destroy
+$vectorName\&.
 .PP
 \fBReturn value\fR
 .PP
-list of interpolated dependent variable values, yi, at xi
+The interpolated values yi, as a Tcl list by default or an RBC vector name with -output
+vector\&.
 .PP
 .RS -4n
 \fBnear1d\fR (::tclinterp::interpolation)
 .RE
 .PP
-Does nearest one-dimensional interpolation\&.
+Performs nearest-neighbor one-dimensional interpolation\&.
 .RS 4n
-\fBnear1d\fP \fI-x list -y list -xi list\fP
+\fBnear1d\fP \fI-x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
 .RE
 .PP
 \fBParameters\fR
 .RS 4n
 .TP
--x list
-List of independent variable (x) values\&.
+-ifexists error|replace
+Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
--xi list
-List of independent variable interpolation (xi) values\&.
+-input list|vector
+Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to list\&.
 .TP
--y list
-List of dependent variable (y) values\&.
+-name name
+Destination vector name for yi; requires -output vector\&. Omit it or use #auto to create an automatically named vector\&.
+.TP
+-names dictionary
+Dictionary mapping output fields to destination vector names; requires -output vector\&. Valid fields: yi\&.
+.TP
+-output list|vector
+Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
+.TP
+-x values
+Sample positions; at least one value\&.
+.TP
+-xi values
+Evaluation positions; must not be empty\&.
+.TP
+-y values
+Sample values; must have the same length as -x\&.
 .RE
+.PP
+\fBDescription\fR
+.PP
+Every array argument marked values uses the representation selected by -input\&. Scalar options remain
+ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
+vectors\&.
+.PP
+Vector names resolve in the caller's namespace; destination namespaces must already exist\&. Each unnamed
+output, including fields omitted from -names, is created with ::rbc::vector create #auto\&. Returned
+vector names are fully qualified\&.
+.PP
+Do not specify both -name and the yi entry of -names\&. Unknown output fields and duplicate destinations
+are errors\&. The caller owns returned vectors and can release them with ::rbc::vector destroy
+$vectorName\&.
 .PP
 \fBReturn value\fR
 .PP
-list of interpolated dependent variable values, yi, at xi
+The interpolated values yi, as a Tcl list by default or an RBC vector name with -output
+vector\&.
 .PP
 .RS -4n
 \fBpchip1d\fR (::tclinterp::interpolation)
 .RE
 .PP
-Does piecewise cubic Hermite interpolation (PCHIP)\&.
+Performs piecewise cubic Hermite interpolation (PCHIP)\&.
 .RS 4n
-\fBpchip1d\fP \fI-x list -f|y list -xe|xi list\fP
+\fBpchip1d\fP \fI-x values -f values -xe values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
 .RE
 .PP
 \fBParameters\fR
 .RS 4n
 .TP
--f list
-List of dependent variable (f) values, -y is an alias\&.
+-f values
+Sample values; same length as -x\&. Alias: -y\&.
 .TP
--x list
-List of independent variable (x) values, must be strictly increasing\&.
+-ifexists error|replace
+Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
--xe list
-List of independent variable interpolation (xe) values, -xi is an alias\&.
+-input list|vector
+Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to list\&.
+.TP
+-name name
+Destination vector name for yi; requires -output vector\&. Omit it or use #auto to create an automatically named vector\&.
+.TP
+-names dictionary
+Dictionary mapping output fields to destination vector names; requires -output vector\&. Valid fields: yi\&.
+.TP
+-output list|vector
+Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
+.TP
+-x values
+Strictly increasing sample positions; at least two values\&.
+.TP
+-xe values
+Evaluation positions; must not be empty\&. Alias: -xi\&.
 .RE
+.PP
+\fBDescription\fR
+.PP
+Every array argument marked values uses the representation selected by -input\&. Scalar options remain
+ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
+vectors\&.
+.PP
+Vector names resolve in the caller's namespace; destination namespaces must already exist\&. Each unnamed
+output, including fields omitted from -names, is created with ::rbc::vector create #auto\&. Returned
+vector names are fully qualified\&.
+.PP
+Do not specify both -name and the yi entry of -names\&. Unknown output fields and duplicate destinations
+are errors\&. The caller owns returned vectors and can release them with ::rbc::vector destroy
+$vectorName\&.
 .PP
 \fBReturn value\fR
 .PP
-list of interpolated dependent variable values\&.
+The interpolated values yi, as a Tcl list by default or an RBC vector name with -output
+vector\&.
 
 
 .SH SEE ALSO
 tclinterp(n) - package's main page
 .br
 tclinterp-examples(n) - examples of usage with detailed explanations
+.br
+tclinterp-rbcbindings(n) - description of RBC vectors support
 .br
 .sp 1
 Public commands documentation:

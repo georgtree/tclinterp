@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Native bindings and RBC vectors &#8212; tclinterp  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
+    
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="tclinterp-Examples.html" />
+    <link rel="prev" title="Content" href="tclinterp.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="tclinterp-Examples.html" title="Examples"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tclinterp.html" title="Content"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">tclinterp  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Native bindings and RBC vectors</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="native-bindings-and-rbc-vectors">
+<span id="r-native-bindings-and-rbc-vectors"></span><span id="r-native20bindings20and20rbc20vectors"></span><span id="r-namespaceqz3a3arbcbindings"></span><h1>Native bindings and RBC vectors<a class="headerlink" href="#native-bindings-and-rbc-vectors" title="Link to this heading">¶</a></h1>
+<p>The public Tcl procedures retain their argument parsing, aliases, help and existing list/dictionary result
+shapes. Numerical array conversion, allocation, evaluation loops and cleanup now run in C. SWIG is no longer
+required. The old SWIG pointer commands and internal array-conversion helpers have been removed.</p>
+<p>RBC support is optional:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>./configure<span class="w"> </span>--with-tcl<span class="o">=</span>/path/to/tcl/lib<span class="w"> </span>--with-rbc<span class="o">=</span>/path/to/rbc-tk9
+make
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--with-rbc</span></code> accepts an RBC source tree, installed public-header directory, or installation prefix containing
+<code class="docutils literal notranslate"><span class="pre">rbcVector.h</span></code>, <code class="docutils literal notranslate"><span class="pre">rbcDecls.h</span></code> and <code class="docutils literal notranslate"><span class="pre">rbcStubLib.c</span></code>.  The portable RBC stub client is compiled into tclinterp; the
+RBC shared library is not linked directly. Tcl 9 is required. A compatible <code class="docutils literal notranslate"><span class="pre">rbc::vector</span></code> package (version 0.5.0
+or later) must be available at runtime for vector operations.  List-only calls do not load RBC or Tk. Without
+<code class="docutils literal notranslate"><span class="pre">--with-rbc</span></code>, list operations work normally and vector requests return an explanatory error.</p>
+<p>Every interpolation and approximation procedure accepts these additional options:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list</span></code></p></td>
+<td><p>Default. All array arguments are Tcl lists.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">vector</span></code></p></td>
+<td><p>All array arguments are names of real RBC vectors. Scalar options remain scalar.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">list</span></code></p></td>
+<td><p>Default. Preserve existing list/dictionary results.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">vector</span></code></p></td>
+<td><p>Replace each numeric result list with its fully qualified RBC vector name.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-name</span> <span class="pre">name</span></code></p></td>
+<td><p>Name of the primary <code class="docutils literal notranslate"><span class="pre">yi</span></code> output vector.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-names</span> <span class="pre">dictionary</span></code></p></td>
+<td><p>Destination names for individual output fields (table below).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error</span></code></p></td>
+<td><p>Default. Reject existing vector or command names.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">replace</span></code></p></td>
+<td><p>Update existing real RBC vectors; unrelated commands and complex destinations are rejected.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Input and output modes are independent: list-to-vector and vector-to-list calls are supported. Array inputs
+within a call use the same input mode. Omitted least-squares weights are generated internally, including in
+vector input mode.  Vector index offsets do not affect sample alignment. Complex vectors and non-finite input
+samples/scalar parameters are rejected.</p>
+<p>Relative vector names resolve in the public caller’s namespace. Destination namespaces must already
+exist. Omitted output names, or names equal to <code class="docutils literal notranslate"><span class="pre">#auto</span></code>, use RBC’s <code class="docutils literal notranslate"><span class="pre">vector</span> <span class="pre">create</span> <span class="pre">#auto</span></code>; each output gets a
+distinct name. New vectors have no mapped Tcl array variable. Returned vectors are caller-owned and survive the
+interpolation call; destroy them with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">destroy</span> <span class="pre">$name</span></code>, or delete their namespace when appropriate.</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nb">package</span><span class="w"> </span>require<span class="w"> </span>tclinterp
+<span class="k">namespace</span><span class="w"> </span>import<span class="w"> </span><span class="o">::</span>tclinterp::interpolation::<span class="o">*</span>
+
+<span class="c"># Existing list interface remains unchanged.</span>
+<span class="k">set</span><span class="w"> </span>values<span class="w"> </span><span class="k">[</span><span class="nv">lin1d</span><span class="w"> </span><span class="o">-</span>x<span class="w"> </span><span class="k">{</span><span class="nv">0</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="k">}</span><span class="w"> </span><span class="o">-</span>y<span class="w"> </span><span class="k">{</span><span class="nv">0</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="mi">4</span><span class="k">}</span><span class="w"> </span><span class="o">-</span>xi<span class="w"> </span><span class="k">{</span><span class="nv">.5</span><span class="w"> </span><span class="mf">1.5</span><span class="k">}]</span>
+
+<span class="c"># List input, automatically named vector output.</span>
+<span class="k">set</span><span class="w"> </span>result<span class="w"> </span><span class="k">[</span><span class="nv">lin1d</span><span class="w"> </span><span class="o">-</span>x<span class="w"> </span><span class="k">{</span><span class="nv">0</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="k">}</span><span class="w"> </span><span class="o">-</span>y<span class="w"> </span><span class="k">{</span><span class="nv">0</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="mi">4</span><span class="k">}</span><span class="w"> </span><span class="o">-</span>xi<span class="w"> </span><span class="k">{</span><span class="nv">.5</span><span class="w"> </span><span class="mf">1.5</span><span class="k">}</span><span class="w"> </span><span class="o">-</span>output<span class="w"> </span>vector<span class="k">]</span>
+<span class="nb">puts</span><span class="w"> </span><span class="k">[</span><span class="nv">$result</span><span class="w"> </span><span class="nv">index</span><span class="w"> </span><span class="o">:</span><span class="k">]</span>
+<span class="o">::</span><span class="nv">rbc</span><span class="o">::</span>vector<span class="w"> </span>destroy<span class="w"> </span><span class="nv">$result</span>
+
+<span class="c"># Vector input and named output, resolved in this namespace.</span>
+<span class="nb">package</span><span class="w"> </span>require<span class="w"> </span>rbc::vector
+<span class="o">::</span><span class="nv">rbc</span><span class="o">::</span>vector<span class="w"> </span>create<span class="w"> </span>x<span class="w"> </span>y<span class="w"> </span>xi<span class="w"> </span><span class="o">-</span>variable<span class="w"> </span><span class="k">{}</span>
+<span class="nv">x</span><span class="w"> </span>set<span class="w"> </span><span class="k">{</span><span class="nv">0</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="k">}</span>
+<span class="nv">y</span><span class="w"> </span>set<span class="w"> </span><span class="k">{</span><span class="nv">0</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="mi">4</span><span class="k">}</span>
+<span class="nv">xi</span><span class="w"> </span>set<span class="w"> </span><span class="k">{</span><span class="nv">.5</span><span class="w"> </span><span class="mf">1.5</span><span class="k">}</span>
+<span class="k">set</span><span class="w"> </span>result<span class="w"> </span><span class="k">[</span><span class="nv">lin1d</span><span class="w"> </span><span class="o">-</span>input<span class="w"> </span>vector<span class="w"> </span><span class="o">-</span>x<span class="w"> </span>x<span class="w"> </span><span class="o">-</span>y<span class="w"> </span>y<span class="w"> </span><span class="o">-</span>xi<span class="w"> </span>xi<span class="w"> </span><span class="o">-</span>output<span class="w"> </span>vector<span class="w"> </span><span class="o">-</span>name<span class="w"> </span>interpolated<span class="k">]</span>
+</pre></div>
+</div>
+<p>For multi-output operations, the returned dictionary has the same structure as in list mode. Unspecified fields
+receive automatic names. <code class="docutils literal notranslate"><span class="pre">-name</span></code> is shorthand for the <code class="docutils literal notranslate"><span class="pre">yi</span></code> entry of <code class="docutils literal notranslate"><span class="pre">-names</span></code>; supplying both for <code class="docutils literal notranslate"><span class="pre">yi</span></code> is an
+error.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Operation/options</p></th>
+<th class="head"><p>Keys accepted by <code class="docutils literal notranslate"><span class="pre">-names</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Any single-result operation</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">yi</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">genBezier</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xi</span></code>, <code class="docutils literal notranslate"><span class="pre">yi</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">least1d</span> <span class="pre">-coeffs</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">yi</span></code>, <code class="docutils literal notranslate"><span class="pre">coeffs.b</span></code>, <code class="docutils literal notranslate"><span class="pre">coeffs.c</span></code>, <code class="docutils literal notranslate"><span class="pre">coeffs.d</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">least1dDer</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">yi</span></code>, <code class="docutils literal notranslate"><span class="pre">yiDer</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">least1dDer</span> <span class="pre">-coeffs</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">yi</span></code>, <code class="docutils literal notranslate"><span class="pre">yiDer</span></code>, <code class="docutils literal notranslate"><span class="pre">coeffs.b</span></code>, <code class="docutils literal notranslate"><span class="pre">coeffs.c</span></code>, <code class="docutils literal notranslate"><span class="pre">coeffs.d</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">divDif1d</span> <span class="pre">-coeffs</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">yi</span></code>, <code class="docutils literal notranslate"><span class="pre">coeffs</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cubicSpline1d</span> <span class="pre">-deriv</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">yi</span></code>, <code class="docutils literal notranslate"><span class="pre">yder1</span></code>, <code class="docutils literal notranslate"><span class="pre">yder2</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">hermiteSpline1d</span> <span class="pre">-deriv</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">yi</span></code>, <code class="docutils literal notranslate"><span class="pre">yder1</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="k">set</span><span class="w"> </span>result<span class="w"> </span><span class="k">[</span><span class="nv">cubicSpline1d</span><span class="w"> </span><span class="o">-</span>t<span class="w"> </span><span class="k">{</span><span class="nv">0</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="k">}</span><span class="w"> </span><span class="o">-</span>y<span class="w"> </span><span class="k">{</span><span class="nv">0</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">4</span><span class="k">}</span><span class="w"> </span><span class="o">-</span>ti<span class="w"> </span><span class="k">{</span><span class="nv">.5</span><span class="w"> </span><span class="mf">1.5</span><span class="k">}</span><span class="w"> </span><span class="o">-</span>deriv<span class="w"> </span><span class="o">-</span>output<span class="w"> </span>vector<span class="w"> </span><span class="o">-</span>names<span class="w"> </span><span class="k">{</span><span class="nv">yi</span><span class="w"> </span>fit<span class="w"> </span>yder1<span class="w"> </span>slope<span class="w"> </span>yder2<span class="w"> </span>curvature<span class="k">}]</span>
+<span class="nb">puts</span><span class="w"> </span><span class="k">[[</span><span class="nb">dict</span><span class="w"> </span>get<span class="w"> </span><span class="nv">$result</span><span class="w"> </span>yder1<span class="k">]</span><span class="w"> </span><span class="nv">index</span><span class="w"> </span><span class="o">:</span><span class="k">]</span>
+</pre></div>
+</div>
+<p>Unknown output keys and duplicate explicit destinations are rejected. Results are computed before publishing
+any output, so an input vector can also be a destination with <code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">replace</span></code>. Explicit destinations are
+checked before publication; new vectors are removed if a later publication step fails. Updates to existing
+vectors are not rolled back if application callbacks cause a publication error.  Do not delete or replace
+destinations from notification callbacks during publication.</p>
+<p>The C binding validates sizes, lengths, required knot ordering, distinct polynomial abscissas, least-squares
+weights and boundary conditions before entering the legacy numerical routines. Linear/spline operations need at
+least two knots; not-a-knot cubic boundaries require at least four. Degree-zero Bezier curves are supported.
+The native boundary also fixes the right-only not-a-knot boundary selection in the underlying cubic routine.
+The numerical kernels still use their existing algorithms.</p>
+<p>Run tests using <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">test</span></code> with argparse, Tcllib and (for vector tests) rbc::vector
+on <code class="docutils literal notranslate"><span class="pre">TCLLIBPATH</span></code>. No display server or Tk initialization is required for vector tests.</p>
+<hr class="docutils" />
+<p class="centered">
+<strong>Copyright (c) George Yashin</strong></p></section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="tclinterp.html"
+                          title="previous chapter">Content</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="tclinterp-Examples.html"
+                          title="next chapter">Examples</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/tclinterp-rbcBindings.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="tclinterp-Examples.html" title="Examples"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tclinterp.html" title="Content"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">tclinterp  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Native bindings and RBC vectors</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright George Yashin.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

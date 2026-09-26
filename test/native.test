@@ -1,0 +1,247 @@
+package require tcltest
+namespace import ::tcltest::*
+package require tclinterp
+
+namespace eval ::interpTest {
+    proc close {a b} {
+        if {[llength $a]!=[llength $b]} {
+            return 0
+        }
+        foreach x $a y $b {
+            if {abs($x-$y)>1e-9*(1+abs($y))} {return 0}
+        }
+        return 1
+    }
+    proc values {result dictResult vectors} {
+        if {!$dictResult} {
+            return [expr {$vectors ? [$result index :] : $result}]
+        }
+        set flattened {}
+        dict for {key value} $result {
+            if {$key eq {coeffs} && [dict exists $value b]} {
+                dict for {ck cv} $value {
+                    lappend flattened {*}[expr {$vectors ? [$cv index :] : $cv}]
+                }
+            } else {
+                lappend flattened {*}[expr {$vectors ? [$value index :] : $value}]
+            }
+        }
+        return $flattened
+    }
+    proc cleanup {} {
+        if {[namespace exists ::interpTest::work]} {
+            namespace delete ::interpTest::work
+        }
+    }
+}
+
+# Check the actual extension build, not merely RBC's presence in auto_path.
+set vectorSupport [expr {![catch {
+    set probe [::tclinterp::interpolation::lin1d -x {0 1} -y {0 2} -xi {.5} -output vector]
+    ::rbc::vector destroy $probe
+}]}]
+testConstraint interpVectors $vectorSupport
+testConstraint interpNoVectors [expr {!$vectorSupport}]
+
+set cases {
+    {lin1d interpolation {-x {0 1 2 3} -y {0 1 4 9} -xi {.25 1.5 2.75}} 0}
+    {near1d interpolation {-x {0 1 2 3} -y {0 1 4 9} -xi {.25 1.5 2.75}} 0}
+    {lagr1d interpolation {-x {0 1 2 3} -y {0 1 4 9} -xi {.25 1.5 2.75}} 0}
+    {least1d interpolation {-x {0 1 2 3} -y {0 1 4 9} -xi {.25 1.5 2.75} -w {1 2 1 2} -nterms 3 -coeffs} 1}
+    {least1dDer interpolation {-x {0 1 2 3} -y {0 1 4 9} -xi {.25 1.5 2.75} -nterms 3 -coeffs} 1}
+    {genBezier approximation {-n 3 -x {0 1 2 3} -y {0 1 4 9} -t {0 .5 1}} 1}
+    {bezier approximation {-n 3 -x {0 .5 1} -y {0 1 4 9} -a 0 -b 1} 0}
+    {divDif1d interpolation {-x {0 1 2 3} -y {0 1 4 9} -xi {.25 1.5 2.75} -coeffs} 1}
+    {cubicBSpline1d approximation {-t {0 1 2 3} -y {0 1 4 9} -ti {.25 1.5 2.75}} 0}
+    {cubicBetaSpline1d approximation {-t {0 1 2 3} -y {0 1 4 9} -ti {.25 1.5 2.75} -beta1 1 -beta2 0} 0}
+    {cubicSpline1d interpolation {-t {0 1 2 3} -y {0 1 4 9} -ti {.25 1.5 2.75} -deriv} 1}
+    {hermiteSpline1d interpolation {-t {0 1 2 3} -y {0 1 4 9} -yp {0 2 4 6} -ti {.25 1.5 2.75} -deriv} 1}
+    {pchip1d interpolation {-x {0 1 2 3} -f {0 1 4 9} -xe {.25 1.5 2.75}} 0}
+}
+foreach case $cases {
+    lassign $case operation category arguments dictionary
+    test native-vector-$operation {List/vector input and output agree} -constraints interpVectors -setup {
+        namespace eval ::interpTest::work {}
+        set command ::tclinterp::${category}::$operation
+        set vectorArgs {}
+        set position 0
+        while {$position < [llength $arguments]} {
+            set key [lindex $arguments $position]
+            incr position
+            lappend vectorArgs $key
+            if {$key in {-coeffs -deriv}} {
+                continue
+            }
+            set value [lindex $arguments $position]
+            incr position
+            if {$key in {-x -y -xi -t -ti -f -xe -yp -w}} {
+                set v [::rbc::vector create ::interpTest::work::[string range $key 1 end] -variable {}]
+                $v set $value
+                # Offsets must not alter numerical alignment.
+                $v offset 7
+                set value $v
+            }
+            lappend vectorArgs $value
+        }
+    } -body {
+        set expected [::interpTest::values [$command {*}$arguments] $dictionary 0]
+        set vl [$command {*}$vectorArgs -input vector]
+        set lv [namespace eval ::interpTest::work [list $command {*}$arguments -output vector]]
+        set vv [namespace eval ::interpTest::work [list $command {*}$vectorArgs -input vector -output vector]]
+        list [::interpTest::close [::interpTest::values $vl $dictionary 0] $expected]\
+                [::interpTest::close [::interpTest::values $lv $dictionary 1] $expected]\
+                [::interpTest::close [::interpTest::values $vv $dictionary 1] $expected]
+    } -cleanup {::interpTest::cleanup} -result {1 1 1}
+}
+
+test native-names-1 {Relative vector names use the public caller's namespace} -constraints interpVectors -setup {
+    namespace eval ::interpTest::work {
+        ::rbc::vector create x y xi -variable {}
+        x set {0 1}; y set {0 2}; xi set {.25 .75}
+    }
+} -body {
+    namespace eval ::interpTest::work {
+        set result [::tclinterp::interpolation::lin1d -input vector -x x -y y -xi xi -output vector -name result]
+        list $result [$result index :]
+    }
+} -cleanup {::interpTest::cleanup} -result {::interpTest::work::result {0.5 1.5}}
+
+test native-names-2 {Multi-output names preserve dictionary structure} -constraints interpVectors -setup {
+    namespace eval ::interpTest::work {}
+} -body {
+    namespace eval ::interpTest::work {
+        set r [::tclinterp::interpolation::least1dDer -x {0 1 2} -y {0 1 4} -xi {.5} -nterms 3 -coeffs -output vector\
+                       -name fit -names {yiDer slope coeffs.b b coeffs.c c coeffs.d d}]
+        list [dict get $r yi] [dict get $r yiDer] [dict get $r coeffs b]\
+                [::interpTest::close [[dict get $r yi] index :] {.25}]
+    }
+} -cleanup {::interpTest::cleanup} -result {::interpTest::work::fit ::interpTest::work::slope ::interpTest::work::b 1}
+
+test native-names-3 {Default collision error does not modify a destination} -constraints interpVectors -setup {
+    namespace eval ::interpTest::work {::rbc::vector create dest -variable {}; dest set {99}}
+} -body {
+    set code [catch {::tclinterp::interpolation::lin1d -x {0 1} -y {0 2} -xi {.5} -output vector -name\
+                             ::interpTest::work::dest}]
+    list $code [::interpTest::work::dest index :]
+} -cleanup {::interpTest::cleanup} -result {1 99.0}
+
+test native-names-4 {Replacing an input vector is safe} -constraints interpVectors -setup {
+    namespace eval ::interpTest::work {
+        ::rbc::vector create x y xi -variable {}
+        x set {0 1}; y set {0 2}; xi set {.25 .75}
+    }
+} -body {
+    namespace eval ::interpTest::work {
+        set r [::tclinterp::interpolation::lin1d -input vector -x x -y y -xi xi -output vector -name x\
+                       -ifexists replace]
+        list $r [x index :]
+    }
+} -cleanup {::interpTest::cleanup} -result {::interpTest::work::x {0.5 1.5}}
+
+test native-names-5 {Unrelated commands are never overwritten} -constraints interpVectors -setup {
+    namespace eval ::interpTest::work {
+        proc dest {} {
+            return intact
+        }
+    }
+} -body {
+    list [catch {::tclinterp::interpolation::lin1d -x {0 1} -y {0 2} -xi {.5} -output vector\
+                         -name ::interpTest::work::dest -ifexists replace}] [::interpTest::work::dest]
+} -cleanup {::interpTest::cleanup} -result {1 intact}
+
+test native-names-6 {Duplicate destinations fail before publication} -constraints interpVectors -setup {
+    namespace eval ::interpTest::work {}
+} -body {
+    set code [catch {::tclinterp::interpolation::cubicSpline1d -t {0 1 2} -y {0 1 4} -ti {.5} -deriv\
+                             -output vector -names {yi ::interpTest::work::v yder1 ::interpTest::work::v}}]
+    list $code [info commands ::interpTest::work::*]
+} -cleanup {::interpTest::cleanup} -result {1 {}}
+
+test native-names-7 {Later creation failure cleans up newly created outputs} -constraints interpVectors -setup {
+    namespace eval ::interpTest::work {}
+} -body {
+    set code [catch {::tclinterp::interpolation::cubicSpline1d -t {0 1 2} -y {0 1 4} -ti {.5} -deriv -output vector\
+                             -names {yi ::interpTest::work::valid yder1 ::interpTest::work::missing::invalid}}]
+    list $code [info commands ::interpTest::work::*]
+} -cleanup {::interpTest::cleanup} -result {1 {}}
+
+test native-complex-1 {Complex input rejected} -constraints interpVectors -setup {
+    namespace eval ::interpTest::work {
+        ::rbc::vector create x -type complex -variable {}
+        ::rbc::vector create y xi -variable {}
+        y set {0 1}; xi set {.5}
+    }
+} -body {
+    ::tclinterp::interpolation::lin1d -input vector -x ::interpTest::work::x -y ::interpTest::work::y\
+            -xi ::interpTest::work::xi
+} -cleanup {::interpTest::cleanup} -returnCodes error -result {input vectors must contain real values}
+
+test native-errors-1 {Invalid knots return an error instead of exiting} -body {
+    ::tclinterp::interpolation::cubicSpline1d -t {0 1 1} -y {0 1 2} -ti {.5}
+} -returnCodes error -result {Independent variable array -t is not strictly increasing}
+
+test native-errors-2 {Least squares rejects insufficient distinct x values} -body {
+    ::tclinterp::interpolation::least1d -x {0 0 1} -y {0 1 2} -xi {.5} -nterms 3
+} -returnCodes error -result {-nterms must be positive and no greater than the number of distinct x values}
+
+test native-errors-3 {Least squares rejects nonpositive weights} -body {
+    ::tclinterp::interpolation::least1d -x {0 1 2} -y {0 1 4} -xi {.5} -w {1 0 1}
+} -returnCodes error -result {weights must be positive}
+
+test native-errors-4 {Small notaknot inputs rejected before numerical code} -body {
+    ::tclinterp::interpolation::cubicSpline1d -t {0 1} -y {0 1} -ti {.5} -ibcend notaknot
+} -returnCodes error -result {notaknot boundaries require at least four samples}
+
+test native-boundary-1 {Right-only notaknot uses the right boundary flag} -body {
+    set r [::tclinterp::interpolation::cubicSpline1d -t {0 1 2 3} -y {0 1 8 27} -ti {.5 1.5 2.5} -ibcbeg der1 -ybcbeg 0\
+                   -ibcend notaknot]
+    ::interpTest::close $r {.125 3.375 15.625}
+} -result 1
+
+test native-bezier-1 {Degree zero Bezier is constant} -body {
+    ::tclinterp::approximation::bezier -n 0 -a 0 -b 1 -x {0 .5 1} -y {7}
+} -result {7.0 7.0 7.0}
+
+test native-no-rbc-1 {List-only build reports vector support unavailable} -constraints interpNoVectors -body {
+    catch {::tclinterp::interpolation::lin1d -x {0 1} -y {0 2} -xi {.5} -output vector} message
+    string match {*RBC*} $message
+} -result 1
+
+test native-auto-1 {Automatic outputs are unique and caller-owned} -constraints interpVectors -setup {
+    namespace eval ::interpTest::work {}
+} -body {
+    namespace eval ::interpTest::work {
+        set a [::tclinterp::interpolation::lin1d -x {0 1} -y {0 2} -xi {.5} -output vector]
+        set b [::tclinterp::interpolation::lin1d -x {0 1} -y {0 2} -xi {.5} -output vector -name #auto]
+        list [expr {$a ne $b}] [string match ::interpTest::work::* $a] [$a index :] [$b index :]
+    }
+} -cleanup {::interpTest::cleanup} -result {1 1 1.0 1.0}
+
+test native-name-errors-1 {Names require vector output} -body {
+    ::tclinterp::interpolation::lin1d -x {0 1} -y {0 2} -xi {.5} -name v
+} -returnCodes error -result {-name and -names require -output vector}
+
+test native-name-errors-2 {Unknown output key does not create vectors} -constraints interpVectors -setup {
+    namespace eval ::interpTest::work {}
+} -body {
+    set code [catch {::tclinterp::interpolation::lin1d -x {0 1} -y {0 2} -xi {.5} -output vector\
+        -names {wrong ::interpTest::work::v}}]
+    list $code [info commands ::interpTest::work::*]
+} -cleanup {::interpTest::cleanup} -result {1 {}}
+
+test native-child-1 {RBC initializes independently in a second interpreter} -constraints interpVectors -setup {
+    set child [interp create]
+    $child eval [list set auto_path $::auto_path]
+} -body {
+    $child eval {
+        package require tclinterp
+        set v [::tclinterp::interpolation::lin1d -x {0 1} -y {0 2} -xi {.5} -output vector]
+        set result [$v index :]
+        ::rbc::vector destroy $v
+        list $result [package provide Tk]
+    }
+} -cleanup {interp delete $child} -result {1.0 {}}
+
+::interpTest::cleanup
+namespace delete ::interpTest
+cleanupTests

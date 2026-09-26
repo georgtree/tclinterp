@@ -1,0 +1,130 @@
+'\"
+'\" '\" Copyright (c) George Yashin
+'\"
+.TH "rbcBindings" 3tcl 0\&.15 "tclinterp" "Tcl wrapper for C interpolation procedures"
+.SH NAME
+rbcBindings - Commands in namespace rbcBindings
+.SH "NATIVE BINDINGS AND RBC VECTORS"
+.PP
+The public Tcl procedures retain their argument parsing, aliases, help and existing list/dictionary result
+shapes\&. Numerical array conversion, allocation, evaluation loops and cleanup now run in C\&. SWIG is no longer
+required\&. The old SWIG pointer commands and internal array-conversion helpers have been removed\&.
+.PP
+RBC support is optional:
+.PP
+.RS 4n
+.nf
+\&./configure --with-tcl=/path/to/tcl/lib --with-rbc=/path/to/rbc-tk9
+make
+.fi
+.RE
+.PP
+--with-rbc accepts an RBC source tree, installed public-header directory, or installation prefix containing
+rbcVector\&.h, rbcDecls\&.h and rbcStubLib\&.c\&.  The portable RBC stub client is compiled into tclinterp; the
+RBC shared library is not linked directly\&. Tcl 9 is required\&. A compatible rbc::vector package (version 0\&.5\&.0
+or later) must be available at runtime for vector operations\&.  List-only calls do not load RBC or Tk\&. Without
+--with-rbc, list operations work normally and vector requests return an explanatory error\&.
+.PP
+Every interpolation and approximation procedure accepts these additional options:
+.TS
+tab(|) box;
+l l.
+Option | Meaning
+_
+-input list | Default\&. All array arguments are Tcl lists\&.
+-input vector | All array arguments are names of real RBC vectors\&. Scalar options remain scalar\&.
+-output list | Default\&. Preserve existing list/dictionary results\&.
+-output vector | Replace each numeric result list with its fully qualified RBC vector name\&.
+-name name | Name of the primary yi output vector\&.
+-names dictionary | Destination names for individual output fields (table below)\&.
+-ifexists error | Default\&. Reject existing vector or command names\&.
+-ifexists replace | Update existing real RBC vectors; unrelated commands and complex destinations are rejected\&.
+.TE
+.PP
+Input and output modes are independent: list-to-vector and vector-to-list calls are supported\&. Array inputs
+within a call use the same input mode\&. Omitted least-squares weights are generated internally, including in
+vector input mode\&.  Vector index offsets do not affect sample alignment\&. Complex vectors and non-finite input
+samples/scalar parameters are rejected\&.
+.PP
+Relative vector names resolve in the public caller's namespace\&. Destination namespaces must already
+exist\&. Omitted output names, or names equal to #auto, use RBC's vector create #auto; each output gets a
+distinct name\&. New vectors have no mapped Tcl array variable\&. Returned vectors are caller-owned and survive the
+interpolation call; destroy them with ::rbc::vector destroy $name, or delete their namespace when appropriate\&.
+.PP
+.RS 4n
+.nf
+package require tclinterp
+namespace import ::tclinterp::interpolation::*
+
+# Existing list interface remains unchanged\&.
+set values [lin1d -x {0 1 2} -y {0 2 4} -xi {\&.5 1\&.5}]
+
+# List input, automatically named vector output\&.
+set result [lin1d -x {0 1 2} -y {0 2 4} -xi {\&.5 1\&.5} -output vector]
+puts [$result index :]
+::rbc::vector destroy $result
+
+# Vector input and named output, resolved in this namespace\&.
+package require rbc::vector
+::rbc::vector create x y xi -variable {}
+x set {0 1 2}
+y set {0 2 4}
+xi set {\&.5 1\&.5}
+set result [lin1d -input vector -x x -y y -xi xi -output vector -name interpolated]
+.fi
+.RE
+.PP
+For multi-output operations, the returned dictionary has the same structure as in list mode\&. Unspecified fields
+receive automatic names\&. -name is shorthand for the yi entry of -names; supplying both for yi is an
+error\&.
+.TS
+tab(|) box;
+l l.
+Operation/options | Keys accepted by -names
+_
+Any single-result operation | yi
+genBezier | xi, yi
+least1d -coeffs | yi, coeffs\&.b, coeffs\&.c, coeffs\&.d
+least1dDer | yi, yiDer
+least1dDer -coeffs | yi, yiDer, coeffs\&.b, coeffs\&.c, coeffs\&.d
+divDif1d -coeffs | yi, coeffs
+cubicSpline1d -deriv | yi, yder1, yder2
+hermiteSpline1d -deriv | yi, yder1
+.TE
+.PP
+.RS 4n
+.nf
+set result [cubicSpline1d -t {0 1 2} -y {0 1 4} -ti {\&.5 1\&.5} -deriv -output vector -names {yi fit yder1 slope yder2 curvature}]
+puts [[dict get $result yder1] index :]
+.fi
+.RE
+.PP
+Unknown output keys and duplicate explicit destinations are rejected\&. Results are computed before publishing
+any output, so an input vector can also be a destination with -ifexists replace\&. Explicit destinations are
+checked before publication; new vectors are removed if a later publication step fails\&. Updates to existing
+vectors are not rolled back if application callbacks cause a publication error\&.  Do not delete or replace
+destinations from notification callbacks during publication\&.
+.PP
+The C binding validates sizes, lengths, required knot ordering, distinct polynomial abscissas, least-squares
+weights and boundary conditions before entering the legacy numerical routines\&. Linear/spline operations need at
+least two knots; not-a-knot cubic boundaries require at least four\&. Degree-zero Bezier curves are supported\&.
+The native boundary also fixes the right-only not-a-knot boundary selection in the underlying cubic routine\&.
+The numerical kernels still use their existing algorithms\&.
+.PP
+Run tests using make test with argparse, Tcllib and (for vector tests) rbc::vector
+on TCLLIBPATH\&. No display server or Tk initialization is required for vector tests\&.
+
+
+.SH SEE ALSO
+tclinterp(n) - package's main page
+.br
+tclinterp-examples(n) - examples of usage with detailed explanations
+.br
+tclinterp-rbcbindings(n) - description of RBC vectors support
+.br
+.sp 1
+Public commands documentation:
+.br
+tclinterp-tclinterp-approximation(n)
+.br
+tclinterp-tclinterp-interpolation(n)

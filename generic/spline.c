@@ -4955,7 +4955,7 @@ double *spline_cubic_set ( int n, double t[], double y[], int ibcbeg,
     a2[n-1] = 0.0;
     a3[n-1] = 1.0;
   }
-  else if ( ibcbeg == 3 )
+  else if ( ibcend == 3 )
   {
     b[n-1] = 0.0;
     a1[n-1] = - ( t[n-1] - t[n-2] );

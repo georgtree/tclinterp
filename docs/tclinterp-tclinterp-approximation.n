@@ -5,13 +5,13 @@
 .SH NAME
 tclinterp::approximation - Commands in namespace tclinterp::approximation
 .SH SYNOPSIS
-\fBbezier\fP \fI-n value -a value -b value -x list -y list\fP
+\fBbezier\fP \fI-n integer -a value -b value -x values -y values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
-\fBcubicBetaSpline1d\fP \fI-beta1 value -beta2 value -t|x list -y list -ti|xi list\fP
+\fBcubicBetaSpline1d\fP \fI-beta1 value -beta2 value -t values -y values -ti values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
-\fBcubicBSpline1d\fP \fI-t|x list -y list -ti|xi list\fP
+\fBcubicBSpline1d\fP \fI-t values -y values -ti values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
-\fBgenBezier\fP \fI-n value -x list -y list -t list\fP
+\fBgenBezier\fP \fI-n integer -x values -y values -t values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
 .SH ::TCLINTERP::APPROXIMATION
 .SH COMMANDS
@@ -20,9 +20,9 @@ tclinterp::approximation - Commands in namespace tclinterp::approximation
 \fBbezier\fR (::tclinterp::approximation)
 .RE
 .PP
-Finds values of Bezier function at x points\&.
+Evaluates a Bezier polynomial on an interval\&.
 .RS 4n
-\fBbezier\fP \fI-n value -a value -b value -x list -y list\fP
+\fBbezier\fP \fI-n integer -a value -b value -x values -y values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
 .RE
 .PP
@@ -30,32 +30,62 @@ Finds values of Bezier function at x points\&.
 .RS 4n
 .TP
 -a value
-Start of the interval\&.
+Start of the interval; must differ from -b\&.
 .TP
 -b value
-End of interval\&.
+End of the interval; must differ from -a\&.
 .TP
--n value
-Order of Bezier function, must be zero or more\&.
+-ifexists error|replace
+Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
--x list
-List of x values\&.
+-input list|vector
+Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to list\&.
 .TP
--y list
-List of y control points values of size n+1\&.
+-n integer
+Polynomial degree; must be zero or greater\&.
+.TP
+-name name
+Destination vector name for yi; requires -output vector\&. Omit it or use #auto to create an automatically named vector\&.
+.TP
+-names dictionary
+Dictionary mapping output fields to destination vector names; requires -output vector\&. Valid fields: yi\&.
+.TP
+-output list|vector
+Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
+.TP
+-x values
+Evaluation positions; must not be empty\&.
+.TP
+-y values
+Control values; exactly n+1 values\&.
 .RE
+.PP
+\fBDescription\fR
+.PP
+Every array argument marked values uses the representation selected by -input\&. Scalar options remain
+ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
+vectors\&.
+.PP
+Vector names resolve in the caller's namespace; destination namespaces must already exist\&. Each unnamed
+output, including fields omitted from -names, is created with ::rbc::vector create #auto\&. Returned
+vector names are fully qualified\&.
+.PP
+Do not specify both -name and the yi entry of -names\&. Unknown output fields and duplicate destinations
+are errors\&. The caller owns returned vectors and can release them with ::rbc::vector destroy
+$vectorName\&.
 .PP
 \fBReturn value\fR
 .PP
-yi values of Bezier function at x points
+The interpolated values yi, as a Tcl list by default or an RBC vector name with -output
+vector\&.
 .PP
 .RS -4n
 \fBcubicBetaSpline1d\fR (::tclinterp::approximation)
 .RE
 .PP
-Evaluates a cubic beta spline approximant\&.
+Evaluates a cubic beta-spline approximant\&.
 .RS 4n
-\fBcubicBetaSpline1d\fP \fI-beta1 value -beta2 value -t|x list -y list -ti|xi list\fP
+\fBcubicBetaSpline1d\fP \fI-beta1 value -beta2 value -t values -y values -ti values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
 .RE
 .PP
@@ -63,87 +93,181 @@ Evaluates a cubic beta spline approximant\&.
 .RS 4n
 .TP
 -beta1 value
-The skew or bias parameter, beta1 = 1 for no skew or bias\&.
+Required skew or bias parameter; 1 means no skew or bias\&.
 .TP
 -beta2 value
-The tension parameter, beta2 = 0 for no tension\&.
+Required tension parameter; 0 means no tension\&.
 .TP
--t list
-List of independent variable (t) values, -x is an alias\&.
+-ifexists error|replace
+Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
--ti list
-List of independent variable interpolation (ti) values, -xi is an alias\&.
+-input list|vector
+Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to list\&.
 .TP
--y list
-List of dependent variable (y) values\&.
+-name name
+Destination vector name for yi; requires -output vector\&. Omit it or use #auto to create an automatically named vector\&.
+.TP
+-names dictionary
+Dictionary mapping output fields to destination vector names; requires -output vector\&. Valid fields: yi\&.
+.TP
+-output list|vector
+Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
+.TP
+-t values
+Strictly increasing sample positions; at least two values\&. Alias: -x\&.
+.TP
+-ti values
+Evaluation positions; must not be empty\&. Alias: -xi\&.
+.TP
+-y values
+Sample values; must have the same length as -t\&.
 .RE
+.PP
+\fBDescription\fR
+.PP
+Every array argument marked values uses the representation selected by -input\&. Scalar options remain
+ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
+vectors\&.
+.PP
+Vector names resolve in the caller's namespace; destination namespaces must already exist\&. Each unnamed
+output, including fields omitted from -names, is created with ::rbc::vector create #auto\&. Returned
+vector names are fully qualified\&.
+.PP
+Do not specify both -name and the yi entry of -names\&. Unknown output fields and duplicate destinations
+are errors\&. The caller owns returned vectors and can release them with ::rbc::vector destroy
+$vectorName\&.
+.PP
+The parameters must produce a finite, nonzero beta-spline normalization\&.
 .PP
 \fBReturn value\fR
 .PP
-list of approximation values yi at ti points\&.
+The approximated values yi, as a Tcl list by default or an RBC vector name with -output
+vector\&.
 .PP
 .RS -4n
 \fBcubicBSpline1d\fR (::tclinterp::approximation)
 .RE
 .PP
-Evaluates a cubic B spline approximant\&.
+Evaluates a cubic B-spline approximant\&.
 .RS 4n
-\fBcubicBSpline1d\fP \fI-t|x list -y list -ti|xi list\fP
+\fBcubicBSpline1d\fP \fI-t values -y values -ti values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
 .RE
 .PP
 \fBParameters\fR
 .RS 4n
 .TP
--t list
-List of independent variable (t) values, -x is an alias\&.
+-ifexists error|replace
+Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
--ti list
-List of independent variable interpolation (ti) values, -xi is an alias\&.
+-input list|vector
+Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to list\&.
 .TP
--y list
-List of dependent variable (y) values\&.
+-name name
+Destination vector name for yi; requires -output vector\&. Omit it or use #auto to create an automatically named vector\&.
+.TP
+-names dictionary
+Dictionary mapping output fields to destination vector names; requires -output vector\&. Valid fields: yi\&.
+.TP
+-output list|vector
+Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
+.TP
+-t values
+Strictly increasing sample positions; at least two values\&. Alias: -x\&.
+.TP
+-ti values
+Evaluation positions; must not be empty\&. Alias: -xi\&.
+.TP
+-y values
+Sample values; must have the same length as -t\&.
 .RE
+.PP
+\fBDescription\fR
+.PP
+Every array argument marked values uses the representation selected by -input\&. Scalar options remain
+ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
+vectors\&.
+.PP
+Vector names resolve in the caller's namespace; destination namespaces must already exist\&. Each unnamed
+output, including fields omitted from -names, is created with ::rbc::vector create #auto\&. Returned
+vector names are fully qualified\&.
+.PP
+Do not specify both -name and the yi entry of -names\&. Unknown output fields and duplicate destinations
+are errors\&. The caller owns returned vectors and can release them with ::rbc::vector destroy
+$vectorName\&.
 .PP
 \fBReturn value\fR
 .PP
-list of approximation values yi at ti points\&.
+The approximated values yi, as a Tcl list by default or an RBC vector name with -output
+vector\&.
 .PP
 .RS -4n
 \fBgenBezier\fR (::tclinterp::approximation)
 .RE
 .PP
-Finds values of general Bezier function at specified t points\&.
+Evaluates a parametric Bezier curve\&.
 .RS 4n
-\fBgenBezier\fP \fI-n value -x list -y list -t list\fP
+\fBgenBezier\fP \fI-n integer -x values -y values -t values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
 .RE
 .PP
 \fBParameters\fR
 .RS 4n
 .TP
--n value
-Order of Bezier function, must be zero or more\&.
+-ifexists error|replace
+Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
--t list
-List of t points at which we want to evaluate Bezier function, best results are obtained within the interval \fI0,1\fP
+-input list|vector
+Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to list\&.
 .TP
--x list
-List of x control points values of size n+1\&.
+-n integer
+Curve degree; must be zero or greater\&.
 .TP
--y list
-List of y control points values of size n+1\&.
+-name name
+Destination vector name for yi; requires -output vector\&. Omit it or use #auto to create an automatically named vector\&.
+.TP
+-names dictionary
+Dictionary mapping output fields to destination vector names; requires -output vector\&. Valid fields: xi, yi\&.
+.TP
+-output list|vector
+Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
+.TP
+-t values
+Nonempty evaluation parameters; normally between 0 and 1\&.
+.TP
+-x values
+X control coordinates; exactly n+1 values\&.
+.TP
+-y values
+Y control coordinates; exactly n+1 values\&.
 .RE
+.PP
+\fBDescription\fR
+.PP
+Every array argument marked values uses the representation selected by -input\&. Scalar options remain
+ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
+vectors\&.
+.PP
+Vector names resolve in the caller's namespace; destination namespaces must already exist\&. Each unnamed
+output, including fields omitted from -names, is created with ::rbc::vector create #auto\&. Returned
+vector names are fully qualified\&.
+.PP
+Do not specify both -name and the yi entry of -names\&. Unknown output fields and duplicate destinations
+are errors\&. The caller owns returned vectors and can release them with ::rbc::vector destroy
+$vectorName\&.
 .PP
 \fBReturn value\fR
 .PP
-dict with lists of xi and yi points at specified t points
+A dictionary with xi and yi coordinates\&. Each numeric array is a Tcl list by default or an
+RBC vector name with -output vector\&.
 
 
 .SH SEE ALSO
 tclinterp(n) - package's main page
 .br
 tclinterp-examples(n) - examples of usage with detailed explanations
+.br
+tclinterp-rbcbindings(n) - description of RBC vectors support
 .br
 .sp 1
 Public commands documentation:

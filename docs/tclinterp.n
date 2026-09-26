@@ -19,9 +19,6 @@ The sources of procedures are:
 For building you need:
 .TP
 \(bu
-\fISWIG of version 4\&.3\fP [URL: https://www\&.swig\&.org/download\&.html]
-.TP
-\(bu
 \fITcl9\fP [URL: https://www\&.tcl\&.tk/software/tcltk/9\&.0\&.html]
 .TP
 \(bu
@@ -82,15 +79,30 @@ near1d -help
 .PP
 .RS 4n
 .nf
-Does nearest one-dimensional interpolation\&. Returns: list of interpolated
-dependent variable values, 'yi', at 'xi'\&. Can accepts unambiguous prefixes
-instead of switches names\&. Accepts switches only before parameters\&.
+Performs nearest-neighbor one-dimensional interpolation\&. Returns: The
+interpolated values yi, as a Tcl list by default or an RBC vector name with
+-output vector\&. Can accepts unambiguous prefixes instead of switches names\&.
+Accepts switches only before parameters\&.
     Switches:
-        -x - Required, expects argument\&. List of independent variable (x)
-            values, must be strictly increasing\&.
-        -y - Required, expects argument\&. List of dependent variable (y) values\&.
-        -xi - Required, expects argument\&. list of independent variable
-            interpolation (xi) values\&.
+        -x value - Required\&. Sample positions; at least one value\&.
+        -y value - Required\&. Sample values; must have the same length as -x\&.
+        -xi value - Required\&. Evaluation positions; must not be empty\&.
+        -input value - Input representation for all array arguments: Tcl lists
+            or real RBC vector names\&. Defaults to list\&. Default value is list\&. Value
+            must be one of: list or vector\&.
+        -output value - Output representation for every numeric result array:
+            Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
+            Default value is list\&. Value must be one of: list or vector\&.
+        -name value - Destination vector name for yi; requires -output vector\&.
+            Omit it or use #auto to create an automatically named vector\&.
+        -names value - Dictionary mapping output fields to destination vector
+            names; requires -output vector\&. Valid fields: yi\&. Type dict\&.
+        -ifexists value - Policy for existing destination vectors; defaults to
+            error\&. With replace, an existing real vector is resized and overwritten\&.
+            Default value is error\&. Value must be one of: error or replace\&.
+        -help - Help switch, when provided, forces ignoring all other switches
+            and parameters, prints the help message to stdout, and returns up to 2
+            levels above the current level\&.
 .fi
 .RE
 .PP
@@ -101,6 +113,8 @@ Best to do it in interactive console, see \fItkcon\fP [URL: https://github\&.com
 tclinterp(n) - package's main page
 .br
 tclinterp-examples(n) - examples of usage with detailed explanations
+.br
+tclinterp-rbcbindings(n) - description of RBC vectors support
 .br
 .sp 1
 Public commands documentation:
