@@ -1,5 +1,5 @@
 package require argparse 0.58
-package provide tclinterp 0.15
+package provide tclinterp 0.3
 
 namespace eval ::tclinterp {
     namespace import ::tcl::mathop::*
