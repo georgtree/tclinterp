@@ -60,9 +60,10 @@ set cases {
 }
 foreach case $cases {
     lassign $case operation category arguments dictionary
-    test native-vector-$operation {List/vector input and output agree} -constraints interpVectors -setup {
+    test native-vector-$operation {List/vector input and output agree, including locked inputs} -constraints interpVectors -setup {
         namespace eval ::interpTest::work {}
         set command ::tclinterp::${category}::$operation
+        set inputVectors {}
         set vectorArgs {}
         set position 0
         while {$position < [llength $arguments]} {
@@ -79,6 +80,7 @@ foreach case $cases {
                 $v set $value
                 # Offsets must not alter numerical alignment.
                 $v offset 7
+                lappend inputVectors $v
                 set value $v
             }
             lappend vectorArgs $value
@@ -88,10 +90,21 @@ foreach case $cases {
         set vl [$command {*}$vectorArgs -input vector]
         set lv [namespace eval ::interpTest::work [list $command {*}$arguments -output vector]]
         set vv [namespace eval ::interpTest::work [list $command {*}$vectorArgs -input vector -output vector]]
+        set before {}
+        foreach v $inputVectors {
+            dict set before $v [$v index :]
+            $v readonly true
+        }
+        set locked [namespace eval ::interpTest::work [list $command {*}$vectorArgs -input vector -output vector]]
+        set unchanged 1
+        foreach v $inputVectors {
+            if {[$v index :] ne [dict get $before $v] || ![$v readonly]} {set unchanged 0}
+        }
         list [::interpTest::close [::interpTest::values $vl $dictionary 0] $expected]\
                 [::interpTest::close [::interpTest::values $lv $dictionary 1] $expected]\
-                [::interpTest::close [::interpTest::values $vv $dictionary 1] $expected]
-    } -cleanup {::interpTest::cleanup} -result {1 1 1}
+                [::interpTest::close [::interpTest::values $vv $dictionary 1] $expected]\
+                [::interpTest::close [::interpTest::values $locked $dictionary 1] $expected] $unchanged
+    } -cleanup {::interpTest::cleanup} -result {1 1 1 1 1}
 }
 
 test native-names-1 {Relative vector names use the public caller's namespace} -constraints interpVectors -setup {
@@ -241,6 +254,38 @@ test native-child-1 {RBC initializes independently in a second interpreter} -con
         list $result [package provide Tk]
     }
 } -cleanup {interp delete $child} -result {1.0 {}}
+
+test native-readonly-output {locked secondary output prevents all publication; unlocking permits retry} -constraints interpVectors -setup {
+    namespace eval ::interpTest::work {
+        ::rbc::vector create fit slope -variable {}
+        fit set {77}; slope set {88}; slope readonly true
+    }
+} -body {
+    namespace eval ::interpTest::work {
+        set command {::tclinterp::interpolation::least1dDer -x {0 1 2} -y {0 1 4} -xi {.5} -nterms 3
+                     -output vector -name fit -names {yiDer slope} -ifexists replace}
+        set code [catch {{*}$command} message options]
+        set before [list [fit index :] [slope index :]]
+        slope readonly false
+        set result [{*}$command]
+        list $code [dict get $options -errorcode] $before [dict get $result yi] [fit readonly]
+    }
+} -cleanup {::interpTest::cleanup} -result {1 {RBC VECTOR READONLY} {77.0 88.0} ::interpTest::work::fit 0}
+
+test native-readonly-alias {a locked input can be read but cannot also be the destination} -constraints interpVectors -setup {
+    namespace eval ::interpTest::work {
+        ::rbc::vector create x y xi -variable {}
+        x set {0 1}; y set {0 2}; xi set {.5}
+        x readonly true
+    }
+} -body {
+    namespace eval ::interpTest::work {
+        set command {::tclinterp::interpolation::lin1d -input vector -x x -y y -xi xi}
+        set values [{*}$command]
+        set code [catch {{*}$command -output vector -name x -ifexists replace} message options]
+        list $values $code [dict get $options -errorcode] [x index :] [x readonly]
+    }
+} -cleanup {::interpTest::cleanup} -result {1.0 1 {RBC VECTOR READONLY} {0.0 1.0} 1}
 
 ::interpTest::cleanup
 namespace delete ::interpTest

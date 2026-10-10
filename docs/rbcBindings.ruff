@@ -16,7 +16,7 @@ namespace eval rbcBindings {
 
         `--with-rbc` accepts an RBC source tree, installed public-header directory, or installation prefix containing
         `rbcVector.h`, `rbcDecls.h` and `rbcStubLib.c`.  The portable RBC stub client is compiled into tclinterp; the
-        RBC shared library is not linked directly. Tcl 9 is required. A compatible `rbc::vector` package (version 0.5.0
+        RBC shared library is not linked directly. Tcl 9 is required. A compatible `rbc::vector` package (version 0.8.1
         or later) must be available at runtime for vector operations.  List-only calls do not load RBC or Tk. Without
         `--with-rbc`, list operations work normally and vector requests return an explanatory error.
 
@@ -99,6 +99,15 @@ namespace eval rbcBindings {
 
         Run tests using `make test` with argparse, Tcllib and (for vector tests) rbc::vector
         on `TCLLIBPATH`. No display server or Tk initialization is required for vector tests.
+        ## Read-only vectors
+
+        RBC-enabled builds require RBC 0.8.1 or newer headers and runtime. Read-only vectors are valid inputs
+        to every interpolation and approximation operation. Input state and data are not changed.
+        Existing output vectors must be writable even with `-ifexists replace`. All explicit destinations are
+        checked before publishing any results; a locked destination fails with `RBC VECTOR READONLY`.
+        Unlock it explicitly or select a different name / `#auto`. New outputs are writable. Permission is checked
+        again before each write because application callbacks may change later destinations during publication.
+
     }
 
 }

@@ -12,6 +12,9 @@
 #ifdef HAVE_RBC
 #include <rbcVector.h>
 #include <rbcDecls.h>
+#ifndef Rbc_VectorCheckWritable
+#error "RBC 0.8.1 or newer stubs headers are required"
+#endif
 #include <rbcStubLib.c>
 #endif
 
@@ -87,7 +90,7 @@ static double *Allocate(Tcl_Interp *ip, int n) {
 
 static int InitVectors(Tcl_Interp *ip) {
 #ifdef HAVE_RBC
-    return Rbc_VectorInitStubs(ip, "0.8.0", 0) ? TCL_OK : TCL_ERROR;
+    return Rbc_VectorInitStubs(ip, "0.8.1", 0) ? TCL_OK : TCL_ERROR;
 #else
     return Error(ip, "tclinterp was built without RBC vector support; rebuild with --with-rbc=DIR");
 #endif
@@ -204,7 +207,8 @@ static Tcl_Obj *Qualified(Tcl_Interp *ip, const char *s) {
     return Tcl_ObjPrintf("%s%s%s", ns, strcmp(ns, "::") ? "::" : "", s);
 }
 
-static int CheckDestination(Tcl_Interp *ip, Tcl_Obj *name, int replace) {
+/* Validate identity/type separately from write permission for post-publication checks. */
+static int CheckDestination(Tcl_Interp *ip, Tcl_Obj *name, int replace, int writable) {
     const char *s = Tcl_GetString(name);
     Tcl_CmdInfo info;
     int command = Tcl_GetCommandInfo(ip, s, &info);
@@ -223,6 +227,9 @@ static int CheckDestination(Tcl_Interp *ip, Tcl_Obj *name, int replace) {
         if (Rbc_VectorGetType(v) != RBC_VECTOR_REAL) {
             return Error(ip, "destination vector must be real");
         }            
+        if (writable && Rbc_VectorCheckWritable(ip, v) != TCL_OK) {
+            return TCL_ERROR;
+        }
     } else if (command) {
         Tcl_SetObjResult(ip, Tcl_ObjPrintf("command \"%s\" already exists", s));
         return TCL_ERROR;
@@ -327,7 +334,7 @@ static int Publish(Context *c, Output *out, int count, int dictionary, int vecto
                         goto done;
                     }
                 }                    
-                if (CheckDestination(ip, out[i].name, replace) != TCL_OK) {
+                if (CheckDestination(ip, out[i].name, replace, 1) != TCL_OK) {
                     goto done;
                 }                    
             }
@@ -338,7 +345,7 @@ static int Publish(Context *c, Output *out, int count, int dictionary, int vecto
                 if ((pass == 0 && !out[i].name) || (pass == 1 && out[i].name)) {
                     continue;
                 }                    
-                if (out[i].name && CheckDestination(ip, out[i].name, replace) != TCL_OK) {
+                if (out[i].name && CheckDestination(ip, out[i].name, replace, 1) != TCL_OK) {
                     goto done;
                 }                    
                 if (!out[i].name || !Rbc_VectorExists2(ip, Tcl_GetString(out[i].name))) {
@@ -360,7 +367,7 @@ static int Publish(Context *c, Output *out, int count, int dictionary, int vecto
         }
         for (int i = 0; i < count; i++) {
             Rbc_Vector *v;
-            if (CheckDestination(ip, out[i].name, 1) != TCL_OK ||
+            if (CheckDestination(ip, out[i].name, 1, 1) != TCL_OK ||
                 Rbc_GetVector(ip, Tcl_GetString(out[i].name), &v) != TCL_OK) {
                 goto done;
             }
@@ -369,7 +376,7 @@ static int Publish(Context *c, Output *out, int count, int dictionary, int vecto
             }                
         }
         for (int i = 0; i < count; i++) {
-            if (!Rbc_VectorExists2(ip, Tcl_GetString(out[i].name)) || CheckDestination(ip, out[i].name, 1) != TCL_OK) {
+            if (!Rbc_VectorExists2(ip, Tcl_GetString(out[i].name)) || CheckDestination(ip, out[i].name, 1, 0) != TCL_OK) {
                 Error(ip, "output vector removed or replaced during notification");
                 goto done;
             }
