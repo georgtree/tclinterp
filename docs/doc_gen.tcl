@@ -3,6 +3,7 @@ package require ruff
 package require fileutil
 set docDir [file dirname [file normalize [info script]]]
 set sourceDir "${docDir}/../"
+source [file join $docDir tableHelpers.tcl]
 source [file join $docDir startPage.ruff]
 source [file join $docDir rbcBindings.ruff]
 source [file join $docDir examples.ruff]
@@ -13,12 +14,14 @@ if {$packageVersion eq {}} {
     return -code error "Package version is empty"
 }
 set title "Tcl wrapper for C interpolation procedures"
-set commonSphinx [list -title $title -sortnamespaces false -preamble $startPage -pagesplit namespace -recurse false\
-                        -includesource false -pagesplit namespace -autopunctuate true -compact false\
-                        -excludeprocs {^[A-Z].*} -includeprivate false -product tclinterp\
-                        -diagrammer "ditaa --border-width 1" -version $packageVersion -copyright "George Yashin"\
-                        {*}$::argv]
-set commonNroff [list -title $title -sortnamespaces false -preamble $startPage -pagesplit namespace -recurse false\
+set preparedStartPage [::tclinterpDoc::TablesForRuff $startPage]
+set startPageSphinx $preparedStartPage
+set startPageNroff $preparedStartPage
+set commonSphinx [list -title $title -sortnamespaces false -preamble $startPageSphinx -pagesplit namespace\
+                          -recurse false -includesource false -pagesplit namespace -autopunctuate true -compact false\
+                          -excludeprocs {^[A-Z].*} -includeprivate false -product tclinterp -diagrammer "ditaa
+                          --border-width 1" -version $packageVersion -copyright "George Yashin" {*}$::argv]
+set commonNroff [list -title $title -sortnamespaces false -preamble $startPageNroff -pagesplit namespace -recurse false\
                          -pagesplit namespace -autopunctuate true -compact false -includeprivate false\
                          -excludeprocs {^[A-Z].*} -product tclinterp -diagrammer "ditaa --border-width 1"\
                          -version $packageVersion -copyright "George Yashin" {*}$::argv]

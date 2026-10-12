@@ -1,119 +1,182 @@
-# Content
+# tclinterp - interpolation and approximation with Tcl
 
-This package provides tcl wrapper for interpolation and approximation procedures.
-The sources of procedures are:
-- [Linear interpolation routines](https://people.math.sc.edu/Burkardt/c_src/interp/interp.html)
-- [Spline interpolation and approximation routines](https://people.math.sc.edu/Burkardt/c_src/spline/spline.html)
+`tclinterp` provides Tcl commands for interpolation and approximation using John Burkardt's
+[interpolation](https://people.math.sc.edu/Burkardt/c_src/interp/interp.html) and
+[spline](https://people.math.sc.edu/Burkardt/c_src/spline/spline.html) routines.
 
-# Installation and dependencies
+A thin Tcl interface provides argument parsing and interactive help; native Tcl C bindings handle numeric conversion,
+allocation, evaluation and cleanup. SWIG is not required.
 
-For building you need:
-- [Tcl9](https://www.tcl.tk/software/tcltk/9.0.html)
-- [gcc compiler](https://gcc.gnu.org/)
-- [make tool](https://www.gnu.org/software/make/)
+## What it gives you (at a glance)
 
-For run you also need:
-- [argparse](https://github.com/georgtree/argparse)
-- [Tcllib](https://www.tcl.tk/software/tcllib/)
+- Linear, nearest-neighbor, Lagrange, least-squares and divided-difference interpolation.
+- Cubic, Hermite and PCHIP interpolation, plus Bezier, B-spline and beta-spline approximation.
+- Tcl list input and output by default, with optional real RBC vector input and output.
+- Named or automatically created output vectors, including multiple-result dictionaries.
+- Interactive `-help` for every public procedure.
 
-To build, run 
-```bash
+Interpolation commands are in `::tclinterp::interpolation`; approximation commands are in `::tclinterp::approximation`.
+
+## Building & requirements
+
+For building, you need Tcl 9 development files, a C compiler and make. At runtime, install
+[argparse](https://github.com/georgtree/argparse) 0.65 or later and [Tcllib](https://www.tcl.tk/software/tcllib/). RBC
+is optional; see below for vector support.
+
+```sh
 ./configure
 make
+make test
 sudo make install
 ```
-If you have different versions of Tcl on the same machine, you can set the path to this version with `--with-tcl=path`
-flag to configure script.
 
-For Windows build it is strongly recommended to use [MSYS64 UCRT64 environment](https://www.msys2.org/), the above
-steps are identical if you run it from UCRT64 shell. 
+Use `--with-tcl=/path/to/tcl/lib` to select the directory containing the desired `tclConfig.sh`.  Ensure Tcl
+dependencies are discoverable through `auto_path` or `TCLLIBPATH`.
 
-The install targets honor `--prefix`, `--exec-prefix`, the standard directory options, and `DESTDIR`.
-The runtime library, Tcl interface and `pkgIndex.tcl` are installed in `lib/tclinterp0.15`;
-headers in `include`; manpages in `share/man/mann`; and HTML documentation, images and the
-license in `share/tclinterp0.15/doc`, relative to the configured prefix by default (runtime libraries use `exec_prefix`).
-Set both `--prefix` and `--exec-prefix` when relocating the complete installation.
-`make uninstall` removes these installed files. Use the same directory overrides and `DESTDIR`
-for installation and uninstallation. `DOC_INSTALL_DIR` can override the documentation destination;
-an explicit override should include the staging directory when using `DESTDIR`.
+For Windows, use the [MSYS2 UCRT64 environment](https://www.msys2.org/) and run the same build commands from its
+shell. The package has been tested on Kubuntu 24.04 and Windows 11 (UCRT64) with Tcl 9.
 
-```bash
-./configure --with-tcl=/path/to/tcl/lib --prefix=/desired/prefix --exec-prefix=/desired/prefix
+## Documentation
+
+The [online documentation](https://georgtree.github.io/tclinterp) describes each command, its arguments and return
+values. Interactive help is also available:
+
+```tcl
+package require tclinterp
+::tclinterp::interpolation::lin1d -help
+```
+
+## Quick start
+
+```tcl
+package require tclinterp
+namespace import ::tclinterp::interpolation::*
+
+set yi [lin1d -x {0 1 2} -y {0 2 4} -xi {0.5 1.5}]
+puts $yi
+# 1.0 3.0
+```
+
+List calls retain the existing public interface and do not load RBC or Tk.
+
+## Optional direct RBC vector input and output
+
+Build with RBC 0.8.1 or later headers to enable vectors:
+
+```sh
+./configure --with-tcl=/path/to/tcl/lib --with-rbc=/path/to/rbc
+make
+make test
+make install
+```
+
+`--with-rbc` accepts an RBC source root, an include directory, or an installation prefix.  The selected location must
+provide `rbcVector.h`, `rbcDecls.h` and `rbcStubLib.c`.  The extension uses RBC stubs; vector operations require the
+`rbc::vector` package, version 0.8.1 or later, at runtime. Without `--with-rbc`, list operations work normally and
+vector requests report that support is unavailable.
+
+Input and output representations are independent:
+
+| Option              | Meaning                                                                                                   |
+|---------------------|-----------------------------------------------------------------------------------------------------------|
+| `-input list`       | All numeric array inputs are Tcl lists (default).                                                         |
+| `-input vector`     | All numeric array inputs are real RBC vector names. Scalar arguments are unchanged.                       |
+| `-output list`      | Return numeric arrays as Tcl lists (default).                                                             |
+| `-output vector`    | Return fully qualified vector names in place of numeric arrays; dictionary structure is preserved.        |
+| `-name name`        | Name the primary `yi` output vector. Omit it or use `#auto` for automatic naming.                         |
+| `-names dictionary` | Map output fields to destination names. Each omitted field or `#auto` destination is automatically named. |
+| `-ifexists error`   | Reject existing destination vectors (default).                                                            |
+| `-ifexists replace` | Resize and overwrite existing writable real destination vectors.                                          |
+
+The naming and replacement options require `-output vector`. Valid output fields depend on the command; consult its
+help. Do not combine `-name` with a `yi` entry in `-names`. Unknown fields and duplicate destinations are errors.
+
+```tcl
+package require tclinterp
+package require rbc::vector 0.8.1
+
+namespace eval ::demo {}
+::rbc::vector create ::demo::x ::demo::y ::demo::xi -variable {}
+::demo::x set {0 1 2}
+::demo::y set {0 2 4}
+::demo::xi set {0.5 1.5}
+
+set result [::tclinterp::interpolation::lin1d -input vector -x ::demo::x -y ::demo::y -xi ::demo::xi\
+                   -output vector -name #auto]
+puts [$result index :]
+
+# The caller owns the returned vector.
+::rbc::vector destroy $result ::demo::x ::demo::y ::demo::xi
+```
+
+Relative vector names resolve in the caller's namespace; destination namespaces must already exist. Automatic outputs
+use `::rbc::vector create #auto`, and returned names are fully qualified.  The caller must destroy output vectors when
+they are no longer needed. Use `-name` or `-names` with `-ifexists replace` to reuse destinations across repeated calls.
+
+Only real vectors are supported, and numeric inputs must be finite. Read-only vectors are valid inputs, but locked
+destinations cannot be overwritten, even with `-ifexists replace`.  New output vectors are writable.
+
+The Tcl test suite runs with `make test`. Vector tests require both an RBC-enabled build and a loadable `rbc::vector`
+package; otherwise those tests are skipped. Set `TCLLIBPATH` as needed.  The vector interface does not require loading
+Tk or opening a display.
+
+## Installation layout and removal
+
+The install targets honor `--prefix`, `--exec-prefix`, standard directory options and `DESTDIR`.
+The default layout is:
+
+| Files                                             | Destination                                  |
+|---------------------------------------------------|----------------------------------------------|
+| Runtime library, Tcl interface and `pkgIndex.tcl` | `$(libdir)/tclinterp$(PACKAGE_VERSION)`      |
+| Public C headers                                  | `$(includedir)`                              |
+| Manpages                                          | `$(mandir)/mann`                             |
+| HTML documentation, assets and license            | `$(datadir)/tclinterp$(PACKAGE_VERSION)/doc` |
+
+For version 0.3, the default package directory name is `tclinterp0.3`. Set both `--prefix` and `--exec-prefix` when
+relocating the complete installation:
+
+```sh
+./configure --with-tcl=/path/to/tcl/lib \
+    --prefix=/desired/prefix --exec-prefix=/desired/prefix
 make
 make install DESTDIR=/temporary/staging
 make uninstall DESTDIR=/temporary/staging
 ```
 
-`make dist` creates `dist/tclinterp0.15.tar.gz` from a staged `make install`.
-`make dist-zip` also creates `dist/tclinterp0.15.zip` with the same payload. Extract the archive
-contents into the desired install prefix: the archive contains `lib`, `include`, and `share`
-according to the configured directories. All installation directories must be under `prefix`
-for these targets. These are installation archives; development tests and examples stay in the
-source checkout. `DIST_ROOT` and `DIST_NAME` override the output directory and archive basename.
-`make dist-clean` removes the staging tree and archives.
+`make uninstall` removes the package runtime directory and its installed headers, manpages and documentation. Keep the
+corresponding source and configured build directory, and use the same directory overrides and `DESTDIR` for installation
+and removal. Unrelated documentation files are preserved.
 
-Documentation is generated explicitly with `make doc`; installation and distribution use the
-existing files in `docs` and do not require documentation tools. To regenerate them, install
-Ruff!, Tcllib, argparse and Sphinx (`sphinx-build` on `PATH`). Optional diagram generation also
-requires ditaa. Set `TCLLIBPATH` to locate Tcl dependencies and use `DOCFLAGS` to pass Ruff options.
-The generated HTML and manpages are written into the source `docs` directory, including when
-building out of tree. A documentation-generation failure makes `make doc` fail.
+`DOC_INSTALL_DIR` overrides the documentation destination. Its default includes `DESTDIR`; an explicit override must
+include the staging directory when staging an installation.
 
-```bash
+## Installation archives
+
+`make dist` stages `make install` and creates `dist/tclinterp0.3.tar.gz` in the build directory.  `make dist-zip` also
+creates `dist/tclinterp0.3.zip` with the same payload.  These are platform-specific installation archives, not source
+archives; development tests and examples remain in the source checkout.
+
+Extract an archive into the desired installation prefix. Its contents use the configured `lib`, `include` and `share`
+layout without an enclosing package directory. All configured installation directories must be beneath `prefix` for
+these targets. `DESTDIR` is not included in archive paths.
+
+`DIST_ROOT` overrides the staging/output directory; `DIST_NAME` overrides the archive basename and must be a single
+directory name. `make dist-clean` removes the staging tree and archives.  Do not run `dist-clean` concurrently with
+archive creation.
+
+## Regenerating documentation
+
+`make doc` generates documentation explicitly. Installation and archive targets use the files already in `docs` and do
+not require documentation tools.
+
+To regenerate them, install Ruff!, Tcllib, argparse and Sphinx (`sphinx-build` on `PATH`).  Optional diagram generation
+also requires ditaa. Use `TCLLIBPATH` to locate Tcl dependencies and `DOCFLAGS` to pass Ruff options:
+
+```sh
 make doc TCLLIBPATH="/path/to/ruff /path/to/tcllib /path/to/argparse"
 ./config.status --recheck && ./config.status
 ```
 
-Re-run configure with `config.status --recheck` after generating documentation so the configured HTML/static-file list
-includes any newly generated files before running `make install` or `make dist`.
-
-# Supported platforms
-
-I've tested it on:
-- Kubuntu 24.04 with Tcl 9
-- Windows 11 in MSYS64 UCRT64 environment with Tcl9
-
-# Documentation
-
-You can find some documentation [here](https://georgtree.github.io/tclinterp)
-
-# Interactive help
-
-All public procedures has interactive help. To get information about procedure and its arguments call it with `-help`
-switch:
-
-```tcl
-package require tclinterp
-namespace import ::tclinterp::interpolation::*
-near1d -help
-```
-
-```text
-Performs nearest-neighbor one-dimensional interpolation. Returns: The
-interpolated values yi, as a Tcl list by default or an RBC vector name with
--output vector. Can accepts unambiguous prefixes instead of switches names.
-Accepts switches only before parameters.
-    Switches:
-        -x value - Required. Sample positions; at least one value.
-        -y value - Required. Sample values; must have the same length as -x.
-        -xi value - Required. Evaluation positions; must not be empty.
-        -input value - Input representation for all array arguments: Tcl lists
-            or real RBC vector names. Defaults to list. Default value is list. Value
-            must be one of: list or vector.
-        -output value - Output representation for every numeric result array:
-            Tcl list or RBC vector name. Defaults to list; independent of -input.
-            Default value is list. Value must be one of: list or vector.
-        -name value - Destination vector name for yi; requires -output vector.
-            Omit it or use #auto to create an automatically named vector.
-        -names value - Dictionary mapping output fields to destination vector
-            names; requires -output vector. Valid fields: yi. Type dict.
-        -ifexists value - Policy for existing destination vectors; defaults to
-            error. With replace, an existing real vector is resized and overwritten.
-            Default value is error. Value must be one of: error or replace.
-        -help - Help switch, when provided, forces ignoring all other switches
-            and parameters, prints the help message to stdout, and returns up to 2
-            levels above the current level.
-
-```
-
-Best to do it in interactive console, see [tkcon](https://github.com/bohagan1/TkCon)
+Generated HTML and manpages are written into the source `docs` directory, including for out-of-tree
+builds. Documentation-generation errors make `make doc` fail. Re-run configuration after generation, as shown above, so
+newly generated HTML and static assets are included in the configured file list before `make install` or `make dist`.
