@@ -26,20 +26,22 @@ or later) must be available at runtime for vector operations\&.  List-only calls
 --with-rbc, list operations work normally and vector requests return an explanatory error\&.
 .PP
 Every interpolation and approximation procedure accepts these additional options:
-.TS
-tab(|) box;
-l l.
-Option | Meaning
-_
--input list | Default\&. All array arguments are Tcl lists\&.
--input vector | All array arguments are names of real RBC vectors\&. Scalar options remain scalar\&.
--output list | Default\&. Preserve existing list/dictionary results\&.
--output vector | Replace each numeric result list with its fully qualified RBC vector name\&.
--name name | Name of the primary yi output vector\&.
--names dictionary | Destination names for individual output fields (table below)\&.
--ifexists error | Default\&. Reject existing vector or command names\&.
--ifexists replace | Update existing real RBC vectors; unrelated commands and complex destinations are rejected\&.
-.TE
+.PP
+.nf
+┌───────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────┐
+│ Option            │ Meaning                                                                                     │
+├───────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────┤
+│ -input list       │ Default\&. All array arguments are Tcl lists\&.                                                 │
+│ -input vector     │ All array arguments are names of real RBC vectors\&. Scalar options remain scalar\&.            │
+│ -output list      │ Default\&. Preserve existing list/dictionary results\&.                                         │
+│ -output vector    │ Replace each numeric result list with its fully qualified RBC vector name\&.                  │
+│ -name name        │ Name of the primary yi output vector\&.                                                       │
+│ -names dictionary │ Destination names for individual output fields (table below)\&.                               │
+│ -ifexists error   │ Default\&. Reject existing vector or command names\&.                                           │
+│ -ifexists replace │ Update existing real RBC vectors; unrelated commands and complex destinations are rejected\&. │
+└───────────────────┴─────────────────────────────────────────────────────────────────────────────────────────────┘
+
+.fi
 .PP
 Input and output modes are independent: list-to-vector and vector-to-list calls are supported\&. Array inputs
 within a call use the same input mode\&. Omitted least-squares weights are generated internally, including in
@@ -77,20 +79,22 @@ set result [lin1d -input vector -x x -y y -xi xi -output vector -name interpolat
 For multi-output operations, the returned dictionary has the same structure as in list mode\&. Unspecified fields
 receive automatic names\&. -name is shorthand for the yi entry of -names; supplying both for yi is an
 error\&.
-.TS
-tab(|) box;
-l l.
-Operation/options | Keys accepted by -names
-_
-Any single-result operation | yi
-genBezier | xi, yi
-least1d -coeffs | yi, coeffs\&.b, coeffs\&.c, coeffs\&.d
-least1dDer | yi, yiDer
-least1dDer -coeffs | yi, yiDer, coeffs\&.b, coeffs\&.c, coeffs\&.d
-divDif1d -coeffs | yi, coeffs
-cubicSpline1d -deriv | yi, yder1, yder2
-hermiteSpline1d -deriv | yi, yder1
-.TE
+.PP
+.nf
+┌─────────────────────────────┬─────────────────────────────────────────┐
+│ Operation/options           │ Keys accepted by -names                 │
+├─────────────────────────────┼─────────────────────────────────────────┤
+│ Any single-result operation │ yi                                      │
+│ genBezier                   │ xi, yi                                  │
+│ least1d -coeffs             │ yi, coeffs\&.b, coeffs\&.c, coeffs\&.d        │
+│ least1dDer                  │ yi, yiDer                               │
+│ least1dDer -coeffs          │ yi, yiDer, coeffs\&.b, coeffs\&.c, coeffs\&.d │
+│ divDif1d -coeffs            │ yi, coeffs                              │
+│ cubicSpline1d -deriv        │ yi, yder1, yder2                        │
+│ hermiteSpline1d -deriv      │ yi, yder1                               │
+└─────────────────────────────┴─────────────────────────────────────────┘
+
+.fi
 .PP
 .RS 4n
 .nf

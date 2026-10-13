@@ -95,7 +95,6 @@ vector requests report that support is unavailable\&.
 .PP
 Input and output representations are independent:
 .PP
-.RS 4n
 .nf
 ┌───────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │ Option            │ Meaning                                                                                          │
@@ -111,8 +110,8 @@ Input and output representations are independent:
 │ -ifexists error   │ Reject existing destination vectors (default)\&.                                                   │
 │ -ifexists replace │ Resize and overwrite existing writable real destination vectors\&.                                 │
 └───────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────┘
+
 .fi
-.RE
 .PP
 The naming and replacement options require -output vector\&. Valid output fields depend on the command; consult its
 help\&. Do not combine -name with a yi entry in -names\&. Unknown fields and duplicate destinations are errors\&.
@@ -152,7 +151,6 @@ Tk or opening a display\&.
 The install targets honor --prefix, --exec-prefix, standard directory options and DESTDIR\&.
 The default layout is:
 .PP
-.RS 4n
 .nf
 ┌─────────────────────────────────────────────────┬────────────────────────────────────────────┐
 │ Files                                           │ Destination                                │
@@ -162,8 +160,8 @@ The default layout is:
 │ Manpages                                        │ $(mandir)/mann                             │
 │ HTML documentation, assets and license          │ $(datadir)/tclinterp$(PACKAGE_VERSION)/doc │
 └─────────────────────────────────────────────────┴────────────────────────────────────────────┘
+
 .fi
-.RE
 .PP
 For version 0\&.3, the default package directory name is tclinterp0\&.3\&. Set both --prefix and --exec-prefix when
 relocating the complete installation:
