@@ -60,7 +60,8 @@ set cases {
 }
 foreach case $cases {
     lassign $case operation category arguments dictionary
-    test native-vector-$operation {List/vector input and output agree, including locked inputs} -constraints interpVectors -setup {
+    test native-vector-$operation {List/vector input and output agree, including locked inputs}\
+            -constraints interpVectors -setup {
         namespace eval ::interpTest::work {}
         set command ::tclinterp::${category}::$operation
         set inputVectors {}
@@ -255,15 +256,18 @@ test native-child-1 {RBC initializes independently in a second interpreter} -con
     }
 } -cleanup {interp delete $child} -result {1.0 {}}
 
-test native-readonly-output {locked secondary output prevents all publication; unlocking permits retry} -constraints interpVectors -setup {
+test native-readonly-output {locked secondary output prevents all publication; unlocking permits retry}\
+        -constraints interpVectors -setup {
     namespace eval ::interpTest::work {
         ::rbc::vector create fit slope -variable {}
-        fit set {77}; slope set {88}; slope readonly true
+        fit set {77}
+        slope set {88}
+        slope readonly true
     }
 } -body {
     namespace eval ::interpTest::work {
-        set command {::tclinterp::interpolation::least1dDer -x {0 1 2} -y {0 1 4} -xi {.5} -nterms 3
-                     -output vector -name fit -names {yiDer slope} -ifexists replace}
+        set command {::tclinterp::interpolation::least1dDer -x {0 1 2} -y {0 1 4} -xi {.5} -nterms 3\
+                             -output vector -name fit -names {yiDer slope} -ifexists replace}
         set code [catch {{*}$command} message options]
         set before [list [fit index :] [slope index :]]
         slope readonly false
@@ -272,7 +276,8 @@ test native-readonly-output {locked secondary output prevents all publication; u
     }
 } -cleanup {::interpTest::cleanup} -result {1 {RBC VECTOR READONLY} {77.0 88.0} ::interpTest::work::fit 0}
 
-test native-readonly-alias {a locked input can be read but cannot also be the destination} -constraints interpVectors -setup {
+test native-readonly-alias {a locked input can be read but cannot also be the destination} -constraints interpVectors\
+        -setup {
     namespace eval ::interpTest::work {
         ::rbc::vector create x y xi -variable {}
         x set {0 1}; y set {0 2}; xi set {.5}
@@ -286,6 +291,83 @@ test native-readonly-alias {a locked input can be read but cannot also be the de
         list $values $code [dict get $options -errorcode] [x index :] [x readonly]
     }
 } -cleanup {::interpTest::cleanup} -result {1.0 1 {RBC VECTOR READONLY} {0.0 1.0} 1}
+
+# Every public wrapper accepts -namespace, including dictionary/coefficient results.
+foreach case $cases {
+    lassign $case operation category arguments dictionary
+    test native-namespace-$operation {all outputs use the selected namespace} -constraints interpVectors -body {
+        set result [::tclinterp::${category}::$operation {*}$arguments -output vector\
+                            -namespace ::interpTest::work::nested]
+        set values [::interpTest::values $result $dictionary 1]
+        set expected [::interpTest::values [::tclinterp::${category}::$operation {*}$arguments] $dictionary 0]
+        # Flatten the optional coefficient dictionary before checking every destination.
+        if {$dictionary} {
+            if {[dict exists $result coeffs b]} {
+                set coeffs [dict get $result coeffs]
+                dict unset result coeffs
+                set result [dict merge $result $coeffs]
+            }
+            set names [dict values $result]
+        } else {
+            set names [list $result]
+        }
+        list [::interpTest::close $values $expected] [lsort -unique [lmap v $names {namespace qualifiers $v}]]
+    } -cleanup {::interpTest::cleanup} -result {1 ::interpTest::work::nested}
+}
+
+test native-namespace-caller {output override does not redirect relative input lookup} -constraints interpVectors\
+        -body {
+    namespace eval ::interpTest::work {
+        ::rbc::vector create x y xi -variable {}
+        x set {0 1}; y set {0 2}; xi set {.5}
+        proc interpolate {} {
+            ::tclinterp::interpolation::lin1d -input vector -x x -y y -xi xi -output vector -namespace child::nested\
+                    -name result
+        }
+    }
+    # Caller of the procedure is global; its execution namespace governs resolution.
+    set v [::interpTest::work::interpolate]
+    list $v [$v range 0 end]
+} -cleanup {::interpTest::cleanup} -result {::interpTest::work::child::nested::result 1.0}
+
+test native-namespace-names {absolute names override namespace; qualified #auto expands; omitted fields use override} \
+        -constraints interpVectors -body {
+    namespace eval ::interpTest::work::absolute {}
+    set d [::tclinterp::interpolation::cubicSpline1d -t {0 1 2} -y {0 1 4} -ti {.5} -deriv \
+        -output vector -namespace ::interpTest::work::selected \
+        -names {yi ::interpTest::work::absolute::#auto yder1 auto}]
+    list [namespace qualifiers [dict get $d yi]] [dict get $d yder1] [namespace qualifiers [dict get $d yder2]]\
+            [expr {[namespace tail [dict get $d yi]] ne "#auto"}]
+} -cleanup {::interpTest::cleanup}\
+        -result {::interpTest::work::absolute ::interpTest::work::selected::auto ::interpTest::work::selected 1}
+
+test native-namespace-auto {auto is fresh, root works, and absolute explicit names win} -constraints interpVectors\
+        -body {
+    set base {::tclinterp::interpolation::lin1d -x {0 1} -y {0 2} -xi {.5} -output vector}
+    set a [{*}$base -namespace ::interpTest::work -name #auto]
+    set b [{*}$base -namespace ::interpTest::work -name #auto -ifexists replace]
+    set c [{*}$base -namespace :: -name ::interpTest::work::named]
+    set d [{*}$base -namespace :: -name #auto]
+    set result [list [expr {$a ne $b}] $c [namespace qualifiers $d]]
+    ::rbc::vector destroy $d
+    set result
+} -cleanup {::interpTest::cleanup} -result {1 ::interpTest::work::named {}}
+
+test native-namespace-empty {empty namespace rejected} -constraints interpVectors -body {
+    ::tclinterp::interpolation::lin1d -x {0 1} -y {0 2} -xi {.5} -output vector -namespace {}
+} -returnCodes error -result {-namespace must not be empty}
+
+test native-namespace-list {namespace is vector output only, without creating namespaces} -body {
+    set code [catch {::tclinterp::interpolation::lin1d -x {0 1} -y {0 2} -xi {.5} -namespace ::interpTest::work} msg]
+    list $code $msg [namespace exists ::interpTest::work]
+} -result {1 {-namespace requires -output vector} 0}
+
+test native-namespace-absolute-missing {absolute destinations do not implicitly create their parent}\
+        -constraints interpVectors -body {
+    set code [catch {::tclinterp::interpolation::lin1d -x {0 1} -y {0 2} -xi {.5} -output vector\
+                             -namespace ::interpTest::work::selected -name ::interpTest::work::absent::v}]
+    list $code [namespace exists ::interpTest::work::absent]
+} -cleanup {::interpTest::cleanup} -result {1 0}
 
 ::interpTest::cleanup
 namespace delete ::interpTest

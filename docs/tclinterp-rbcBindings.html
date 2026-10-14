@@ -79,16 +79,19 @@ or later) must be available at runtime for vector operations.  List-only calls d
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">vector</span></code></p></td>
 <td><p>Replace each numeric result list with its fully qualified RBC vector name.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-name</span> <span class="pre">name</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-namespace</span> <span class="pre">name</span></code></p></td>
+<td><p>Vector destination namespace; relative to the caller, created with missing parents.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-name</span> <span class="pre">name</span></code></p></td>
 <td><p>Name of the primary <code class="docutils literal notranslate"><span class="pre">yi</span></code> output vector.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-names</span> <span class="pre">dictionary</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-names</span> <span class="pre">dictionary</span></code></p></td>
 <td><p>Destination names for individual output fields (table below).</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error</span></code></p></td>
 <td><p>Default. Reject existing vector or command names.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">replace</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">replace</span></code></p></td>
 <td><p>Update existing real RBC vectors; unrelated commands and complex destinations are rejected.</p></td>
 </tr>
 </tbody>
@@ -97,9 +100,13 @@ or later) must be available at runtime for vector operations.  List-only calls d
 within a call use the same input mode. Omitted least-squares weights are generated internally, including in
 vector input mode.  Vector index offsets do not affect sample alignment. Complex vectors and non-finite input
 samples/scalar parameters are rejected.</p>
-<p>Relative vector names resolve in the public caller’s namespace. Destination namespaces must already
-exist. Omitted output names, or names equal to <code class="docutils literal notranslate"><span class="pre">#auto</span></code>, use RBC’s <code class="docutils literal notranslate"><span class="pre">vector</span> <span class="pre">create</span> <span class="pre">#auto</span></code>; each output gets a
-distinct name. New vectors have no mapped Tcl array variable. Returned vectors are caller-owned and survive the
+<p>Input vector names resolve in the public caller’s namespace. Outputs use <code class="docutils literal notranslate"><span class="pre">-namespace</span></code>, or the caller’s
+namespace when omitted. Relative namespace options resolve against the caller; missing parents are created.
+Empty namespace names are rejected, and the option requires <code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">vector</span></code>.
+Fully qualified output names override this selection; their parent namespace must already exist.
+Omitted output names, including fields omitted from <code class="docutils literal notranslate"><span class="pre">-names</span></code>, and a final <code class="docutils literal notranslate"><span class="pre">#auto</span></code> component use RBC’s own
+automatic naming in the selected namespace. <code class="docutils literal notranslate"><span class="pre">auto</span></code> without # is an ordinary name. Returned names are fully
+qualified. These options do not change input lookup or collision policy. Output vectors survive the
 interpolation call; destroy them with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">destroy</span> <span class="pre">$name</span></code>, or delete their namespace when appropriate.</p>
 <div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nb">package</span><span class="w"> </span>require<span class="w"> </span>tclinterp
 <span class="k">namespace</span><span class="w"> </span>import<span class="w"> </span><span class="o">::</span>tclinterp::interpolation::<span class="o">*</span>

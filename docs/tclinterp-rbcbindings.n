@@ -35,6 +35,7 @@ Every interpolation and approximation procedure accepts these additional options
 │ -input vector     │ All array arguments are names of real RBC vectors\&. Scalar options remain scalar\&.            │
 │ -output list      │ Default\&. Preserve existing list/dictionary results\&.                                         │
 │ -output vector    │ Replace each numeric result list with its fully qualified RBC vector name\&.                  │
+│ -namespace name   │ Vector destination namespace; relative to the caller, created with missing parents\&.         │
 │ -name name        │ Name of the primary yi output vector\&.                                                       │
 │ -names dictionary │ Destination names for individual output fields (table below)\&.                               │
 │ -ifexists error   │ Default\&. Reject existing vector or command names\&.                                           │
@@ -48,9 +49,13 @@ within a call use the same input mode\&. Omitted least-squares weights are gener
 vector input mode\&.  Vector index offsets do not affect sample alignment\&. Complex vectors and non-finite input
 samples/scalar parameters are rejected\&.
 .PP
-Relative vector names resolve in the public caller's namespace\&. Destination namespaces must already
-exist\&. Omitted output names, or names equal to #auto, use RBC's vector create #auto; each output gets a
-distinct name\&. New vectors have no mapped Tcl array variable\&. Returned vectors are caller-owned and survive the
+Input vector names resolve in the public caller's namespace\&. Outputs use -namespace, or the caller's
+namespace when omitted\&. Relative namespace options resolve against the caller; missing parents are created\&.
+Empty namespace names are rejected, and the option requires -output vector\&.
+Fully qualified output names override this selection; their parent namespace must already exist\&.
+Omitted output names, including fields omitted from -names, and a final #auto component use RBC's own
+automatic naming in the selected namespace\&. auto without # is an ordinary name\&. Returned names are fully
+qualified\&. These options do not change input lookup or collision policy\&. Output vectors survive the
 interpolation call; destroy them with ::rbc::vector destroy $name, or delete their namespace when appropriate\&.
 .PP
 .RS 4n

@@ -5,13 +5,13 @@
 .SH NAME
 tclinterp::approximation - Commands in namespace tclinterp::approximation
 .SH SYNOPSIS
-\fBbezier\fP \fI-n integer -a value -b value -x values -y values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
+\fBbezier\fP \fI-n integer -a value -b value -x values -y values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
-\fBcubicBetaSpline1d\fP \fI-beta1 value -beta2 value -t values -y values -ti values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
+\fBcubicBetaSpline1d\fP \fI-beta1 value -beta2 value -t values -y values -ti values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
-\fBcubicBSpline1d\fP \fI-t values -y values -ti values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
+\fBcubicBSpline1d\fP \fI-t values -y values -ti values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
-\fBgenBezier\fP \fI-n integer -x values -y values -t values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
+\fBgenBezier\fP \fI-n integer -x values -y values -t values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
 .SH ::TCLINTERP::APPROXIMATION
 .SH COMMANDS
@@ -22,7 +22,7 @@ tclinterp::approximation - Commands in namespace tclinterp::approximation
 .PP
 Evaluates a Bezier polynomial on an interval\&.
 .RS 4n
-\fBbezier\fP \fI-n integer -a value -b value -x values -y values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
+\fBbezier\fP \fI-n integer -a value -b value -x values -y values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
 .RE
 .PP
@@ -50,6 +50,9 @@ Destination vector name for yi; requires -output vector\&. Omit it or use #auto 
 -names dictionary
 Dictionary mapping output fields to destination vector names; requires -output vector\&. Valid fields: yi\&.
 .TP
+-namespace name
+Destination namespace for vector output; relative to the caller, created with missing parents\&.
+.TP
 -output list|vector
 Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
 .TP
@@ -66,9 +69,11 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
-Vector names resolve in the caller's namespace; destination namespaces must already exist\&. Each unnamed
-output, including fields omitted from -names, is created with ::rbc::vector create #auto\&. Returned
-vector names are fully qualified\&.
+Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
+when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
+names override this location; their parent namespace must already exist\&. Each unnamed output, including fields
+omitted from -names, uses RBC's #auto mechanism in the selected namespace\&. A final #auto component also works
+in qualified names; auto without # is an ordinary name\&. Returned vector names are fully qualified\&.
 .PP
 Do not specify both -name and the yi entry of -names\&. Unknown output fields and duplicate destinations
 are errors\&. The caller owns returned vectors and can release them with ::rbc::vector destroy
@@ -85,7 +90,7 @@ vector\&.
 .PP
 Evaluates a cubic beta-spline approximant\&.
 .RS 4n
-\fBcubicBetaSpline1d\fP \fI-beta1 value -beta2 value -t values -y values -ti values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
+\fBcubicBetaSpline1d\fP \fI-beta1 value -beta2 value -t values -y values -ti values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
 .RE
 .PP
@@ -110,6 +115,9 @@ Destination vector name for yi; requires -output vector\&. Omit it or use #auto 
 -names dictionary
 Dictionary mapping output fields to destination vector names; requires -output vector\&. Valid fields: yi\&.
 .TP
+-namespace name
+Destination namespace for vector output; relative to the caller, created with missing parents\&.
+.TP
 -output list|vector
 Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
 .TP
@@ -129,9 +137,11 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
-Vector names resolve in the caller's namespace; destination namespaces must already exist\&. Each unnamed
-output, including fields omitted from -names, is created with ::rbc::vector create #auto\&. Returned
-vector names are fully qualified\&.
+Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
+when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
+names override this location; their parent namespace must already exist\&. Each unnamed output, including fields
+omitted from -names, uses RBC's #auto mechanism in the selected namespace\&. A final #auto component also works
+in qualified names; auto without # is an ordinary name\&. Returned vector names are fully qualified\&.
 .PP
 Do not specify both -name and the yi entry of -names\&. Unknown output fields and duplicate destinations
 are errors\&. The caller owns returned vectors and can release them with ::rbc::vector destroy
@@ -150,7 +160,7 @@ vector\&.
 .PP
 Evaluates a cubic B-spline approximant\&.
 .RS 4n
-\fBcubicBSpline1d\fP \fI-t values -y values -ti values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
+\fBcubicBSpline1d\fP \fI-t values -y values -ti values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
 .RE
 .PP
@@ -168,6 +178,9 @@ Destination vector name for yi; requires -output vector\&. Omit it or use #auto 
 .TP
 -names dictionary
 Dictionary mapping output fields to destination vector names; requires -output vector\&. Valid fields: yi\&.
+.TP
+-namespace name
+Destination namespace for vector output; relative to the caller, created with missing parents\&.
 .TP
 -output list|vector
 Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
@@ -188,9 +201,11 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
-Vector names resolve in the caller's namespace; destination namespaces must already exist\&. Each unnamed
-output, including fields omitted from -names, is created with ::rbc::vector create #auto\&. Returned
-vector names are fully qualified\&.
+Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
+when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
+names override this location; their parent namespace must already exist\&. Each unnamed output, including fields
+omitted from -names, uses RBC's #auto mechanism in the selected namespace\&. A final #auto component also works
+in qualified names; auto without # is an ordinary name\&. Returned vector names are fully qualified\&.
 .PP
 Do not specify both -name and the yi entry of -names\&. Unknown output fields and duplicate destinations
 are errors\&. The caller owns returned vectors and can release them with ::rbc::vector destroy
@@ -207,7 +222,7 @@ vector\&.
 .PP
 Evaluates a parametric Bezier curve\&.
 .RS 4n
-\fBgenBezier\fP \fI-n integer -x values -y values -t values ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
+\fBgenBezier\fP \fI-n integer -x values -y values -t values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?\fP
 .br
 .RE
 .PP
@@ -229,6 +244,9 @@ Destination vector name for yi; requires -output vector\&. Omit it or use #auto 
 -names dictionary
 Dictionary mapping output fields to destination vector names; requires -output vector\&. Valid fields: xi, yi\&.
 .TP
+-namespace name
+Destination namespace for vector output; relative to the caller, created with missing parents\&.
+.TP
 -output list|vector
 Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
 .TP
@@ -248,9 +266,11 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
-Vector names resolve in the caller's namespace; destination namespaces must already exist\&. Each unnamed
-output, including fields omitted from -names, is created with ::rbc::vector create #auto\&. Returned
-vector names are fully qualified\&.
+Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
+when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
+names override this location; their parent namespace must already exist\&. Each unnamed output, including fields
+omitted from -names, uses RBC's #auto mechanism in the selected namespace\&. A final #auto component also works
+in qualified names; auto without # is an ordinary name\&. Returned vector names are fully qualified\&.
 .PP
 Do not specify both -name and the yi entry of -names\&. Unknown output fields and duplicate destinations
 are errors\&. The caller owns returned vectors and can release them with ::rbc::vector destroy

@@ -83,6 +83,7 @@ Input and output representations are independent:
 | `-input vector`     | All numeric array inputs are real RBC vector names. Scalar arguments are unchanged.                       |
 | `-output list`      | Return numeric arrays as Tcl lists (default).                                                             |
 | `-output vector`    | Return fully qualified vector names in place of numeric arrays; dictionary structure is preserved.        |
+| `-namespace name` | Destination namespace for vector output; created with missing parents, relative to the caller. |
 | `-name name`        | Name the primary `yi` output vector. Omit it or use `#auto` for automatic naming.                         |
 | `-names dictionary` | Map output fields to destination names. Each omitted field or `#auto` destination is automatically named. |
 | `-ifexists error`   | Reject existing destination vectors (default).                                                            |
@@ -109,8 +110,11 @@ puts [$result index :]
 ::rbc::vector destroy $result ::demo::x ::demo::y ::demo::xi
 ```
 
-Relative vector names resolve in the caller's namespace; destination namespaces must already exist. Automatic outputs
-use `::rbc::vector create #auto`, and returned names are fully qualified.  The caller must destroy output vectors when
+Input names resolve in the caller's namespace. Output names use `-namespace`, or the caller's namespace when omitted.
+Relative namespace options resolve against the caller and create missing parents; empty namespaces are rejected.
+Fully qualified output names override the selected namespace, but their parent must already exist. Omitted names and
+a final `#auto` component use RBC's automatic naming in the selected namespace; `auto` is an ordinary name.
+Returned names are fully qualified.  The caller must destroy output vectors when
 they are no longer needed. Use `-name` or `-names` with `-ifexists replace` to reuse destinations across repeated calls.
 
 Only real vectors are supported, and numeric inputs must be finite. Read-only vectors are valid inputs, but locked

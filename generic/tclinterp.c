@@ -31,6 +31,7 @@ typedef struct {
     int n;
     double *v;
     Tcl_Obj *name;
+    Tcl_Obj *autoName;
     Tcl_Command created;
 } Output;
 
@@ -197,13 +198,36 @@ static Tcl_Obj *ListResult(Output *o) {
 }
 
 #ifdef HAVE_RBC
-/* Output names resolve where the native command runs (the public caller).
- * A generated name is obtained from RBC's actual create #auto command. */
-static Tcl_Obj *Qualified(Tcl_Interp *ip, const char *s) {
+/* Resolve only output namespaces, leaving input lookup in the public caller.
+ * Return a retained canonical name; the caller owns the namespace lifetime. */
+static Tcl_Obj *ResolveOutputNamespace(Tcl_Interp *interp, Tcl_Obj *option) {
+    const char *name = Tcl_GetString(option);
+    if (*name == '\0') {
+        Tcl_SetObjResult(interp, Tcl_NewStringObj("-namespace must not be empty", -1));
+        return NULL;
+    }
+    const char *current = Tcl_GetCurrentNamespace(interp)->fullName;
+    Tcl_Obj *qualified = strncmp(name, "::", 2) == 0
+                             ? option
+                             : Tcl_ObjPrintf("%s%s%s", current, strcmp(current, "::") == 0 ? "" : "::", name);
+    Tcl_IncrRefCount(qualified);
+    Tcl_Namespace *ns = Tcl_FindNamespace(interp, Tcl_GetString(qualified), NULL, 0);
+    if (ns == NULL) {
+        ns = Tcl_CreateNamespace(interp, Tcl_GetString(qualified), NULL, NULL);
+    }
+    Tcl_Obj *result = NULL;
+    if (ns != NULL) {
+        result = Tcl_NewStringObj(ns->fullName, -1);
+        Tcl_IncrRefCount(result);
+    }
+    Tcl_DecrRefCount(qualified);
+    return result;
+}
+
+static Tcl_Obj *Qualified(const char *ns, const char *s) {
     if (s[0] == ':' && s[1] == ':') {
         return Tcl_NewStringObj(s, -1);
-    }        
-    const char *ns = Tcl_GetCurrentNamespace(ip)->fullName;
+    }
     return Tcl_ObjPrintf("%s%s%s", ns, strcmp(ns, "::") ? "::" : "", s);
 }
 
@@ -220,13 +244,13 @@ static int CheckDestination(Tcl_Interp *ip, Tcl_Obj *name, int replace, int writ
         }
         if (Rbc_GetVector(ip, s, &v) != TCL_OK) {
             return TCL_ERROR;
-        }            
+        }
         if (!command || info.isNativeObjectProc != 2 || info.objClientData2 != (void *)v) {
             return Error(ip, "destination is not the vector's instance command");
-        }            
+        }
         if (Rbc_VectorGetType(v) != RBC_VECTOR_REAL) {
             return Error(ip, "destination vector must be real");
-        }            
+        }
         if (writable && Rbc_VectorCheckWritable(ip, v) != TCL_OK) {
             return TCL_ERROR;
         }
@@ -240,33 +264,33 @@ static int CheckDestination(Tcl_Interp *ip, Tcl_Obj *name, int replace, int writ
 static int CreateDestination(Tcl_Interp *ip, Output *o) {
     Tcl_Obj *args[7] = {Tcl_NewStringObj("::rbc::vector", -1),
                         Tcl_NewStringObj("create", -1),
-                        o->name ? o->name : Tcl_NewStringObj("#auto", -1),
+                        o->name ? o->name : o->autoName,
                         Tcl_NewStringObj("-variable", -1),
                         Tcl_NewObj(),
                         Tcl_NewStringObj("-literal", -1),
                         Tcl_NewBooleanObj(o->name != NULL)};
     for (int j = 0; j < 7; j++) {
         Tcl_IncrRefCount(args[j]);
-    }        
+    }
     int code = Tcl_EvalObjv(ip, 7, args, TCL_EVAL_DIRECT);
     for (int j = 0; j < 7; j++) {
         Tcl_DecrRefCount(args[j]);
-    }        
+    }
     if (code != TCL_OK) {
         return code;
-    }        
+    }
     if (!o->name) {
         Tcl_Obj *first;
         if (Tcl_ListObjIndex(ip, Tcl_GetObjResult(ip), 0, &first) != TCL_OK || !first) {
             return Error(ip, "RBC did not return a created vector name");
-        }            
-        o->name = Qualified(ip, Tcl_GetString(first));
+        }
+        o->name = Qualified(Tcl_GetCurrentNamespace(ip)->fullName, Tcl_GetString(first));
         Tcl_IncrRefCount(o->name);
     }
     o->created = Tcl_FindCommand(ip, Tcl_GetString(o->name), NULL, TCL_GLOBAL_ONLY);
     if (!o->created) {
         return Error(ip, "RBC did not create the destination command");
-    }        
+    }
     return TCL_OK;
 }
 #endif
@@ -278,11 +302,17 @@ static int Publish(Context *c, Output *out, int count, int dictionary, int vecto
     Tcl_Interp *ip = c->ip;
     int code = TCL_ERROR;
     Tcl_Obj *result = Tcl_NewDictObj(), *coeffs = Tcl_NewDictObj();
+    Tcl_Obj *nsName = NULL;
     Tcl_IncrRefCount(result);
     Tcl_IncrRefCount(coeffs);
     if (vectors) {
 #ifdef HAVE_RBC
         Tcl_Obj *names = Option(c, "names"), *primary = Option(c, "name");
+        Tcl_Obj *namespaceOption = Option(c, "namespace");
+        nsName = namespaceOption ? ResolveOutputNamespace(ip, namespaceOption) : NULL;
+        if (namespaceOption && !nsName)
+            goto done;
+        const char *ns = nsName ? Tcl_GetString(nsName) : Tcl_GetCurrentNamespace(ip)->fullName;
         int replace = !strcmp(StringOption(c, "ifexists", "error"), "replace");
         if (names) {
             Tcl_DictSearch search;
@@ -290,14 +320,14 @@ static int Publish(Context *c, Output *out, int count, int dictionary, int vecto
             int done;
             if (Tcl_DictObjFirst(ip, names, &search, &key, &value, &done) != TCL_OK) {
                 goto done;
-            }                
+            }
             for (; !done; Tcl_DictObjNext(&search, &key, &value, &done)) {
                 int found = 0;
                 for (int i = 0; i < count; i++) {
                     if (!strcmp(Tcl_GetString(key), out[i].key)) {
                         found = 1;
-                    }                        
-                }                    
+                    }
+                }
                 if (!found) {
                     Tcl_SetObjResult(ip, Tcl_ObjPrintf("unknown output field \"%s\"", Tcl_GetString(key)));
                     Tcl_DictObjDone(&search);
@@ -321,22 +351,27 @@ static int Publish(Context *c, Output *out, int count, int dictionary, int vecto
                 }
                 name = primary;
             }
-            if (name && strcmp(Tcl_GetString(name), "#auto")) {
+            const char *text = name ? Tcl_GetString(name) : "#auto";
+            size_t length = strlen(text);
+            if (!strcmp(text, "#auto") || (length >= 7 && !strcmp(text + length - 7, "::#auto"))) {
+                out[i].autoName = Qualified(ns, text);
+                Tcl_IncrRefCount(out[i].autoName);
+            } else {
                 if (!Tcl_GetCharLength(name)) {
                     Error(ip, "output name must not be empty");
                     goto done;
                 }
-                out[i].name = Qualified(ip, Tcl_GetString(name));
+                out[i].name = Qualified(ns, Tcl_GetString(name));
                 Tcl_IncrRefCount(out[i].name);
                 for (int j = 0; j < i; j++) {
                     if (out[j].name && !strcmp(Tcl_GetString(out[j].name), Tcl_GetString(out[i].name))) {
                         Error(ip, "output vector names must be distinct");
                         goto done;
                     }
-                }                    
+                }
                 if (CheckDestination(ip, out[i].name, replace, 1) != TCL_OK) {
                     goto done;
-                }                    
+                }
             }
         }
         /* Reserve explicit names first so #auto cannot take one of them. */
@@ -344,17 +379,17 @@ static int Publish(Context *c, Output *out, int count, int dictionary, int vecto
             for (int i = 0; i < count; i++) {
                 if ((pass == 0 && !out[i].name) || (pass == 1 && out[i].name)) {
                     continue;
-                }                    
+                }
                 if (out[i].name && CheckDestination(ip, out[i].name, replace, 1) != TCL_OK) {
                     goto done;
-                }                    
+                }
                 if (!out[i].name || !Rbc_VectorExists2(ip, Tcl_GetString(out[i].name))) {
                     if (CreateDestination(ip, &out[i]) != TCL_OK) {
                         goto done;
-                    }                        
+                    }
                 }
             }
-        }            
+        }
         /* Different spellings may resolve to the same command. */
         for (int i = 0; i < count; i++) {
             Tcl_Command token = Tcl_FindCommand(ip, Tcl_GetString(out[i].name), NULL, TCL_GLOBAL_ONLY);
@@ -373,10 +408,11 @@ static int Publish(Context *c, Output *out, int count, int dictionary, int vecto
             }
             if (Rbc_ResetVector(v, out[i].v, out[i].n, out[i].n, TCL_VOLATILE) != TCL_OK) {
                 goto done;
-            }                
+            }
         }
         for (int i = 0; i < count; i++) {
-            if (!Rbc_VectorExists2(ip, Tcl_GetString(out[i].name)) || CheckDestination(ip, out[i].name, 1, 0) != TCL_OK) {
+            if (!Rbc_VectorExists2(ip, Tcl_GetString(out[i].name)) ||
+                CheckDestination(ip, out[i].name, 1, 0) != TCL_OK) {
                 Error(ip, "output vector removed or replaced during notification");
                 goto done;
             }
@@ -397,13 +433,13 @@ static int Publish(Context *c, Output *out, int count, int dictionary, int vecto
             Tcl_DictObjPut(ip, coeffs, Tcl_NewStringObj(out[i].key + 7, -1), value);
         } else {
             Tcl_DictObjPut(ip, result, Tcl_NewStringObj(out[i].key, -1), value);
-        }            
+        }
     }
     Tcl_Size coeffCount;
     Tcl_DictObjSize(ip, coeffs, &coeffCount);
     if (coeffCount) {
         Tcl_DictObjPut(ip, result, Tcl_NewStringObj("coeffs", -1), coeffs);
-    }        
+    }
     Tcl_SetObjResult(ip, result);
     code = TCL_OK;
 done:
@@ -414,11 +450,13 @@ done:
             if (out[i].created &&
                 Tcl_FindCommand(ip, Tcl_GetString(out[i].name), NULL, TCL_GLOBAL_ONLY) == out[i].created) {
                 Tcl_DeleteCommandFromToken(ip, out[i].created);
-            }                
-        }            
+            }
+        }
         Tcl_RestoreInterpState(ip, state);
     }
 #endif
+    if (nsName)
+        Tcl_DecrRefCount(nsName);
     Tcl_DecrRefCount(coeffs);
     Tcl_DecrRefCount(result);
     return code;
@@ -458,18 +496,21 @@ static int NativeCmd(void *unused, Tcl_Interp *ip, Tcl_Size objc, Tcl_Obj *const
     }
     if (Tcl_GetIndexFromObj(ip, objv[1], ops, "operation", TCL_EXACT, &op) != TCL_OK) {
         return TCL_ERROR;
-    }        
+    }
     Tcl_Size dictSize;
     if (Tcl_DictObjSize(ip, objv[2], &dictSize) != TCL_OK) {
         return TCL_ERROR;
-    }        
+    }
     ctx.args = objv[2];
     const char *im = StringOption(c, "input", "list"), *om = StringOption(c, "output", "list");
     if ((strcmp(im, "list") && strcmp(im, "vector")) || (strcmp(om, "list") && strcmp(om, "vector"))) {
         return Error(ip, "input and output must be list or vector");
-    }        
+    }
     vi = !strcmp(im, "vector");
     vo = !strcmp(om, "vector");
+    if (!vo && Option(c, "namespace")) {
+        return Error(ip, "-namespace requires -output vector");
+    }
     if (!vo && (Option(c, "name") || Option(c, "names"))) {
         return Error(ip, "-name and -names require -output vector");
     }
@@ -479,7 +520,7 @@ static int NativeCmd(void *unused, Tcl_Interp *ip, Tcl_Size objc, Tcl_Obj *const
     }
     if ((vi || vo) && InitVectors(ip) != TCL_OK) {
         return TCL_ERROR;
-    }        
+    }
     if (op >= BSPLINE && op <= HERMITE) {
         xkey = "t";
         qkey = "ti";
@@ -492,14 +533,14 @@ static int NativeCmd(void *unused, Tcl_Interp *ip, Tcl_Size objc, Tcl_Obj *const
         qkey = "t";
     if (OpenInput(c, xkey, vi, &x) != TCL_OK || OpenInput(c, ykey, vi, &y) != TCL_OK) {
         goto done;
-    }        
+    }
     if (op != BEZIER && OpenInput(c, qkey, vi, &q) != TCL_OK) {
         goto done;
-    }        
+    }
     int nq = op == BEZIER ? x.n : q.n;
     if (op != BEZIER && op != GENBEZIER && EqualLength(c, &x, xkey, &y, ykey) != TCL_OK) {
         goto done;
-    }        
+    }
     if (!nq) {
         Tcl_SetObjResult(ip, Tcl_ObjPrintf("Length of %spoints list -%s must be more than zero",
                                            op == GENBEZIER || op == BEZIER ? "" : "interpolation ",
@@ -513,7 +554,7 @@ static int NativeCmd(void *unused, Tcl_Interp *ip, Tcl_Size objc, Tcl_Obj *const
     if (op == GENBEZIER || op == BEZIER) {
         if (Integer(c, "n", 0, &degree) != TCL_OK) {
             goto done;
-        }            
+        }
         if (degree < 0 || degree >= INT_MAX / 4) {
             Error(ip, "Bezier degree must be nonnegative and within the kernel size limit");
             goto done;
@@ -532,12 +573,12 @@ static int NativeCmd(void *unused, Tcl_Interp *ip, Tcl_Size objc, Tcl_Obj *const
         }
         if ((op == LINEAR || op >= BSPLINE) && Increasing(c, &x, xkey) != TCL_OK) {
             goto done;
-        }            
+        }
         if (op == LAGRANGE || op == DIVDIF) {
             int unique = Distinct(c, &x);
             if (unique < 0) {
                 goto done;
-            }                
+            }
             if (unique != x.n) {
                 Error(ip, "List of -x values must not contain duplicated elements");
                 goto done;
@@ -555,15 +596,13 @@ static int NativeCmd(void *unused, Tcl_Interp *ip, Tcl_Size objc, Tcl_Obj *const
         count++;                                                                                                       \
     } while (0)
     ADD("yi", nq);
-    
+
     if (op == LINEAR || op == NEAREST || op == LAGRANGE) {
         if (op == LINEAR) {
             temp = interp_linear(1, x.n, x.v, y.v, q.n, q.v);
-        }            
-        else if (op == NEAREST) {
+        } else if (op == NEAREST) {
             temp = interp_nearest(1, x.n, x.v, y.v, q.n, q.v);
-        }            
-        else {
+        } else {
             if ((size_t)x.n * (size_t)q.n > INT_MAX) {
                 Error(ip, "Lagrange workspace exceeds kernel size limit");
                 goto done;
@@ -578,27 +617,28 @@ static int NativeCmd(void *unused, Tcl_Interp *ip, Tcl_Size objc, Tcl_Obj *const
     } else if (op == LEAST || op == LEASTDER) {
         if (Integer(c, "nterms", 3, &nterms) != TCL_OK) {
             goto done;
-        }            
+        }
         int unique = Distinct(c, &x);
         if (unique < 0) {
             goto done;
-        }            
+        }
         if (nterms < 1 || nterms > unique) {
             Error(ip, "-nterms must be positive and no greater than the number of distinct x values");
             goto done;
         }
         if (Option(c, "w")) {
-            if (OpenInput(c, "w", vi, &extra) != TCL_OK || EqualLength(c, &x, "x", &extra, "w") != TCL_OK)
+            if (OpenInput(c, "w", vi, &extra) != TCL_OK || EqualLength(c, &x, "x", &extra, "w") != TCL_OK) {
                 goto done;
+            }
         } else {
             extra.n = x.n;
             extra.owned = extra.v = Allocate(ip, x.n);
             if (!extra.v) {
                 goto done;
-            }                
+            }
             for (int i = 0; i < x.n; i++) {
                 extra.v[i] = 1.0;
-            }                
+            }
         }
         for (int i = 0; i < x.n; i++)
             if (!(extra.v[i] > 0)) {
@@ -610,7 +650,7 @@ static int NativeCmd(void *unused, Tcl_Interp *ip, Tcl_Size objc, Tcl_Obj *const
         d = Allocate(ip, nterms);
         if (!b || !cc || !d) {
             goto done;
-        }            
+        }
         least_set(x.n, x.v, y.v, extra.v, nterms, b, cc, d);
         if (op == LEASTDER) {
             ADD("yiDer", nq);
@@ -621,7 +661,7 @@ static int NativeCmd(void *unused, Tcl_Interp *ip, Tcl_Size objc, Tcl_Obj *const
                 least_val2(nterms, b, cc, d, q.v[i], &out[0].v[i], &out[1].v[i]);
             } else {
                 out[0].v[i] = least_val(nterms, b, cc, d, q.v[i]);
-            }                
+            }
         }
         if (Option(c, "coeffs")) {
             dictionary = 1;
@@ -639,12 +679,12 @@ static int NativeCmd(void *unused, Tcl_Interp *ip, Tcl_Size objc, Tcl_Obj *const
         dictionary = 1;
         for (int i = 0; i < nq; i++) {
             bc_val(degree, q.v[i], x.v, y.v, &out[0].v[i], &out[1].v[i]);
-        }            
+        }
     } else if (op == BEZIER) {
         double a, z;
         if (Number(c, "a", 0, &a) != TCL_OK || Number(c, "b", 1, &z) != TCL_OK) {
             goto done;
-        }            
+        }
         if (a == z) {
             Tcl_SetObjResult(ip, Tcl_ObjPrintf("Start -a '%s' and end -b '%s' values of interval must not be equal",
                                                StringOption(c, "a", "0"), StringOption(c, "b", "1")));
@@ -652,16 +692,16 @@ static int NativeCmd(void *unused, Tcl_Interp *ip, Tcl_Size objc, Tcl_Obj *const
         }
         for (int i = 0; i < nq; i++) {
             out[0].v[i] = bez_val(degree, x.v[i], a, z, y.v);
-        }            
+        }
     } else if (op == DIVDIF) {
         temp = Allocate(ip, x.n);
         if (!temp) {
             goto done;
-        }            
+        }
         data_to_dif(x.n, x.v, y.v, temp);
         for (int i = 0; i < nq; i++) {
             out[0].v[i] = dif_val(x.n, x.v, temp, q.v[i]);
-        }            
+        }
         if (Option(c, "coeffs")) {
             dictionary = 1;
             ADD("coeffs", x.n);
@@ -672,7 +712,7 @@ static int NativeCmd(void *unused, Tcl_Interp *ip, Tcl_Size objc, Tcl_Obj *const
         if (op == BETASPLINE) {
             if (Number(c, "beta1", 1, &beta1) != TCL_OK || Number(c, "beta2", 0, &beta2) != TCL_OK) {
                 goto done;
-            }                
+            }
             double den = ((2 * beta1 + 4) * beta1 + 4) * beta1 + 2 + beta2;
             if (!isfinite(den) || den == 0) {
                 Error(ip, "invalid beta spline normalization");
@@ -682,7 +722,7 @@ static int NativeCmd(void *unused, Tcl_Interp *ip, Tcl_Size objc, Tcl_Obj *const
         for (int i = 0; i < nq; i++) {
             out[0].v[i] = op == BSPLINE ? spline_b_val(x.n, x.v, y.v, q.v[i])
                                         : spline_beta_val(beta1, beta2, x.n, x.v, y.v, q.v[i]);
-        }            
+        }
     } else if (op == CUBIC) {
         static const char *flags[] = {"quad", "der1", "der2", "notaknot", NULL};
         int beg = 0, end = 0;
@@ -690,14 +730,14 @@ static int NativeCmd(void *unused, Tcl_Interp *ip, Tcl_Size objc, Tcl_Obj *const
         Tcl_Obj *o = Option(c, "ibcbeg");
         if (o && Tcl_GetIndexFromObj(ip, o, flags, "boundary", TCL_EXACT, &beg) != TCL_OK) {
             goto done;
-        }            
+        }
         o = Option(c, "ibcend");
         if (o && Tcl_GetIndexFromObj(ip, o, flags, "boundary", TCL_EXACT, &end) != TCL_OK) {
             goto done;
-        }            
+        }
         if (Number(c, "ybcbeg", 0, &bv) != TCL_OK || Number(c, "ybcend", 0, &ev) != TCL_OK) {
             goto done;
-        }            
+        }
         if ((beg == 3 || end == 3) && x.n < 4) {
             Error(ip, "notaknot boundaries require at least four samples");
             goto done;
@@ -735,13 +775,13 @@ static int NativeCmd(void *unused, Tcl_Interp *ip, Tcl_Size objc, Tcl_Obj *const
             spline_hermite_val(x.n, x.v, temp, q.v[i], &out[0].v[i], &yp);
             if (dictionary) {
                 out[1].v[i] = yp;
-            }                
+            }
         }
     } else if (op == PCHIP) {
         temp = Allocate(ip, x.n);
         if (!temp) {
             goto done;
-        }            
+        }
         spline_pchip_set(x.n, x.v, y.v, temp);
         spline_pchip_val(x.n, x.v, y.v, temp, q.n, q.v, out[0].v);
     }
@@ -757,9 +797,12 @@ done:
     free(d);
     for (int i = 0; i < 6; i++) {
         free(out[i].v);
+        if (out[i].autoName) {
+            Tcl_DecrRefCount(out[i].autoName);
+        }            
         if (out[i].name) {
             Tcl_DecrRefCount(out[i].name);
-        }            
+        }
     }
     return status;
 #undef ADD

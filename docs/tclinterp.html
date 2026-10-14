@@ -132,16 +132,19 @@ vector requests report that support is unavailable.</p>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">vector</span></code></p></td>
 <td><p>Return fully qualified vector names in place of numeric arrays; dictionary structure is preserved.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-name</span> <span class="pre">name</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-namespace</span> <span class="pre">name</span></code></p></td>
+<td><p>Destination namespace for vector output; created with missing parents, relative to the caller.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-name</span> <span class="pre">name</span></code></p></td>
 <td><p>Name the primary <code class="docutils literal notranslate"><span class="pre">yi</span></code> output vector. Omit it or use <code class="docutils literal notranslate"><span class="pre">#auto</span></code> for automatic naming.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-names</span> <span class="pre">dictionary</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-names</span> <span class="pre">dictionary</span></code></p></td>
 <td><p>Map output fields to destination names. Each omitted field or <code class="docutils literal notranslate"><span class="pre">#auto</span></code> destination is automatically named.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error</span></code></p></td>
 <td><p>Reject existing destination vectors (default).</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">replace</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">replace</span></code></p></td>
 <td><p>Resize and overwrite existing writable real destination vectors.</p></td>
 </tr>
 </tbody>
@@ -165,8 +168,11 @@ help. Do not combine <code class="docutils literal notranslate"><span class="pre
 <span class="o">::</span><span class="nv">rbc</span><span class="o">::</span>vector<span class="w"> </span>destroy<span class="w"> </span><span class="nv">$result</span><span class="w"> </span><span class="o">::</span>demo::x<span class="w"> </span><span class="o">::</span>demo::y<span class="w"> </span><span class="o">::</span>demo::xi
 </pre></div>
 </div>
-<p>Relative vector names resolve in the caller’s namespace; destination namespaces must already exist. Automatic outputs
-use <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">create</span> <span class="pre">#auto</span></code>, and returned names are fully qualified.  The caller must destroy output vectors when
+<p>Input names resolve in the caller’s namespace. Output names use <code class="docutils literal notranslate"><span class="pre">-namespace</span></code>, or the caller’s namespace when omitted.
+Relative namespace options resolve against the caller and create missing parents; empty namespaces are rejected.
+Fully qualified output names override the selected namespace, but their parent must already exist. Omitted names and
+a final <code class="docutils literal notranslate"><span class="pre">#auto</span></code> component use RBC’s automatic naming in the selected namespace; <code class="docutils literal notranslate"><span class="pre">auto</span></code> is an ordinary name.
+Returned names are fully qualified.  The caller must destroy output vectors when
 they are no longer needed. Use <code class="docutils literal notranslate"><span class="pre">-name</span></code> or <code class="docutils literal notranslate"><span class="pre">-names</span></code> with <code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">replace</span></code> to reuse destinations across repeated calls.</p>
 <p>Only real vectors are supported, and numeric inputs must be finite. Read-only vectors are valid inputs, but locked
 destinations cannot be overwritten, even with <code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">replace</span></code>.  New output vectors are writable.</p>

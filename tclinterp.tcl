@@ -20,6 +20,7 @@ proc ::tclinterp::interpolation::lin1d {args} {
     #    Defaults to list.
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
     #    Defaults to list; independent of -input.
+    #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
     #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
@@ -31,9 +32,11 @@ proc ::tclinterp::interpolation::lin1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
-    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
-    # vector names are fully qualified.
+    # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
+    # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
+    # names override this location; their parent namespace must already exist. Each unnamed output, including fields
+    # omitted from -names, uses RBC's #auto mechanism in the selected namespace. A final #auto component also works
+    # in qualified names; auto without # is an ordinary name. Returned vector names are fully qualified.
     #
     # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
     # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
@@ -42,7 +45,7 @@ proc ::tclinterp::interpolation::lin1d {args} {
     # Returns: The interpolated values `yi`, as a Tcl list by default or an RBC vector name with `-output
     # vector`.
     #
-    # Synopsis: -x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-name name? ?-names
+    # Synopsis: -x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names
     #   dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Performs linear one-dimensional interpolation. Returns: The interpolated\
                                                    values yi, as a Tcl list by default or an RBC vector name with\
@@ -55,6 +58,7 @@ proc ::tclinterp::interpolation::lin1d {args} {
         {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
                                                                    list or RBC vector name. Defaults to list;\
                                                                    independent of -input}}
+        {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
                             automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
@@ -75,6 +79,7 @@ proc ::tclinterp::interpolation::near1d {args} {
     #    Defaults to list.
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
     #    Defaults to list; independent of -input.
+    #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
     #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
@@ -86,9 +91,11 @@ proc ::tclinterp::interpolation::near1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
-    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
-    # vector names are fully qualified.
+    # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
+    # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
+    # names override this location; their parent namespace must already exist. Each unnamed output, including fields
+    # omitted from -names, uses RBC's #auto mechanism in the selected namespace. A final #auto component also works
+    # in qualified names; auto without # is an ordinary name. Returned vector names are fully qualified.
     #
     # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
     # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
@@ -97,7 +104,7 @@ proc ::tclinterp::interpolation::near1d {args} {
     # Returns: The interpolated values `yi`, as a Tcl list by default or an RBC vector name with `-output
     # vector`.
     #
-    # Synopsis: -x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-name name? ?-names
+    # Synopsis: -x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names
     #   dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Performs nearest-neighbor one-dimensional interpolation. Returns: The\
                                                    interpolated values yi, as a Tcl list by default or an RBC vector\
@@ -110,6 +117,7 @@ proc ::tclinterp::interpolation::near1d {args} {
         {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
                                                                    list or RBC vector name. Defaults to list;\
                                                                    independent of -input}}
+        {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
                             automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
@@ -130,6 +138,7 @@ proc ::tclinterp::interpolation::lagr1d {args} {
     #    Defaults to list.
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
     #    Defaults to list; independent of -input.
+    #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
     #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
@@ -141,9 +150,11 @@ proc ::tclinterp::interpolation::lagr1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
-    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
-    # vector names are fully qualified.
+    # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
+    # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
+    # names override this location; their parent namespace must already exist. Each unnamed output, including fields
+    # omitted from -names, uses RBC's #auto mechanism in the selected namespace. A final #auto component also works
+    # in qualified names; auto without # is an ordinary name. Returned vector names are fully qualified.
     #
     # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
     # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
@@ -152,7 +163,7 @@ proc ::tclinterp::interpolation::lagr1d {args} {
     # Returns: The interpolated values `yi`, as a Tcl list by default or an RBC vector name with `-output
     # vector`.
     #
-    # Synopsis: -x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-name name? ?-names
+    # Synopsis: -x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names
     #   dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Performs Lagrange polynomial one-dimensional interpolation. Returns: The\
                                                    interpolated values yi, as a Tcl list by default or an RBC vector\
@@ -165,6 +176,7 @@ proc ::tclinterp::interpolation::lagr1d {args} {
         {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
                                                                    list or RBC vector name. Defaults to list;\
                                                                    independent of -input}}
+        {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
                             automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
@@ -189,6 +201,7 @@ proc ::tclinterp::interpolation::least1d {args} {
     #    Defaults to list.
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
     #    Defaults to list; independent of -input.
+    #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
     #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
@@ -200,9 +213,11 @@ proc ::tclinterp::interpolation::least1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
-    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
-    # vector names are fully qualified.
+    # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
+    # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
+    # names override this location; their parent namespace must already exist. Each unnamed output, including fields
+    # omitted from -names, uses RBC's #auto mechanism in the selected namespace. A final #auto component also works
+    # in qualified names; auto without # is an ordinary name. Returned vector names are fully qualified.
     #
     # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
     # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
@@ -213,7 +228,7 @@ proc ::tclinterp::interpolation::least1d {args} {
     # numeric array is a Tcl list by default or an RBC vector name with `-output vector`.
     #
     # Synopsis: -x values -y values -xi values ?-w values? ?-nterms integer? ?-coeffs? ?-input list|vector?
-    #   ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?
+    #   ?-output list|vector? ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Fits a least-squares polynomial. Returns: The fitted values yi, or a\
                                                    dictionary containing yi when -coeffs is specified. With -coeffs,\
                                                    the dictionary also contains coeffs, a nested dictionary with keys\
@@ -233,6 +248,7 @@ proc ::tclinterp::interpolation::least1d {args} {
         {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
                                                                    list or RBC vector name. Defaults to list;\
                                                                    independent of -input}}
+        {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
                             automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
@@ -257,6 +273,7 @@ proc ::tclinterp::interpolation::least1dDer {args} {
     #    Defaults to list.
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
     #    Defaults to list; independent of -input.
+    #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
     #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
@@ -268,9 +285,11 @@ proc ::tclinterp::interpolation::least1dDer {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
-    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
-    # vector names are fully qualified.
+    # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
+    # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
+    # names override this location; their parent namespace must already exist. Each unnamed output, including fields
+    # omitted from -names, uses RBC's #auto mechanism in the selected namespace. A final #auto component also works
+    # in qualified names; auto without # is an ordinary name. Returned vector names are fully qualified.
     #
     # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
     # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
@@ -281,7 +300,7 @@ proc ::tclinterp::interpolation::least1dDer {args} {
     # default or an RBC vector name with `-output vector`.
     #
     # Synopsis: -x values -y values -xi values ?-w values? ?-nterms integer? ?-coeffs? ?-input list|vector?
-    #   ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?
+    #   ?-output list|vector? ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Fits a least-squares polynomial and evaluates its first derivative. Returns:\
                                                    A dictionary with yi values and yiDer first derivatives. With\
                                                    -coeffs, the dictionary also contains coeffs, a nested dictionary\
@@ -301,6 +320,7 @@ proc ::tclinterp::interpolation::least1dDer {args} {
         {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
                                                                    list or RBC vector name. Defaults to list;\
                                                                    independent of -input}}
+        {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
                             automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
@@ -322,6 +342,7 @@ proc ::tclinterp::approximation::genBezier {args} {
     #    Defaults to list.
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
     #    Defaults to list; independent of -input.
+    #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
     #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
@@ -333,9 +354,11 @@ proc ::tclinterp::approximation::genBezier {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
-    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
-    # vector names are fully qualified.
+    # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
+    # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
+    # names override this location; their parent namespace must already exist. Each unnamed output, including fields
+    # omitted from -names, uses RBC's #auto mechanism in the selected namespace. A final #auto component also works
+    # in qualified names; auto without # is an ordinary name. Returned vector names are fully qualified.
     #
     # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
     # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
@@ -344,7 +367,7 @@ proc ::tclinterp::approximation::genBezier {args} {
     # Returns: A dictionary with `xi` and `yi` coordinates. Each numeric array is a Tcl list by default or an
     # RBC vector name with `-output vector`.
     #
-    # Synopsis: -n integer -x values -y values -t values ?-input list|vector? ?-output list|vector? ?-name name?
+    # Synopsis: -n integer -x values -y values -t values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name?
     #   ?-names dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Evaluates a parametric Bezier curve. Returns: A dictionary with xi and yi\
                                                    coordinates. Each numeric array is a Tcl list by default or an RBC\
@@ -359,6 +382,7 @@ proc ::tclinterp::approximation::genBezier {args} {
         {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
                                                                    list or RBC vector name. Defaults to list;\
                                                                    independent of -input}}
+        {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
                             automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
@@ -381,6 +405,7 @@ proc ::tclinterp::approximation::bezier {args} {
     #    Defaults to list.
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
     #    Defaults to list; independent of -input.
+    #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
     #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
@@ -392,9 +417,11 @@ proc ::tclinterp::approximation::bezier {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
-    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
-    # vector names are fully qualified.
+    # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
+    # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
+    # names override this location; their parent namespace must already exist. Each unnamed output, including fields
+    # omitted from -names, uses RBC's #auto mechanism in the selected namespace. A final #auto component also works
+    # in qualified names; auto without # is an ordinary name. Returned vector names are fully qualified.
     #
     # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
     # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
@@ -404,7 +431,7 @@ proc ::tclinterp::approximation::bezier {args} {
     # vector`.
     #
     # Synopsis: -n integer -a value -b value -x values -y values ?-input list|vector? ?-output list|vector?
-    #   ?-name name? ?-names dictionary? ?-ifexists error|replace?
+    #   ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Evaluates a Bezier polynomial on an interval. Returns: The interpolated\
                                                    values yi, as a Tcl list by default or an RBC vector name with\
                                                    -output vector} {
@@ -419,6 +446,7 @@ proc ::tclinterp::approximation::bezier {args} {
         {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
                                                                    list or RBC vector name. Defaults to list;\
                                                                    independent of -input}}
+        {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
                             automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
@@ -440,6 +468,7 @@ proc ::tclinterp::interpolation::divDif1d {args} {
     #    Defaults to list.
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
     #    Defaults to list; independent of -input.
+    #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
     #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
@@ -451,9 +480,11 @@ proc ::tclinterp::interpolation::divDif1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
-    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
-    # vector names are fully qualified.
+    # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
+    # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
+    # names override this location; their parent namespace must already exist. Each unnamed output, including fields
+    # omitted from -names, uses RBC's #auto mechanism in the selected namespace. A final #auto component also works
+    # in qualified names; auto without # is an ordinary name. Returned vector names are fully qualified.
     #
     # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
     # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
@@ -462,7 +493,7 @@ proc ::tclinterp::interpolation::divDif1d {args} {
     # Returns: The interpolated values `yi`. With `-coeffs`, returns a dictionary with `yi` and `coeffs` arrays.
     # Each numeric array is a Tcl list by default or an RBC vector name with `-output vector`.
     #
-    # Synopsis: -x values -y values -xi values ?-coeffs? ?-input list|vector? ?-output list|vector? ?-name name?
+    # Synopsis: -x values -y values -xi values ?-coeffs? ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name?
     #   ?-names dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Performs divided-difference polynomial interpolation. Returns: The\
                                                    interpolated values yi.  With -coeffs, returns a dictionary with yi\
@@ -477,6 +508,7 @@ proc ::tclinterp::interpolation::divDif1d {args} {
         {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
                                                                    list or RBC vector name. Defaults to list;\
                                                                    independent of -input}}
+        {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
                             automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
@@ -497,6 +529,7 @@ proc ::tclinterp::approximation::cubicBSpline1d {args} {
     #    Defaults to list.
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
     #    Defaults to list; independent of -input.
+    #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
     #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
@@ -508,9 +541,11 @@ proc ::tclinterp::approximation::cubicBSpline1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
-    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
-    # vector names are fully qualified.
+    # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
+    # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
+    # names override this location; their parent namespace must already exist. Each unnamed output, including fields
+    # omitted from -names, uses RBC's #auto mechanism in the selected namespace. A final #auto component also works
+    # in qualified names; auto without # is an ordinary name. Returned vector names are fully qualified.
     #
     # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
     # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
@@ -519,7 +554,7 @@ proc ::tclinterp::approximation::cubicBSpline1d {args} {
     # Returns: The approximated values `yi`, as a Tcl list by default or an RBC vector name with `-output
     # vector`.
     #
-    # Synopsis: -t values -y values -ti values ?-input list|vector? ?-output list|vector? ?-name name? ?-names
+    # Synopsis: -t values -y values -ti values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names
     #   dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Evaluates a cubic B-spline approximant. Returns: The approximated values yi,\
                                                    as a Tcl list by default or an RBC vector name with -output vector}\
@@ -532,6 +567,7 @@ proc ::tclinterp::approximation::cubicBSpline1d {args} {
         {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
                                                                    list or RBC vector name. Defaults to list;\
                                                                    independent of -input}}
+        {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
                             automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
@@ -554,6 +590,7 @@ proc ::tclinterp::approximation::cubicBetaSpline1d {args} {
     #    Defaults to list.
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
     #    Defaults to list; independent of -input.
+    #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
     #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
@@ -565,9 +602,11 @@ proc ::tclinterp::approximation::cubicBetaSpline1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
-    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
-    # vector names are fully qualified.
+    # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
+    # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
+    # names override this location; their parent namespace must already exist. Each unnamed output, including fields
+    # omitted from -names, uses RBC's #auto mechanism in the selected namespace. A final #auto component also works
+    # in qualified names; auto without # is an ordinary name. Returned vector names are fully qualified.
     #
     # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
     # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
@@ -579,7 +618,7 @@ proc ::tclinterp::approximation::cubicBetaSpline1d {args} {
     # vector`.
     #
     # Synopsis: -beta1 value -beta2 value -t values -y values -ti values ?-input list|vector? ?-output
-    #   list|vector? ?-name name? ?-names dictionary? ?-ifexists error|replace?
+    #   list|vector? ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Evaluates a cubic beta-spline approximant. Returns: The approximated values\
                                                    yi, as a Tcl list by default or an RBC vector name with -output\
                                                    vector} {
@@ -593,6 +632,7 @@ proc ::tclinterp::approximation::cubicBetaSpline1d {args} {
         {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
                                                                    list or RBC vector name. Defaults to list;\
                                                                    independent of -input}}
+        {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
                             automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
@@ -620,6 +660,7 @@ proc ::tclinterp::interpolation::cubicSpline1d {args} {
     #    Defaults to list.
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
     #    Defaults to list; independent of -input.
+    #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
     #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
@@ -631,9 +672,11 @@ proc ::tclinterp::interpolation::cubicSpline1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
-    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
-    # vector names are fully qualified.
+    # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
+    # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
+    # names override this location; their parent namespace must already exist. Each unnamed output, including fields
+    # omitted from -names, uses RBC's #auto mechanism in the selected namespace. A final #auto component also works
+    # in qualified names; auto without # is an ordinary name. Returned vector names are fully qualified.
     #
     # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
     # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
@@ -649,7 +692,7 @@ proc ::tclinterp::interpolation::cubicSpline1d {args} {
     # with `-output vector`.
     #
     # Synopsis: -t values -y values -ti values ?-ibcbeg condition? ?-ibcend condition? ?-ybcbeg value? ?-ybcend
-    #   value? ?-deriv? ?-input list|vector? ?-output list|vector? ?-name name? ?-names dictionary? ?-ifexists
+    #   value? ?-deriv? ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists
     #   error|replace?
     set arguments [argparse -inline -help {Performs piecewise cubic spline interpolation. Returns: The interpolated\
                                                    values yi. With -deriv, returns a dictionary with yi, first\
@@ -671,6 +714,7 @@ proc ::tclinterp::interpolation::cubicSpline1d {args} {
         {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
                                                                    list or RBC vector name. Defaults to list;\
                                                                    independent of -input}}
+        {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
                             automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
@@ -693,6 +737,7 @@ proc ::tclinterp::interpolation::hermiteSpline1d {args} {
     #    Defaults to list.
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
     #    Defaults to list; independent of -input.
+    #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
     #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
@@ -704,9 +749,11 @@ proc ::tclinterp::interpolation::hermiteSpline1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
-    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
-    # vector names are fully qualified.
+    # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
+    # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
+    # names override this location; their parent namespace must already exist. Each unnamed output, including fields
+    # omitted from -names, uses RBC's #auto mechanism in the selected namespace. A final #auto component also works
+    # in qualified names; auto without # is an ordinary name. Returned vector names are fully qualified.
     #
     # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
     # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
@@ -716,7 +763,7 @@ proc ::tclinterp::interpolation::hermiteSpline1d {args} {
     # `yder1`. Each numeric array is a Tcl list by default or an RBC vector name with `-output vector`.
     #
     # Synopsis: -t values -y values -yp values -ti values ?-deriv? ?-input list|vector? ?-output list|vector?
-    #   ?-name name? ?-names dictionary? ?-ifexists error|replace?
+    #   ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Performs cubic Hermite spline interpolation. Returns: The interpolated\
                                                    values yi. With -deriv, returns a dictionary with yi and first\
                                                    derivatives yder1. Each numeric array is a Tcl list by default or an\
@@ -731,6 +778,7 @@ proc ::tclinterp::interpolation::hermiteSpline1d {args} {
         {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
                                                                    list or RBC vector name. Defaults to list;\
                                                                    independent of -input}}
+        {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
                             automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
@@ -751,6 +799,7 @@ proc ::tclinterp::interpolation::pchip1d {args} {
     #    Defaults to list.
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
     #    Defaults to list; independent of -input.
+    #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
     #  -names dictionary - Dictionary mapping output fields to destination vector names; requires -output
@@ -762,9 +811,11 @@ proc ::tclinterp::interpolation::pchip1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Vector names resolve in the caller's namespace; destination namespaces must already exist. Each unnamed
-    # output, including fields omitted from -names, is created with `::rbc::vector create #auto`. Returned
-    # vector names are fully qualified.
+    # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
+    # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
+    # names override this location; their parent namespace must already exist. Each unnamed output, including fields
+    # omitted from -names, uses RBC's #auto mechanism in the selected namespace. A final #auto component also works
+    # in qualified names; auto without # is an ordinary name. Returned vector names are fully qualified.
     #
     # Do not specify both -name and the `yi` entry of -names. Unknown output fields and duplicate destinations
     # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
@@ -773,7 +824,7 @@ proc ::tclinterp::interpolation::pchip1d {args} {
     # Returns: The interpolated values `yi`, as a Tcl list by default or an RBC vector name with `-output
     # vector`.
     #
-    # Synopsis: -x values -f values -xe values ?-input list|vector? ?-output list|vector? ?-name name? ?-names
+    # Synopsis: -x values -f values -xe values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names
     #   dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Performs piecewise cubic Hermite interpolation (PCHIP). Returns: The\
                                                    interpolated values yi, as a Tcl list by default or an RBC vector\
@@ -786,6 +837,7 @@ proc ::tclinterp::interpolation::pchip1d {args} {
         {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
                                                                    list or RBC vector name. Defaults to list;\
                                                                    independent of -input}}
+        {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
                             automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
