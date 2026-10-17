@@ -8,7 +8,9 @@ namespace eval ::interpTest {
             return 0
         }
         foreach x $a y $b {
-            if {abs($x-$y)>1e-9*(1+abs($y))} {return 0}
+            if {abs($x-$y)>1e-9*(1+abs($y))} {
+                return 0
+            }
         }
         return 1
     }

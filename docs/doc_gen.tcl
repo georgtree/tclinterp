@@ -1,8 +1,9 @@
-
 package require ruff
 package require fileutil
 set docDir [file dirname [file normalize [info script]]]
+set projectRoot [file normalize [file join $docDir ..]]
 set sourceDir "${docDir}/../"
+source [file join $docDir doc_include.tcl]
 source [file join $docDir startPage.ruff]
 source [file join $docDir rbcBindings.ruff]
 source [file join $docDir examples.ruff]
@@ -23,12 +24,20 @@ set commonNroff [list -title $title -sortnamespaces false -preamble $startPage -
                          -version $packageVersion -copyright "George Yashin" {*}$::argv]
 set namespaces [list rbcBindings Examples ::tclinterp::approximation ::tclinterp::interpolation]
 
+foreach ns $namespaces {
+    set preambleVar "${ns}::_ruff_preamble"
+    if {[info exists $preambleVar]} {
+        set $preambleVar [::docgen::expandIncludes [set $preambleVar] $projectRoot]
+    }
+}
+
 ruff::document $namespaces -format sphinx -outfile tclinterp.rst -outdir [file join $docDir sphinx] {*}$commonSphinx
 ruff::document $namespaces -format nroff -outdir $docDir -outfile tclinterp.n {*}$commonNroff
 
 ::fileutil::appendToFile [file join $docDir sphinx conf.py] {html_theme = "classic"
 extensions = [
     "sphinx.ext.githubpages",
+    "sphinx.ext.mathjax",
 ]
 html_theme = "classic"
 html_theme_options = {
