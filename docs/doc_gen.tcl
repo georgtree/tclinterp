@@ -8,6 +8,7 @@ source [file join $docDir startPage.ruff]
 source [file join $docDir rbcBindings.ruff]
 source [file join $docDir examples.ruff]
 source [file join $sourceDir tclinterp.tcl]
+source [file join $docDir tclinterp.ruff]
 
 set packageVersion [package provide tclinterp]
 if {$packageVersion eq {}} {
@@ -22,7 +23,7 @@ set commonNroff [list -title $title -sortnamespaces false -preamble $startPage -
                          -pagesplit namespace -autopunctuate true -compact false -includeprivate false\
                          -excludeprocs {^[A-Z].*} -product tclinterp -diagrammer "ditaa --border-width 1"\
                          -version $packageVersion -copyright "George Yashin" {*}$::argv]
-set namespaces [list rbcBindings Examples ::tclinterp::approximation ::tclinterp::interpolation]
+set namespaces [list rbcBindings Examples ::tclinterp ::tclinterp::approximation ::tclinterp::interpolation]
 
 foreach ns $namespaces {
     set preambleVar "${ns}::_ruff_preamble"

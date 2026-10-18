@@ -277,6 +277,8 @@ tclinterp-rbcbindings(n) - description of RBC vectors support
 .sp 1
 Public commands documentation:
 .br
+tclinterp-tclinterp(n)
+.br
 tclinterp-tclinterp-approximation(n)
 .br
 tclinterp-tclinterp-interpolation(n)

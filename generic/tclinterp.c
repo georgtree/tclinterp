@@ -97,6 +97,75 @@ static int InitVectors(Tcl_Interp *ip) {
 #endif
 }
 
+/* Package defaults are interpreter-local, independent of command/handle lifetime.
+ * Setters validate the entire request, including RBC availability, before committing. */
+typedef struct PackageDefaults {
+    int input, output;
+} PackageDefaults;
+
+static void DeletePackageDefaults(void *data, Tcl_Interp *interp) {
+    (void)interp;
+    Tcl_Free((char *)data);
+}
+
+static PackageDefaults *GetPackageDefaults(Tcl_Interp *interp) {
+    PackageDefaults *defaults = (PackageDefaults *)Tcl_GetAssocData(interp, "tclinterp::defaults", NULL);
+    if (!defaults) {
+        defaults = (PackageDefaults *)Tcl_Alloc(sizeof(*defaults));
+        memset(defaults, 0, sizeof(*defaults)); /* Initial modes remain list. */
+        Tcl_SetAssocData(interp, "tclinterp::defaults", DeletePackageDefaults, defaults);
+    }
+    return defaults;
+}
+
+static Tcl_Obj *PackageDefaultsDict(Tcl_Interp *interp, const PackageDefaults *defaults) {
+    Tcl_Obj *result = Tcl_NewDictObj();
+    Tcl_DictObjPut(interp, result, Tcl_NewStringObj("-input", -1),
+                   Tcl_NewStringObj(defaults->input ? "vector" : "list", -1));
+    Tcl_DictObjPut(interp, result, Tcl_NewStringObj("-output", -1),
+                   Tcl_NewStringObj(defaults->output ? "vector" : "list", -1));
+    return result;
+}
+
+static int ConfigureCmd(void *clientData, Tcl_Interp *interp, Tcl_Size objc, Tcl_Obj *const objv[]) {
+    static const char *options[] = {"-input", "-output", NULL};
+    static const char *modes[] = {"list", "vector", NULL};
+    PackageDefaults *defaults = GetPackageDefaults(interp);
+    PackageDefaults candidate = *defaults;
+    int option, mode;
+    (void)clientData;
+    if (objc == 2) {
+        if (Tcl_GetIndexFromObj(interp, objv[1], options, "option", TCL_EXACT, &option) != TCL_OK) {
+            return TCL_ERROR;
+        }
+        mode = option == 0 ? defaults->input : defaults->output;
+        Tcl_SetObjResult(interp, Tcl_NewStringObj(modes[mode], -1));
+        return TCL_OK;
+    }
+    if (objc % 2 == 0) {
+        Tcl_WrongNumArgs(interp, 1, objv, "?option? ?value option value ...?");
+        return TCL_ERROR;
+    }
+    for (Tcl_Size i = 1; i < objc; i += 2) {
+        if (Tcl_GetIndexFromObj(interp, objv[i], options, "option", TCL_EXACT, &option) != TCL_OK ||
+            Tcl_GetIndexFromObj(interp, objv[i + 1], modes, "mode", TCL_EXACT, &mode) != TCL_OK) {
+            return TCL_ERROR;
+        }
+        if (option == 0)
+            candidate.input = mode;
+        else
+            candidate.output = mode;
+    }
+    if (objc > 1) {
+        if ((candidate.input || candidate.output) && InitVectors(interp) != TCL_OK) {
+            return TCL_ERROR;
+        }
+        *defaults = candidate;
+    }
+    Tcl_SetObjResult(interp, PackageDefaultsDict(interp, defaults));
+    return TCL_OK;
+}
+
 static int OpenInput(Context *c, const char *key, int vectors, Input *a) {
     Tcl_Obj *o = Option(c, key), **elems = NULL;
     Tcl_Size n;
@@ -455,8 +524,9 @@ done:
         Tcl_RestoreInterpState(ip, state);
     }
 #endif
-    if (nsName)
+    if (nsName) {
         Tcl_DecrRefCount(nsName);
+    }        
     Tcl_DecrRefCount(coeffs);
     Tcl_DecrRefCount(result);
     return code;
@@ -502,7 +572,9 @@ static int NativeCmd(void *unused, Tcl_Interp *ip, Tcl_Size objc, Tcl_Obj *const
         return TCL_ERROR;
     }
     ctx.args = objv[2];
-    const char *im = StringOption(c, "input", "list"), *om = StringOption(c, "output", "list");
+    const PackageDefaults *defaults = GetPackageDefaults(ip);
+    const char *im = StringOption(c, "input", defaults->input ? "vector" : "list");
+    const char *om = StringOption(c, "output", defaults->output ? "vector" : "list");
     if ((strcmp(im, "list") && strcmp(im, "vector")) || (strcmp(om, "list") && strcmp(om, "vector"))) {
         return Error(ip, "input and output must be list or vector");
     }
@@ -819,6 +891,7 @@ int Tclinterp_Init(Tcl_Interp *ip) {
         !Tcl_CreateNamespace(ip, "::tclinterp", NULL, NULL)) {
         return TCL_ERROR;
     }
+    Tcl_CreateObjCommand2(ip, "::tclinterp::configure", ConfigureCmd, NULL, NULL);
     Tcl_CreateObjCommand2(ip, "::tclinterp::native", NativeCmd, NULL, NULL);
     return Tcl_PkgProvide(ip, "tclinterp", PACKAGE_VERSION);
 }

@@ -371,6 +371,108 @@ test native-namespace-absolute-missing {absolute destinations do not implicitly 
     list $code [namespace exists ::interpTest::work::absent]
 } -cleanup {::interpTest::cleanup} -result {1 0}
 
+
+# Public package configuration is intentionally not namespace-exported.
+test defaults-query {initial settings and single-option queries} -body {
+    list [::tclinterp::configure] [::tclinterp::configure -output]
+} -result {{-input list -output list} list}
+
+test defaults-validation {invalid requests do not partially change configuration} -body {
+    set saved [::tclinterp::configure]
+    set errors {}
+    foreach args {{-output vector -unknown list} {-output invalid} {-output list -output} {-unknown}} {
+        lappend errors [catch {::tclinterp::configure {*}$args}]
+        if {[::tclinterp::configure] ne $saved} {
+            error {partial configuration change}
+        }
+    }
+    set errors
+} -cleanup {::tclinterp::configure {*}$saved} -result {1 1 1 1}
+
+test defaults-not-exported {wildcard imports do not import configure} -body {
+    namespace eval ::defaultsImportTest {namespace import ::tclinterp::*}
+    list [info commands ::tclinterp::configure] [info commands ::defaultsImportTest::configure]
+} -cleanup {namespace delete ::defaultsImportTest} -result {::tclinterp::configure {}}
+
+test defaults-set-restore {set returns all settings; returned dictionary restores them} -constraints interpVectors\
+        -body {
+    set saved [::tclinterp::configure]
+    set changed [::tclinterp::configure -output vector]
+    set query [::tclinterp::configure -output]
+    set restored [::tclinterp::configure {*}$saved]
+    list $changed $query [expr {$restored eq $saved}]
+} -cleanup {::tclinterp::configure {*}$saved} -result {{-input list -output vector} vector 1}
+
+test defaults-interpreters {a fresh interpreter has independent list defaults} -constraints interpVectors -body {
+    set saved [::tclinterp::configure]
+    ::tclinterp::configure -output vector
+    set library {}
+    foreach loaded [info loaded] {
+        if {[string equal -nocase [lindex $loaded 1] tclinterp]} {
+            set library [lindex $loaded 0]
+            break
+        }
+    }
+    interp create defaultsChild
+    defaultsChild eval [list load $library]
+    defaultsChild eval {::tclinterp::configure -output list}
+    list [defaultsChild eval {::tclinterp::configure -output}] [::tclinterp::configure -output]\
+            [defaultsChild eval {package provide rbc::vector}]
+} -cleanup {
+    catch {interp delete defaultsChild}
+    ::tclinterp::configure {*}$saved
+} -result {list vector {}}
+
+test defaults-unavailable {unavailable vector support leaves all defaults unchanged} -constraints interpNoVectors\
+        -body {
+    set saved [::tclinterp::configure]
+    list [catch {::tclinterp::configure -output vector}] [expr {[::tclinterp::configure] eq $saved}]
+} -cleanup {::tclinterp::configure {*}$saved} -result {1 1}
+
+foreach case $cases {
+    lassign $case operation category arguments dictionary
+    test defaults-output-$operation {all wrappers inherit output defaults} -constraints interpVectors -body {
+        set saved [::tclinterp::configure]
+        ::tclinterp::configure -output vector
+        set result [::tclinterp::${category}::$operation {*}$arguments -namespace ::interpTest::work]
+        set plain [::tclinterp::${category}::$operation {*}$arguments -output list]
+        ::interpTest::close [::interpTest::values $result $dictionary 1] [::interpTest::values $plain $dictionary 0]
+    } -cleanup {
+        ::tclinterp::configure {*}$saved
+        ::interpTest::cleanup
+    } -result 1
+}
+
+test defaults-input-output {vector defaults, per-call overrides and later changes} -constraints interpVectors -body {
+    set saved [::tclinterp::configure]
+    namespace eval ::interpTest::work {
+        ::rbc::vector create x y xi -variable {}
+        x set {0 1}
+        y set {0 2}
+        xi set {.5}
+    }
+    ::tclinterp::configure -input vector -output vector
+    set result [namespace eval ::interpTest::work {
+        set a [::tclinterp::interpolation::lin1d -x x -y y -xi xi]
+        set b [::tclinterp::interpolation::lin1d -x x -y y -xi xi -output list]
+        set c [::tclinterp::interpolation::lin1d -x {0 1} -y {0 2} -xi {.5} -input list]
+        # Native direct calls use the same defaults as the thin Tcl interface.
+        set d [::tclinterp::native lin1d {x x y y xi xi}]
+        list [$a range 0 end] $b [$c range 0 end] [$d range 0 end]
+    }]
+    ::tclinterp::configure -input list -output list
+    lappend result [::tclinterp::interpolation::lin1d -x {0 1} -y {0 2} -xi {.5}]
+} -cleanup {
+    ::tclinterp::configure {*}$saved
+    ::interpTest::cleanup
+} -result {1.0 1.0 1.0 1.0 1.0}
+
+test defaults-input-atomic {invalid second option does not change input mode} -constraints interpVectors -body {
+    set saved [::tclinterp::configure]
+    set code [catch {::tclinterp::configure -input vector -output invalid}]
+    list $code [expr {[::tclinterp::configure] eq $saved}]
+} -cleanup {::tclinterp::configure {*}$saved} -result {1 1}
+
 ::interpTest::cleanup
 namespace delete ::interpTest
 cleanupTests

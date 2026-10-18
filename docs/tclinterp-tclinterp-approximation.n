@@ -39,7 +39,7 @@ End of the interval; must differ from -a\&.
 Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
 -input list|vector
-Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to list\&.
+Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to the package setting (initially list)\&.
 .TP
 -n integer
 Polynomial degree; must be zero or greater\&.
@@ -54,7 +54,7 @@ Dictionary mapping output fields to destination vector names; requires -output v
 Destination namespace for vector output; relative to the caller, created with missing parents\&.
 .TP
 -output list|vector
-Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
+Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to the package setting (initially list); independent of -input\&.
 .TP
 -x values
 Evaluation positions; must not be empty\&.
@@ -69,6 +69,7 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
+Omitted -input and -output use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
 Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
 when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
 names override this location; their parent namespace must already exist\&. Each unnamed output, including fields
@@ -81,7 +82,7 @@ $vectorName\&.
 .PP
 \fBReturn value\fR
 .PP
-The interpolated values yi, as a Tcl list by default or an RBC vector name with -output
+The interpolated values yi, as a Tcl list with list output or an RBC vector name with -output
 vector\&.
 .PP
 .RS -4n
@@ -107,7 +108,7 @@ Required tension parameter; 0 means no tension\&.
 Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
 -input list|vector
-Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to list\&.
+Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to the package setting (initially list)\&.
 .TP
 -name name
 Destination vector name for yi; requires -output vector\&. Omit it or use #auto to create an automatically named vector\&.
@@ -119,7 +120,7 @@ Dictionary mapping output fields to destination vector names; requires -output v
 Destination namespace for vector output; relative to the caller, created with missing parents\&.
 .TP
 -output list|vector
-Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
+Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to the package setting (initially list); independent of -input\&.
 .TP
 -t values
 Strictly increasing sample positions; at least two values\&. Alias: -x\&.
@@ -137,6 +138,7 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
+Omitted -input and -output use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
 Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
 when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
 names override this location; their parent namespace must already exist\&. Each unnamed output, including fields
@@ -151,7 +153,7 @@ The parameters must produce a finite, nonzero beta-spline normalization\&.
 .PP
 \fBReturn value\fR
 .PP
-The approximated values yi, as a Tcl list by default or an RBC vector name with -output
+The approximated values yi, as a Tcl list with list output or an RBC vector name with -output
 vector\&.
 .PP
 .RS -4n
@@ -171,7 +173,7 @@ Evaluates a cubic B-spline approximant\&.
 Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
 -input list|vector
-Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to list\&.
+Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to the package setting (initially list)\&.
 .TP
 -name name
 Destination vector name for yi; requires -output vector\&. Omit it or use #auto to create an automatically named vector\&.
@@ -183,7 +185,7 @@ Dictionary mapping output fields to destination vector names; requires -output v
 Destination namespace for vector output; relative to the caller, created with missing parents\&.
 .TP
 -output list|vector
-Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
+Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to the package setting (initially list); independent of -input\&.
 .TP
 -t values
 Strictly increasing sample positions; at least two values\&. Alias: -x\&.
@@ -201,6 +203,7 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
+Omitted -input and -output use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
 Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
 when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
 names override this location; their parent namespace must already exist\&. Each unnamed output, including fields
@@ -213,7 +216,7 @@ $vectorName\&.
 .PP
 \fBReturn value\fR
 .PP
-The approximated values yi, as a Tcl list by default or an RBC vector name with -output
+The approximated values yi, as a Tcl list with list output or an RBC vector name with -output
 vector\&.
 .PP
 .RS -4n
@@ -233,7 +236,7 @@ Evaluates a parametric Bezier curve\&.
 Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
 -input list|vector
-Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to list\&.
+Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to the package setting (initially list)\&.
 .TP
 -n integer
 Curve degree; must be zero or greater\&.
@@ -248,7 +251,7 @@ Dictionary mapping output fields to destination vector names; requires -output v
 Destination namespace for vector output; relative to the caller, created with missing parents\&.
 .TP
 -output list|vector
-Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to list; independent of -input\&.
+Output representation for every numeric result array: Tcl list or RBC vector name\&. Defaults to the package setting (initially list); independent of -input\&.
 .TP
 -t values
 Nonempty evaluation parameters; normally between 0 and 1\&.
@@ -266,6 +269,7 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
+Omitted -input and -output use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
 Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
 when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
 names override this location; their parent namespace must already exist\&. Each unnamed output, including fields
@@ -278,7 +282,7 @@ $vectorName\&.
 .PP
 \fBReturn value\fR
 .PP
-A dictionary with xi and yi coordinates\&. Each numeric array is a Tcl list by default or an
+A dictionary with xi and yi coordinates\&. Each numeric array is a Tcl list with list output or an
 RBC vector name with -output vector\&.
 
 
@@ -291,6 +295,8 @@ tclinterp-rbcbindings(n) - description of RBC vectors support
 .br
 .sp 1
 Public commands documentation:
+.br
+tclinterp-tclinterp(n)
 .br
 tclinterp-tclinterp-approximation(n)
 .br

@@ -113,6 +113,23 @@ namespace eval rbcBindings {
         Unlock it explicitly or select a different name / `#auto`. New outputs are writable. Permission is checked
         again before each write because application callbacks may change later destinations during publication.
 
+        ## Package defaults
+
+        Set representation defaults once after loading the package:
+
+        ```tcl
+        package require tclinterp
+        ::tclinterp::configure -input vector -output vector
+        ```
+
+        Subsequent interpolation calls inherit omitted `-input` and `-output` options. Explicit per-call options win.
+
+        Use `::tclinterp::configure` to query all settings, or `::tclinterp::configure -output` to query one.
+        The all-settings dictionary can be restored with `::tclinterp::configure {*}$saved`.
+        Initial defaults remain `list`. Invalid requests and unavailable vector support leave settings unchanged.
+        Configuration belongs to the current Tcl interpreter. The command is public but **not namespace-exported**,
+        so wildcard imports cannot introduce a `configure` collision. Namespace, naming and collision policies are unchanged.
+
     }
 
 }

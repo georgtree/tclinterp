@@ -17,9 +17,9 @@ proc ::tclinterp::interpolation::lin1d {args} {
     #  -y values - Sample values; must have the same length as -x.
     #  -xi values - Evaluation positions; must not be empty.
     #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
-    #    Defaults to list.
+    #    Defaults to the package setting (initially list).
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
-    #    Defaults to list; independent of -input.
+    #    Defaults to the package setting (initially list); independent of -input.
     #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
@@ -32,6 +32,7 @@ proc ::tclinterp::interpolation::lin1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
+    # Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -42,22 +43,22 @@ proc ::tclinterp::interpolation::lin1d {args} {
     # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
     # $vectorName`.
     #
-    # Returns: The interpolated values `yi`, as a Tcl list by default or an RBC vector name with `-output
+    # Returns: The interpolated values `yi`, as a Tcl list with list output or an RBC vector name with `-output
     # vector`.
     #
-    # Synopsis: -x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names
-    #   dictionary? ?-ifexists error|replace?
+    # Synopsis: -x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name?
+    # ?-names dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Performs linear one-dimensional interpolation. Returns: The interpolated\
-                                                   values yi, as a Tcl list by default or an RBC vector name with\
+                                                   values yi, as a Tcl list with list output or an RBC vector name with\
                                                    -output vector} {
         {-x!= -help {Strictly increasing sample positions; at least two values}}
         {-y!= -help {Sample values; must have the same length as -x}}
         {-xi!= -help {Evaluation positions; must not be empty}}
-        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
-                                                                  real RBC vector names. Defaults to list}}
-        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
-                                                                   list or RBC vector name. Defaults to list;\
-                                                                   independent of -input}}
+        {-input= -enum {list vector} -help {Input representation for all array arguments: Tcl lists or real RBC vector\
+                                                    names. Defaults to the package setting (initially list)}}
+        {-output= -enum {list vector} -help {Output representation for every numeric result array: Tcl list or RBC\
+                                                     vector name. Defaults to the package setting (initially list);\
+                                                     independent of -input}}
         {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
                             automatically named vector}}
@@ -76,9 +77,9 @@ proc ::tclinterp::interpolation::near1d {args} {
     #  -y values - Sample values; must have the same length as -x.
     #  -xi values - Evaluation positions; must not be empty.
     #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
-    #    Defaults to list.
+    #    Defaults to the package setting (initially list).
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
-    #    Defaults to list; independent of -input.
+    #    Defaults to the package setting (initially list); independent of -input.
     #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
@@ -91,6 +92,7 @@ proc ::tclinterp::interpolation::near1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
+    # Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -101,22 +103,22 @@ proc ::tclinterp::interpolation::near1d {args} {
     # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
     # $vectorName`.
     #
-    # Returns: The interpolated values `yi`, as a Tcl list by default or an RBC vector name with `-output
+    # Returns: The interpolated values `yi`, as a Tcl list with list output or an RBC vector name with `-output
     # vector`.
     #
-    # Synopsis: -x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names
-    #   dictionary? ?-ifexists error|replace?
+    # Synopsis: -x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name?
+    # ?-names dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Performs nearest-neighbor one-dimensional interpolation. Returns: The\
-                                                   interpolated values yi, as a Tcl list by default or an RBC vector\
-                                                   name with -output vector} {
+                                                   interpolated values yi, as a Tcl list with list output or an RBC\
+                                                   vector name with -output vector} {
         {-x= -required -help {Sample positions; at least one value}}
         {-y= -required -help {Sample values; must have the same length as -x}}
         {-xi= -required -help {Evaluation positions; must not be empty}}
-        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
-                                                                  real RBC vector names. Defaults to list}}
-        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
-                                                                   list or RBC vector name. Defaults to list;\
-                                                                   independent of -input}}
+        {-input= -enum {list vector} -help {Input representation for all array arguments: Tcl lists or real RBC vector\
+                                                    names. Defaults to the package setting (initially list)}}
+        {-output= -enum {list vector} -help {Output representation for every numeric result array: Tcl list or RBC\
+                                                     vector name. Defaults to the package setting (initially list);\
+                                                     independent of -input}}
         {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
                             automatically named vector}}
@@ -135,9 +137,9 @@ proc ::tclinterp::interpolation::lagr1d {args} {
     #  -y values - Sample values; must have the same length as -x.
     #  -xi values - Evaluation positions; must not be empty.
     #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
-    #    Defaults to list.
+    #    Defaults to the package setting (initially list).
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
-    #    Defaults to list; independent of -input.
+    #    Defaults to the package setting (initially list); independent of -input.
     #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
@@ -150,6 +152,7 @@ proc ::tclinterp::interpolation::lagr1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
+    # Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -160,22 +163,22 @@ proc ::tclinterp::interpolation::lagr1d {args} {
     # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
     # $vectorName`.
     #
-    # Returns: The interpolated values `yi`, as a Tcl list by default or an RBC vector name with `-output
+    # Returns: The interpolated values `yi`, as a Tcl list with list output or an RBC vector name with `-output
     # vector`.
     #
-    # Synopsis: -x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names
-    #   dictionary? ?-ifexists error|replace?
+    # Synopsis: -x values -y values -xi values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name?
+    # ?-names dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Performs Lagrange polynomial one-dimensional interpolation. Returns: The\
-                                                   interpolated values yi, as a Tcl list by default or an RBC vector\
-                                                   name with -output vector} {
+                                                   interpolated values yi, as a Tcl list with list output or an RBC\
+                                                   vector name with -output vector} {
         {-x= -required -help {Distinct sample positions; at least one value}}
         {-y= -required -help {Sample values; must have the same length as -x}}
         {-xi= -required -help {Evaluation positions; must not be empty}}
-        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
-                                                                  real RBC vector names. Defaults to list}}
-        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
-                                                                   list or RBC vector name. Defaults to list;\
-                                                                   independent of -input}}
+        {-input= -enum {list vector} -help {Input representation for all array arguments: Tcl lists or real RBC vector\
+                                                    names. Defaults to the package setting (initially list)}}
+        {-output= -enum {list vector} -help {Output representation for every numeric result array: Tcl list or RBC\
+                                                     vector name. Defaults to the package setting (initially list);\
+                                                     independent of -input}}
         {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
                             automatically named vector}}
@@ -198,9 +201,9 @@ proc ::tclinterp::interpolation::least1d {args} {
     #    number of distinct sample positions.
     #  -coeffs - Include polynomial coefficient arrays in the result dictionary.
     #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
-    #    Defaults to list.
+    #    Defaults to the package setting (initially list).
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
-    #    Defaults to list; independent of -input.
+    #    Defaults to the package setting (initially list); independent of -input.
     #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
@@ -213,6 +216,7 @@ proc ::tclinterp::interpolation::least1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
+    # Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -225,15 +229,15 @@ proc ::tclinterp::interpolation::least1d {args} {
     #
     # Returns: The fitted values `yi`, or a dictionary containing `yi` when `-coeffs` is specified. With
     # `-coeffs`, the dictionary also contains `coeffs`, a nested dictionary with keys `b`, `c`, and `d`. Each
-    # numeric array is a Tcl list by default or an RBC vector name with `-output vector`.
+    # numeric array is a Tcl list with list output or an RBC vector name with `-output vector`.
     #
     # Synopsis: -x values -y values -xi values ?-w values? ?-nterms integer? ?-coeffs? ?-input list|vector?
     #   ?-output list|vector? ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Fits a least-squares polynomial. Returns: The fitted values yi, or a\
                                                    dictionary containing yi when -coeffs is specified. With -coeffs,\
                                                    the dictionary also contains coeffs, a nested dictionary with keys\
-                                                   b, c, and d. Each numeric array is a Tcl list by default or an RBC\
-                                                   vector name with -output vector} {
+                                                   b, c, and d. Each numeric array is a Tcl list with list output or an\
+                                                   RBC vector name with -output vector} {
         {-x= -required -help {Sample positions; at least one value}}
         {-y= -required -help {Sample values; must have the same length as -x}}
         {-xi= -required -help {Evaluation positions; must not be empty}}
@@ -241,16 +245,16 @@ proc ::tclinterp::interpolation::least1d {args} {
         {-nterms= -default 3 -type integer -validate {$arg>0}\
                  -errormsg {Number of terms -nterms must be more than zero}\
                  -help {Number of polynomial terms; defaults to 3. Must be positive and no greater than the number of\
-                            distinct sample positions}}
+                                distinct sample positions}}
         {-coeffs -help {Include polynomial coefficient arrays in the result dictionary}}
-        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
-                                                                  real RBC vector names. Defaults to list}}
-        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
-                                                                   list or RBC vector name. Defaults to list;\
-                                                                   independent of -input}}
+        {-input= -enum {list vector} -help {Input representation for all array arguments: Tcl lists or real RBC vector\
+                                                    names. Defaults to the package setting (initially list)}}
+        {-output= -enum {list vector} -help {Output representation for every numeric result array: Tcl list or RBC\
+                                                     vector name. Defaults to the package setting (initially list);\
+                                                     independent of -input}}
         {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
-                            automatically named vector}}
+                               automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\
@@ -270,9 +274,9 @@ proc ::tclinterp::interpolation::least1dDer {args} {
     #    number of distinct sample positions.
     #  -coeffs - Include polynomial coefficient arrays in the result dictionary.
     #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
-    #    Defaults to list.
+    #    Defaults to the package setting (initially list).
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
-    #    Defaults to list; independent of -input.
+    #    Defaults to the package setting (initially list); independent of -input.
     #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
@@ -285,6 +289,7 @@ proc ::tclinterp::interpolation::least1dDer {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
+    # Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -296,16 +301,16 @@ proc ::tclinterp::interpolation::least1dDer {args} {
     # $vectorName`.
     #
     # Returns: A dictionary with `yi` values and `yiDer` first derivatives. With `-coeffs`, the dictionary also
-    # contains `coeffs`, a nested dictionary with keys `b`, `c`, and `d`. Each numeric array is a Tcl list by
-    # default or an RBC vector name with `-output vector`.
+    # contains `coeffs`, a nested dictionary with keys `b`, `c`, and `d`. Each numeric array is a Tcl list with
+    # list output or an RBC vector name with `-output vector`.
     #
     # Synopsis: -x values -y values -xi values ?-w values? ?-nterms integer? ?-coeffs? ?-input list|vector?
     #   ?-output list|vector? ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Fits a least-squares polynomial and evaluates its first derivative. Returns:\
                                                    A dictionary with yi values and yiDer first derivatives. With\
                                                    -coeffs, the dictionary also contains coeffs, a nested dictionary\
-                                                   with keys b, c, and d. Each numeric array is a Tcl list by default\
-                                                   or an RBC vector name with -output vector} {
+                                                   with keys b, c, and d. Each numeric array is a Tcl list with list\
+                                                   output or an RBC vector name with -output vector} {
         {-x= -required -help {Sample positions; at least one value}}
         {-y= -required -help {Sample values; must have the same length as -x}}
         {-xi= -required -help {Evaluation positions; must not be empty}}
@@ -315,11 +320,11 @@ proc ::tclinterp::interpolation::least1dDer {args} {
                  -help {Number of polynomial terms; defaults to 3. Must be positive and no greater than the number of\
                             distinct sample positions}}
         {-coeffs -help {Include polynomial coefficient arrays in the result dictionary}}
-        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
-                                                                  real RBC vector names. Defaults to list}}
-        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
-                                                                   list or RBC vector name. Defaults to list;\
-                                                                   independent of -input}}
+        {-input= -enum {list vector} -help {Input representation for all array arguments: Tcl lists or real RBC vector\
+                                                    names. Defaults to the package setting (initially list)}}
+        {-output= -enum {list vector} -help {Output representation for every numeric result array: Tcl list or RBC\
+                                                     vector name. Defaults to the package setting (initially list);\
+                                                     independent of -input}}
         {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
                             automatically named vector}}
@@ -339,9 +344,9 @@ proc ::tclinterp::approximation::genBezier {args} {
     #  -y values - Y control coordinates; exactly n+1 values.
     #  -t values - Nonempty evaluation parameters; normally between 0 and 1.
     #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
-    #    Defaults to list.
+    #    Defaults to the package setting (initially list).
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
-    #    Defaults to list; independent of -input.
+    #    Defaults to the package setting (initially list); independent of -input.
     #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
@@ -354,6 +359,7 @@ proc ::tclinterp::approximation::genBezier {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
+    # Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -364,27 +370,27 @@ proc ::tclinterp::approximation::genBezier {args} {
     # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
     # $vectorName`.
     #
-    # Returns: A dictionary with `xi` and `yi` coordinates. Each numeric array is a Tcl list by default or an
+    # Returns: A dictionary with `xi` and `yi` coordinates. Each numeric array is a Tcl list with list output or an
     # RBC vector name with `-output vector`.
     #
-    # Synopsis: -n integer -x values -y values -t values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name?
-    #   ?-names dictionary? ?-ifexists error|replace?
+    # Synopsis: -n integer -x values -y values -t values ?-input list|vector? ?-output list|vector? ?-namespace name?
+    # ?-name name?  ?-names dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Evaluates a parametric Bezier curve. Returns: A dictionary with xi and yi\
-                                                   coordinates. Each numeric array is a Tcl list by default or an RBC\
-                                                   vector name with -output vector} {
+                                                   coordinates. Each numeric array is a Tcl list with list output or an\
+                                                   RBC vector name with -output vector} {
         {-n= -required -help {Curve degree; must be zero or greater} -type integer -validate {$arg>=0}\
                  -errormsg {Order of Bezier curve -n '$arg' must be more than or equal to zero}}
         {-x= -required -help {X control coordinates; exactly n+1 values}}
         {-y= -required -help {Y control coordinates; exactly n+1 values}}
         {-t= -required -help {Nonempty evaluation parameters; normally between 0 and 1}}
-        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
-                                                                  real RBC vector names. Defaults to list}}
-        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
-                                                                   list or RBC vector name. Defaults to list;\
-                                                                   independent of -input}}
+        {-input= -enum {list vector} -help {Input representation for all array arguments: Tcl lists or real RBC vector\
+                                                    names. Defaults to the package setting (initially list)}}
+        {-output= -enum {list vector} -help {Output representation for every numeric result array: Tcl list or RBC\
+                                                     vector name. Defaults to the package setting (initially list);\
+                                                     independent of -input}}
         {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
-                            automatically named vector}}
+                               automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\
@@ -402,9 +408,9 @@ proc ::tclinterp::approximation::bezier {args} {
     #  -x values - Evaluation positions; must not be empty.
     #  -y values - Control values; exactly n+1 values.
     #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
-    #    Defaults to list.
+    #    Defaults to the package setting (initially list).
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
-    #    Defaults to list; independent of -input.
+    #    Defaults to the package setting (initially list); independent of -input.
     #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
@@ -417,6 +423,7 @@ proc ::tclinterp::approximation::bezier {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
+    # Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -427,13 +434,13 @@ proc ::tclinterp::approximation::bezier {args} {
     # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
     # $vectorName`.
     #
-    # Returns: The interpolated values `yi`, as a Tcl list by default or an RBC vector name with `-output
+    # Returns: The interpolated values `yi`, as a Tcl list with list output or an RBC vector name with `-output
     # vector`.
     #
     # Synopsis: -n integer -a value -b value -x values -y values ?-input list|vector? ?-output list|vector?
-    #   ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?
+    # ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Evaluates a Bezier polynomial on an interval. Returns: The interpolated\
-                                                   values yi, as a Tcl list by default or an RBC vector name with\
+                                                   values yi, as a Tcl list with list output or an RBC vector name with\
                                                    -output vector} {
         {-n= -required -help {Polynomial degree; must be zero or greater} -type integer -validate {$arg>=0}\
                  -errormsg {Order of Bezier curve -n '$arg' must be more than or equal to zero}}
@@ -441,11 +448,11 @@ proc ::tclinterp::approximation::bezier {args} {
         {-b= -required -help {End of the interval; must differ from -a}}
         {-x= -required -help {Evaluation positions; must not be empty}}
         {-y= -required -help {Control values; exactly n+1 values}}
-        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
-                                                                  real RBC vector names. Defaults to list}}
-        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
-                                                                   list or RBC vector name. Defaults to list;\
-                                                                   independent of -input}}
+        {-input= -enum {list vector} -help {Input representation for all array arguments: Tcl lists or real RBC vector\
+                                                    names. Defaults to the package setting (initially list)}}
+        {-output= -enum {list vector} -help {Output representation for every numeric result array: Tcl list or RBC\
+                                                     vector name. Defaults to the package setting (initially list);\
+                                                     independent of -input}}
         {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
                             automatically named vector}}
@@ -465,9 +472,9 @@ proc ::tclinterp::interpolation::divDif1d {args} {
     #  -xi values - Evaluation positions; must not be empty.
     #  -coeffs - Include the divided-difference coefficient array in the result dictionary.
     #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
-    #    Defaults to list.
+    #    Defaults to the package setting (initially list).
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
-    #    Defaults to list; independent of -input.
+    #    Defaults to the package setting (initially list); independent of -input.
     #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
@@ -480,6 +487,7 @@ proc ::tclinterp::interpolation::divDif1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
+    # Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -491,26 +499,26 @@ proc ::tclinterp::interpolation::divDif1d {args} {
     # $vectorName`.
     #
     # Returns: The interpolated values `yi`. With `-coeffs`, returns a dictionary with `yi` and `coeffs` arrays.
-    # Each numeric array is a Tcl list by default or an RBC vector name with `-output vector`.
+    # Each numeric array is a Tcl list with list output or an RBC vector name with `-output vector`.
     #
-    # Synopsis: -x values -y values -xi values ?-coeffs? ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name?
-    #   ?-names dictionary? ?-ifexists error|replace?
+    # Synopsis: -x values -y values -xi values ?-coeffs? ?-input list|vector? ?-output list|vector? ?-namespace name?
+    # ?-name name?  ?-names dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Performs divided-difference polynomial interpolation. Returns: The\
                                                    interpolated values yi.  With -coeffs, returns a dictionary with yi\
-                                                   and coeffs arrays. Each numeric array is a Tcl list by default or an\
-                                                   RBC vector name with -output vector} {
+                                                   and coeffs arrays. Each numeric array is a Tcl list with list output\
+                                                   or an RBC vector name with -output vector} {
         {-x= -required -help {Distinct sample positions; at least one value}}
         {-y= -required -help {Sample values; must have the same length as -x}}
         {-xi= -required -help {Evaluation positions; must not be empty}}
         {-coeffs -help {Include the divided-difference coefficient array in the result dictionary}}
-        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
-                                                                  real RBC vector names. Defaults to list}}
-        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
-                                                                   list or RBC vector name. Defaults to list;\
-                                                                   independent of -input}}
+        {-input= -enum {list vector} -help {Input representation for all array arguments: Tcl lists or real RBC vector\
+                                                    names. Defaults to the package setting (initially list)}}
+        {-output= -enum {list vector} -help {Output representation for every numeric result array: Tcl list or RBC\
+                                                     vector name. Defaults to the package setting (initially list);\
+                                                     independent of -input}}
         {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
-                            automatically named vector}}
+                               automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\
@@ -526,9 +534,9 @@ proc ::tclinterp::approximation::cubicBSpline1d {args} {
     #  -y values - Sample values; must have the same length as -t.
     #  -ti values - Evaluation positions; must not be empty. Alias: -xi.
     #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
-    #    Defaults to list.
+    #    Defaults to the package setting (initially list).
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
-    #    Defaults to list; independent of -input.
+    #    Defaults to the package setting (initially list); independent of -input.
     #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
@@ -541,6 +549,7 @@ proc ::tclinterp::approximation::cubicBSpline1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
+    # Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -551,25 +560,25 @@ proc ::tclinterp::approximation::cubicBSpline1d {args} {
     # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
     # $vectorName`.
     #
-    # Returns: The approximated values `yi`, as a Tcl list by default or an RBC vector name with `-output
+    # Returns: The approximated values `yi`, as a Tcl list with list output or an RBC vector name with `-output
     # vector`.
     #
-    # Synopsis: -t values -y values -ti values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names
-    #   dictionary? ?-ifexists error|replace?
+    # Synopsis: -t values -y values -ti values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name?
+    # ?-names dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Evaluates a cubic B-spline approximant. Returns: The approximated values yi,\
-                                                   as a Tcl list by default or an RBC vector name with -output vector}\
-                           {
+                                                   as a Tcl list with list output or an RBC vector name with -output\
+                                                   vector} {
         {-t= -required -alias x -help {Strictly increasing sample positions; at least two values. Alias: -x}}
         {-y= -required -help {Sample values; must have the same length as -t}}
         {-ti= -required -alias xi -help {Evaluation positions; must not be empty. Alias: -xi}}
-        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
-                                                                  real RBC vector names. Defaults to list}}
-        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
-                                                                   list or RBC vector name. Defaults to list;\
-                                                                   independent of -input}}
+        {-input= -enum {list vector} -help {Input representation for all array arguments: Tcl lists or real RBC vector\
+                                                    names. Defaults to the package setting (initially list)}}
+        {-output= -enum {list vector} -help {Output representation for every numeric result array: Tcl list or RBC\
+                                                     vector name. Defaults to the package setting (initially list);\
+                                                     independent of -input}}
         {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
-                            automatically named vector}}
+                               automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\
@@ -587,9 +596,9 @@ proc ::tclinterp::approximation::cubicBetaSpline1d {args} {
     #  -y values - Sample values; must have the same length as -t.
     #  -ti values - Evaluation positions; must not be empty. Alias: -xi.
     #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
-    #    Defaults to list.
+    #    Defaults to the package setting (initially list).
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
-    #    Defaults to list; independent of -input.
+    #    Defaults to the package setting (initially list); independent of -input.
     #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
@@ -602,6 +611,7 @@ proc ::tclinterp::approximation::cubicBetaSpline1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
+    # Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -614,27 +624,27 @@ proc ::tclinterp::approximation::cubicBetaSpline1d {args} {
     #
     # The parameters must produce a finite, nonzero beta-spline normalization.
     #
-    # Returns: The approximated values `yi`, as a Tcl list by default or an RBC vector name with `-output
+    # Returns: The approximated values `yi`, as a Tcl list with list output or an RBC vector name with `-output
     # vector`.
     #
     # Synopsis: -beta1 value -beta2 value -t values -y values -ti values ?-input list|vector? ?-output
-    #   list|vector? ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?
+    # list|vector? ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Evaluates a cubic beta-spline approximant. Returns: The approximated values\
-                                                   yi, as a Tcl list by default or an RBC vector name with -output\
-                                                   vector} {
+                                                   yi, as a Tcl list with list output or an RBC vector name with\
+                                                   -output vector} {
         {-beta1= -required -type double -help {Required skew or bias parameter; 1 means no skew or bias}}
         {-beta2= -required -type double -help {Required tension parameter; 0 means no tension}}
         {-t= -required -alias x -help {Strictly increasing sample positions; at least two values. Alias: -x}}
         {-y= -required -help {Sample values; must have the same length as -t}}
         {-ti= -required -alias xi -help {Evaluation positions; must not be empty. Alias: -xi}}
-        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
-                                                                  real RBC vector names. Defaults to list}}
-        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
-                                                                   list or RBC vector name. Defaults to list;\
-                                                                   independent of -input}}
+        {-input= -enum {list vector} -help {Input representation for all array arguments: Tcl lists or real RBC vector\
+                                                    names. Defaults to the package setting (initially list)}}
+        {-output= -enum {list vector} -help {Output representation for every numeric result array: Tcl list or RBC\
+                                                     vector name. Defaults to the package setting (initially list);\
+                                                     independent of -input}}
         {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
-                            automatically named vector}}
+                               automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\
@@ -657,9 +667,9 @@ proc ::tclinterp::interpolation::cubicSpline1d {args} {
     #  -ybcend value - Prescribed right endpoint derivative for der1 or der2; defaults to 0.0.
     #  -deriv - Include first and second derivatives in the result dictionary.
     #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
-    #    Defaults to list.
+    #    Defaults to the package setting (initially list).
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
-    #    Defaults to list; independent of -input.
+    #    Defaults to the package setting (initially list); independent of -input.
     #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
@@ -672,6 +682,7 @@ proc ::tclinterp::interpolation::cubicSpline1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
+    # Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -688,17 +699,17 @@ proc ::tclinterp::interpolation::cubicSpline1d {args} {
     # interior knot and requires at least four samples.
     #
     # Returns: The interpolated values `yi`. With `-deriv`, returns a dictionary with `yi`, first derivatives
-    # `yder1`, and second derivatives `yder2`. Each numeric array is a Tcl list by default or an RBC vector name
+    # `yder1`, and second derivatives `yder2`. Each numeric array is a Tcl list with list output or an RBC vector name
     # with `-output vector`.
     #
-    # Synopsis: -t values -y values -ti values ?-ibcbeg condition? ?-ibcend condition? ?-ybcbeg value? ?-ybcend
-    #   value? ?-deriv? ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists
-    #   error|replace?
+    # Synopsis: -t values -y values -ti values ?-ibcbeg condition? ?-ibcend condition? ?-ybcbeg value? ?-ybcend value?
+    # ?-deriv? ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists
+    # error|replace?
     set arguments [argparse -inline -help {Performs piecewise cubic spline interpolation. Returns: The interpolated\
                                                    values yi. With -deriv, returns a dictionary with yi, first\
                                                    derivatives yder1, and second derivatives yder2.  Each numeric array\
-                                                   is a Tcl list by default or an RBC vector name with -output vector}\
-                           {
+                                                   is a Tcl list with list output or an RBC vector name with -output\
+                                                   vector} {
         {-ibcbeg= -default quad -enum {quad der1 der2 notaknot} -alias begflag\
                  -help {Left boundary condition: quad, der1, der2, or notaknot; defaults to quad. Alias: -begflag}}
         {-ibcend= -default quad -enum {quad der1 der2 notaknot} -alias endflag\
@@ -709,14 +720,14 @@ proc ::tclinterp::interpolation::cubicSpline1d {args} {
         {-y= -required -help {Sample values; must have the same length as -t}}
         {-ti= -required -alias xi -help {Evaluation positions; must not be empty. Alias: -xi}}
         {-deriv -help {Include first and second derivatives in the result dictionary}}
-        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
-                                                                  real RBC vector names. Defaults to list}}
-        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
-                                                                   list or RBC vector name. Defaults to list;\
-                                                                   independent of -input}}
+        {-input= -enum {list vector} -help {Input representation for all array arguments: Tcl lists or real RBC vector\
+                                                    names. Defaults to the package setting (initially list)}}
+        {-output= -enum {list vector} -help {Output representation for every numeric result array: Tcl list or RBC\
+                                                     vector name. Defaults to the package setting (initially list);\
+                                                     independent of -input}}
         {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
-                            automatically named vector}}
+                               automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\
@@ -734,9 +745,9 @@ proc ::tclinterp::interpolation::hermiteSpline1d {args} {
     #  -ti values - Evaluation positions; must not be empty. Alias: -xi.
     #  -deriv - Include first derivatives in the result dictionary.
     #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
-    #    Defaults to list.
+    #    Defaults to the package setting (initially list).
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
-    #    Defaults to list; independent of -input.
+    #    Defaults to the package setting (initially list); independent of -input.
     #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
@@ -749,6 +760,7 @@ proc ::tclinterp::interpolation::hermiteSpline1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
+    # Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -760,27 +772,27 @@ proc ::tclinterp::interpolation::hermiteSpline1d {args} {
     # $vectorName`.
     #
     # Returns: The interpolated values `yi`. With `-deriv`, returns a dictionary with `yi` and first derivatives
-    # `yder1`. Each numeric array is a Tcl list by default or an RBC vector name with `-output vector`.
+    # `yder1`. Each numeric array is a Tcl list with list output or an RBC vector name with `-output vector`.
     #
     # Synopsis: -t values -y values -yp values -ti values ?-deriv? ?-input list|vector? ?-output list|vector?
-    #   ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?
+    # ?-namespace name? ?-name name? ?-names dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Performs cubic Hermite spline interpolation. Returns: The interpolated\
                                                    values yi. With -deriv, returns a dictionary with yi and first\
-                                                   derivatives yder1. Each numeric array is a Tcl list by default or an\
-                                                   RBC vector name with -output vector} {
+                                                   derivatives yder1. Each numeric array is a Tcl list with list output\
+                                                   or an RBC vector name with -output vector} {
         {-t= -required -alias x -help {Strictly increasing sample positions; at least two values. Alias: -x}}
         {-y= -required -help {Sample values; must have the same length as -t}}
         {-yp= -required -help {First derivatives at the sample positions; same length as -t}}
         {-ti= -required -alias xi -help {Evaluation positions; must not be empty. Alias: -xi}}
         {-deriv -help {Include first derivatives in the result dictionary}}
-        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
-                                                                  real RBC vector names. Defaults to list}}
-        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
-                                                                   list or RBC vector name. Defaults to list;\
-                                                                   independent of -input}}
+        {-input= -enum {list vector} -help {Input representation for all array arguments: Tcl lists or real RBC vector\
+                                                    names. Defaults to the package setting (initially list)}}
+        {-output= -enum {list vector} -help {Output representation for every numeric result array: Tcl list or RBC\
+                                                     vector name. Defaults to the package setting (initially list);\
+                                                     independent of -input}}
         {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
-                            automatically named vector}}
+                               automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\
@@ -796,9 +808,9 @@ proc ::tclinterp::interpolation::pchip1d {args} {
     #  -f values - Sample values; same length as -x. Alias: -y.
     #  -xe values - Evaluation positions; must not be empty. Alias: -xi.
     #  -input list|vector - Input representation for all array arguments: Tcl lists or real RBC vector names.
-    #    Defaults to list.
+    #    Defaults to the package setting (initially list).
     #  -output list|vector - Output representation for every numeric result array: Tcl list or RBC vector name.
-    #    Defaults to list; independent of -input.
+    #    Defaults to the package setting (initially list); independent of -input.
     #  -namespace name - Destination namespace for vector output; relative to the caller, created with missing parents.
     #  -name name - Destination vector name for yi; requires -output vector. Omit it or use #auto to create an
     #    automatically named vector.
@@ -811,6 +823,7 @@ proc ::tclinterp::interpolation::pchip1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
+    # Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -821,25 +834,25 @@ proc ::tclinterp::interpolation::pchip1d {args} {
     # are errors. The caller owns returned vectors and can release them with `::rbc::vector destroy
     # $vectorName`.
     #
-    # Returns: The interpolated values `yi`, as a Tcl list by default or an RBC vector name with `-output
+    # Returns: The interpolated values `yi`, as a Tcl list with list output or an RBC vector name with `-output
     # vector`.
     #
-    # Synopsis: -x values -f values -xe values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name? ?-names
-    #   dictionary? ?-ifexists error|replace?
+    # Synopsis: -x values -f values -xe values ?-input list|vector? ?-output list|vector? ?-namespace name? ?-name name?
+    # ?-names dictionary? ?-ifexists error|replace?
     set arguments [argparse -inline -help {Performs piecewise cubic Hermite interpolation (PCHIP). Returns: The\
-                                                   interpolated values yi, as a Tcl list by default or an RBC vector\
-                                                   name with -output vector} {
+                                                   interpolated values yi, as a Tcl list with list output or an RBC\
+                                                   vector name with -output vector} {
         {-x= -required -help {Strictly increasing sample positions; at least two values}}
         {-f= -required -alias y -help {Sample values; same length as -x. Alias: -y}}
         {-xe= -required -alias xi -help {Evaluation positions; must not be empty. Alias: -xi}}
-        {-input= -default list -enum {list vector} -help {Input representation for all array arguments: Tcl lists or\
-                                                                  real RBC vector names. Defaults to list}}
-        {-output= -default list -enum {list vector} -help {Output representation for every numeric result array: Tcl\
-                                                                   list or RBC vector name. Defaults to list;\
-                                                                   independent of -input}}
+        {-input= -enum {list vector} -help {Input representation for all array arguments: Tcl lists or real RBC vector\
+                                                    names. Defaults to the package setting (initially list)}}
+        {-output= -enum {list vector} -help {Output representation for every numeric result array: Tcl list or RBC\
+                                                     vector name. Defaults to the package setting (initially list);\
+                                                     independent of -input}}
         {-namespace= -help {Destination namespace for vector output; relative to the caller, created if missing}}
         {-name= -help {Destination vector name for yi; requires -output vector. Omit it or use #auto to create an\
-                            automatically named vector}}
+                               automatically named vector}}
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -default error -enum {error replace} -help {Policy for existing destination vectors; defaults to\

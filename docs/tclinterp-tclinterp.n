@@ -1,10 +1,66 @@
 '\"
 '\" '\" Copyright (c) George Yashin
 '\"
-.TH "tclinterp" 3tcl 0\&.15 "tcl_tools" "Tcl wrapper for C interpolation procedures"
+.TH "tclinterp" 3tcl 0\&.3 "tclinterp" "Tcl wrapper for C interpolation procedures"
 .SH NAME
 tclinterp - Commands in namespace tclinterp
-.SH TCLINTERP
+.SH SYNOPSIS
+\fBconfigure\fP \fI?option?\fP
+.br
+\fBconfigure\fP \fI?-input list|vector? ?-output list|vector?\fP
+.br
+.SH ::TCLINTERP
+.SH COMMANDS
+.PP
+.RS -4n
+\fBconfigure\fR (::tclinterp)
+.RE
+.PP
+Queries or changes package-wide representation defaults in this Tcl interpreter\&.
+.RS 4n
+\fBconfigure\fP \fI?option?\fP
+.br
+\fBconfigure\fP \fI?-input list|vector? ?-output list|vector?\fP
+.br
+.RE
+.PP
+\fBParameters\fR
+.RS 4n
+.TP
+-input mode
+Default input representation: list or vector; initially list\&.
+.TP
+-output mode
+Default output representation: list or vector; initially list\&.
+.RE
+.PP
+\fBDescription\fR
+.PP
+With no arguments, returns all settings as an option/value dictionary\&. With one option, returns its value\&.
+With option/value pairs, validates all settings before applying them and returns the complete configuration\&.
+Invalid options, invalid modes, or unavailable RBC support leave the configuration unchanged\&. Selecting
+vector mode requires an RBC-enabled build and a loadable rbc::vector package; list queries/settings do not
+load RBC\&. Defaults are independent in separate interpreters\&.
+.PP
+Omitted -input and -output options use these defaults on each interpolation call\&. Explicit call options
+take precedence\&. Input and output modes can be configured independently\&.
+This public command is not namespace-exported; call it as ::tclinterp::configure\&.
+Namespace selection, naming and collision policies are unaffected\&.
+.PP
+Example:
+.PP
+.RS 4n
+.nf
+set saved [::tclinterp::configure]
+::tclinterp::configure -input vector -output vector
+::tclinterp::configure -output
+::tclinterp::configure {*}$saved
+.fi
+.RE
+.PP
+\fBReturn value\fR
+.PP
+selected option value for a single-option query; otherwise all settings as a dictionary\&.
 
 
 .SH SEE ALSO
@@ -12,273 +68,12 @@ tclinterp(n) - package's main page
 .br
 tclinterp-examples(n) - examples of usage with detailed explanations
 .br
-.sp 1
-Public commands documentation:
-.br
-spicegentcl-examples(n)
-.br
-spicegentcl-tclinterp-approximation(n)
-.br
-spicegentcl-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
-.sp 1
-Public commands documentation:
-.br
-tclinterp-tclinterp-approximation(n)
-.br
-tclinterp-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
-.sp 1
-Public commands documentation:
-.br
-tclinterp-tclinterp-approximation(n)
-.br
-tclinterp-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
-.sp 1
-Public commands documentation:
-.br
-tclinterp-tclinterp-approximation(n)
-.br
-tclinterp-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
-.sp 1
-Public commands documentation:
-.br
-tclinterp-tclinterp-approximation(n)
-.br
-tclinterp-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
-.sp 1
-Public commands documentation:
-.br
-tclinterp-tclinterp-approximation(n)
-.br
-tclinterp-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
 tclinterp-rbcbindings(n) - description of RBC vectors support
 .br
 .sp 1
 Public commands documentation:
 .br
-tclinterp-tclinterp-approximation(n)
-.br
-tclinterp-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
-tclinterp-rbcbindings(n) - description of RBC vectors support
-.br
-.sp 1
-Public commands documentation:
-.br
-tclinterp-tclinterp-approximation(n)
-.br
-tclinterp-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
-tclinterp-rbcbindings(n) - description of RBC vectors support
-.br
-.sp 1
-Public commands documentation:
-.br
-tclinterp-tclinterp-approximation(n)
-.br
-tclinterp-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
-tclinterp-rbcbindings(n) - description of RBC vectors support
-.br
-.sp 1
-Public commands documentation:
-.br
-tclinterp-tclinterp-approximation(n)
-.br
-tclinterp-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
-tclinterp-rbcbindings(n) - description of RBC vectors support
-.br
-.sp 1
-Public commands documentation:
-.br
-tclinterp-tclinterp-approximation(n)
-.br
-tclinterp-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
-tclinterp-rbcbindings(n) - description of RBC vectors support
-.br
-.sp 1
-Public commands documentation:
-.br
-tclinterp-tclinterp-approximation(n)
-.br
-tclinterp-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
-tclinterp-rbcbindings(n) - description of RBC vectors support
-.br
-.sp 1
-Public commands documentation:
-.br
-tclinterp-tclinterp-approximation(n)
-.br
-tclinterp-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
-tclinterp-rbcbindings(n) - description of RBC vectors support
-.br
-.sp 1
-Public commands documentation:
-.br
-tclinterp-tclinterp-approximation(n)
-.br
-tclinterp-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
-tclinterp-rbcbindings(n) - description of RBC vectors support
-.br
-.sp 1
-Public commands documentation:
-.br
-tclinterp-tclinterp-approximation(n)
-.br
-tclinterp-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
-tclinterp-rbcbindings(n) - description of RBC vectors support
-.br
-.sp 1
-Public commands documentation:
-.br
-tclinterp-tclinterp-approximation(n)
-.br
-tclinterp-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
-tclinterp-rbcbindings(n) - description of RBC vectors support
-.br
-.sp 1
-Public commands documentation:
-.br
-tclinterp-tclinterp-approximation(n)
-.br
-tclinterp-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
-tclinterp-rbcbindings(n) - description of RBC vectors support
-.br
-.sp 1
-Public commands documentation:
-.br
-tclinterp-tclinterp-approximation(n)
-.br
-tclinterp-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
-tclinterp-rbcbindings(n) - description of RBC vectors support
-.br
-.sp 1
-Public commands documentation:
-.br
-tclinterp-tclinterp-approximation(n)
-.br
-tclinterp-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
-tclinterp-rbcbindings(n) - description of RBC vectors support
-.br
-.sp 1
-Public commands documentation:
-.br
-tclinterp-tclinterp-approximation(n)
-.br
-tclinterp-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
-tclinterp-rbcbindings(n) - description of RBC vectors support
-.br
-.sp 1
-Public commands documentation:
-.br
-tclinterp-tclinterp-approximation(n)
-.br
-tclinterp-tclinterp-interpolation(n)
-.SH SEE ALSO
-tclinterp(n) - package's main page
-.br
-tclinterp-examples(n) - examples of usage with detailed explanations
-.br
-tclinterp-rbcbindings(n) - description of RBC vectors support
-.br
-.sp 1
-Public commands documentation:
+tclinterp-tclinterp(n)
 .br
 tclinterp-tclinterp-approximation(n)
 .br

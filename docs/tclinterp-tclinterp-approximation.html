@@ -16,7 +16,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="::tclinterp::interpolation" href="tclinterp-tclinterp-interpolation.html" />
-    <link rel="prev" title="Examples" href="tclinterp-Examples.html" /> 
+    <link rel="prev" title="::tclinterp" href="tclinterp-tclinterp.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
@@ -28,7 +28,7 @@
           <a href="tclinterp-tclinterp-interpolation.html" title="::tclinterp::interpolation"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="tclinterp-Examples.html" title="Examples"
+          <a href="tclinterp-tclinterp.html" title="::tclinterp"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">tclinterp  documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">::tclinterp::approximation</a></li> 
@@ -60,7 +60,7 @@
 <dd class="field-odd"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
 </dd>
 <dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to list.</p>
+<dd class="field-even"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to the package setting (initially list).</p>
 </dd>
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-n</span> <span class="pre">integer</span></code><span class="colon">:</span></dt>
 <dd class="field-odd"><p>Polynomial degree; must be zero or greater.</p>
@@ -75,7 +75,7 @@
 <dd class="field-even"><p>Destination namespace for vector output; relative to the caller, created with missing parents.</p>
 </dd>
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>Output representation for every numeric result array: Tcl list or RBC vector name. Defaults to list; independent of -input.</p>
+<dd class="field-odd"><p>Output representation for every numeric result array: Tcl list or RBC vector name. Defaults to the package setting (initially list); independent of -input.</p>
 </dd>
 <dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
 <dd class="field-even"><p>Evaluation positions; must not be empty.</p>
@@ -88,7 +88,8 @@
 <p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
 ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
 vectors.</p>
-<p>Input vector names resolve in the caller’s namespace. Output names use -namespace, or the caller’s namespace
+<p>Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+Input vector names resolve in the caller’s namespace. Output names use -namespace, or the caller’s namespace
 when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
 names override this location; their parent namespace must already exist. Each unnamed output, including fields
 omitted from -names, uses RBC’s #auto mechanism in the selected namespace. A final #auto component also works
@@ -97,7 +98,7 @@ in qualified names; auto without # is an ordinary name. Returned vector names ar
 are errors. The caller owns returned vectors and can release them with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">destroy</span>
 <span class="pre">$vectorName</span></code>.</p>
 <p class="rubric">Return value</p>
-<p>The interpolated values <code class="docutils literal notranslate"><span class="pre">yi</span></code>, as a Tcl list by default or an RBC vector name with <code class="docutils literal notranslate"><span class="pre">-output</span>
+<p>The interpolated values <code class="docutils literal notranslate"><span class="pre">yi</span></code>, as a Tcl list with list output or an RBC vector name with <code class="docutils literal notranslate"><span class="pre">-output</span>
 <span class="pre">vector</span></code>.</p>
 </section>
 <section id="cubicbetaspline1d">
@@ -116,7 +117,7 @@ are errors. The caller owns returned vectors and can release them with <code cla
 <dd class="field-odd"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
 </dd>
 <dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to list.</p>
+<dd class="field-even"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to the package setting (initially list).</p>
 </dd>
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-name</span> <span class="pre">name</span></code><span class="colon">:</span></dt>
 <dd class="field-odd"><p>Destination vector name for yi; requires -output vector. Omit it or use #auto to create an automatically named vector.</p>
@@ -128,7 +129,7 @@ are errors. The caller owns returned vectors and can release them with <code cla
 <dd class="field-odd"><p>Destination namespace for vector output; relative to the caller, created with missing parents.</p>
 </dd>
 <dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>Output representation for every numeric result array: Tcl list or RBC vector name. Defaults to list; independent of -input.</p>
+<dd class="field-even"><p>Output representation for every numeric result array: Tcl list or RBC vector name. Defaults to the package setting (initially list); independent of -input.</p>
 </dd>
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-t</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
 <dd class="field-odd"><p>Strictly increasing sample positions; at least two values. Alias: -x.</p>
@@ -144,7 +145,8 @@ are errors. The caller owns returned vectors and can release them with <code cla
 <p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
 ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
 vectors.</p>
-<p>Input vector names resolve in the caller’s namespace. Output names use -namespace, or the caller’s namespace
+<p>Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+Input vector names resolve in the caller’s namespace. Output names use -namespace, or the caller’s namespace
 when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
 names override this location; their parent namespace must already exist. Each unnamed output, including fields
 omitted from -names, uses RBC’s #auto mechanism in the selected namespace. A final #auto component also works
@@ -154,7 +156,7 @@ are errors. The caller owns returned vectors and can release them with <code cla
 <span class="pre">$vectorName</span></code>.</p>
 <p>The parameters must produce a finite, nonzero beta-spline normalization.</p>
 <p class="rubric">Return value</p>
-<p>The approximated values <code class="docutils literal notranslate"><span class="pre">yi</span></code>, as a Tcl list by default or an RBC vector name with <code class="docutils literal notranslate"><span class="pre">-output</span>
+<p>The approximated values <code class="docutils literal notranslate"><span class="pre">yi</span></code>, as a Tcl list with list output or an RBC vector name with <code class="docutils literal notranslate"><span class="pre">-output</span>
 <span class="pre">vector</span></code>.</p>
 </section>
 <section id="cubicbspline1d">
@@ -167,7 +169,7 @@ are errors. The caller owns returned vectors and can release them with <code cla
 <dd class="field-odd"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
 </dd>
 <dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to list.</p>
+<dd class="field-even"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to the package setting (initially list).</p>
 </dd>
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-name</span> <span class="pre">name</span></code><span class="colon">:</span></dt>
 <dd class="field-odd"><p>Destination vector name for yi; requires -output vector. Omit it or use #auto to create an automatically named vector.</p>
@@ -179,7 +181,7 @@ are errors. The caller owns returned vectors and can release them with <code cla
 <dd class="field-odd"><p>Destination namespace for vector output; relative to the caller, created with missing parents.</p>
 </dd>
 <dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>Output representation for every numeric result array: Tcl list or RBC vector name. Defaults to list; independent of -input.</p>
+<dd class="field-even"><p>Output representation for every numeric result array: Tcl list or RBC vector name. Defaults to the package setting (initially list); independent of -input.</p>
 </dd>
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-t</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
 <dd class="field-odd"><p>Strictly increasing sample positions; at least two values. Alias: -x.</p>
@@ -195,7 +197,8 @@ are errors. The caller owns returned vectors and can release them with <code cla
 <p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
 ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
 vectors.</p>
-<p>Input vector names resolve in the caller’s namespace. Output names use -namespace, or the caller’s namespace
+<p>Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+Input vector names resolve in the caller’s namespace. Output names use -namespace, or the caller’s namespace
 when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
 names override this location; their parent namespace must already exist. Each unnamed output, including fields
 omitted from -names, uses RBC’s #auto mechanism in the selected namespace. A final #auto component also works
@@ -204,7 +207,7 @@ in qualified names; auto without # is an ordinary name. Returned vector names ar
 are errors. The caller owns returned vectors and can release them with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">destroy</span>
 <span class="pre">$vectorName</span></code>.</p>
 <p class="rubric">Return value</p>
-<p>The approximated values <code class="docutils literal notranslate"><span class="pre">yi</span></code>, as a Tcl list by default or an RBC vector name with <code class="docutils literal notranslate"><span class="pre">-output</span>
+<p>The approximated values <code class="docutils literal notranslate"><span class="pre">yi</span></code>, as a Tcl list with list output or an RBC vector name with <code class="docutils literal notranslate"><span class="pre">-output</span>
 <span class="pre">vector</span></code>.</p>
 </section>
 <section id="genbezier">
@@ -217,7 +220,7 @@ are errors. The caller owns returned vectors and can release them with <code cla
 <dd class="field-odd"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
 </dd>
 <dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to list.</p>
+<dd class="field-even"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to the package setting (initially list).</p>
 </dd>
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-n</span> <span class="pre">integer</span></code><span class="colon">:</span></dt>
 <dd class="field-odd"><p>Curve degree; must be zero or greater.</p>
@@ -232,7 +235,7 @@ are errors. The caller owns returned vectors and can release them with <code cla
 <dd class="field-even"><p>Destination namespace for vector output; relative to the caller, created with missing parents.</p>
 </dd>
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>Output representation for every numeric result array: Tcl list or RBC vector name. Defaults to list; independent of -input.</p>
+<dd class="field-odd"><p>Output representation for every numeric result array: Tcl list or RBC vector name. Defaults to the package setting (initially list); independent of -input.</p>
 </dd>
 <dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-t</span> <span class="pre">values</span></code><span class="colon">:</span></dt>
 <dd class="field-even"><p>Nonempty evaluation parameters; normally between 0 and 1.</p>
@@ -248,7 +251,8 @@ are errors. The caller owns returned vectors and can release them with <code cla
 <p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
 ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
 vectors.</p>
-<p>Input vector names resolve in the caller’s namespace. Output names use -namespace, or the caller’s namespace
+<p>Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+Input vector names resolve in the caller’s namespace. Output names use -namespace, or the caller’s namespace
 when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
 names override this location; their parent namespace must already exist. Each unnamed output, including fields
 omitted from -names, uses RBC’s #auto mechanism in the selected namespace. A final #auto component also works
@@ -257,7 +261,7 @@ in qualified names; auto without # is an ordinary name. Returned vector names ar
 are errors. The caller owns returned vectors and can release them with <code class="docutils literal notranslate"><span class="pre">::rbc::vector</span> <span class="pre">destroy</span>
 <span class="pre">$vectorName</span></code>.</p>
 <p class="rubric">Return value</p>
-<p>A dictionary with <code class="docutils literal notranslate"><span class="pre">xi</span></code> and <code class="docutils literal notranslate"><span class="pre">yi</span></code> coordinates. Each numeric array is a Tcl list by default or an
+<p>A dictionary with <code class="docutils literal notranslate"><span class="pre">xi</span></code> and <code class="docutils literal notranslate"><span class="pre">yi</span></code> coordinates. Each numeric array is a Tcl list with list output or an
 RBC vector name with <code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">vector</span></code>.</p>
 <hr class="docutils" />
 <p class="centered">
@@ -290,8 +294,8 @@ RBC vector name with <code class="docutils literal notranslate"><span class="pre
   </div>
   <div>
     <h4>Previous topic</h4>
-    <p class="topless"><a href="tclinterp-Examples.html"
-                          title="previous chapter">Examples</a></p>
+    <p class="topless"><a href="tclinterp-tclinterp.html"
+                          title="previous chapter">::tclinterp</a></p>
   </div>
   <div>
     <h4>Next topic</h4>
@@ -329,7 +333,7 @@ RBC vector name with <code class="docutils literal notranslate"><span class="pre
           <a href="tclinterp-tclinterp-interpolation.html" title="::tclinterp::interpolation"
              >next</a> |</li>
         <li class="right" >
-          <a href="tclinterp-Examples.html" title="Examples"
+          <a href="tclinterp-tclinterp.html" title="::tclinterp"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">tclinterp  documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">::tclinterp::approximation</a></li> 
