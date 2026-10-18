@@ -1,0 +1,31 @@
+# Documentation stubs for native package-level commands; not loaded at runtime.
+namespace eval ::tclinterp {
+    proc configure {args} {
+        # Queries or changes package-wide representation defaults in this Tcl interpreter.
+        #  -input mode - Default input representation: list or vector; initially list.
+        #  -output mode - Default output representation: list or vector; initially list.
+        #
+        # With no arguments, returns all settings as an option/value dictionary. With one option, returns its value.
+        # With option/value pairs, validates all settings before applying them and returns the complete configuration.
+        # Invalid options, invalid modes, or unavailable RBC support leave the configuration unchanged. Selecting
+        # vector mode requires an RBC-enabled build and a loadable rbc::vector package; list queries/settings do not
+        # load RBC. Defaults are independent in separate interpreters.
+        #
+        # Omitted -input and -output options use these defaults on each interpolation call. Explicit call options
+        # take precedence. Input and output modes can be configured independently.
+        # This public command is not namespace-exported; call it as ::tclinterp::configure.
+        # Namespace selection, naming and collision policies are unaffected.
+        #
+        # Example:
+        # ```tcl
+        # set saved [::tclinterp::configure]
+        # ::tclinterp::configure -input vector -output vector
+        # ::tclinterp::configure -output
+        # ::tclinterp::configure {*}$saved
+        # ```
+        #
+        # Synopsis: ?option?
+        # Synopsis: ?-input list|vector? ?-output list|vector?
+        # Returns: selected option value for a single-option query; otherwise all settings as a dictionary.
+    }
+}
