@@ -7,7 +7,7 @@ tclinterp - Commands in namespace tclinterp
 .SH SYNOPSIS
 \fBconfigure\fP \fI?option?\fP
 .br
-\fBconfigure\fP \fI?-input list|vector? ?-output list|vector?\fP
+\fBconfigure\fP \fI?-input list|vector? ?-output list|vector? ?-ifexists error|replace?\fP
 .br
 .SH ::TCLINTERP
 .SH COMMANDS
@@ -16,16 +16,19 @@ tclinterp - Commands in namespace tclinterp
 \fBconfigure\fR (::tclinterp)
 .RE
 .PP
-Queries or changes package-wide representation defaults in this Tcl interpreter\&.
+Queries or changes package-wide representation and collision defaults in this Tcl interpreter\&.
 .RS 4n
 \fBconfigure\fP \fI?option?\fP
 .br
-\fBconfigure\fP \fI?-input list|vector? ?-output list|vector?\fP
+\fBconfigure\fP \fI?-input list|vector? ?-output list|vector? ?-ifexists error|replace?\fP
 .br
 .RE
 .PP
 \fBParameters\fR
 .RS 4n
+.TP
+-ifexists policy
+Default destination collision policy: error or replace; initially error\&.
 .TP
 -input mode
 Default input representation: list or vector; initially list\&.
@@ -38,21 +41,22 @@ Default output representation: list or vector; initially list\&.
 .PP
 With no arguments, returns all settings as an option/value dictionary\&. With one option, returns its value\&.
 With option/value pairs, validates all settings before applying them and returns the complete configuration\&.
-Invalid options, invalid modes, or unavailable RBC support leave the configuration unchanged\&. Selecting
+Invalid options or values, or unavailable RBC support leave the configuration unchanged\&. Selecting
 vector mode requires an RBC-enabled build and a loadable rbc::vector package; list queries/settings do not
 load RBC\&. Defaults are independent in separate interpreters\&.
 .PP
-Omitted -input and -output options use these defaults on each interpolation call\&. Explicit call options
+Omitted -input, -output and -ifexists options use these defaults on each interpolation call\&. Explicit call options
 take precedence\&. Input and output modes can be configured independently\&.
 This public command is not namespace-exported; call it as ::tclinterp::configure\&.
-Namespace selection, naming and collision policies are unaffected\&.
+The collision policy affects vector output only; it can be configured while using list mode or without RBC\&.
+Replacement still requires a compatible, writable destination\&. Namespace selection and naming are unchanged\&.
 .PP
 Example:
 .PP
 .RS 4n
 .nf
 set saved [::tclinterp::configure]
-::tclinterp::configure -input vector -output vector
+::tclinterp::configure -input vector -output vector -ifexists replace
 ::tclinterp::configure -output
 ::tclinterp::configure {*}$saved
 .fi

@@ -86,7 +86,7 @@ Input and output representations are independent:
 | `-namespace name` | Destination namespace for vector output; created with missing parents, relative to the caller. |
 | `-name name`        | Name the primary `yi` output vector. Omit it or use `#auto` for automatic naming.                         |
 | `-names dictionary` | Map output fields to destination names. Each omitted field or `#auto` destination is automatically named. |
-| `-ifexists error`   | Reject existing destination vectors (default).                                                            |
+| `-ifexists error`   | Reject existing destination vectors (initial default).                                                            |
 | `-ifexists replace` | Resize and overwrite existing writable real destination vectors.                                          |
 
 The naming and replacement options require `-output vector`. Valid output fields depend on the command; consult its
@@ -187,17 +187,18 @@ newly generated HTML and static assets are included in the configured file list 
 
 ## Package defaults
 
-Set representation defaults once after loading the package:
+Set representation and collision defaults once after loading the package:
 
 ```tcl
 package require tclinterp
-::tclinterp::configure -input vector -output vector
+::tclinterp::configure -input vector -output vector -ifexists replace
 ```
 
-Subsequent interpolation calls inherit omitted `-input` and `-output` options. Explicit per-call options win.
+Subsequent interpolation calls inherit omitted `-input`, `-output` and `-ifexists` options. Explicit per-call options win.
 
 Use `::tclinterp::configure` to query all settings, or `::tclinterp::configure -output` to query one.
 The all-settings dictionary can be restored with `::tclinterp::configure {*}$saved`.
-Initial defaults remain `list`. Invalid requests and unavailable vector support leave settings unchanged.
+Initial representation defaults remain `list`; the initial `-ifexists` policy is `error`. Invalid requests and unavailable vector support leave settings unchanged.
 Configuration belongs to the current Tcl interpreter. The command is public but **not namespace-exported**,
-so wildcard imports cannot introduce a `configure` collision. Namespace, naming and collision policies are unchanged.
+so wildcard imports cannot introduce a `configure` collision. Namespace selection and naming are unchanged. `-ifexists replace` still requires a compatible, writable destination.
+The collision setting affects vector output only and can be configured even in a build without RBC.

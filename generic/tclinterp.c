@@ -38,6 +38,7 @@ typedef struct {
 typedef struct {
     Tcl_Interp *ip;
     Tcl_Obj *args;
+    int replace; /* Effective collision policy captured at invocation. */
 } Context;
 
 static int Error(Tcl_Interp *ip, const char *s) {
@@ -100,7 +101,7 @@ static int InitVectors(Tcl_Interp *ip) {
 /* Package defaults are interpreter-local, independent of command/handle lifetime.
  * Setters validate the entire request, including RBC availability, before committing. */
 typedef struct PackageDefaults {
-    int input, output;
+    int input, output, replace;
 } PackageDefaults;
 
 static void DeletePackageDefaults(void *data, Tcl_Interp *interp) {
@@ -112,7 +113,7 @@ static PackageDefaults *GetPackageDefaults(Tcl_Interp *interp) {
     PackageDefaults *defaults = (PackageDefaults *)Tcl_GetAssocData(interp, "tclinterp::defaults", NULL);
     if (!defaults) {
         defaults = (PackageDefaults *)Tcl_Alloc(sizeof(*defaults));
-        memset(defaults, 0, sizeof(*defaults)); /* Initial modes remain list. */
+        memset(defaults, 0, sizeof(*defaults)); /* Initial modes are list; collision policy is error. */
         Tcl_SetAssocData(interp, "tclinterp::defaults", DeletePackageDefaults, defaults);
     }
     return defaults;
@@ -124,12 +125,15 @@ static Tcl_Obj *PackageDefaultsDict(Tcl_Interp *interp, const PackageDefaults *d
                    Tcl_NewStringObj(defaults->input ? "vector" : "list", -1));
     Tcl_DictObjPut(interp, result, Tcl_NewStringObj("-output", -1),
                    Tcl_NewStringObj(defaults->output ? "vector" : "list", -1));
+    Tcl_DictObjPut(interp, result, Tcl_NewStringObj("-ifexists", -1),
+                   Tcl_NewStringObj(defaults->replace ? "replace" : "error", -1));
     return result;
 }
 
 static int ConfigureCmd(void *clientData, Tcl_Interp *interp, Tcl_Size objc, Tcl_Obj *const objv[]) {
-    static const char *options[] = {"-input", "-output", NULL};
+    static const char *options[] = {"-input", "-output", "-ifexists", NULL};
     static const char *modes[] = {"list", "vector", NULL};
+    static const char *policies[] = {"error", "replace", NULL};
     PackageDefaults *defaults = GetPackageDefaults(interp);
     PackageDefaults candidate = *defaults;
     int option, mode;
@@ -137,6 +141,10 @@ static int ConfigureCmd(void *clientData, Tcl_Interp *interp, Tcl_Size objc, Tcl
     if (objc == 2) {
         if (Tcl_GetIndexFromObj(interp, objv[1], options, "option", TCL_EXACT, &option) != TCL_OK) {
             return TCL_ERROR;
+        }
+        if (option == 2) {
+            Tcl_SetObjResult(interp, Tcl_NewStringObj(policies[defaults->replace], -1));
+            return TCL_OK;
         }
         mode = option == 0 ? defaults->input : defaults->output;
         Tcl_SetObjResult(interp, Tcl_NewStringObj(modes[mode], -1));
@@ -147,14 +155,21 @@ static int ConfigureCmd(void *clientData, Tcl_Interp *interp, Tcl_Size objc, Tcl
         return TCL_ERROR;
     }
     for (Tcl_Size i = 1; i < objc; i += 2) {
-        if (Tcl_GetIndexFromObj(interp, objv[i], options, "option", TCL_EXACT, &option) != TCL_OK ||
-            Tcl_GetIndexFromObj(interp, objv[i + 1], modes, "mode", TCL_EXACT, &mode) != TCL_OK) {
+        if (Tcl_GetIndexFromObj(interp, objv[i], options, "option", TCL_EXACT, &option) != TCL_OK) {
             return TCL_ERROR;
         }
-        if (option == 0)
-            candidate.input = mode;
-        else
-            candidate.output = mode;
+        if (option == 2) {
+            if (Tcl_GetIndexFromObj(interp, objv[i + 1], policies, "collision policy", TCL_EXACT, &mode) != TCL_OK) {
+                return TCL_ERROR;
+            }
+            candidate.replace = mode;
+        } else {
+            if (Tcl_GetIndexFromObj(interp, objv[i + 1], modes, "mode", TCL_EXACT, &mode) != TCL_OK) {
+                return TCL_ERROR;
+            }
+            if (option == 0) candidate.input = mode;
+            else candidate.output = mode;
+        }
     }
     if (objc > 1) {
         if ((candidate.input || candidate.output) && InitVectors(interp) != TCL_OK) {
@@ -382,7 +397,7 @@ static int Publish(Context *c, Output *out, int count, int dictionary, int vecto
         if (namespaceOption && !nsName)
             goto done;
         const char *ns = nsName ? Tcl_GetString(nsName) : Tcl_GetCurrentNamespace(ip)->fullName;
-        int replace = !strcmp(StringOption(c, "ifexists", "error"), "replace");
+        int replace = c->replace;
         if (names) {
             Tcl_DictSearch search;
             Tcl_Obj *key, *value;
@@ -553,7 +568,7 @@ static int NativeCmd(void *unused, Tcl_Interp *ip, Tcl_Size objc, Tcl_Obj *const
         "lin1d",   "near1d",   "lagr1d",         "least1d",           "least1dDer",    "genBezier",
         "bezier",  "divDif1d", "cubicBSpline1d", "cubicBetaSpline1d", "cubicSpline1d", "hermiteSpline1d",
         "pchip1d", NULL};
-    Context ctx = {ip, NULL}, *c = &ctx;
+    Context ctx = {ip, NULL, 0}, *c = &ctx;
     Input x = {0}, y = {0}, q = {0}, extra = {0};
     Output out[6] = {{0}};
     int count = 0, op, status = TCL_ERROR, vi, vo, dictionary = 0, nterms = 3, degree = 0;
@@ -586,10 +601,11 @@ static int NativeCmd(void *unused, Tcl_Interp *ip, Tcl_Size objc, Tcl_Obj *const
     if (!vo && (Option(c, "name") || Option(c, "names"))) {
         return Error(ip, "-name and -names require -output vector");
     }
-    if (strcmp(StringOption(c, "ifexists", "error"), "error") &&
-        strcmp(StringOption(c, "ifexists", "error"), "replace")) {
+    const char *policy = StringOption(c, "ifexists", defaults->replace ? "replace" : "error");
+    if (strcmp(policy, "error") && strcmp(policy, "replace")) {
         return Error(ip, "-ifexists must be error or replace");
     }
+    c->replace = !strcmp(policy, "replace");
     if ((vi || vo) && InitVectors(ip) != TCL_OK) {
         return TCL_ERROR;
     }

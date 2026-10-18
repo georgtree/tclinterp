@@ -375,7 +375,7 @@ test native-namespace-absolute-missing {absolute destinations do not implicitly 
 # Public package configuration is intentionally not namespace-exported.
 test defaults-query {initial settings and single-option queries} -body {
     list [::tclinterp::configure] [::tclinterp::configure -output]
-} -result {{-input list -output list} list}
+} -result {{-input list -output list -ifexists error} list}
 
 test defaults-validation {invalid requests do not partially change configuration} -body {
     set saved [::tclinterp::configure]
@@ -401,7 +401,7 @@ test defaults-set-restore {set returns all settings; returned dictionary restore
     set query [::tclinterp::configure -output]
     set restored [::tclinterp::configure {*}$saved]
     list $changed $query [expr {$restored eq $saved}]
-} -cleanup {::tclinterp::configure {*}$saved} -result {{-input list -output vector} vector 1}
+} -cleanup {::tclinterp::configure {*}$saved} -result {{-input list -output vector -ifexists error} vector 1}
 
 test defaults-interpreters {a fresh interpreter has independent list defaults} -constraints interpVectors -body {
     set saved [::tclinterp::configure]
@@ -433,8 +433,10 @@ foreach case $cases {
     lassign $case operation category arguments dictionary
     test defaults-output-$operation {all wrappers inherit output defaults} -constraints interpVectors -body {
         set saved [::tclinterp::configure]
-        ::tclinterp::configure -output vector
-        set result [::tclinterp::${category}::$operation {*}$arguments -namespace ::interpTest::work]
+        ::tclinterp::configure -output vector -ifexists replace
+        # All wrappers must inherit the collision policy for repeated named output.
+        set result [::tclinterp::${category}::$operation {*}$arguments -namespace ::interpTest::work -name primary]
+        set result [::tclinterp::${category}::$operation {*}$arguments -namespace ::interpTest::work -name primary]
         set plain [::tclinterp::${category}::$operation {*}$arguments -output list]
         ::interpTest::close [::interpTest::values $result $dictionary 1] [::interpTest::values $plain $dictionary 0]
     } -cleanup {
@@ -472,6 +474,56 @@ test defaults-input-atomic {invalid second option does not change input mode} -c
     set code [catch {::tclinterp::configure -input vector -output invalid}]
     list $code [expr {[::tclinterp::configure] eq $saved}]
 } -cleanup {::tclinterp::configure {*}$saved} -result {1 1}
+
+
+test defaults-policy-query {query, save/restore and atomic validation of collision policy} -body {
+    set saved [::tclinterp::configure]
+    set initial [::tclinterp::configure -ifexists]
+    set changed [::tclinterp::configure -ifexists replace]
+    set badMode [catch {::tclinterp::configure -ifexists error -output invalid}]
+    set unchanged [expr {[::tclinterp::configure] eq $changed}]
+    set badPolicy [catch {::tclinterp::configure -ifexists vector}]
+    set restored [::tclinterp::configure {*}$saved]
+    list $initial [dict get $changed -ifexists] $badMode $unchanged $badPolicy [expr {$restored eq $saved}]
+} -cleanup {::tclinterp::configure {*}$saved} -result {error replace 1 1 1 1}
+
+test defaults-policy-interpreters {policy is interpreter-local and setting it alone does not load RBC} -body {
+    set saved [::tclinterp::configure]
+    ::tclinterp::configure -ifexists replace
+    set library {}
+    foreach loaded [info loaded] {
+        if {[string equal -nocase [lindex $loaded 1] tclinterp]} {set library [lindex $loaded 0]; break}
+    }
+    interp create policyChild
+    policyChild eval [list load $library]
+    set initial [policyChild eval {::tclinterp::configure -ifexists}]
+    policyChild eval {::tclinterp::configure -ifexists replace}
+    set loaded [policyChild eval {package provide rbc::vector}]
+    policyChild eval {::tclinterp::configure -ifexists error}
+    list $initial $loaded [::tclinterp::configure -ifexists]
+} -cleanup {
+    catch {interp delete policyChild}
+    ::tclinterp::configure {*}$saved
+} -result {error {} replace}
+
+test defaults-policy-overrides {default replacement, explicit overrides, readonly and automatic names} -constraints interpVectors -body {
+    set saved [::tclinterp::configure]
+    set cmd {::tclinterp::interpolation::lin1d -x {0 1} -xi {.5} -output vector -namespace ::interpTest::work -name y}
+    set v [{*}$cmd -y {0 2}]
+    ::tclinterp::configure -ifexists replace
+    set again [{*}$cmd -y {0 4}]
+    set values [$v range 0 end]
+    set explicitError [catch {{*}$cmd -y {0 6} -ifexists error}]
+    ::tclinterp::configure -ifexists error
+    set defaultError [catch {{*}$cmd -y {0 6}}]
+    {*}$cmd -y {0 8} -ifexists replace
+    ::tclinterp::configure -ifexists replace
+    $v readonly true
+    set locked [catch {{*}$cmd -y {0 10}}]
+    set a [::tclinterp::interpolation::lin1d -x {0 1} -y {0 2} -xi {.5} -output vector -namespace ::interpTest::work]
+    set b [::tclinterp::interpolation::lin1d -x {0 1} -y {0 2} -xi {.5} -output vector -namespace ::interpTest::work]
+    list [expr {$v eq $again}] $values $explicitError $defaultError $locked [$v range 0 end] [expr {$a ne $b}]
+} -cleanup {::tclinterp::configure {*}$saved; ::interpTest::cleanup} -result {1 2.0 1 1 1 4.0 1}
 
 ::interpTest::cleanup
 namespace delete ::interpTest

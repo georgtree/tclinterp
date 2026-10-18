@@ -36,7 +36,7 @@ Start of the interval; must differ from -b\&.
 End of the interval; must differ from -a\&.
 .TP
 -ifexists error|replace
-Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
+Policy for existing destination vectors; uses the package default (initially error)\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
 -input list|vector
 Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to the package setting (initially list)\&.
@@ -69,7 +69,7 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
-Omitted -input and -output use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
+Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
 Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
 when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
 names override this location; their parent namespace must already exist\&. Each unnamed output, including fields
@@ -105,7 +105,7 @@ Required skew or bias parameter; 1 means no skew or bias\&.
 Required tension parameter; 0 means no tension\&.
 .TP
 -ifexists error|replace
-Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
+Policy for existing destination vectors; uses the package default (initially error)\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
 -input list|vector
 Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to the package setting (initially list)\&.
@@ -138,7 +138,7 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
-Omitted -input and -output use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
+Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
 Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
 when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
 names override this location; their parent namespace must already exist\&. Each unnamed output, including fields
@@ -170,7 +170,7 @@ Evaluates a cubic B-spline approximant\&.
 .RS 4n
 .TP
 -ifexists error|replace
-Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
+Policy for existing destination vectors; uses the package default (initially error)\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
 -input list|vector
 Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to the package setting (initially list)\&.
@@ -203,7 +203,7 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
-Omitted -input and -output use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
+Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
 Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
 when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
 names override this location; their parent namespace must already exist\&. Each unnamed output, including fields
@@ -233,7 +233,7 @@ Evaluates a parametric Bezier curve\&.
 .RS 4n
 .TP
 -ifexists error|replace
-Policy for existing destination vectors; defaults to error\&. With replace, an existing real vector is resized and overwritten\&.
+Policy for existing destination vectors; uses the package default (initially error)\&. With replace, an existing real vector is resized and overwritten\&.
 .TP
 -input list|vector
 Input representation for all array arguments: Tcl lists or real RBC vector names\&. Defaults to the package setting (initially list)\&.
@@ -269,7 +269,7 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
-Omitted -input and -output use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
+Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
 Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
 when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
 names override this location; their parent namespace must already exist\&. Each unnamed output, including fields

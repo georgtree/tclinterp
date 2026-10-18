@@ -56,7 +56,7 @@
 <dd class="field-odd"><p>Right boundary condition: quad, der1, der2, or notaknot; defaults to quad. Alias: -endflag.</p>
 </dd>
 <dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error|replace</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
+<dd class="field-even"><p>Policy for existing destination vectors; uses the package default (initially error). With replace, an existing real vector is resized and overwritten.</p>
 </dd>
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
 <dd class="field-odd"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to the package setting (initially list).</p>
@@ -93,7 +93,7 @@
 <p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
 ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
 vectors.</p>
-<p>Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+<p>Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
 Input vector names resolve in the caller’s namespace. Output names use -namespace, or the caller’s namespace
 when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
 names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -121,7 +121,7 @@ with <code class="docutils literal notranslate"><span class="pre">-output</span>
 <dd class="field-odd"><p>Include the divided-difference coefficient array in the result dictionary.</p>
 </dd>
 <dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error|replace</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
+<dd class="field-even"><p>Policy for existing destination vectors; uses the package default (initially error). With replace, an existing real vector is resized and overwritten.</p>
 </dd>
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
 <dd class="field-odd"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to the package setting (initially list).</p>
@@ -152,7 +152,7 @@ with <code class="docutils literal notranslate"><span class="pre">-output</span>
 <p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
 ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
 vectors.</p>
-<p>Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+<p>Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
 Input vector names resolve in the caller’s namespace. Output names use -namespace, or the caller’s namespace
 when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
 names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -175,7 +175,7 @@ Each numeric array is a Tcl list with list output or an RBC vector name with <co
 <dd class="field-odd"><p>Include first derivatives in the result dictionary.</p>
 </dd>
 <dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error|replace</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
+<dd class="field-even"><p>Policy for existing destination vectors; uses the package default (initially error). With replace, an existing real vector is resized and overwritten.</p>
 </dd>
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
 <dd class="field-odd"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to the package setting (initially list).</p>
@@ -209,7 +209,7 @@ Each numeric array is a Tcl list with list output or an RBC vector name with <co
 <p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
 ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
 vectors.</p>
-<p>Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+<p>Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
 Input vector names resolve in the caller’s namespace. Output names use -namespace, or the caller’s namespace
 when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
 names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -229,7 +229,7 @@ are errors. The caller owns returned vectors and can release them with <code cla
 <p class="rubric">Parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error|replace</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
+<dd class="field-odd"><p>Policy for existing destination vectors; uses the package default (initially error). With replace, an existing real vector is resized and overwritten.</p>
 </dd>
 <dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
 <dd class="field-even"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to the package setting (initially list).</p>
@@ -260,7 +260,7 @@ are errors. The caller owns returned vectors and can release them with <code cla
 <p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
 ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
 vectors.</p>
-<p>Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+<p>Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
 Input vector names resolve in the caller’s namespace. Output names use -namespace, or the caller’s namespace
 when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
 names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -283,7 +283,7 @@ are errors. The caller owns returned vectors and can release them with <code cla
 <dd class="field-odd"><p>Include polynomial coefficient arrays in the result dictionary.</p>
 </dd>
 <dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error|replace</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
+<dd class="field-even"><p>Policy for existing destination vectors; uses the package default (initially error). With replace, an existing real vector is resized and overwritten.</p>
 </dd>
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
 <dd class="field-odd"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to the package setting (initially list).</p>
@@ -320,7 +320,7 @@ are errors. The caller owns returned vectors and can release them with <code cla
 <p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
 ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
 vectors.</p>
-<p>Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+<p>Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
 Input vector names resolve in the caller’s namespace. Output names use -namespace, or the caller’s namespace
 when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
 names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -344,7 +344,7 @@ numeric array is a Tcl list with list output or an RBC vector name with <code cl
 <dd class="field-odd"><p>Include polynomial coefficient arrays in the result dictionary.</p>
 </dd>
 <dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error|replace</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
+<dd class="field-even"><p>Policy for existing destination vectors; uses the package default (initially error). With replace, an existing real vector is resized and overwritten.</p>
 </dd>
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
 <dd class="field-odd"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to the package setting (initially list).</p>
@@ -381,7 +381,7 @@ numeric array is a Tcl list with list output or an RBC vector name with <code cl
 <p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
 ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
 vectors.</p>
-<p>Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+<p>Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
 Input vector names resolve in the caller’s namespace. Output names use -namespace, or the caller’s namespace
 when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
 names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -402,7 +402,7 @@ list output or an RBC vector name with <code class="docutils literal notranslate
 <p class="rubric">Parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error|replace</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
+<dd class="field-odd"><p>Policy for existing destination vectors; uses the package default (initially error). With replace, an existing real vector is resized and overwritten.</p>
 </dd>
 <dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
 <dd class="field-even"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to the package setting (initially list).</p>
@@ -433,7 +433,7 @@ list output or an RBC vector name with <code class="docutils literal notranslate
 <p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
 ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
 vectors.</p>
-<p>Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+<p>Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
 Input vector names resolve in the caller’s namespace. Output names use -namespace, or the caller’s namespace
 when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
 names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -453,7 +453,7 @@ are errors. The caller owns returned vectors and can release them with <code cla
 <p class="rubric">Parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error|replace</span></code><span class="colon">:</span></dt>
-<dd class="field-odd"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
+<dd class="field-odd"><p>Policy for existing destination vectors; uses the package default (initially error). With replace, an existing real vector is resized and overwritten.</p>
 </dd>
 <dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
 <dd class="field-even"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to the package setting (initially list).</p>
@@ -484,7 +484,7 @@ are errors. The caller owns returned vectors and can release them with <code cla
 <p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
 ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
 vectors.</p>
-<p>Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+<p>Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
 Input vector names resolve in the caller’s namespace. Output names use -namespace, or the caller’s namespace
 when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
 names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -507,7 +507,7 @@ are errors. The caller owns returned vectors and can release them with <code cla
 <dd class="field-odd"><p>Sample values; same length as -x. Alias: -y.</p>
 </dd>
 <dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">error|replace</span></code><span class="colon">:</span></dt>
-<dd class="field-even"><p>Policy for existing destination vectors; defaults to error. With replace, an existing real vector is resized and overwritten.</p>
+<dd class="field-even"><p>Policy for existing destination vectors; uses the package default (initially error). With replace, an existing real vector is resized and overwritten.</p>
 </dd>
 <dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">list|vector</span></code><span class="colon">:</span></dt>
 <dd class="field-odd"><p>Input representation for all array arguments: Tcl lists or real RBC vector names. Defaults to the package setting (initially list).</p>
@@ -535,7 +535,7 @@ are errors. The caller owns returned vectors and can release them with <code cla
 <p>Every array argument marked <code class="docutils literal notranslate"><span class="pre">values</span></code> uses the representation selected by -input. Scalar options remain
 ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
 vectors.</p>
-<p>Omitted -input and -output use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+<p>Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
 Input vector names resolve in the caller’s namespace. Output names use -namespace, or the caller’s namespace
 when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
 names override this location; their parent namespace must already exist. Each unnamed output, including fields
