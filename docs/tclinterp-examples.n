@@ -11,6 +11,9 @@ List of availible examples:
 .TP
 \(bu
 \fI1D Linear and nearest interpolation\fP - "examples/linear_near_interpolation\&.tcl" file
+.TP
+\(bu
+\fI1D Linear and nearest interpolation wtih RBC\fP - "examples/linear_near_interpolation_rbc\&.tcl" file
 .SH "1D LINEAR AND NEAREST INTERPOLATION"
 .PP
 The two most basic types of interpolation are linear and nearest ones\&. These types are availible with procedures
@@ -159,6 +162,107 @@ $layout Add $chartError -bottom 5% -height 40% -width 80%
 set fbasename [file rootname [file tail [info script]]]
 $layout Render -outfile [file normalize [file join html_charts $fbasename\&.html]] -width 800px -height 500px\\
         -divid $fbasename -jschartvar chart_$fbasename -jsvar option_$fbasename
+.fi
+.RE
+.SH "1D LINEAR AND NEAREST INTERPOLATION WTIH RBC"
+.PP
+This example achieves exactly the same goal as previous one, but instead of Tcl lists, it uses
+\fIRBC vectors\fP [URL: https://georgtree\&.github\&.io/rbc-tk9/rbc-tk9-rbc-vector\&.html] for input and output of
+interpolation procedure, and
+\fIRBC graphtoolbar\fP [URL: https://georgtree\&.github\&.io/rbc-tk9/rbc-tk9-rbc-graphtoolbar\&.html] widget for plotting
+results\&. To be able to use this interface, tclinterp package must be compiled with option
+--with-rbc=/path/to/rbcheaders\&.
+.PP
+As a first step we import necessary packages, and the main difference from the previous example is presence
+of package require rbc::graphtoolbar command\&. This command loads graphtoolbar package within RBC,
+and graphtoolbar package itself loads main rbc library\&. After that, we import
+commands rbc::vector and rbc::graphtoolbar to current namespace:
+.PP
+.RS 4n
+.nf
+package require tclinterp
+package require rbc::graphtoolbar
+package require ticklecharts
+namespace import rbc::vector
+namespace import rbc::graphtoolbar
+namespace import ::tclinterp::*
+namespace import ::tclinterp::interpolation::*
+.fi
+.RE
+.PP
+For data generation the same limits and step sizes are used, but now the x values are generated with VECINST
+seq command, and calculations are done via VECINST expr command\&. Vectors instances with corresponding names
+are created with vector create command, and these names are used as commands to operate on them:
+.PP
+.RS 4n
+.nf
+set xmin 0
+set xmax 1
+set step 0\&.05
+set stepInterp 0\&.01
+vector create x y xInterp yExact
+x seq $xmin $xmax $step
+y expr {sin(x*10)+1\&.1}
+xInterp seq $xmin $xmax $stepInterp
+yExact expr {sin(xInterp*10)+1\&.1}
+.fi
+.RE
+.PP
+To enable direct vector input and output of interpolation commands\\ options -input vector and -output vector
+are used\&. We provide commands names for -x, -y and -xi options, and desired name for result vector with
+-name option\&. Vector with this name will be created in the current namespace:
+.PP
+.RS 4n
+.nf
+lin1d -input vector -output vector -x x -y y -xi xInterp -name yInterpLin
+.fi
+.RE
+.PP
+.RS 4n
+.nf
+near1d -input vector -output vector -x x -y y -xi xInterp -name yInterpNear
+.fi
+.RE
+.PP
+RBC vectors are also used to calculate errors between true value of the function and interpolated value\&.
+vector expr command allows to specify name of the vector to store data without creating vector beforehand
+with -name option:
+.PP
+.RS 4n
+.nf
+vector expr -name interpErrorLin {(yExact-yInterpLin)/yExact}
+vector expr -name interpErrorNear {(yExact-yInterpNear)/yExact}
+.fi
+.RE
+.PP
+Now we are ready to plot results with graphtoolbar widget that uses ordinary graph widget with additional
+interactive features, and save result to the SVG images:
+.PP
+.RS 4n
+.nf
+option add *Element\&.Pixels 3
+option add *Element\&.LineWidth 2
+option add *Legend\&.Position top
+option add *Grid\&.Hide no
+set graphInterp [graphtoolbar \&.g1 -width 800 -height 250 -type graph -controlmode context -zoom -crosshairs\\
+                         -crosshairsmode closest -crosshairsclosestopts {-interpolate no} -pan -zoomwheel -activelegend]
+$graphInterp graph element create initial -label {Initial data} -x x -y y -color #5470c6
+$graphInterp graph element create linear -label {Linear interpolation} -x xInterp -y yInterpLin -color #91cc75
+$graphInterp graph element create nearest -label {Nearest interpolation} -x xInterp -y yInterpNear -color #fac858
+set graphError [graphtoolbar \&.g2 -width 800 -height 250 -type graph -controlmode context -zoom -crosshairs\\
+                         -crosshairsmode closest -crosshairsclosestopts {-interpolate no} -pan -zoomwheel -activelegend]
+$graphError graph axis configure y -title {Rel\&. error, %}
+$graphError graph element create linear -label {Linear interpolation error} -x xInterp -y interpErrorLin -color #ee6666
+$graphError graph element create nearest -label {Nearest interpolation error} -x xInterp -y interpErrorNear\\
+        -color #73c0de
+grid $graphInterp -row 0 -column 0 -sticky nsew
+grid $graphError -row 1 -column 0 -sticky nsew
+grid columnconfigure \&. 0 -weight 1
+grid rowconfigure \&. 0 -weight 1
+grid rowconfigure \&. 1 -weight 1
+set fbasename [file rootname [file tail [info script]]]
+$graphInterp graph svg output [file normalize [file join \&.\&. docs assets images $fbasename\&.svg]]
+$graphError graph svg output [file normalize [file join \&.\&. docs assets images ${fbasename}_error\&.svg]]
 .fi
 .RE
 

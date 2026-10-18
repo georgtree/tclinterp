@@ -6,9 +6,9 @@ namespace eval Examples {
         This section contains examples of usage of interpolation/approximation procedures of the package.
         List of availible examples:
         - [1D Linear and nearest interpolation] - "examples/linear_near_interpolation.tcl" file
+        - [1D Linear and nearest interpolation wtih RBC] - "examples/linear_near_interpolation_rbc.tcl" file
         
         ## 1D Linear and nearest interpolation
-
         The two most basic types of interpolation are linear and nearest ones. These types are availible with procedures
         [::tclinterp::interpolation::lin1d] and [::tclinterp::interpolation::near1d].
         To demonstrate both type we use shifted sinusoidal function:
@@ -77,6 +77,45 @@ namespace eval Examples {
         Results are:
 
         !ticklechart_mark_linear_near_interpolation!
+        #ruffopt excludedformats {}
+
+        ## 1D Linear and nearest interpolation wtih RBC
+        This example achieves exactly the same goal as previous one, but instead of Tcl lists, it uses
+        [RBC vectors](https://georgtree.github.io/rbc-tk9/rbc-tk9-rbc-vector.html) for input and output of
+        interpolation procedure, and
+        [RBC graphtoolbar](https://georgtree.github.io/rbc-tk9/rbc-tk9-rbc-graphtoolbar.html) widget for plotting
+        results. To be able to use this interface, `tclinterp` package must be compiled with option
+        `--with-rbc=/path/to/rbcheaders`.
+
+        As a first step we import necessary packages, and the main difference from the previous example is presence
+        of `package require rbc::graphtoolbar` command. This command loads `graphtoolbar` package within RBC, 
+        and `graphtoolbar` package itself loads main `rbc` library. After that, we import 
+        commands `rbc::vector` and `rbc::graphtoolbar` to current namespace:
+        @include-code examples/linear_near_interpolation_rbc.tcl -region import-packages
+        
+        For data generation the same limits and step sizes are used, but now the x values are generated with `VECINST
+        seq` command, and calculations are done via `VECINST expr` command. Vectors instances with corresponding names
+        are created with `vector create` command, and these names are used as commands to operate on them:
+        @include-code examples/linear_near_interpolation_rbc.tcl -region generate-input-data
+
+        To enable direct vector input and output of interpolation commands\ options `-input vector` and `-output vector`
+        are used. We provide commands names for `-x`, `-y` and `-xi` options, and desired name for result vector with
+        `-name` option. Vector with this name will be created in the current namespace:
+        @include-code examples/linear_near_interpolation_rbc.tcl -region linear-interpolation
+        @include-code examples/linear_near_interpolation_rbc.tcl -region nearest-interpolation
+
+        RBC vectors are also used to calculate errors between true value of the function and interpolated value. 
+        `vector expr` command allows to specify name of the vector to store data without creating vector beforehand 
+        with `-name` option:
+        @include-code examples/linear_near_interpolation_rbc.tcl -region calculate-errors
+
+        Now we are ready to plot results with `graphtoolbar` widget that uses ordinary `graph` widget with additional
+        interactive features, and save result to the SVG images:
+        @include-code examples/linear_near_interpolation_rbc.tcl -region plot-rbc
+
+        #ruffopt excludedformats {nroff}
+        ![linear_near_interpolation_rbc](assets/images/linear_near_interpolation_rbc.svg)
+        ![linear_near_interpolation_rbc_error](assets/images/linear_near_interpolation_rbc_error.svg)
         #ruffopt excludedformats {}
     }
 

@@ -47,6 +47,7 @@
 List of availible examples:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#r-3a3aexamplesqz1d20linear20and20nearest20interpolation"><span class="std std-ref">1D Linear and nearest interpolation</span></a> - “examples/linear_near_interpolation.tcl” file</p></li>
+<li><p><a class="reference internal" href="#r-3a3aexamplesqz1d20linear20and20nearest20interpolation20wtih20rbc"><span class="std std-ref">1D Linear and nearest interpolation wtih RBC</span></a> - “examples/linear_near_interpolation_rbc.tcl” file</p></li>
 </ul>
 <section id="d-linear-and-nearest-interpolation">
 <span id="r-examples-1d-linear-and-nearest-interpolation"></span><span id="r-3a3aexamplesqz1d20linear20and20nearest20interpolation"></span><h2>1D Linear and nearest interpolation<a class="headerlink" href="#d-linear-and-nearest-interpolation" title="Link to this heading">¶</a></h2>
@@ -2740,6 +2741,87 @@ zip <code class="docutils literal notranslate"><span class="pre">xi</span></code
   </body>
 </html>
 </p>
+</section>
+<section id="d-linear-and-nearest-interpolation-wtih-rbc">
+<span id="r-examples-1d-linear-and-nearest-interpolation-wtih-rbc"></span><span id="r-3a3aexamplesqz1d20linear20and20nearest20interpolation20wtih20rbc"></span><h2>1D Linear and nearest interpolation wtih RBC<a class="headerlink" href="#d-linear-and-nearest-interpolation-wtih-rbc" title="Link to this heading">¶</a></h2>
+<p>This example achieves exactly the same goal as previous one, but instead of Tcl lists, it uses
+<a class="reference external" href="https://georgtree.github.io/rbc-tk9/rbc-tk9-rbc-vector.html">RBC vectors</a> for input and output of
+interpolation procedure, and
+<a class="reference external" href="https://georgtree.github.io/rbc-tk9/rbc-tk9-rbc-graphtoolbar.html">RBC graphtoolbar</a> widget for plotting
+results. To be able to use this interface, <code class="docutils literal notranslate"><span class="pre">tclinterp</span></code> package must be compiled with option
+<code class="docutils literal notranslate"><span class="pre">--with-rbc=/path/to/rbcheaders</span></code>.</p>
+<p>As a first step we import necessary packages, and the main difference from the previous example is presence
+of <code class="docutils literal notranslate"><span class="pre">package</span> <span class="pre">require</span> <span class="pre">rbc::graphtoolbar</span></code> command. This command loads <code class="docutils literal notranslate"><span class="pre">graphtoolbar</span></code> package within RBC,
+and <code class="docutils literal notranslate"><span class="pre">graphtoolbar</span></code> package itself loads main <code class="docutils literal notranslate"><span class="pre">rbc</span></code> library. After that, we import
+commands <code class="docutils literal notranslate"><span class="pre">rbc::vector</span></code> and <code class="docutils literal notranslate"><span class="pre">rbc::graphtoolbar</span></code> to current namespace:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nb">package</span><span class="w"> </span>require<span class="w"> </span>tclinterp
+<span class="nb">package</span><span class="w"> </span>require<span class="w"> </span>rbc::graphtoolbar
+<span class="nb">package</span><span class="w"> </span>require<span class="w"> </span>ticklecharts
+<span class="k">namespace</span><span class="w"> </span>import<span class="w"> </span>rbc::vector
+<span class="k">namespace</span><span class="w"> </span>import<span class="w"> </span>rbc::graphtoolbar
+<span class="k">namespace</span><span class="w"> </span>import<span class="w"> </span><span class="o">::</span>tclinterp::<span class="o">*</span>
+<span class="k">namespace</span><span class="w"> </span>import<span class="w"> </span><span class="o">::</span>tclinterp::interpolation::<span class="o">*</span>
+</pre></div>
+</div>
+<p>For data generation the same limits and step sizes are used, but now the x values are generated with <code class="docutils literal notranslate"><span class="pre">VECINST</span>
+<span class="pre">seq</span></code> command, and calculations are done via <code class="docutils literal notranslate"><span class="pre">VECINST</span> <span class="pre">expr</span></code> command. Vectors instances with corresponding names
+are created with <code class="docutils literal notranslate"><span class="pre">vector</span> <span class="pre">create</span></code> command, and these names are used as commands to operate on them:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="k">set</span><span class="w"> </span>xmin<span class="w"> </span><span class="mi">0</span>
+<span class="k">set</span><span class="w"> </span>xmax<span class="w"> </span><span class="mi">1</span>
+<span class="k">set</span><span class="w"> </span>step<span class="w"> </span><span class="mf">0.05</span>
+<span class="k">set</span><span class="w"> </span>stepInterp<span class="w"> </span><span class="mf">0.01</span>
+<span class="nv">vector</span><span class="w"> </span>create<span class="w"> </span>x<span class="w"> </span>y<span class="w"> </span>xInterp<span class="w"> </span>yExact
+<span class="nv">x</span><span class="w"> </span>seq<span class="w"> </span><span class="nv">$xmin</span><span class="w"> </span><span class="nv">$xmax</span><span class="w"> </span><span class="nv">$step</span>
+<span class="nv">y</span><span class="w"> </span>expr<span class="w"> </span><span class="k">{</span><span class="nv">sin</span><span class="k">(</span><span class="nv">x</span><span class="o">*</span><span class="mi">10</span><span class="k">)</span><span class="o">+</span><span class="mf">1.1</span><span class="k">}</span>
+<span class="nv">xInterp</span><span class="w"> </span>seq<span class="w"> </span><span class="nv">$xmin</span><span class="w"> </span><span class="nv">$xmax</span><span class="w"> </span><span class="nv">$stepInterp</span>
+<span class="nv">yExact</span><span class="w"> </span>expr<span class="w"> </span><span class="k">{</span><span class="nv">sin</span><span class="k">(</span><span class="nv">xInterp</span><span class="o">*</span><span class="mi">10</span><span class="k">)</span><span class="o">+</span><span class="mf">1.1</span><span class="k">}</span>
+</pre></div>
+</div>
+<p>To enable direct vector input and output of interpolation commandsoptions <code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">vector</span></code> and <code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">vector</span></code>
+are used. We provide commands names for <code class="docutils literal notranslate"><span class="pre">-x</span></code>, <code class="docutils literal notranslate"><span class="pre">-y</span></code> and <code class="docutils literal notranslate"><span class="pre">-xi</span></code> options, and desired name for result vector with
+<code class="docutils literal notranslate"><span class="pre">-name</span></code> option. Vector with this name will be created in the current namespace:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nv">lin1d</span><span class="w"> </span><span class="o">-</span>input<span class="w"> </span>vector<span class="w"> </span><span class="o">-</span>output<span class="w"> </span>vector<span class="w"> </span><span class="o">-</span>x<span class="w"> </span>x<span class="w"> </span><span class="o">-</span>y<span class="w"> </span>y<span class="w"> </span><span class="o">-</span>xi<span class="w"> </span>xInterp<span class="w"> </span><span class="o">-</span>name<span class="w"> </span>yInterpLin
+</pre></div>
+</div>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nv">near1d</span><span class="w"> </span><span class="o">-</span>input<span class="w"> </span>vector<span class="w"> </span><span class="o">-</span>output<span class="w"> </span>vector<span class="w"> </span><span class="o">-</span>x<span class="w"> </span>x<span class="w"> </span><span class="o">-</span>y<span class="w"> </span>y<span class="w"> </span><span class="o">-</span>xi<span class="w"> </span>xInterp<span class="w"> </span><span class="o">-</span>name<span class="w"> </span>yInterpNear
+</pre></div>
+</div>
+<p>RBC vectors are also used to calculate errors between true value of the function and interpolated value.
+<code class="docutils literal notranslate"><span class="pre">vector</span> <span class="pre">expr</span></code> command allows to specify name of the vector to store data without creating vector beforehand
+with <code class="docutils literal notranslate"><span class="pre">-name</span></code> option:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nv">vector</span><span class="w"> </span>expr<span class="w"> </span><span class="o">-</span>name<span class="w"> </span>interpErrorLin<span class="w"> </span><span class="k">{(</span><span class="nv">yExact-yInterpLin</span><span class="k">)</span><span class="o">/</span><span class="nv">yExact</span><span class="k">}</span>
+<span class="nv">vector</span><span class="w"> </span>expr<span class="w"> </span><span class="o">-</span>name<span class="w"> </span>interpErrorNear<span class="w"> </span><span class="k">{(</span><span class="nv">yExact-yInterpNear</span><span class="k">)</span><span class="o">/</span><span class="nv">yExact</span><span class="k">}</span>
+</pre></div>
+</div>
+<p>Now we are ready to plot results with <code class="docutils literal notranslate"><span class="pre">graphtoolbar</span></code> widget that uses ordinary <code class="docutils literal notranslate"><span class="pre">graph</span></code> widget with additional
+interactive features, and save result to the SVG images:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nv">option</span><span class="w"> </span>add<span class="w"> </span><span class="o">*</span>Element.Pixels<span class="w"> </span><span class="mi">3</span>
+<span class="nv">option</span><span class="w"> </span>add<span class="w"> </span><span class="o">*</span>Element.LineWidth<span class="w"> </span><span class="mi">2</span>
+<span class="nv">option</span><span class="w"> </span>add<span class="w"> </span><span class="o">*</span>Legend.Position<span class="w"> </span>top
+<span class="nv">option</span><span class="w"> </span>add<span class="w"> </span><span class="o">*</span>Grid.Hide<span class="w"> </span>no
+<span class="k">set</span><span class="w"> </span>graphInterp<span class="w"> </span><span class="k">[</span><span class="nv">graphtoolbar</span><span class="w"> </span>.g1<span class="w"> </span><span class="o">-</span>width<span class="w"> </span><span class="mi">800</span><span class="w"> </span><span class="o">-</span>height<span class="w"> </span><span class="mi">250</span><span class="w"> </span><span class="o">-</span>type<span class="w"> </span>graph<span class="w"> </span><span class="o">-</span>controlmode<span class="w"> </span>context<span class="w"> </span><span class="o">-</span>zoom<span class="w"> </span><span class="o">-</span>crosshairs<span class="o">\</span>
+<span class="w">                         </span><span class="nv">-crosshairsmode</span><span class="w"> </span>closest<span class="w"> </span><span class="o">-</span>crosshairsclosestopts<span class="w"> </span><span class="k">{</span><span class="nv">-interpolate</span><span class="w"> </span>no<span class="k">}</span><span class="w"> </span><span class="o">-</span>pan<span class="w"> </span><span class="o">-</span>zoomwheel<span class="w"> </span><span class="o">-</span>activelegend<span class="k">]</span>
+<span class="nv">$graphInterp</span><span class="w"> </span><span class="nv">graph</span><span class="w"> </span>element<span class="w"> </span>create<span class="w"> </span>initial<span class="w"> </span><span class="o">-</span>label<span class="w"> </span><span class="k">{</span><span class="nv">Initial</span><span class="w"> </span>data<span class="k">}</span><span class="w"> </span><span class="o">-</span>x<span class="w"> </span>x<span class="w"> </span><span class="o">-</span>y<span class="w"> </span>y<span class="w"> </span><span class="o">-</span>color<span class="w"> </span><span class="err">#</span><span class="mi">5470</span>c6
+<span class="nv">$graphInterp</span><span class="w"> </span><span class="nv">graph</span><span class="w"> </span>element<span class="w"> </span>create<span class="w"> </span>linear<span class="w"> </span><span class="o">-</span>label<span class="w"> </span><span class="k">{</span><span class="nv">Linear</span><span class="w"> </span>interpolation<span class="k">}</span><span class="w"> </span><span class="o">-</span>x<span class="w"> </span>xInterp<span class="w"> </span><span class="o">-</span>y<span class="w"> </span>yInterpLin<span class="w"> </span><span class="o">-</span>color<span class="w"> </span><span class="err">#</span><span class="mi">91</span>cc75
+<span class="nv">$graphInterp</span><span class="w"> </span><span class="nv">graph</span><span class="w"> </span>element<span class="w"> </span>create<span class="w"> </span>nearest<span class="w"> </span><span class="o">-</span>label<span class="w"> </span><span class="k">{</span><span class="nv">Nearest</span><span class="w"> </span>interpolation<span class="k">}</span><span class="w"> </span><span class="o">-</span>x<span class="w"> </span>xInterp<span class="w"> </span><span class="o">-</span>y<span class="w"> </span>yInterpNear<span class="w"> </span><span class="o">-</span>color<span class="w"> </span><span class="err">#</span>fac858
+<span class="k">set</span><span class="w"> </span>graphError<span class="w"> </span><span class="k">[</span><span class="nv">graphtoolbar</span><span class="w"> </span>.g2<span class="w"> </span><span class="o">-</span>width<span class="w"> </span><span class="mi">800</span><span class="w"> </span><span class="o">-</span>height<span class="w"> </span><span class="mi">250</span><span class="w"> </span><span class="o">-</span>type<span class="w"> </span>graph<span class="w"> </span><span class="o">-</span>controlmode<span class="w"> </span>context<span class="w"> </span><span class="o">-</span>zoom<span class="w"> </span><span class="o">-</span>crosshairs<span class="o">\</span>
+<span class="w">                         </span><span class="nv">-crosshairsmode</span><span class="w"> </span>closest<span class="w"> </span><span class="o">-</span>crosshairsclosestopts<span class="w"> </span><span class="k">{</span><span class="nv">-interpolate</span><span class="w"> </span>no<span class="k">}</span><span class="w"> </span><span class="o">-</span>pan<span class="w"> </span><span class="o">-</span>zoomwheel<span class="w"> </span><span class="o">-</span>activelegend<span class="k">]</span>
+<span class="nv">$graphError</span><span class="w"> </span><span class="nv">graph</span><span class="w"> </span>axis<span class="w"> </span>configure<span class="w"> </span>y<span class="w"> </span><span class="o">-</span>title<span class="w"> </span><span class="k">{</span><span class="nv">Rel.</span><span class="w"> </span>error,<span class="w"> </span><span class="o">%</span><span class="k">}</span>
+<span class="nv">$graphError</span><span class="w"> </span><span class="nv">graph</span><span class="w"> </span>element<span class="w"> </span>create<span class="w"> </span>linear<span class="w"> </span><span class="o">-</span>label<span class="w"> </span><span class="k">{</span><span class="nv">Linear</span><span class="w"> </span>interpolation<span class="w"> </span>error<span class="k">}</span><span class="w"> </span><span class="o">-</span>x<span class="w"> </span>xInterp<span class="w"> </span><span class="o">-</span>y<span class="w"> </span>interpErrorLin<span class="w"> </span><span class="o">-</span>color<span class="w"> </span><span class="err">#</span>ee6666
+<span class="nv">$graphError</span><span class="w"> </span><span class="nv">graph</span><span class="w"> </span>element<span class="w"> </span>create<span class="w"> </span>nearest<span class="w"> </span><span class="o">-</span>label<span class="w"> </span><span class="k">{</span><span class="nv">Nearest</span><span class="w"> </span>interpolation<span class="w"> </span>error<span class="k">}</span><span class="w"> </span><span class="o">-</span>x<span class="w"> </span>xInterp<span class="w"> </span><span class="o">-</span>y<span class="w"> </span>interpErrorNear<span class="o">\</span>
+<span class="w">        </span><span class="nv">-color</span><span class="w"> </span><span class="err">#</span><span class="mi">73</span>c0de
+<span class="nv">grid</span><span class="w"> </span><span class="nv">$graphInterp</span><span class="w"> </span><span class="o">-</span>row<span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">-</span>column<span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">-</span>sticky<span class="w"> </span>nsew
+<span class="nv">grid</span><span class="w"> </span><span class="nv">$graphError</span><span class="w"> </span><span class="o">-</span>row<span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">-</span>column<span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">-</span>sticky<span class="w"> </span>nsew
+<span class="nv">grid</span><span class="w"> </span>columnconfigure<span class="w"> </span>.<span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">-</span>weight<span class="w"> </span><span class="mi">1</span>
+<span class="nv">grid</span><span class="w"> </span>rowconfigure<span class="w"> </span>.<span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">-</span>weight<span class="w"> </span><span class="mi">1</span>
+<span class="nv">grid</span><span class="w"> </span>rowconfigure<span class="w"> </span>.<span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">-</span>weight<span class="w"> </span><span class="mi">1</span>
+<span class="k">set</span><span class="w"> </span>fbasename<span class="w"> </span><span class="k">[</span><span class="nb">file</span><span class="w"> </span>rootname<span class="w"> </span><span class="k">[</span><span class="nb">file</span><span class="w"> </span>tail<span class="w"> </span><span class="k">[</span><span class="nb">info</span><span class="w"> </span>script<span class="k">]]]</span>
+<span class="nv">$graphInterp</span><span class="w"> </span><span class="nv">graph</span><span class="w"> </span>svg<span class="w"> </span>output<span class="w"> </span><span class="k">[</span><span class="nb">file</span><span class="w"> </span>normalize<span class="w"> </span><span class="k">[</span><span class="nb">file</span><span class="w"> </span>join<span class="w"> </span>..<span class="w"> </span>docs<span class="w"> </span>assets<span class="w"> </span>images<span class="w"> </span><span class="nv">$fbasename.svg</span><span class="k">]]</span>
+<span class="nv">$graphError</span><span class="w"> </span><span class="nv">graph</span><span class="w"> </span>svg<span class="w"> </span>output<span class="w"> </span><span class="k">[</span><span class="nb">file</span><span class="w"> </span>normalize<span class="w"> </span><span class="k">[</span><span class="nb">file</span><span class="w"> </span>join<span class="w"> </span>..<span class="w"> </span>docs<span class="w"> </span>assets<span class="w"> </span>images<span class="w"> </span><span class="nv">${fbasename}</span>_error.svg<span class="k">]]</span>
+</pre></div>
+</div>
+<p><img alt="linear_near_interpolation_rbc" src="assets/images/linear_near_interpolation_rbc.svg" />
+<img alt="linear_near_interpolation_rbc_error" src="assets/images/linear_near_interpolation_rbc_error.svg" /></p>
 <hr class="docutils" />
 <p class="centered">
 <strong>Copyright (c) George Yashin</strong></p></section>
@@ -2757,6 +2839,7 @@ zip <code class="docutils literal notranslate"><span class="pre">xi</span></code
     <ul>
 <li><a class="reference internal" href="#">Examples</a><ul>
 <li><a class="reference internal" href="#d-linear-and-nearest-interpolation">1D Linear and nearest interpolation</a></li>
+<li><a class="reference internal" href="#d-linear-and-nearest-interpolation-wtih-rbc">1D Linear and nearest interpolation wtih RBC</a></li>
 </ul>
 </li>
 </ul>
