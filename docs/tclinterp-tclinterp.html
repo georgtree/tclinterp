@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>::tclinterp &#8212; tclinterp  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=f11ead97" />
+    
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="::tclinterp::approximation" href="tclinterp-tclinterp-approximation.html" />
+    <link rel="prev" title="Examples" href="tclinterp-Examples.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="tclinterp-tclinterp-approximation.html" title="::tclinterp::approximation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tclinterp-Examples.html" title="Examples"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">tclinterp  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">::tclinterp</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="tclinterp">
+<span id="r-tclinterp"></span><span id="r-3a3atclinterp"></span><h1>::tclinterp<a class="headerlink" href="#tclinterp" title="Link to this heading">¶</a></h1>
+<section id="commands">
+<span id="r-tclinterp-commands"></span><span id="r-3a3atclinterpqzcommands"></span><h2>Commands<a class="headerlink" href="#commands" title="Link to this heading">¶</a></h2>
+<section id="configure">
+<span id="r-symbolqz3a3atclinterp3a3aconfigure"></span><span id="index-1"></span><span id="index-0"></span><h3><code class="docutils literal notranslate"><span class="pre">configure</span></code><a class="headerlink" href="#configure" title="Link to this heading">¶</a></h3>
+<p>Queries or changes package-wide representation defaults in this Tcl interpreter.</p>
+<pre class="literal-block"><strong>configure</strong> <em>?option?</em>
+<strong>configure</strong> <em>?-input list|vector? ?-output list|vector?</em></pre>
+<p class="rubric">Parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd"><code class="docutils literal notranslate"><span class="pre">-input</span> <span class="pre">mode</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Default input representation: list or vector; initially list.</p>
+</dd>
+<dt class="field-even"><code class="docutils literal notranslate"><span class="pre">-output</span> <span class="pre">mode</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>Default output representation: list or vector; initially list.</p>
+</dd>
+</dl>
+<p class="rubric">Description</p>
+<p>With no arguments, returns all settings as an option/value dictionary. With one option, returns its value.
+With option/value pairs, validates all settings before applying them and returns the complete configuration.
+Invalid options, invalid modes, or unavailable RBC support leave the configuration unchanged. Selecting
+vector mode requires an RBC-enabled build and a loadable rbc::vector package; list queries/settings do not
+load RBC. Defaults are independent in separate interpreters.</p>
+<p>Omitted -input and -output options use these defaults on each interpolation call. Explicit call options
+take precedence. Input and output modes can be configured independently.
+This public command is not namespace-exported; call it as ::tclinterp::configure.
+Namespace selection, naming and collision policies are unaffected.</p>
+<p>Example:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="k">set</span><span class="w"> </span>saved<span class="w"> </span><span class="k">[</span><span class="o">::</span><span class="nv">tclinterp</span><span class="o">::</span>configure<span class="k">]</span>
+<span class="o">::</span><span class="nv">tclinterp</span><span class="o">::</span>configure<span class="w"> </span><span class="o">-</span>input<span class="w"> </span>vector<span class="w"> </span><span class="o">-</span>output<span class="w"> </span>vector
+<span class="o">::</span><span class="nv">tclinterp</span><span class="o">::</span>configure<span class="w"> </span><span class="o">-</span>output
+<span class="o">::</span><span class="nv">tclinterp</span><span class="o">::</span>configure<span class="w"> </span><span class="k">{</span><span class="o">*</span><span class="k">}</span><span class="nv">$saved</span>
+</pre></div>
+</div>
+<p class="rubric">Return value</p>
+<p>selected option value for a single-option query; otherwise all settings as a dictionary.</p>
+<hr class="docutils" />
+<p class="centered">
+<strong>Copyright (c) George Yashin</strong></p></section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">::tclinterp</a><ul>
+<li><a class="reference internal" href="#commands">Commands</a><ul>
+<li><a class="reference internal" href="#configure"><code class="docutils literal notranslate"><span class="pre">configure</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="tclinterp-Examples.html"
+                          title="previous chapter">Examples</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="tclinterp-tclinterp-approximation.html"
+                          title="next chapter">::tclinterp::approximation</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/tclinterp-tclinterp.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="tclinterp-tclinterp-approximation.html" title="::tclinterp::approximation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tclinterp-Examples.html" title="Examples"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">tclinterp  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">::tclinterp</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright George Yashin.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>
