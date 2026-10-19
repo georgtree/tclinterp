@@ -41,15 +41,15 @@ proc ::tclinterp::configure {args} {
     # Synopsis: ?-input list|vector? ?-output list|vector? ?-ifexists error|replace?
     # Returns: selected option value for a single-option query; otherwise all settings as a dictionary.
     if {([llength $args]==1) && ([lindex $args 0] ne {-help})} {
-        set arguments [argparse -inline -helplevel 1 -help {Query package defaults. With no arguments returns all settings.} {
+        set arguments [argparse -inline -help {Query package defaults. With no arguments returns all settings.} {
             {-input -key query -value input -help {Query the default input representation}}
             {-output -key query -value output -help {Query the default output representation}}
             {-ifexists -key query -value ifexists -help {Query the default collision policy}}
         }]
         return [NativeConfigure [dict get $arguments query] {}]
     }
-    set arguments [argparse -inline -helplevel 1 -help {Query or change package defaults atomically. Defaults are local\
-                                                                to this interpreter.} {
+    set arguments [argparse -inline -help {Query or change package defaults atomically. Defaults are local to this\
+                                                   interpreter.} {
         {-input= -enum {list vector} -help {Default input representation: list or vector}}
         {-output= -enum {list vector} -help {Default output representation: list or vector}}
         {-ifexists= -enum {error replace} -help {Default collision policy: error or replace}}
@@ -78,7 +78,9 @@ proc ::tclinterp::interpolation::lin1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take
+    # precedence.
+    #
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -111,8 +113,8 @@ proc ::tclinterp::interpolation::lin1d {args} {
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -enum {error replace} -help {Policy for existing destination vectors; uses the package default\
-                                                                        (initially error). With replace, an existing real vector is\
-                                                                        resized and overwritten}}
+                                                                        (initially error). With replace, an existing\
+                                                                        real vector is resized and overwritten}}
     }]
     return [uplevel 1 [list ::tclinterp::native lin1d $arguments]]
 }
@@ -138,7 +140,8 @@ proc ::tclinterp::interpolation::near1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take
+    # precedence.
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -198,7 +201,9 @@ proc ::tclinterp::interpolation::lagr1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take
+    # precedence.
+    #
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -231,8 +236,8 @@ proc ::tclinterp::interpolation::lagr1d {args} {
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -enum {error replace} -help {Policy for existing destination vectors; uses the package default\
-                                                                        (initially error). With replace, an existing real vector is\
-                                                                        resized and overwritten}}
+                                                         (initially error). With replace, an existing real vector is\
+                                                         resized and overwritten}}
     }]
     return [uplevel 1 [list ::tclinterp::native lagr1d $arguments]]
 }
@@ -262,7 +267,9 @@ proc ::tclinterp::interpolation::least1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take
+    # precedence.
+    #
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -304,8 +311,8 @@ proc ::tclinterp::interpolation::least1d {args} {
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -enum {error replace} -help {Policy for existing destination vectors; uses the package default\
-                                                                        (initially error). With replace, an existing real vector is\
-                                                                        resized and overwritten}}
+                                                         (initially error). With replace, an existing real vector is\
+                                                         resized and overwritten}}
     }]
     return [uplevel 1 [list ::tclinterp::native least1d $arguments]]
 }
@@ -335,7 +342,9 @@ proc ::tclinterp::interpolation::least1dDer {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take
+    # precedence.
+    #
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -377,8 +386,8 @@ proc ::tclinterp::interpolation::least1dDer {args} {
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -enum {error replace} -help {Policy for existing destination vectors; uses the package default\
-                                                                        (initially error). With replace, an existing real vector is\
-                                                                        resized and overwritten}}
+                                                         (initially error). With replace, an existing real vector is\
+                                                         resized and overwritten}}
     }]
     return [uplevel 1 [list ::tclinterp::native least1dDer $arguments]]
 }
@@ -405,7 +414,9 @@ proc ::tclinterp::approximation::genBezier {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take
+    # precedence.
+    #
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -440,8 +451,8 @@ proc ::tclinterp::approximation::genBezier {args} {
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -enum {error replace} -help {Policy for existing destination vectors; uses the package default\
-                                                                        (initially error). With replace, an existing real vector is\
-                                                                        resized and overwritten}}
+                                                         (initially error). With replace, an existing real vector is\
+                                                         resized and overwritten}}
     }]
     return [uplevel 1 [list ::tclinterp::native genBezier $arguments]]
 }
@@ -469,7 +480,9 @@ proc ::tclinterp::approximation::bezier {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take
+    # precedence.
+    #
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -505,8 +518,8 @@ proc ::tclinterp::approximation::bezier {args} {
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -enum {error replace} -help {Policy for existing destination vectors; uses the package default\
-                                                                        (initially error). With replace, an existing real vector is\
-                                                                        resized and overwritten}}
+                                                         (initially error). With replace, an existing real vector is\
+                                                         resized and overwritten}}
     }]
     return [uplevel 1 [list ::tclinterp::native bezier $arguments]]
 }
@@ -533,7 +546,9 @@ proc ::tclinterp::interpolation::divDif1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take
+    # precedence.
+    #
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -568,8 +583,8 @@ proc ::tclinterp::interpolation::divDif1d {args} {
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -enum {error replace} -help {Policy for existing destination vectors; uses the package default\
-                                                                        (initially error). With replace, an existing real vector is\
-                                                                        resized and overwritten}}
+                                                         (initially error). With replace, an existing real vector is\
+                                                         resized and overwritten}}
     }]
     return [uplevel 1 [list ::tclinterp::native divDif1d $arguments]]
 }
@@ -595,7 +610,9 @@ proc ::tclinterp::approximation::cubicBSpline1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take
+    # precedence.
+    #
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -628,8 +645,8 @@ proc ::tclinterp::approximation::cubicBSpline1d {args} {
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -enum {error replace} -help {Policy for existing destination vectors; uses the package default\
-                                                                        (initially error). With replace, an existing real vector is\
-                                                                        resized and overwritten}}
+                                                         (initially error). With replace, an existing real vector is\
+                                                         resized and overwritten}}
     }]
     return [uplevel 1 [list ::tclinterp::native cubicBSpline1d $arguments]]
 }
@@ -657,7 +674,9 @@ proc ::tclinterp::approximation::cubicBetaSpline1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take
+    # precedence.
+    #
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -694,8 +713,8 @@ proc ::tclinterp::approximation::cubicBetaSpline1d {args} {
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -enum {error replace} -help {Policy for existing destination vectors; uses the package default\
-                                                                        (initially error). With replace, an existing real vector is\
-                                                                        resized and overwritten}}
+                                                         (initially error). With replace, an existing real vector is\
+                                                         resized and overwritten}}
     }]
     return [uplevel 1 [list ::tclinterp::native cubicBetaSpline1d $arguments]]
 }
@@ -728,7 +747,9 @@ proc ::tclinterp::interpolation::cubicSpline1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take
+    # precedence.
+    #
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -777,8 +798,8 @@ proc ::tclinterp::interpolation::cubicSpline1d {args} {
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -enum {error replace} -help {Policy for existing destination vectors; uses the package default\
-                                                                        (initially error). With replace, an existing real vector is\
-                                                                        resized and overwritten}}
+                                                         (initially error). With replace, an existing real vector is\
+                                                         resized and overwritten}}
     }]
     return [uplevel 1 [list ::tclinterp::native cubicSpline1d $arguments]]
 }
@@ -806,7 +827,9 @@ proc ::tclinterp::interpolation::hermiteSpline1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take
+    # precedence.
+    #
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -842,8 +865,8 @@ proc ::tclinterp::interpolation::hermiteSpline1d {args} {
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -enum {error replace} -help {Policy for existing destination vectors; uses the package default\
-                                                                        (initially error). With replace, an existing real vector is\
-                                                                        resized and overwritten}}
+                                                         (initially error). With replace, an existing real vector is\
+                                                         resized and overwritten}}
     }]
     return [uplevel 1 [list ::tclinterp::native hermiteSpline1d $arguments]]
 }
@@ -869,7 +892,9 @@ proc ::tclinterp::interpolation::pchip1d {args} {
     # ordinary Tcl numbers. Numeric inputs must be finite. RBC support must be enabled in the build to use
     # vectors.
     #
-    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take precedence.
+    # Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time. Explicit options take
+    # precedence.
+    #
     # Input vector names resolve in the caller's namespace. Output names use -namespace, or the caller's namespace
     # when omitted. Empty namespace names are rejected; -namespace requires -output vector. Fully qualified output
     # names override this location; their parent namespace must already exist. Each unnamed output, including fields
@@ -902,8 +927,8 @@ proc ::tclinterp::interpolation::pchip1d {args} {
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -enum {error replace} -help {Policy for existing destination vectors; uses the package default\
-                                                                        (initially error). With replace, an existing real vector is\
-                                                                        resized and overwritten}}
+                                                         (initially error). With replace, an existing real vector is\
+                                                         resized and overwritten}}
     }]
     return [uplevel 1 [list ::tclinterp::native pchip1d $arguments]]
 }
