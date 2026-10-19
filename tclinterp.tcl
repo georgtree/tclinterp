@@ -1,4 +1,4 @@
-package require argparse 0.58
+package require argparse 0.65
 package provide tclinterp 0.3
 
 namespace eval ::tclinterp {
@@ -9,6 +9,52 @@ namespace eval ::tclinterp {
     namespace eval approximation {
         namespace export genBezier bezier cubicBSpline1d cubicBetaSpline1d
     }
+}
+
+proc ::tclinterp::configure {args} {
+    # Queries or changes package-wide representation and collision defaults in this Tcl interpreter.
+    #  -input mode - Default input representation: list or vector; initially list.
+    #  -output mode - Default output representation: list or vector; initially list.
+    #  -ifexists policy - Default destination collision policy: error or replace; initially error.
+    #
+    # With no arguments, returns all settings as an option/value dictionary. With one option, returns its value.
+    # With option/value pairs, validates all settings before applying them and returns the complete configuration.
+    # Invalid options or values, or unavailable RBC support leave the configuration unchanged. Selecting
+    # vector mode requires an RBC-enabled build and a loadable rbc::vector package; list queries/settings do not
+    # load RBC. Defaults are independent in separate interpreters.
+    #
+    # Omitted -input, -output and -ifexists options use these defaults on each interpolation call. Explicit call options
+    # take precedence. Input and output modes can be configured independently.
+    # This public command is not namespace-exported; call it as ::tclinterp::configure.
+    # The collision policy affects vector output only; it can be configured while using list mode or without RBC.
+    # Replacement still requires a compatible, writable destination. Namespace selection and naming are unchanged.
+    #
+    # Example:
+    # ```tcl
+    # set saved [::tclinterp::configure]
+    # ::tclinterp::configure -input vector -output vector -ifexists replace
+    # ::tclinterp::configure -output
+    # ::tclinterp::configure {*}$saved
+    # ```
+    #
+    # Synopsis: ?option?
+    # Synopsis: ?-input list|vector? ?-output list|vector? ?-ifexists error|replace?
+    # Returns: selected option value for a single-option query; otherwise all settings as a dictionary.
+    if {([llength $args]==1) && ([lindex $args 0] ne {-help})} {
+        set arguments [argparse -inline -helplevel 1 -help {Query package defaults. With no arguments returns all settings.} {
+            {-input -key query -value input -help {Query the default input representation}}
+            {-output -key query -value output -help {Query the default output representation}}
+            {-ifexists -key query -value ifexists -help {Query the default collision policy}}
+        }]
+        return [NativeConfigure [dict get $arguments query] {}]
+    }
+    set arguments [argparse -inline -helplevel 1 -help {Query or change package defaults atomically. Defaults are local\
+                                                                to this interpreter.} {
+        {-input= -enum {list vector} -help {Default input representation: list or vector}}
+        {-output= -enum {list vector} -help {Default output representation: list or vector}}
+        {-ifexists= -enum {error replace} -help {Default collision policy: error or replace}}
+    }]
+    return [NativeConfigure {} $arguments]
 }
 
 proc ::tclinterp::interpolation::lin1d {args} {

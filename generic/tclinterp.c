@@ -130,48 +130,75 @@ static Tcl_Obj *PackageDefaultsDict(Tcl_Interp *interp, const PackageDefaults *d
     return result;
 }
 
+//***  ConfigureCmd function
+/*
+ *----------------------------------------------------------------------------------------------------------------------
+ *
+ * ConfigureCmd --
+ *
+ *      Implements the native backend for querying and atomically updating interpreter-local package defaults.
+ *      Public argument parsing and help are provided by the Tcl configure wrapper.
+ *
+ * Parameters:
+ *      void *clientData     - Unused command client data.
+ *      Tcl_Interp *interp   - Interpreter owning the defaults and receiving the result.
+ *      Tcl_Size objc        - Number of arguments; must be three.
+ *      Tcl_Obj *const objv[] - Native command name, query key or empty string, and normalized settings dictionary.
+ *
+ * Results:
+ *      Returns TCL_OK with the queried value or complete settings dictionary.
+ *      Returns TCL_ERROR on invalid arguments, invalid settings, or unavailable vector support.
+ *
+ * Side Effects:
+ *      Creates package defaults on first use and commits supplied settings only after validation.
+ *      May initialize RBC when the resulting input or output mode is vector.
+ *      Sets the interpreter result. Existing vectors are not modified.
+ *
+ *----------------------------------------------------------------------------------------------------------------------
+ */
 static int ConfigureCmd(void *clientData, Tcl_Interp *interp, Tcl_Size objc, Tcl_Obj *const objv[]) {
-    static const char *options[] = {"-input", "-output", "-ifexists", NULL};
+    static const char *keys[] = {"input", "output", "ifexists", NULL};
     static const char *modes[] = {"list", "vector", NULL};
     static const char *policies[] = {"error", "replace", NULL};
-    PackageDefaults *defaults = GetPackageDefaults(interp);
-    PackageDefaults candidate = *defaults;
-    int option, mode;
+    Tcl_Size size;
     (void)clientData;
-    if (objc == 2) {
-        if (Tcl_GetIndexFromObj(interp, objv[1], options, "option", TCL_EXACT, &option) != TCL_OK) {
-            return TCL_ERROR;
-        }
-        if (option == 2) {
-            Tcl_SetObjResult(interp, Tcl_NewStringObj(policies[defaults->replace], -1));
-            return TCL_OK;
-        }
-        mode = option == 0 ? defaults->input : defaults->output;
-        Tcl_SetObjResult(interp, Tcl_NewStringObj(modes[mode], -1));
-        return TCL_OK;
-    }
-    if (objc % 2 == 0) {
-        Tcl_WrongNumArgs(interp, 1, objv, "?option? ?value option value ...?");
+    if (objc != 3) {
+        Tcl_WrongNumArgs(interp, 1, objv, "query dictionary");
         return TCL_ERROR;
     }
-    for (Tcl_Size i = 1; i < objc; i += 2) {
-        if (Tcl_GetIndexFromObj(interp, objv[i], options, "option", TCL_EXACT, &option) != TCL_OK) {
+    if (Tcl_DictObjSize(interp, objv[2], &size) != TCL_OK) {
+        return TCL_ERROR;
+    }
+    PackageDefaults *defaults = GetPackageDefaults(interp);
+    PackageDefaults candidate = *defaults;
+    if (Tcl_GetString(objv[1])[0] != '\0') {
+        int key;
+        if (Tcl_GetIndexFromObj(interp, objv[1], keys, "configuration key", TCL_EXACT, &key) != TCL_OK) {
             return TCL_ERROR;
         }
-        if (option == 2) {
-            if (Tcl_GetIndexFromObj(interp, objv[i + 1], policies, "collision policy", TCL_EXACT, &mode) != TCL_OK) {
+        int value = key == 0 ? defaults->input : key == 1 ? defaults->output : defaults->replace;
+        Tcl_SetObjResult(interp, Tcl_NewStringObj(key == 2 ? policies[value] : modes[value], -1));
+        return TCL_OK;
+    }
+    int changed = 0;
+    for (int i = 0; i < 3; i++) {
+        Tcl_Obj *key = Tcl_NewStringObj(keys[i], -1), *value = NULL;
+        Tcl_IncrRefCount(key);
+        int code = Tcl_DictObjGet(interp, objv[2], key, &value);
+        Tcl_DecrRefCount(key);
+        if (code != TCL_OK) {
+            return TCL_ERROR;
+        }
+        if (value != NULL) {
+            int *target = i == 0 ? &candidate.input : i == 1 ? &candidate.output : &candidate.replace;
+            if (Tcl_GetIndexFromObj(interp, value, i == 2 ? policies : modes,
+                                    i == 2 ? "collision policy" : "mode", TCL_EXACT, target) != TCL_OK) {
                 return TCL_ERROR;
             }
-            candidate.replace = mode;
-        } else {
-            if (Tcl_GetIndexFromObj(interp, objv[i + 1], modes, "mode", TCL_EXACT, &mode) != TCL_OK) {
-                return TCL_ERROR;
-            }
-            if (option == 0) candidate.input = mode;
-            else candidate.output = mode;
+            changed = 1;
         }
     }
-    if (objc > 1) {
+    if (changed) {
         if ((candidate.input || candidate.output) && InitVectors(interp) != TCL_OK) {
             return TCL_ERROR;
         }
@@ -907,7 +934,7 @@ int Tclinterp_Init(Tcl_Interp *ip) {
         !Tcl_CreateNamespace(ip, "::tclinterp", NULL, NULL)) {
         return TCL_ERROR;
     }
-    Tcl_CreateObjCommand2(ip, "::tclinterp::configure", ConfigureCmd, NULL, NULL);
+    Tcl_CreateObjCommand2(ip, "::tclinterp::NativeConfigure", ConfigureCmd, NULL, NULL);
     Tcl_CreateObjCommand2(ip, "::tclinterp::native", NativeCmd, NULL, NULL);
     return Tcl_PkgProvide(ip, "tclinterp", PACKAGE_VERSION);
 }

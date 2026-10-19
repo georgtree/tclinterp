@@ -8,7 +8,6 @@ source [file join $docDir startPage.ruff]
 source [file join $docDir rbcBindings.ruff]
 source [file join $docDir examples.ruff]
 source [file join $sourceDir tclinterp.tcl]
-source [file join $docDir tclinterp.ruff]
 
 set packageVersion [package provide tclinterp]
 if {$packageVersion eq {}} {

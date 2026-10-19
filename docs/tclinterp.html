@@ -249,21 +249,6 @@ also requires ditaa. Use <code class="docutils literal notranslate"><span class=
 <p>Generated HTML and manpages are written into the source <code class="docutils literal notranslate"><span class="pre">docs</span></code> directory, including for out-of-tree
 builds. Documentation-generation errors make <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">doc</span></code> fail. Re-run configuration after generation, as shown above, so
 newly generated HTML and static assets are included in the configured file list before <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">install</span></code> or <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">dist</span></code>.</p>
-</section>
-<section id="package-defaults">
-<span id="r-package-defaults"></span><span id="r-package20defaults"></span><h2>Package defaults<a class="headerlink" href="#package-defaults" title="Link to this heading">¶</a></h2>
-<p>Set representation and collision defaults once after loading the package:</p>
-<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nb">package</span><span class="w"> </span>require<span class="w"> </span>tclinterp
-<span class="o">::</span><span class="nv">tclinterp</span><span class="o">::</span>configure<span class="w"> </span><span class="o">-</span>input<span class="w"> </span>vector<span class="w"> </span><span class="o">-</span>output<span class="w"> </span>vector<span class="w"> </span><span class="o">-</span>ifexists<span class="w"> </span>replace
-</pre></div>
-</div>
-<p>Subsequent interpolation calls inherit omitted <code class="docutils literal notranslate"><span class="pre">-input</span></code>, <code class="docutils literal notranslate"><span class="pre">-output</span></code> and <code class="docutils literal notranslate"><span class="pre">-ifexists</span></code> options. Explicit per-call options win.</p>
-<p>Use <code class="docutils literal notranslate"><span class="pre">::tclinterp::configure</span></code> to query all settings, or <code class="docutils literal notranslate"><span class="pre">::tclinterp::configure</span> <span class="pre">-output</span></code> to query one.
-The all-settings dictionary can be restored with <code class="docutils literal notranslate"><span class="pre">::tclinterp::configure</span> <span class="pre">{*}$saved</span></code>.
-Initial representation defaults remain <code class="docutils literal notranslate"><span class="pre">list</span></code>; the initial <code class="docutils literal notranslate"><span class="pre">-ifexists</span></code> policy is <code class="docutils literal notranslate"><span class="pre">error</span></code>. Invalid requests and unavailable vector support leave settings unchanged.
-Configuration belongs to the current Tcl interpreter. The command is public but <strong>not namespace-exported</strong>,
-so wildcard imports cannot introduce a <code class="docutils literal notranslate"><span class="pre">configure</span></code> collision. Namespace selection and naming are unchanged. <code class="docutils literal notranslate"><span class="pre">-ifexists</span> <span class="pre">replace</span></code> still requires a compatible, writable destination.
-The collision setting affects vector output only and can be configured even in a build without RBC.</p>
 <hr class="docutils" />
 <p class="centered">
 <strong>Copyright (c) George Yashin</strong></p></section>
@@ -288,7 +273,6 @@ The collision setting affects vector output only and can be configured even in a
 <li><a class="reference internal" href="#installation-layout-and-removal">Installation layout and removal</a></li>
 <li><a class="reference internal" href="#installation-archives">Installation archives</a></li>
 <li><a class="reference internal" href="#regenerating-documentation">Regenerating documentation</a></li>
-<li><a class="reference internal" href="#package-defaults">Package defaults</a></li>
 </ul>
 </li>
 </ul>
