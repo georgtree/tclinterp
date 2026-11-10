@@ -174,8 +174,8 @@ proc ::tclinterp::interpolation::near1d {args} {
         {-names= -type dict -help {Dictionary mapping output fields to destination vector names; requires -output\
                                            vector. Valid fields: yi}}
         {-ifexists= -enum {error replace} -help {Policy for existing destination vectors; uses the package default\
-                                                                        (initially error). With replace, an existing real vector is\
-                                                                        resized and overwritten}}
+                                                                        (initially error). With replace, an existing\
+                                                                        real vector is resized and overwritten}}
     }]
     return [uplevel 1 [list ::tclinterp::native near1d $arguments]]
 }

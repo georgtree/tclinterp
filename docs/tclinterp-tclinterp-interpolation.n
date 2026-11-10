@@ -88,7 +88,9 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
-Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
+Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take
+precedence\&.
+.PP
 Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
 when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
 names override this location; their parent namespace must already exist\&. Each unnamed output, including fields
@@ -160,7 +162,9 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
-Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
+Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take
+precedence\&.
+.PP
 Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
 when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
 names override this location; their parent namespace must already exist\&. Each unnamed output, including fields
@@ -229,7 +233,9 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
-Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
+Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take
+precedence\&.
+.PP
 Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
 when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
 names override this location; their parent namespace must already exist\&. Each unnamed output, including fields
@@ -292,7 +298,9 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
-Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
+Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take
+precedence\&.
+.PP
 Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
 when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
 names override this location; their parent namespace must already exist\&. Each unnamed output, including fields
@@ -364,7 +372,9 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
-Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
+Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take
+precedence\&.
+.PP
 Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
 when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
 names override this location; their parent namespace must already exist\&. Each unnamed output, including fields
@@ -437,7 +447,9 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
-Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
+Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take
+precedence\&.
+.PP
 Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
 when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
 names override this location; their parent namespace must already exist\&. Each unnamed output, including fields
@@ -501,7 +513,9 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
-Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
+Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take
+precedence\&.
+.PP
 Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
 when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
 names override this location; their parent namespace must already exist\&. Each unnamed output, including fields
@@ -564,7 +578,8 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
-Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
+Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take
+precedence\&.
 Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
 when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
 names override this location; their parent namespace must already exist\&. Each unnamed output, including fields
@@ -627,7 +642,9 @@ Every array argument marked values uses the representation selected by -input\&.
 ordinary Tcl numbers\&. Numeric inputs must be finite\&. RBC support must be enabled in the build to use
 vectors\&.
 .PP
-Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take precedence\&.
+Omitted -input, -output and -ifexists use ::tclinterp::configure defaults at call time\&. Explicit options take
+precedence\&.
+.PP
 Input vector names resolve in the caller's namespace\&. Output names use -namespace, or the caller's namespace
 when omitted\&. Empty namespace names are rejected; -namespace requires -output vector\&. Fully qualified output
 names override this location; their parent namespace must already exist\&. Each unnamed output, including fields
