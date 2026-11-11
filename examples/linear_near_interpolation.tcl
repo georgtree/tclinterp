@@ -84,6 +84,8 @@ $layout Add $chart -bottom 55% -height 40% -width 80%
 $layout Add $chartError -bottom 5% -height 40% -width 80%
 # save to file
 set fbasename [file rootname [file tail [info script]]]
-$layout Render -outfile [file normalize [file join html_charts $fbasename.html]] -width 800px -height 500px\
+set chartDir [file normalize [file join [file dirname [info script]] .. docs assets charts]]
+file mkdir $chartDir
+$layout Render -outfile [file join $chartDir $fbasename.html] -width 800px -height 500px\
         -divid $fbasename -jschartvar chart_$fbasename -jsvar option_$fbasename
 # docs-end plot-ticklecharts
