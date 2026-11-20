@@ -50,6 +50,45 @@ dependencies are discoverable through auto_path or TCLLIBPATH\&.
 .PP
 For Windows, use the \fIMSYS2 UCRT64 environment\fP [URL: https://www\&.msys2\&.org/] and run the same build commands from its
 shell\&. The package has been tested on Kubuntu 24\&.04 and Windows 11 (UCRT64) with Tcl 9\&.
+.SH "CONTINUOUS INTEGRATION AND BINARY PACKAGES"
+.PP
+Pushes build and test tclinterp with direct RBC vector support on Linux GCC, Windows UCRT64 and Windows MSVC (x64),
+using Tcl 9\&.1\&.0\&. Each workflow resolves the latest release of both
+\fIRBC\fP [URL: https://github\&.com/georgtree/rbc-tk9/releases/tag/latest] and
+\fIargparse\fP [URL: https://github\&.com/georgtree/argparse/releases/tag/latest] once for all three jobs\&. Each runner uses the
+native RBC archive and the standalone argparse archive for its toolchain\&. The cache tracks the tag target, asset ID and
+SHA-256 for each archive separately\&. Each download is verified before use\&.
+.PP
+Run \fBActions → Build packages → Run workflow\fP to publish all three tested archives and their checksums to the \fIrolling
+release\fP [URL: https://github\&.com/georgtree/tclinterp/releases/tag/latest]\&. Tcl, RBC, argparse and Tcllib are supplied
+separately\&.
+.PP
+For a local MSVC build, use an \fBx64 Native Tools Command Prompt for Visual Studio 2022\fP, a matching Tcl 9\&.1
+installation with headers and stub library, and the extracted native MSVC RBC distribution\&. The repository bundles the
+Tcl Nmake rules and helper under win/, so Tcl installations without lib/nmake are supported\&.
+.PP
+.RS 4n
+.nf
+cd win
+set "INSTALLDIR=C:\\Tcl91"
+set "RBC_DIR=C:\\deps\\rbc"
+set "PATH=%INSTALLDIR%\\bin;%PATH%"
+nmake /f makefile\&.vc
+.fi
+.RE
+.PP
+To run the tests with separately extracted dependencies, set TCLLIBPATH to a Tcl list of their directories\&.
+For example, with argparse 0\&.70, RBC 0\&.8\&.5, and a Tcllib source checkout:
+.PP
+.RS 4n
+.nf
+set "TCLLIBPATH={C:/deps/argparse/lib/argparse0\&.70} {C:/deps/rbc/lib/rbc0\&.8\&.5} {C:/deps/tcllib/modules}"
+nmake /f makefile\&.vc test
+.fi
+.RE
+.PP
+The test target adds the build directory to the package search path\&. Use nmake /f makefile\&.vc install to install
+the extension into the Tcl prefix, or nmake /f makefile\&.vc dist-zip to produce a distribution\&.
 .SH DOCUMENTATION
 .PP
 The \fIonline documentation\fP [URL: https://georgtree\&.github\&.io/tclinterp] describes each command, its arguments and return

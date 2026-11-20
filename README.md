@@ -1,5 +1,7 @@
 # tclinterp - interpolation and approximation with Tcl
 
+[![Tests: Linux, Windows UCRT64 and MSVC](https://img.shields.io/github/actions/workflow/status/georgtree/tclinterp/tests.yml?branch=main&label=Tests%3A%20Linux%2C%20Windows%20UCRT64%20and%20MSVC)](https://github.com/georgtree/tclinterp/actions/workflows/tests.yml)
+
 `tclinterp` provides Tcl commands for interpolation and approximation using John Burkardt's
 [interpolation](https://people.math.sc.edu/Burkardt/c_src/interp/interp.html) and
 [spline](https://people.math.sc.edu/Burkardt/c_src/spline/spline.html) routines.
@@ -35,6 +37,42 @@ dependencies are discoverable through `auto_path` or `TCLLIBPATH`.
 
 For Windows, use the [MSYS2 UCRT64 environment](https://www.msys2.org/) and run the same build commands from its
 shell. The package has been tested on Kubuntu 24.04 and Windows 11 (UCRT64) with Tcl 9.
+
+## Continuous integration and binary packages
+
+Pushes build and test tclinterp with direct RBC vector support on Linux GCC, Windows UCRT64 and Windows MSVC (x64),
+using Tcl 9.1.0. Each workflow resolves the `latest` release of both
+[RBC](https://github.com/georgtree/rbc-tk9/releases/tag/latest) and
+[argparse](https://github.com/georgtree/argparse/releases/tag/latest) once for all three jobs. Each runner uses the
+native RBC archive and the standalone argparse archive for its toolchain. The cache tracks the tag target, asset ID and
+SHA-256 for each archive separately. Each download is verified before use.
+
+Run **Actions → Build packages → Run workflow** to publish all three tested archives and their checksums to the [rolling
+release](https://github.com/georgtree/tclinterp/releases/tag/latest). Tcl, RBC, argparse and Tcllib are supplied
+separately.
+
+For a local MSVC build, use an **x64 Native Tools Command Prompt for Visual Studio 2022**, a matching Tcl 9.1
+installation with headers and stub library, and the extracted native MSVC RBC distribution. The repository bundles the
+Tcl Nmake rules and helper under `win/`, so Tcl installations without `lib/nmake` are supported.
+
+```bat
+cd win
+set "INSTALLDIR=C:\Tcl91"
+set "RBC_DIR=C:\deps\rbc"
+set "PATH=%INSTALLDIR%\bin;%PATH%"
+nmake /f makefile.vc
+```
+
+To run the tests with separately extracted dependencies, set `TCLLIBPATH` to a Tcl list of their directories.
+For example, with argparse 0.70, RBC 0.8.5, and a Tcllib source checkout:
+
+```bat
+set "TCLLIBPATH={C:/deps/argparse/lib/argparse0.70} {C:/deps/rbc/lib/rbc0.8.5} {C:/deps/tcllib/modules}"
+nmake /f makefile.vc test
+```
+
+The test target adds the build directory to the package search path. Use `nmake /f makefile.vc install` to install
+the extension into the Tcl prefix, or `nmake /f makefile.vc dist-zip` to produce a distribution.
 
 ## Documentation
 

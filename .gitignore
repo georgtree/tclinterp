@@ -13,3 +13,4 @@ configure~
 /docs/*.bak
 *.dll
 /dist/
+/_ci/
