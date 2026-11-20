@@ -32,7 +32,11 @@ try {
     Invoke-Nmake @buildArgs
     & "$prefix/bin/tclsh91.exe" "$root/.github/scripts/require-vectors.tcl"
     if ($LASTEXITCODE -ne 0) { throw "RBC vector smoke test failed" }
-    Invoke-Nmake @buildArgs test
+    $testLog = Join-Path $out 'tcltest.log'
+    Invoke-Nmake @buildArgs test | Tee-Object -FilePath $testLog
+    if (!(Select-String -Path $testLog -Quiet -Pattern '^all\.tcl:\s+Total\s+\d+\s+Passed\s+[1-9]\d*\s+Skipped\s+\d+\s+Failed\s+0\s*$')) {
+        throw 'MSVC test target did not report a successful Tcltest run'
+    }
     if ($env:MAKE_DIST -ne 'true') { return }
     Invoke-Nmake @buildArgs "DIST_ROOT=$root\_ci\dist" dist-zip
 } finally { Pop-Location }
